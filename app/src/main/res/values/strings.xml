@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">钱掌柜</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="openDrawer">open_drawer</string>
+    <string name="closeDrawer">close_drawer</string>
+
+    <!-- Navigation Drawer menu labels -->
+    <string name="nav_sale_in">销售开单</string>
+    <string name="nav_sale_out">销售退货</string>
+    <string name="nav_sale_detail">交易记录</string>
+    <string name="nav_sale_note">交易明细</string>
+
+    <string name="nav_stock_in">采购入库</string>
+    <string name="nav_stock_out">采购退货</string>
+    <string name="nav_stock_detail">采购记录</string>
+    <string name="nav_stock_note">采购明细</string>
+
+    <!-- Toolbar titles when navigation menu item is selected -->
+    <string-array name="nav_item_activity_titles">
+        <item>销售开单</item>
+        <item>销售退货</item>
+        <item>交易记录</item>
+        <item>交易明细</item>
+
+        <item>采购入库</item>
+        <item>采购退货</item>
+        <item>采购记录</item>
+        <item>采购明细</item>
+
+    </string-array>
+
+    <string name="activity_title_about_us">About Us</string>
+    <string name="activity_title_privacy_policy">Privacy Policy</string>
+    <string name="action_clear_all">Clear All</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_mark_all_read">Mark All as Read</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="sale_in_fragment">Sale In fragment</string>
+    <string name="sale_detail_fragment">Sale Detail fragment</string>
+</resources>

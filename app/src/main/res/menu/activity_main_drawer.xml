@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <!--<group android:checkableBehavior="single">-->
+        <!--<item-->
+            <!--android:id="@+id/nav_sale_in"-->
+            <!--android:title="@string/nav_sale_in" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_sale_out"-->
+            <!--android:title="@string/nav_sale_out" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_sale_detail"-->
+            <!--android:title="@string/nav_sale_detail" />-->
+
+        <!--<item-->
+            <!--android:id="@+id/nav_sale_note"-->
+            <!--android:title="@string/nav_sale_note" />-->
+
+        <!--<item-->
+            <!--android:id="@+id/nav_settings"-->
+            <!--android:title="@string/nav_settings" />-->
+    <!--</group>-->
+
+    <group android:checkableBehavior="single">
+        <item android:title="销售管理">
+            <menu>
+                <item
+                    android:id="@+id/nav_sale_in"
+                    android:title="@string/nav_sale_in" />
+                <item
+                    android:id="@+id/nav_sale_out"
+                    android:title="@string/nav_sale_out" />
+                <item
+                    android:id="@+id/nav_sale_detail"
+                    android:title="@string/nav_sale_detail" />
+
+                <item
+                    android:id="@+id/nav_sale_note"
+                    android:title="@string/nav_sale_note" />
+            </menu>
+        </item>
+
+        <item android:title="采购管理">
+            <menu>
+                <item
+                    android:id="@+id/nav_stock_in"
+                    android:title="@string/nav_stock_in" />
+                <item
+                    android:id="@+id/nav_stock_out"
+                    android:title="@string/nav_stock_out" />
+                <item
+                    android:id="@+id/nav_stock_detail"
+                    android:title="@string/nav_stock_detail" />
+
+                <item android:id="@+id/nav_stock_note"
+                    android:title="@string/nav_stock_note" />
+            </menu>
+        </item>
+    </group>
+
+</menu>
