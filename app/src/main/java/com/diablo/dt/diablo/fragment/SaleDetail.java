@@ -1,12 +1,16 @@
 package com.diablo.dt.diablo.fragment;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 
@@ -29,6 +33,9 @@ public class SaleDetail extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private TableLayout mSaleDetailTable;
+    private Resources resources;
 
     public SaleDetail() {
         // Required empty public constructor
@@ -59,13 +66,64 @@ public class SaleDetail extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        resources = getContext().getResources();
+
+//        mSaleDetailTable = new TableLayout(this.getContext());
+//        mSaleDetailTable.setGravity(Gravity.CENTER);
+//        mSaleDetailTable.setBackgroundResource(R.color.colorPrimaryDark);
+
+        // mSaleDetailTable.setBackgroundResource(R.color.colorPrimary);
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sale_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
+        mSaleDetailTable = (TableLayout) view.findViewById(R.id.tab_sale_detail);
+
+        // add table head
+        TableRow.LayoutParams rowLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        rowLayoutParams.setMargins(1,1,1,1);
+
+        TableRow row = new TableRow(this.getContext());
+        row.setLayoutParams(rowLayoutParams);
+        row.setBackgroundResource(R.color.colorGray);
+
+        TextView t1 = new TextView(this.getContext());
+        TextView t2 = new TextView(this.getContext());
+        TextView t3 = new TextView(this.getContext());
+
+        t1.setBackgroundResource(R.color.colorAccent);
+        t1.setLayoutParams(rowLayoutParams);
+        t1.setText("第一列");
+        row.addView(t1);
+        t2.setText("第二列");
+        row.addView(t2);
+        t3.setText("第三列");
+        row.addView(t3);
+        mSaleDetailTable.addView(row);
+
+        row = new TableRow(this.getContext());
+        row.setLayoutParams(rowLayoutParams);
+        row.setBackgroundResource(R.color.colorAccent);
+
+        t1 = new TextView(this.getContext());
+        t2 = new TextView(this.getContext());
+        t3 = new TextView(this.getContext());
+
+
+        t1.setText("第一列");
+        row.addView(t1);
+        t2.setText("第二列");
+        row.addView(t2);
+        t3.setText("第三列");
+        row.addView(t3);
+        mSaleDetailTable.addView(row);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

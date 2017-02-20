@@ -23,40 +23,49 @@
     <!--</group>-->
 
     <group android:checkableBehavior="single">
-        <item android:title="销售管理">
-            <menu>
-                <item
-                    android:id="@+id/nav_sale_in"
-                    android:title="@string/nav_sale_in" />
-                <item
-                    android:id="@+id/nav_sale_out"
-                    android:title="@string/nav_sale_out" />
-                <item
-                    android:id="@+id/nav_sale_detail"
-                    android:title="@string/nav_sale_detail" />
+    <item android:title="销售管理">
+        <menu>
+            <item
+                android:id="@+id/nav_sale_in"
+                android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+                android:title="@string/nav_sale_in" />
+            <item
+                android:id="@+id/nav_sale_out"
+                android:icon="@drawable/ic_remove_shopping_cart_black_24dp"
+                android:title="@string/nav_sale_out" />
+            <item
+                android:id="@+id/nav_sale_detail"
+                android:icon="@drawable/ic_whatshot_black_24dp"
+                android:title="@string/nav_sale_detail" />
 
-                <item
-                    android:id="@+id/nav_sale_note"
-                    android:title="@string/nav_sale_note" />
-            </menu>
-        </item>
+            <item
+                android:id="@+id/nav_sale_note"
+                android:icon="@drawable/ic_room_black_24dp"
+                android:title="@string/nav_sale_note" />
+        </menu>
+    </item>
 
-        <item android:title="采购管理">
-            <menu>
-                <item
-                    android:id="@+id/nav_stock_in"
-                    android:title="@string/nav_stock_in" />
-                <item
-                    android:id="@+id/nav_stock_out"
-                    android:title="@string/nav_stock_out" />
-                <item
-                    android:id="@+id/nav_stock_detail"
-                    android:title="@string/nav_stock_detail" />
+    <item android:title="采购管理">
+        <menu>
+            <item
+                android:id="@+id/nav_stock_in"
+                android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+                android:title="@string/nav_stock_in" />
+            <item
+                android:id="@+id/nav_stock_out"
+                android:icon="@drawable/ic_remove_shopping_cart_black_24dp"
+                android:title="@string/nav_stock_out" />
+            <item
+                android:id="@+id/nav_stock_detail"
+                android:icon="@drawable/ic_whatshot_black_24dp"
+                android:title="@string/nav_stock_detail" />
 
-                <item android:id="@+id/nav_stock_note"
-                    android:title="@string/nav_stock_note" />
-            </menu>
-        </item>
+            <item
+                android:id="@+id/nav_stock_note"
+                android:icon="@drawable/ic_room_black_24dp"
+                android:title="@string/nav_stock_note" />
+        </menu>
+    </item>
     </group>
 
 </menu>

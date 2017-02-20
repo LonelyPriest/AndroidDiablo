@@ -5,9 +5,16 @@
     tools:context="com.diablo.dt.diablo.fragment.SaleDetail">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:text="@string/sale_detail_fragment" />-->
+    <TableLayout
+        android:id="@+id/tab_sale_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/sale_detail_fragment" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent">
+    </TableLayout>
 
 </FrameLayout>
