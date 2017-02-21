@@ -1,7 +1,8 @@
 package com.diablo.dt.diablo.fragment;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.rest.WSaleClient;
+import com.diablo.dt.diablo.rest.WSaleInterface;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +37,8 @@ public class SaleDetail extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private String [] mTitles;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -35,7 +46,6 @@ public class SaleDetail extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private TableLayout mSaleDetailTable;
-    private Resources resources;
 
     public SaleDetail() {
         // Required empty public constructor
@@ -67,14 +77,7 @@ public class SaleDetail extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        resources = getContext().getResources();
-
-//        mSaleDetailTable = new TableLayout(this.getContext());
-//        mSaleDetailTable.setGravity(Gravity.CENTER);
-//        mSaleDetailTable.setBackgroundResource(R.color.colorPrimaryDark);
-
-        // mSaleDetailTable.setBackgroundResource(R.color.colorPrimary);
-
+        mTitles = getResources().getStringArray(R.array.thead_sale_detal);
     }
 
     @Override
@@ -83,46 +86,59 @@ public class SaleDetail extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
         mSaleDetailTable = (TableLayout) view.findViewById(R.id.tab_sale_detail);
 
-        // add table head
-        TableRow.LayoutParams rowLayoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-                TableRow.LayoutParams.WRAP_CONTENT);
-        rowLayoutParams.setMargins(1,1,1,1);
+        TableRow.LayoutParams lp = new TableRow.LayoutParams();
+        lp.setMargins(0, 0, 25, 0);
 
         TableRow row = new TableRow(this.getContext());
-        row.setLayoutParams(rowLayoutParams);
-        row.setBackgroundResource(R.color.colorGray);
+        TextView cell;
+        for (String title: mTitles){
+            cell = new TextView(this.getContext());
+            // font
+            cell.setTypeface(null, Typeface.BOLD);
+            cell.setTextColor(Color.BLACK);
+            // right-margin
+            cell.setLayoutParams(lp);
+            cell.setText(title);
 
-        TextView t1 = new TextView(this.getContext());
-        TextView t2 = new TextView(this.getContext());
-        TextView t3 = new TextView(this.getContext());
+            row.addView(cell);
+        }
 
-        t1.setBackgroundResource(R.color.colorAccent);
-        t1.setLayoutParams(rowLayoutParams);
-        t1.setText("第一列");
-        row.addView(t1);
-        t2.setText("第二列");
-        row.addView(t2);
-        t3.setText("第三列");
-        row.addView(t3);
         mSaleDetailTable.addView(row);
 
-        row = new TableRow(this.getContext());
-        row.setLayoutParams(rowLayoutParams);
-        row.setBackgroundResource(R.color.colorAccent);
+        // get data from from web server
+        WSaleInterface wSaleInterface = WSaleClient.getClient().create(WSaleInterface.class);
+        Call<List<String>> call = wSaleInterface.filterWsaleNew("2016-01-01", "2016-12-12");
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
 
-        t1 = new TextView(this.getContext());
-        t2 = new TextView(this.getContext());
-        t3 = new TextView(this.getContext());
+            }
 
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                TextView cell;
+                TableRow row = new TableRow(getContext());
+                TableRow.LayoutParams lp = new TableRow.LayoutParams();
+                lp.setMargins(0, 0, 25, 0);
 
-        t1.setText("第一列");
-        row.addView(t1);
-        t2.setText("第二列");
-        row.addView(t2);
-        t3.setText("第三列");
-        row.addView(t3);
-        mSaleDetailTable.addView(row);
+                for (String title: mTitles){
+                    cell = new TextView(getContext());
+                    // font
+                    cell.setTypeface(null, Typeface.BOLD);
+                    cell.setTextColor(Color.BLACK);
+                    // right-margin
+                    cell.setLayoutParams(lp);
+                    cell.setText(title);
 
+                    row.addView(cell);
+                }
+
+                mSaleDetailTable.addView(row);
+            }
+        });
+
+        // row = new TableRow(this.getContext());
+        // row.setBackgroundResource(R.drawable.table_row_bg);
         return view;
     }
 

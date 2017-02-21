@@ -31,6 +31,26 @@
 
     </string-array>
 
+    <string-array name="thead_sale_detal">
+        <item>序号</item>
+        <item>单号</item>
+        <item>交易</item>
+        <item>店铺</item>
+        <item>店员</item>
+        <item>客户</item>
+        <item>数量</item>
+        <item>帐户欠款</item>
+        <item>应付</item>
+        <item>实付</item>
+        <item>核销</item>
+        <item>费用</item>
+        <item>累计欠款</item>
+        <item>现金</item>
+        <item>刷卡</item>
+        <item>汇款</item>
+        <item>日期</item>
+    </string-array>
+
     <string name="activity_title_about_us">About Us</string>
     <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="action_clear_all">Clear All</string>
