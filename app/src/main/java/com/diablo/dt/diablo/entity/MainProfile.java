@@ -19,12 +19,27 @@ public class MainProfile {
 
     private Context mContext;
 
+    // token to server
+    private String mToken;
+
     private MainProfile() {
 
     }
 
     public void setContext(Context context){
         this.mContext = context;
+    }
+
+    public Context getContext(){
+        return mContext;
+    }
+
+    public void setToken(String token){
+        mToken = token;
+    }
+
+    public String getToken(){
+        return mToken;
     }
 
     public String getServer(){

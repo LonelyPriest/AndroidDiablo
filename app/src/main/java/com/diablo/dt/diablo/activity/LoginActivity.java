@@ -1,5 +1,7 @@
 package com.diablo.dt.diablo.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -7,12 +9,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.Client.WLoginClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.diablo.dt.diablo.entity.MainProfile;
 import com.diablo.dt.diablo.response.LoginResponse;
 import com.diablo.dt.diablo.rest.WLoginInterfacae;
+import com.diablo.dt.diablo.utils.DiabloError;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,16 +25,16 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
     TextInputLayout loginWrap, passwordWrap;
+    Context mContext;
     // private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_main);
-        // coordinatorLayout = (CoordinatorLayout) findViewById(R.id.login_coordinatorLayout);
 
-        // init profile
-        MainProfile.getInstance().setContext(this);
+        mContext = this;
+        MainProfile.getInstance().setContext(mContext);
 
         loginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
         passwordWrap = (TextInputLayout) findViewById(R.id.login_password_holder);
@@ -52,10 +56,29 @@ public class LoginActivity extends AppCompatActivity {
                     // login
                     WLoginInterfacae loginInterfacae = WLoginClient.getClient().create(WLoginInterfacae.class);
                     Call<LoginResponse> call = loginInterfacae.login(name, password, DiabloEnum.TABLET);
+
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                             Log.d("%s", "LOGIN login success");
+                            // AlertDialogLayout dialog = (AlertDialogLayout)findViewById(R.id.alert_dialog);
+                            if (0 != response.body().getCode()){
+                                String error = DiabloError.getInstance().getError(response.body().getCode());
+                                new MaterialDialog.Builder(mContext)
+                                        .title(R.string.user_login)
+                                        .content(error)
+                                        .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                                        .positiveText(mContext.getResources().getString(R.string.login_ok))
+                                        .positiveColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                                        .show();
+                            } else {
+                                MainProfile.getInstance().setToken(response.body().getToken());
+                                Intent intent = new Intent(mContext, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
 
                         @Override
@@ -66,5 +89,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
