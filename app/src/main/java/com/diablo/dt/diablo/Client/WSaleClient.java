@@ -1,4 +1,6 @@
-package com.diablo.dt.diablo.rest;
+package com.diablo.dt.diablo.Client;
+
+import com.diablo.dt.diablo.entity.MainProfile;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -8,14 +10,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class WSaleClient {
-    public static final String BASE_URL = "http://192.168.3.193:63551/wsale/";
-    private static Retrofit retrofit = null;
+    private static Retrofit retrofit;
+    private static final  String mUrl = "wsale/";
 
+    private WSaleClient (){
+
+    }
 
     public static Retrofit getClient() {
+        String baseUrl = MainProfile.getInstance().getServer() + mUrl;
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

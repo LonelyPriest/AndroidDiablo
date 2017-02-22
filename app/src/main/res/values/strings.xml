@@ -60,5 +60,13 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sale_in_fragment">Sale In fragment</string>
-    <string name="sale_detail_fragment">Sale Detail fragment</string>
+    
+    <string name="diablo_server">http://192.168.3.193:63551/</string>
+
+    <!-- Login -->
+    <string name="login">登录</string>
+    <string name="user_login">用户登录</string>
+    <string name="login_name">请输入用户名</string>
+    <string name="login_password">请输入用户密码</string>
+
 </resources>

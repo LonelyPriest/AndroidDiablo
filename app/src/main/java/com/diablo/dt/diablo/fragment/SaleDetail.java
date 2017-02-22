@@ -14,7 +14,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.rest.WSaleClient;
+import com.diablo.dt.diablo.Client.WSaleClient;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 
 import java.util.List;

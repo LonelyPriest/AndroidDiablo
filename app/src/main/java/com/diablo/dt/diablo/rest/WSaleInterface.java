@@ -13,7 +13,7 @@ import retrofit2.http.POST;
 
 public interface WSaleInterface {
     @FormUrlEncoded
-    @POST("filter_wsale_new")
-    Call<List<String>> filterWsaleNew(@Field("star_time") String start,
-                                      @Field("end_time") String end);
+    @POST("login")
+    Call<List<String>> filterWsaleNew(@Field("user_name") String name,
+                                      @Field("user_password") String password);
 }
