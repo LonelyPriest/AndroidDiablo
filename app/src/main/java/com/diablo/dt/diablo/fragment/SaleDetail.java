@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.Client.WSaleClient;
+import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.entity.MainProfile;
+import com.diablo.dt.diablo.request.SaleDetailRequest;
+import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 
 import java.util.List;
@@ -77,7 +81,7 @@ public class SaleDetail extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        mTitles = getResources().getStringArray(R.array.thead_sale_detal);
+        mTitles = getResources().getStringArray(R.array.thead_sale_detail);
     }
 
     @Override
@@ -103,37 +107,98 @@ public class SaleDetail extends Fragment {
             row.addView(cell);
         }
 
+        // row.setBackgroundResource(R.drawable.table_row_bg);
         mSaleDetailTable.addView(row);
 
         // get data from from web server
         WSaleInterface wSaleInterface = WSaleClient.getClient().create(WSaleInterface.class);
-        Call<List<String>> call = wSaleInterface.filterWsaleNew("2016-01-01", "2016-12-12");
-        call.enqueue(new Callback<List<String>>() {
+        final SaleDetailRequest request = new SaleDetailRequest();
+        request.getCondtion().setStartTime("2016-01-01");
+        request.getCondtion().setEndTime("2016-12-12");
+        Call<SaleDetailResponse> call = wSaleInterface.filterWsaleNew(
+                MainProfile.getInstance().getToken(), request);
+
+        call.enqueue(new Callback<SaleDetailResponse>() {
             @Override
-            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+            public void onResponse(Call<SaleDetailResponse> call, Response<SaleDetailResponse> response) {
+                Log.d("SALE_DETAIL %s", response.toString());
+                SaleDetailResponse base = response.body();
+                List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
+
+                TableRow row;
+                Integer orderId = request.getPageStartIndex();
+                for (Integer i=0; i<details.size(); i++){
+                    row = new TableRow(getContext());
+                    SaleDetailResponse.SaleDetail detail = details.get(i);
+
+                    for (String title: mTitles){
+                        if (getResources().getString(R.string.order_id).equals(title)) {
+                            addCell(row, orderId++);
+                        } else if (getResources().getString(R.string.rsn).equals(title)){
+                            addCell(row, detail.getRsn());
+                        } else if(getResources().getString(R.string.transe).equals(title)){
+                            addCell(row, detail.getType());
+                        } else if(getResources().getString(R.string.shop).equals(title)){
+                            addCell(row, detail.getShop());
+                        } else if (getResources().getString(R.string.employee).equals(title)){
+                            addCell(row, detail.getEmployee());
+                        } else if (getResources().getString(R.string.retailer).equals(title)){
+                            addCell(row, detail.getRetailer());
+                        } else if (getResources().getString(R.string.amount).equals(title)){
+                            addCell(row, detail.getTotal());
+                        } else if (getResources().getString(R.string.balace).equals(title)){
+                            addCell(row, detail.getBalance());
+                        } else if (getResources().getString(R.string.should_pay).equals(title)){
+                            addCell(row, detail.getShouldPay());
+                        } else if (getResources().getString(R.string.has_pay).equals(title)){
+                            addCell(row, detail.getHasPay());
+                        } else if (getResources().getString(R.string.verificate).equals(title)){
+                            addCell(row, detail.getVerificate());
+                        } else if (getResources().getString(R.string.epay).equals(title)){
+                            addCell(row, detail.getEpay());
+                        } else if (getResources().getString(R.string.acc_balance).equals(title)){
+                            addCell(row, detail.getBalance());
+                        } else if (getResources().getString(R.string.cash).equals(title)){
+                            addCell(row, detail.getCash());
+                        } else if (getResources().getString(R.string.card).equals(title)){
+                            addCell(row, detail.getCard());
+                        } else if (getResources().getString(R.string.card).equals(title)){
+                            addCell(row, detail.getWire());
+                        } else if (getResources().getString(R.string.date).equals(title)){
+                            addCell(row, detail.getEntryDate());
+                        } else {
+
+                        }
+
+                    }
+
+                    row.setBackgroundResource(R.drawable.table_row_bg);
+
+                    mSaleDetailTable.addView(row);
+                }
 
             }
 
             @Override
-            public void onFailure(Call<List<String>> call, Throwable t) {
-                TextView cell;
-                TableRow row = new TableRow(getContext());
-                TableRow.LayoutParams lp = new TableRow.LayoutParams();
-                lp.setMargins(0, 0, 25, 0);
-
-                for (String title: mTitles){
-                    cell = new TextView(getContext());
-                    // font
-                    cell.setTypeface(null, Typeface.BOLD);
-                    cell.setTextColor(Color.BLACK);
-                    // right-margin
-                    cell.setLayoutParams(lp);
-                    cell.setText(title);
-
-                    row.addView(cell);
-                }
-
-                mSaleDetailTable.addView(row);
+            public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
+//                TextView cell;
+//                TableRow row = new TableRow(getContext());
+//                TableRow.LayoutParams lp = new TableRow.LayoutParams();
+//                lp.setMargins(0, 0, 25, 0);
+//
+//                for (String title: mTitles){
+//                    cell = new TextView(getContext());
+//                    // font
+//                    cell.setTypeface(null, Typeface.BOLD);
+//                    cell.setTextColor(Color.BLACK);
+//                    // right-margin
+//                    cell.setLayoutParams(lp);
+//                    cell.setText(title);
+//
+//                    row.addView(cell);
+//                }
+//
+//                mSaleDetailTable.addView(row);
             }
         });
 
@@ -179,5 +244,35 @@ public class SaleDetail extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onSaleDetailFragmentInteraction(Uri uri);
+    }
+
+    private TableRow addCell(TableRow row, String value){
+        TextView cell = new TextView(getContext());
+        TableRow.LayoutParams lp = new TableRow.LayoutParams();
+        lp.setMargins(0, 0, 25, 0);
+        cell.setText(value);
+        cell.setTextSize(16);
+        row.addView(cell);
+        return  row;
+    }
+
+    private TableRow addCell(TableRow row, Integer value){
+        TextView cell = new TextView(getContext());
+        TableRow.LayoutParams lp = new TableRow.LayoutParams();
+        lp.setMargins(0, 0, 25, 0);
+        cell.setText(value.toString());
+        cell.setTextSize(16);
+        row.addView(cell);
+        return  row;
+    }
+
+    private TableRow addCell(TableRow row, float value){
+        TextView cell = new TextView(getContext());
+        TableRow.LayoutParams lp = new TableRow.LayoutParams();
+        lp.setMargins(0, 0, 25, 0);
+        cell.setText(Float.toString(value));
+        cell.setTextSize(16);
+        row.addView(cell);
+        return  row;
     }
 }

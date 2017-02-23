@@ -31,7 +31,7 @@
 
     </string-array>
 
-    <string-array name="thead_sale_detal">
+    <string-array name="thead_sale_detail">
         <item>序号</item>
         <item>单号</item>
         <item>交易</item>
@@ -51,6 +51,24 @@
         <item>日期</item>
     </string-array>
 
+    <string name="order_id">序号</string>
+    <string name="rsn">单号</string>
+    <string name="transe">交易</string>
+    <string name="shop">店铺</string>
+    <string name="employee">店员</string>
+    <string name="retailer">客户</string>
+    <string name="amount">数量</string>
+    <string name="balace">帐户欠款</string>
+    <string name="should_pay">应付</string>
+    <string name="has_pay">实付</string>
+    <string name="verificate">核销</string>
+    <string name="epay">费用</string>
+    <string name="acc_balance">累计欠款</string>
+    <string name="cash">现金</string>
+    <string name="card">刷卡</string>
+    <string name="wire">汇款</string>
+    <string name="date">日期</string>
+    
     <string name="activity_title_about_us">About Us</string>
     <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="action_clear_all">Clear All</string>
@@ -78,5 +96,6 @@
 
     <!-- error -->
     <string name="invalid_name_password">用户名或密码错误</string>
+    <string name="network_unreachable">连接服务器失败，请确认该设备网络连接正常</string>
 
 </resources>

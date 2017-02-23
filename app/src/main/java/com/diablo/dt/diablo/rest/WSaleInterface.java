@@ -1,10 +1,11 @@
 package com.diablo.dt.diablo.rest;
 
-import java.util.List;
+import com.diablo.dt.diablo.request.SaleDetailRequest;
+import com.diablo.dt.diablo.response.SaleDetailResponse;
 
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 /**
@@ -12,8 +13,7 @@ import retrofit2.http.POST;
  */
 
 public interface WSaleInterface {
-    @FormUrlEncoded
-    @POST("login")
-    Call<List<String>> filterWsaleNew(@Field("user_name") String name,
-                                      @Field("user_password") String password);
+    @POST("filter_w_sale_new")
+    Call<SaleDetailResponse> filterWsaleNew(
+            @Header("cookie") String token, @Body SaleDetailRequest request);
 }

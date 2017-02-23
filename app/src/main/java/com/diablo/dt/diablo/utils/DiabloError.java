@@ -32,6 +32,7 @@ public class DiabloError {
 
         mErrors = new HashMap<Integer, String>();
         mErrors.put(1101, r.getString(R.string.invalid_name_password));
+        mErrors.put(1199, r.getString(R.string.network_unreachable));
     }
 
     public String getError(Integer ecode){

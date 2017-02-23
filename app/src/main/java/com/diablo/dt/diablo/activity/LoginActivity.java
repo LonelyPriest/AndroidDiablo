@@ -10,11 +10,14 @@ import android.view.View;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.diablo.dt.diablo.Client.RightClient;
 import com.diablo.dt.diablo.Client.WLoginClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.diablo.dt.diablo.entity.MainProfile;
 import com.diablo.dt.diablo.response.LoginResponse;
+import com.diablo.dt.diablo.response.LoginUserInfoResponse;
+import com.diablo.dt.diablo.rest.RightInterface;
 import com.diablo.dt.diablo.rest.WLoginInterfacae;
 import com.diablo.dt.diablo.utils.DiabloError;
 
@@ -67,12 +70,30 @@ public class LoginActivity extends AppCompatActivity {
                                 new MaterialDialog.Builder(mContext)
                                         .title(R.string.user_login)
                                         .content(error)
-                                        .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                                        // .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
                                         .positiveText(mContext.getResources().getString(R.string.login_ok))
                                         .positiveColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
                                         .show();
                             } else {
                                 MainProfile.getInstance().setToken(response.body().getToken());
+                                // get profile from server, include login data, authen data, etc...
+                                RightInterface rightInterface = RightClient.getClient().create(RightInterface.class);
+                                Call<LoginUserInfoResponse> rightCall = rightInterface.getLoginUserInfo(
+                                        MainProfile.getInstance().getToken());
+
+                                rightCall.enqueue(new Callback<LoginUserInfoResponse>() {
+                                    @Override
+                                    public void onResponse(Call<LoginUserInfoResponse> call, Response<LoginUserInfoResponse> response) {
+                                        Log.d("LOGIN: User profile %s", response.toString());
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<LoginUserInfoResponse> call, Throwable t) {
+
+                                    }
+                                });
+
                                 Intent intent = new Intent(mContext, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -83,7 +104,14 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
-                            Log.d("%s", "LOGIN login error");
+                            String error = DiabloError.getInstance().getError(1199);
+                            new MaterialDialog.Builder(mContext)
+                                    .title(R.string.user_login)
+                                    .content(error)
+                                    // .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                                    .positiveText(mContext.getResources().getString(R.string.login_ok))
+                                    .positiveColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                                    .show();
                         }
                     });
                 }

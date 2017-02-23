@@ -6,35 +6,19 @@ import com.google.gson.annotations.SerializedName;
  * Created by buxianhui on 17/2/22.
  */
 
-public class LoginResponse {
-    @SerializedName("ecode")
-    private Integer mCode;
-    @SerializedName("einfo")
-    private String mError;
+public class LoginResponse extends response{
     @SerializedName("token")
-    private String mToken;
+    private String token;
 
-    public Integer getCode() {
-        return mCode;
-    }
-
-    public void setCode(Integer mCode) {
-        this.mCode = mCode;
-    }
-
-    public String getError() {
-        return mError;
-    }
-
-    public void setError(String mInfo) {
-        this.mError = mInfo;
+    LoginResponse(){
+        super();
     }
 
     public String getToken() {
-        return mToken;
+        return this.token;
     }
 
     public void setToken(String mToken) {
-        this.mToken = mToken;
+        this.token = token;
     }
 }
