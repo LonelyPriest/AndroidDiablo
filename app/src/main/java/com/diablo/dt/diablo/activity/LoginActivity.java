@@ -77,22 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 MainProfile.getInstance().setToken(response.body().getToken());
                                 // get profile from server, include login data, authen data, etc...
-                                RightInterface rightInterface = RightClient.getClient().create(RightInterface.class);
-                                Call<LoginUserInfoResponse> rightCall = rightInterface.getLoginUserInfo(
-                                        MainProfile.getInstance().getToken());
-
-                                rightCall.enqueue(new Callback<LoginUserInfoResponse>() {
-                                    @Override
-                                    public void onResponse(Call<LoginUserInfoResponse> call, Response<LoginUserInfoResponse> response) {
-                                        Log.d("LOGIN: User profile %s", response.toString());
-
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<LoginUserInfoResponse> call, Throwable t) {
-
-                                    }
-                                });
+                                getLoginUserInfo();
 
                                 Intent intent = new Intent(mContext, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -121,6 +106,53 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+    }
+
+    private void getLoginUserInfo(){
+        RightInterface rightInterface = RightClient.getClient().create(RightInterface.class);
+        Call<LoginUserInfoResponse> rightCall = rightInterface.getLoginUserInfo(
+                MainProfile.getInstance().getToken());
+
+        rightCall.enqueue(new Callback<LoginUserInfoResponse>() {
+            @Override
+            public void onResponse(Call<LoginUserInfoResponse> call, Response<LoginUserInfoResponse> response) {
+                Log.d("LOGIN: User profile %s", response.toString());
+                LoginUserInfoResponse user = response.body();
+                MainProfile.getInstance().setLoginEmployee(user.getLoginEmployee());
+                MainProfile.getInstance().setLoginFirm(user.getLoginFirm());
+                MainProfile.getInstance().setLoginRetailer(user.getLoginRetailer());
+                MainProfile.getInstance().setLoginShop(user.getLoginShop());
+                MainProfile.getInstance().setLoginShops(user.getShops());
+                MainProfile.getInstance().setLoginRights(user.getRights());
+                MainProfile.getInstance().initLoginUser();
+                MainProfile.getInstance();
+            }
+
+            @Override
+            public void onFailure(Call<LoginUserInfoResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void getBrand(){
+
+    }
+
+    private void getRetailer(){
+
+    }
+
+    private void getEmployee(){
+
+    }
+
+    private void getColor(){
+
+    }
+
+    private void getSizeGroup(){
 
     }
 }

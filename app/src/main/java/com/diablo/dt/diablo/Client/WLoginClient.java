@@ -19,7 +19,7 @@ public class WLoginClient {
 
     public static Retrofit getClient() {
         String baseUrl = MainProfile.getInstance().getServer();
-        if (retrofit==null) {
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())

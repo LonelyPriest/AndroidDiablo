@@ -154,7 +154,7 @@ public class LoginUserInfoResponse extends response{
         return this.rights;
     }
 
-    public List<Shop> getShops() {
+    public List<Shop> getShops(){
         return this.shops;
     }
 }

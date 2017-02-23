@@ -5,6 +5,7 @@ import android.content.Context;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.response.LoginUserInfoResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,14 +57,29 @@ public class MainProfile {
     }
 
     // login information
-    Integer mLoginShop;
-    Integer mLoginFirm;
-    Integer mLoginEmployee;
-    Integer mLoginRetailer;
-    Integer mLoginType;
+    private Integer mLoginShop = DiabloEnum.INVALID_INDEX;
+    private Integer mLoginFirm = DiabloEnum.INVALID_INDEX;
+    private Integer mLoginEmployee = DiabloEnum.INVALID_INDEX;
+    private Integer mLoginRetailer = DiabloEnum.INVALID_INDEX;
+    private Integer mLoginType = DiabloEnum.INVALID_INDEX;
+    private List<LoginUserInfoResponse.Right> mLoginRights;
+    private List<LoginUserInfoResponse.Shop> mLoginShops;
 
-    List<LoginUserInfoResponse.Right> mLoginRights;
-    List<LoginUserInfoResponse.Shop> mLoginShops;
+
+    private List<Integer> mAvailableShopIds = new ArrayList<>();
+    private List<Integer> mShopIds = new ArrayList<>();
+    private List<Integer> mBadRepoIds = new ArrayList<>();
+    private List<Integer> mRepoIds = new ArrayList<>();
+
+    private List<LoginUserInfoResponse.Shop> mSortAvailableShop = new ArrayList<>();
+    private List<LoginUserInfoResponse.Shop> mSortShop = new ArrayList<>();
+    private List<LoginUserInfoResponse.Shop> mSortBadRepo = new ArrayList<>();
+    private List<LoginUserInfoResponse.Shop> mSortRepo = new ArrayList<>();
+
+
+    public Integer getmLoginRetailer() {
+        return mLoginRetailer;
+    }
 
     public Integer getLoginShop() {
         return this.mLoginShop;
@@ -105,6 +121,10 @@ public class MainProfile {
         this.mLoginType = loginType;
     }
 
+    public List<LoginUserInfoResponse.Right> getLoginRights(){
+        return mLoginRights;
+    }
+
     public void setLoginRights(List<LoginUserInfoResponse.Right> loginRights) {
         this.mLoginRights = loginRights;
     }
@@ -113,4 +133,119 @@ public class MainProfile {
         this.mLoginShops = loginShops;
     }
 
+    public List<Integer> getAvailableShopIds() {
+        return mAvailableShopIds;
+    }
+
+    public List<Integer> getShopIds() {
+        return mShopIds;
+    }
+
+    public List<Integer> getBadRepoIds() {
+        return mBadRepoIds;
+    }
+
+    public List<Integer> getRepoIds() {
+        return mRepoIds;
+    }
+
+    public List<LoginUserInfoResponse.Shop> getSortShop() {
+        return mSortShop;
+    }
+
+    public List<LoginUserInfoResponse.Shop> getSortRepo() {
+        return mSortRepo;
+    }
+
+    public List<LoginUserInfoResponse.Shop> getSortBadRepo() {
+        return mSortBadRepo;
+    }
+
+    public List<LoginUserInfoResponse.Shop> getSortAvailableShop() {
+        return mSortAvailableShop;
+    }
+
+    public void initLoginUser(){
+        setAllAvailableShop();
+        setAllShop();
+        setAllRepo();
+        setAllBadRepo();
+    }
+
+    // shop without any repo bind and repo only
+    private void setAllAvailableShop(){
+        for (LoginUserInfoResponse.Shop shop: this.mLoginShops){
+            if ( ((shop.getType().equals(DiabloEnum.SHOP_ONLY)
+                    && shop.getRepo().equals(DiabloEnum.BIND_NONE))
+                    || shop.getType().equals(DiabloEnum.REPO_ONLY)) ){
+                if (!this.mAvailableShopIds.contains(shop.getShop())){
+                    if (shop.getShop().equals(this.mLoginShop)){
+                        this.mAvailableShopIds.add(0, shop.getShop());
+                    } else {
+                        this.mAvailableShopIds.add(shop.getShop());
+                    }
+                }
+
+                if (!this.mSortAvailableShop.contains(shop)) {
+                    if (shop.getShop().equals(this.mLoginShop)){
+                        this.mSortAvailableShop.add(0, shop);
+                    } else {
+                        this.mSortAvailableShop.add(shop);
+                    }
+                }
+            }
+        }
+    }
+
+    // shop or shop that bind to repo
+    private void setAllShop(){
+        for (LoginUserInfoResponse.Shop shop: this.mLoginShops){
+            if ( shop.getType().equals(DiabloEnum.SHOP_ONLY) ){
+                if (!this.mShopIds.contains(shop.getShop())){
+                    if (shop.getShop().equals(this.mLoginShop)){
+                        this.mShopIds.add(0, shop.getShop());
+                    } else {
+                        this.mShopIds.add(shop.getShop());
+                    }
+                }
+
+                if (!this.mSortShop.contains(shop)){
+                    if (shop.getShop().equals(this.mLoginShop)){
+                        this.mSortShop.add(0, shop);
+                    } else {
+                        this.mSortShop.add(shop);
+                    }
+                }
+            }
+        }
+    }
+
+    // repo only
+    private void setAllRepo(){
+        for (LoginUserInfoResponse.Shop shop: this.mLoginShops){
+            if ( shop.getType().equals(DiabloEnum.REPO_ONLY ) ){
+                if (!this.mRepoIds.contains(shop.getShop())){
+                    this.mRepoIds.add(shop.getShop());
+                }
+
+                if (!this.mSortRepo.contains(shop)){
+                    this.mSortRepo.add(shop);
+                }
+            }
+        }
+    }
+
+    // bad repo only
+    private void setAllBadRepo(){
+        for (LoginUserInfoResponse.Shop shop: this.mLoginShops){
+            if ( shop.getType().equals(DiabloEnum.REPO_BAD) ){
+                if (!this.mBadRepoIds.contains(shop.getShop())){
+                    this.mBadRepoIds.add(shop.getShop());
+                }
+                if (!this.mSortBadRepo.contains(shop)){
+                    this.mSortBadRepo.add(shop);
+                }
+            }
+        }
+    }
 }

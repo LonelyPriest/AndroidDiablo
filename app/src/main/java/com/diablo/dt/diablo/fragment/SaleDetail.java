@@ -20,6 +20,7 @@ import com.diablo.dt.diablo.entity.MainProfile;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.List;
 
@@ -139,7 +140,9 @@ public class SaleDetail extends Fragment {
                         } else if(getResources().getString(R.string.transe).equals(title)){
                             addCell(row, detail.getType());
                         } else if(getResources().getString(R.string.shop).equals(title)){
-                            addCell(row, detail.getShop());
+                            addCell(row, DiabloUtils.getInstance().getShop(
+                                    MainProfile.getInstance().getSortShop(),
+                                    detail.getShop()).getName());
                         } else if (getResources().getString(R.string.employee).equals(title)){
                             addCell(row, detail.getEmployee());
                         } else if (getResources().getString(R.string.retailer).equals(title)){
