@@ -1,6 +1,6 @@
 package com.diablo.dt.diablo.Client;
 
-import com.diablo.dt.diablo.entity.MainProfile;
+import com.diablo.dt.diablo.entity.Profie;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -18,7 +18,7 @@ public class WSaleClient {
     }
 
     public static Retrofit getClient() {
-        String baseUrl = MainProfile.getInstance().getServer() + mUrl;
+        String baseUrl = Profie.getInstance().getServer() + mUrl;
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)

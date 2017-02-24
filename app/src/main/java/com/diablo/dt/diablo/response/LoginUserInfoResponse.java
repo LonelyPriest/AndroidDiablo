@@ -1,14 +1,17 @@
 package com.diablo.dt.diablo.response;
 
+import com.diablo.dt.diablo.entity.AuthenRight;
+import com.diablo.dt.diablo.entity.AuthenShop;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+
 
 /**
  * Created by buxianhui on 17/2/23.
  */
 
-public class LoginUserInfoResponse extends response{
+public class LoginUserInfoResponse extends Response{
     @SerializedName("login_employee")
     Integer loginEmployee;
     @SerializedName("login_firm")
@@ -21,92 +24,12 @@ public class LoginUserInfoResponse extends response{
     Integer loginType;
 
     @SerializedName("right")
-    List<Right> rights;
+    List<AuthenRight> rights;
     @SerializedName("shop")
-    List<Shop> shops;
+    List<AuthenShop> shops;
 
-    public class Right {
-        @SerializedName("action")
-        String action;
-        @SerializedName("id")
-        Integer rightId;
-        @SerializedName("name")
-        String name;
-        @SerializedName("parent")
-        String parent;
-
-        public Right(){
-
-        }
-
-        public String getAction() {
-            return this.action;
-        }
-
-        public void setAction(String action) {
-            this.action = action;
-        }
-
-        public Integer getRightId() {
-            return this.rightId;
-        }
-
-        public void setRightId(Integer rightId) {
-            this.rightId = rightId;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getParent() {
-            return this.parent;
-        }
-
-        public void setParent(String parent) {
-            this.parent = parent;
-        }
-    }
-
-    public class Shop {
-        @SerializedName("func_id")
-        Integer funcId;
-        @SerializedName("name")
-        String name;
-        @SerializedName("repo_id")
-        Integer repo;
-        @SerializedName("shop_id")
-        Integer shop;
-        @SerializedName("type")
-        Integer type;
-
-        public Shop(){
-
-        }
-
-        public Integer getFuncId() {
-            return this.funcId;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public Integer getRepo() {
-            return this.repo;
-        }
-
-        public Integer getShop() {
-            return this.shop;
-        }
-
-        public Integer getType() {
-            return this.type;
-        }
+    public LoginUserInfoResponse(){
+        super();
     }
 
     public Integer getLoginEmployee() {
@@ -150,11 +73,11 @@ public class LoginUserInfoResponse extends response{
     }
 
 
-    public List<Right> getRights() {
+    public List<AuthenRight> getRights() {
         return this.rights;
     }
 
-    public List<Shop> getShops(){
+    public List<AuthenShop> getShops(){
         return this.shops;
     }
 }

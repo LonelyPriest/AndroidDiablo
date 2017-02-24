@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.Client.WSaleClient;
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.entity.MainProfile;
+import com.diablo.dt.diablo.entity.Profie;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
@@ -104,6 +104,7 @@ public class SaleDetail extends Fragment {
             // right-margin
             cell.setLayoutParams(lp);
             cell.setText(title);
+            cell.setTextSize(24);
 
             row.addView(cell);
         }
@@ -117,7 +118,7 @@ public class SaleDetail extends Fragment {
         request.getCondtion().setStartTime("2016-01-01");
         request.getCondtion().setEndTime("2016-12-12");
         Call<SaleDetailResponse> call = wSaleInterface.filterWsaleNew(
-                MainProfile.getInstance().getToken(), request);
+                Profie.getInstance().getToken(), request);
 
         call.enqueue(new Callback<SaleDetailResponse>() {
             @Override
@@ -141,12 +142,16 @@ public class SaleDetail extends Fragment {
                             addCell(row, detail.getType());
                         } else if(getResources().getString(R.string.shop).equals(title)){
                             addCell(row, DiabloUtils.getInstance().getShop(
-                                    MainProfile.getInstance().getSortShop(),
+                                    Profie.getInstance().getSortShop(),
                                     detail.getShop()).getName());
                         } else if (getResources().getString(R.string.employee).equals(title)){
-                            addCell(row, detail.getEmployee());
+                            addCell(row, DiabloUtils.getInstance().getEmployeeByNumber(
+                                    Profie.getInstance().getEmployees(),
+                                    detail.getEmployee()).getName());
                         } else if (getResources().getString(R.string.retailer).equals(title)){
-                            addCell(row, detail.getRetailer());
+                            addCell(row, DiabloUtils.getInstance().getRetailer(
+                                    Profie.getInstance().getRetailers(),
+                                    detail.getRetailer()).getName());
                         } else if (getResources().getString(R.string.amount).equals(title)){
                             addCell(row, detail.getTotal());
                         } else if (getResources().getString(R.string.balace).equals(title)){
@@ -165,7 +170,7 @@ public class SaleDetail extends Fragment {
                             addCell(row, detail.getCash());
                         } else if (getResources().getString(R.string.card).equals(title)){
                             addCell(row, detail.getCard());
-                        } else if (getResources().getString(R.string.card).equals(title)){
+                        } else if (getResources().getString(R.string.wire).equals(title)){
                             addCell(row, detail.getWire());
                         } else if (getResources().getString(R.string.date).equals(title)){
                             addCell(row, detail.getEntryDate());
@@ -175,7 +180,15 @@ public class SaleDetail extends Fragment {
 
                     }
 
+                    row.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                            // view.setBackgroundResource(R.drawable.table_row_bg);
+                        }
+                    });
                     row.setBackgroundResource(R.drawable.table_row_bg);
+
 
                     mSaleDetailTable.addView(row);
                 }
@@ -184,29 +197,10 @@ public class SaleDetail extends Fragment {
 
             @Override
             public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
-//                TextView cell;
-//                TableRow row = new TableRow(getContext());
-//                TableRow.LayoutParams lp = new TableRow.LayoutParams();
-//                lp.setMargins(0, 0, 25, 0);
-//
-//                for (String title: mTitles){
-//                    cell = new TextView(getContext());
-//                    // font
-//                    cell.setTypeface(null, Typeface.BOLD);
-//                    cell.setTextColor(Color.BLACK);
-//                    // right-margin
-//                    cell.setLayoutParams(lp);
-//                    cell.setText(title);
-//
-//                    row.addView(cell);
-//                }
-//
-//                mSaleDetailTable.addView(row);
+
             }
         });
 
-        // row = new TableRow(this.getContext());
-        // row.setBackgroundResource(R.drawable.table_row_bg);
         return view;
     }
 
@@ -254,7 +248,8 @@ public class SaleDetail extends Fragment {
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
         cell.setText(value);
-        cell.setTextSize(16);
+        cell.setTextSize(22);
+        cell.setHeight(150);
         row.addView(cell);
         return  row;
     }
@@ -264,7 +259,8 @@ public class SaleDetail extends Fragment {
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
         cell.setText(value.toString());
-        cell.setTextSize(16);
+        cell.setTextSize(22);
+        cell.setHeight(150);
         row.addView(cell);
         return  row;
     }
@@ -274,7 +270,8 @@ public class SaleDetail extends Fragment {
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
         cell.setText(Float.toString(value));
-        cell.setTextSize(16);
+        cell.setTextSize(22);
+        cell.setHeight(150);
         row.addView(cell);
         return  row;
     }

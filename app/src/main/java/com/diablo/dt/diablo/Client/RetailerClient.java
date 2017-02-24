@@ -6,14 +6,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by buxianhui on 17/2/23.
+ * Created by buxianhui on 17/2/24.
  */
 
-public class RightClient {
+public class RetailerClient {
     private static Retrofit retrofit;
-    private static final  String mUrl = "right/";
+    private static final  String mUrl = "wretailer/";
 
-    private RightClient(){
+    private RetailerClient(){
 
     }
 

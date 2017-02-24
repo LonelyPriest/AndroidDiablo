@@ -3,16 +3,16 @@ package com.diablo.dt.diablo.response;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by buxianhui on 17/2/23.
+ * Created by buxianhui on 17/2/24.
  */
 
-public class response {
+public class Response {
     @SerializedName("ecode")
     private Integer code;
     @SerializedName("einfo")
     private String error;
 
-    public response(){
+    public Response(){
 
     };
 

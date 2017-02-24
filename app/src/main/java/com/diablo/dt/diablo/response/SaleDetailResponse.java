@@ -8,7 +8,7 @@ import java.util.List;
  * Created by buxianhui on 17/2/23.
  */
 
-public class SaleDetailResponse extends response{
+public class SaleDetailResponse extends Response{
     @SerializedName("total")
     private Integer mTotal;
 
@@ -42,8 +42,8 @@ public class SaleDetailResponse extends response{
     public class SaleDetail{
         @SerializedName("id")
         Integer id;
-        @SerializedName("order_id")
-        Integer orderId;
+//        @SerializedName("order_id")
+//        Integer orderId;
         @SerializedName("rsn")
         String rsn;
 
@@ -69,14 +69,14 @@ public class SaleDetailResponse extends response{
         @SerializedName("employee_id")
         String employee;
         @SerializedName("retailer_id")
-        String retailer;
+        Integer retailer;
 
         @SerializedName("total")
-        String total;
+        Integer total;
         @SerializedName("type")
-        String type;
+        Integer type;
         @SerializedName("state")
-        String state;
+        Integer state;
         @SerializedName("entry_date")
         String entryDate;
 
@@ -88,144 +88,68 @@ public class SaleDetailResponse extends response{
             return this.id;
         }
 
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public Integer getOrderId() {
-            return this.orderId;
-        }
-
-        public void setOrderId(Integer orderId) {
-            this.orderId = orderId;
-        }
-
         public String getRsn() {
             return this.rsn;
-        }
-
-        public void setRsn(String rsn) {
-            this.rsn = rsn;
         }
 
         public Float getBalance() {
             return this.balance;
         }
 
-        public void setBalance(Float balance) {
-            this.balance = balance;
-        }
-
         public Float getCard() {
             return this.card;
-        }
-
-        public void setCard(Float card) {
-            this.card = card;
         }
 
         public Float getCash() {
             return this.cash;
         }
 
-        public void setCash(Float cash) {
-            this.cash = cash;
-        }
-
         public Float getEpay() {
             return this.epay;
-        }
-
-        public void setEpay(Float epay) {
-            this.epay = epay;
         }
 
         public Float getHasPay() {
             return this.hasPay;
         }
 
-        public void setHasPay(Float hasPay) {
-            this.hasPay = hasPay;
-        }
-
         public Float getShouldPay() {
             return this.shouldPay;
-        }
-
-        public void setShouldPay(Float shouldPay) {
-            this.shouldPay = shouldPay;
         }
 
         public Float getVerificate() {
             return this.verificate;
         }
 
-        public void setVerificate(Float verificate) {
-            this.verificate = verificate;
-        }
-
         public Float getWire() {
             return this.wire;
-        }
-
-        public void setWire(Float wire) {
-            this.wire = wire;
         }
 
         public Integer getShop() {
             return this.shop;
         }
 
-        public void setShop(Integer shop) {
-            this.shop = shop;
-        }
-
         public String getEmployee() {
             return this.employee;
         }
 
-        public void setEmployee(String employee) {
-            this.employee = employee;
-        }
-
-        public String getRetailer() {
+        public Integer getRetailer() {
             return this.retailer;
         }
 
-        public void setRetailer(String retailer) {
-            this.retailer = retailer;
-        }
-
-        public String getTotal() {
+        public Integer getTotal() {
             return this.total;
         }
 
-        public void setTotal(String total) {
-            this.total = total;
-        }
-
-        public String getType() {
+        public Integer getType() {
             return this.type;
         }
 
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getState() {
+        public Integer getState() {
             return this.state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
         }
 
         public String getEntryDate() {
             return this.entryDate;
-        }
-
-        public void setEntryDate(String entryDate) {
-            this.entryDate = entryDate;
         }
     }
 
@@ -237,79 +161,39 @@ public class SaleDetailResponse extends response{
         return mTotal;
     }
 
-    public void setTotal(Integer mTotal) {
-        this.mTotal = mTotal;
-    }
-
     public Integer getAmount() {
         return mAmount;
-    }
-
-    public void setAmount(Integer mAmount) {
-        this.mAmount = mAmount;
     }
 
     public Float getCard() {
         return mCard;
     }
 
-    public void setCard(Float mCard) {
-        this.mCard = mCard;
-    }
-
     public Float getCash() {
         return mCash;
-    }
-
-    public void setCash(Float mCash) {
-        this.mCash = mCash;
     }
 
     public Float getEPay() {
         return mEPay;
     }
 
-    public void setEPay(Float mEPay) {
-        this.mEPay = mEPay;
-    }
-
     public Float getHPay() {
         return mHPay;
-    }
-
-    public void setHPay(Float mHPay) {
-        this.mHPay = mHPay;
     }
 
     public Float getSPay() {
         return mSPay;
     }
 
-    public void setSPay(Float spay) {
-        this.mSPay = spay;
-    }
-
     public Float getVerificate() {
         return mVerificate;
-    }
-
-    public void setVerificate(Float verificate) {
-        this.mVerificate = verificate;
     }
 
     public Float getWire() {
         return mWire;
     }
 
-    public void setWire(Float wire) {
-        this.mWire = wire;
-    }
-
     public List<SaleDetail> getSaleDetail() {
         return mSaleDetail;
-    }
-
-    public void setSaleDetail(List<SaleDetail> saleDetail) {
-        this.mSaleDetail = saleDetail;
     }
 }
