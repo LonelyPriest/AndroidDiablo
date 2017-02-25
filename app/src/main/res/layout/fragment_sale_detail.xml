@@ -4,16 +4,19 @@
     android:layout_height="match_parent"
     tools:context="com.diablo.dt.diablo.fragment.SaleDetail">
 
-    <HorizontalScrollView
+    <com.diablo.dt.diablo.utils.DiabloHorizontalScroll
+        android:id="@+id/t_sale_detail_hscroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:layout_height="wrap_content">
+
         <TableLayout
-            android:id="@+id/tab_sale_detail"
-            android:layout_width="match_parent"
+            android:id="@+id/t_sale_detail"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent">
         </TableLayout>
-    </HorizontalScrollView>
+
+    </com.diablo.dt.diablo.utils.DiabloHorizontalScroll>
+
 
 </FrameLayout>

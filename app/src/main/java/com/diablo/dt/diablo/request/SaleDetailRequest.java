@@ -1,5 +1,6 @@
 package com.diablo.dt.diablo.request;
 
+import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,28 +9,35 @@ import com.google.gson.annotations.SerializedName;
 
 public class SaleDetailRequest extends PageRequest {
     @SerializedName("fields")
-    Condtion mCondtion;
+    private Condition mCondition;
 
     public SaleDetailRequest(){
         super();
-        mCondtion = new Condtion();
     }
 
-    public Condtion getCondtion() {
-        return mCondtion;
+    public SaleDetailRequest(Integer currentPage){
+        super(currentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
     }
 
-    public void setCondtion(Condtion condtion) {
-        this.mCondtion = condtion;
+    public SaleDetailRequest(Integer currentPage, Integer itemsPerPage){
+        super(currentPage, itemsPerPage);
     }
 
-    public class Condtion{
+    public Condition getCondtion() {
+        return mCondition;
+    }
+
+    public void setCondtion(Condition condition) {
+        this.mCondition = condition;
+    }
+
+    public class Condition{
         @SerializedName("start_time")
         String mStartTime;
         @SerializedName("end_time")
         String mEndTime;
 
-        public Condtion(){
+        public Condition(){
 
         }
 

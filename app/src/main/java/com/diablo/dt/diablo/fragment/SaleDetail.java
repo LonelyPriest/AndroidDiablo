@@ -6,8 +6,10 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -16,10 +18,13 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.Client.WSaleClient;
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.diablo.dt.diablo.entity.Profie;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
+import com.diablo.dt.diablo.utils.DiabloHorizontalScroll;
+import com.diablo.dt.diablo.utils.DiabloOnGestureLintener;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.List;
@@ -50,7 +55,23 @@ public class SaleDetail extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    /*
+    * rest request
+    * */
+    private SaleDetailRequest mRequest;
+    private SaleDetailRequest.Condition mRequestCondition;
+    private WSaleInterface mSaleRest;
+
+    /*
+    * row of table
+    * */
+    TableRow[] mRows;
+
     private TableLayout mSaleDetailTable;
+
+    private Context mContext;
+
+    private Integer mCurrentPage;
 
     public SaleDetail() {
         // Required empty public constructor
@@ -82,22 +103,64 @@ public class SaleDetail extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        mContext = this.getContext();
         mTitles = getResources().getStringArray(R.array.thead_sale_detail);
+        mCurrentPage = DiabloEnum.DEFAULT_PAGE;
+        mRequest = new SaleDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
+        mRequestCondition = mRequest.new Condition();
+        mRequest.setCondtion(mRequestCondition);
+        mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
+
+        mRows = new TableRow[mRequest.getCount()];
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
-        mSaleDetailTable = (TableLayout) view.findViewById(R.id.tab_sale_detail);
+
+        mSaleDetailTable = (TableLayout) view.findViewById(R.id.t_sale_detail);
+        mSaleDetailTable.setClickable(false);
+
+        DiabloHorizontalScroll hScrollView = (DiabloHorizontalScroll)view.findViewById(R.id.t_sale_detail_hscroll);
+
+        GestureDetectorCompat gesture = new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(hScrollView) {
+            @Override
+            public boolean actionOfOnFlint(View view, Integer direction) {
+                // DiabloUtils u = DiabloUtils.getInstance();
+                if (direction.equals(DiabloEnum.SWIP_LEFT)){
+                    return false;
+                } else if (direction.equals(DiabloEnum.SWIP_RIGHT)){
+                    return false;
+                } else if (direction.equals(DiabloEnum.SWIP_TOP)){
+                    // u.debugDialog(mContext, "滑动", "方向->top");
+                    mCurrentPage++;
+                    mRequest.setPage(mCurrentPage);
+                    pageChanged();
+                    return true;
+                } else if (direction.equals(DiabloEnum.SWIP_DOWN)){
+                    // u.debugDialog(mContext, "滑动", "方向->down");
+                    mCurrentPage--;
+                    if (!mCurrentPage.equals(0)){
+                        mRequest.setPage(mCurrentPage);
+                        view.postInvalidateOnAnimation();
+                        pageChanged();
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+        hScrollView.setGestureDetect(gesture);
 
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
 
         TableRow row = new TableRow(this.getContext());
-        TextView cell;
         for (String title: mTitles){
-            cell = new TextView(this.getContext());
+            TextView cell = new TextView(this.getContext());
             // font
             cell.setTypeface(null, Typeface.BOLD);
             cell.setTextColor(Color.BLACK);
@@ -109,97 +172,14 @@ public class SaleDetail extends Fragment {
             row.addView(cell);
         }
 
-        // row.setBackgroundResource(R.drawable.table_row_bg);
         mSaleDetailTable.addView(row);
 
-        // get data from from web server
-        WSaleInterface wSaleInterface = WSaleClient.getClient().create(WSaleInterface.class);
-        final SaleDetailRequest request = new SaleDetailRequest();
-        request.getCondtion().setStartTime("2016-01-01");
-        request.getCondtion().setEndTime("2016-12-12");
-        Call<SaleDetailResponse> call = wSaleInterface.filterWsaleNew(
-                Profie.getInstance().getToken(), request);
+        for (Integer i = 0; i<mRows.length; i++){
+            mRows[i] = new TableRow(this.getContext());
+            mSaleDetailTable.addView(mRows[i]);
+        }
 
-        call.enqueue(new Callback<SaleDetailResponse>() {
-            @Override
-            public void onResponse(Call<SaleDetailResponse> call, Response<SaleDetailResponse> response) {
-                Log.d("SALE_DETAIL %s", response.toString());
-                SaleDetailResponse base = response.body();
-                List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
-
-                TableRow row;
-                Integer orderId = request.getPageStartIndex();
-                for (Integer i=0; i<details.size(); i++){
-                    row = new TableRow(getContext());
-                    SaleDetailResponse.SaleDetail detail = details.get(i);
-
-                    for (String title: mTitles){
-                        if (getResources().getString(R.string.order_id).equals(title)) {
-                            addCell(row, orderId++);
-                        } else if (getResources().getString(R.string.rsn).equals(title)){
-                            addCell(row, detail.getRsn());
-                        } else if(getResources().getString(R.string.transe).equals(title)){
-                            addCell(row, detail.getType());
-                        } else if(getResources().getString(R.string.shop).equals(title)){
-                            addCell(row, DiabloUtils.getInstance().getShop(
-                                    Profie.getInstance().getSortShop(),
-                                    detail.getShop()).getName());
-                        } else if (getResources().getString(R.string.employee).equals(title)){
-                            addCell(row, DiabloUtils.getInstance().getEmployeeByNumber(
-                                    Profie.getInstance().getEmployees(),
-                                    detail.getEmployee()).getName());
-                        } else if (getResources().getString(R.string.retailer).equals(title)){
-                            addCell(row, DiabloUtils.getInstance().getRetailer(
-                                    Profie.getInstance().getRetailers(),
-                                    detail.getRetailer()).getName());
-                        } else if (getResources().getString(R.string.amount).equals(title)){
-                            addCell(row, detail.getTotal());
-                        } else if (getResources().getString(R.string.balace).equals(title)){
-                            addCell(row, detail.getBalance());
-                        } else if (getResources().getString(R.string.should_pay).equals(title)){
-                            addCell(row, detail.getShouldPay());
-                        } else if (getResources().getString(R.string.has_pay).equals(title)){
-                            addCell(row, detail.getHasPay());
-                        } else if (getResources().getString(R.string.verificate).equals(title)){
-                            addCell(row, detail.getVerificate());
-                        } else if (getResources().getString(R.string.epay).equals(title)){
-                            addCell(row, detail.getEpay());
-                        } else if (getResources().getString(R.string.acc_balance).equals(title)){
-                            addCell(row, detail.getBalance());
-                        } else if (getResources().getString(R.string.cash).equals(title)){
-                            addCell(row, detail.getCash());
-                        } else if (getResources().getString(R.string.card).equals(title)){
-                            addCell(row, detail.getCard());
-                        } else if (getResources().getString(R.string.wire).equals(title)){
-                            addCell(row, detail.getWire());
-                        } else if (getResources().getString(R.string.date).equals(title)){
-                            addCell(row, detail.getEntryDate());
-                        } else {
-
-                        }
-
-                    }
-
-                    row.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                            // view.setBackgroundResource(R.drawable.table_row_bg);
-                        }
-                    });
-                    row.setBackgroundResource(R.drawable.table_row_bg);
-
-
-                    mSaleDetailTable.addView(row);
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
-
-            }
-        });
+        pageChanged();
 
         return view;
     }
@@ -243,36 +223,131 @@ public class SaleDetail extends Fragment {
         void onSaleDetailFragmentInteraction(Uri uri);
     }
 
-    private TableRow addCell(TableRow row, String value){
-        TextView cell = new TextView(getContext());
-        TableRow.LayoutParams lp = new TableRow.LayoutParams();
-        lp.setMargins(0, 0, 25, 0);
-        cell.setText(value);
-        cell.setTextSize(22);
-        cell.setHeight(150);
-        row.addView(cell);
-        return  row;
-    }
+    private void pageChanged(){
+        // get data from from web server
+        mRequest.getCondtion().setStartTime("2016-01-01");
+        mRequest.getCondtion().setEndTime("2016-12-12");
 
-    private TableRow addCell(TableRow row, Integer value){
-        TextView cell = new TextView(getContext());
-        TableRow.LayoutParams lp = new TableRow.LayoutParams();
-        lp.setMargins(0, 0, 25, 0);
-        cell.setText(value.toString());
-        cell.setTextSize(22);
-        cell.setHeight(150);
-        row.addView(cell);
-        return  row;
-    }
+        Call<SaleDetailResponse> call = mSaleRest.filterWsaleNew(Profie.getInstance().getToken(), mRequest);
 
-    private TableRow addCell(TableRow row, float value){
-        TextView cell = new TextView(getContext());
-        TableRow.LayoutParams lp = new TableRow.LayoutParams();
-        lp.setMargins(0, 0, 25, 0);
-        cell.setText(Float.toString(value));
-        cell.setTextSize(22);
-        cell.setHeight(150);
-        row.addView(cell);
-        return  row;
+        call.enqueue(new Callback<SaleDetailResponse>() {
+            @Override
+            public void onResponse(Call<SaleDetailResponse> call, Response<SaleDetailResponse> response) {
+                Log.d("SALE_DETAIL %s", response.toString());
+                SaleDetailResponse base = response.body();
+                List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
+
+                Integer orderId = mRequest.getPageStartIndex();
+                DiabloUtils u = DiabloUtils.getInstance();
+                // mSaleDetailTable.removeAllViews();
+                for (Integer i=0; i<mRequest.getCount(); i++){
+                    TableRow row = mRows[i];
+                    // TableRow row = new TableRow(mContext);
+                    // mSaleDetailTable.addView(row);
+                    row.removeAllViews();
+                    SaleDetailResponse.SaleDetail detail = details.get(i);
+
+                    for (String title: mTitles){
+                        if (getResources().getString(R.string.order_id).equals(title)) {
+                            detail.setOrderId(orderId);
+                            u.addCell(mContext, row, orderId++);
+                        } else if (getResources().getString(R.string.rsn).equals(title)){
+                            u.addCell(mContext, row, detail.getRsn());
+                        } else if(getResources().getString(R.string.transe).equals(title)){
+                            u.addCell(mContext, row, detail.getType());
+                        } else if(getResources().getString(R.string.shop).equals(title)){
+                            u.addCell(mContext,
+                                    row,
+                                    DiabloUtils.getInstance().getShop(
+                                            Profie.getInstance().getSortShop(),
+                                            detail.getShop()).getName());
+                        } else if (getResources().getString(R.string.employee).equals(title)){
+                            u.addCell(mContext,
+                                    row,
+                                    DiabloUtils.getInstance().getEmployeeByNumber(
+                                            Profie.getInstance().getEmployees(),
+                                            detail.getEmployee()).getName());
+                        } else if (getResources().getString(R.string.retailer).equals(title)){
+                            u.addCell(mContext,
+                                    row,
+                                    DiabloUtils.getInstance().getRetailer(
+                                            Profie.getInstance().getRetailers(),
+                                            detail.getRetailer()).getName());
+                        } else if (getResources().getString(R.string.amount).equals(title)){
+                            u.addCell(mContext, row, detail.getTotal());
+                        } else if (getResources().getString(R.string.balace).equals(title)){
+                            u.addCell(mContext, row, detail.getBalance());
+                        } else if (getResources().getString(R.string.should_pay).equals(title)){
+                            u.addCell(mContext, row, detail.getShouldPay());
+                        } else if (getResources().getString(R.string.has_pay).equals(title)){
+                            u.addCell(mContext, row, detail.getHasPay());
+                        } else if (getResources().getString(R.string.verificate).equals(title)){
+                            u.addCell(mContext, row, detail.getVerificate());
+                        } else if (getResources().getString(R.string.epay).equals(title)){
+                            u.addCell(mContext, row, detail.getEpay());
+                        } else if (getResources().getString(R.string.acc_balance).equals(title)){
+                            u.addCell(mContext, row, detail.getBalance());
+                        } else if (getResources().getString(R.string.cash).equals(title)){
+                            u.addCell(mContext, row, detail.getCash());
+                        } else if (getResources().getString(R.string.card).equals(title)){
+                            u.addCell(mContext, row, detail.getCard());
+                        } else if (getResources().getString(R.string.wire).equals(title)){
+                            u.addCell(mContext, row, detail.getWire());
+                        } else if (getResources().getString(R.string.date).equals(title)){
+                            u.addCell(mContext, row, detail.getEntryDate());
+                        }
+                    }
+
+                    final GestureDetectorCompat gesture =
+                            new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(row){
+                                @Override
+                                public void actionOfOnLongpress(View view) {
+                                    DiabloUtils u = DiabloUtils.getInstance();
+                                    u.debugDialog(mContext, "方向", "长按");
+                                }
+
+                                @Override
+                                public boolean actionOfOnDown(View view) {
+                                    for(Integer i=0; i<mSaleDetailTable.getChildCount(); i++){
+                                        View child = mSaleDetailTable.getChildAt(i);
+                                        if (child instanceof TableRow){
+                                            child.setBackgroundResource(R.drawable.table_row_bg);
+                                        }
+                                    }
+                                    view.setBackgroundColor(getResources().getColor(R.color.bluelight));
+                                    SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
+                                    return true;
+                                }
+                            });
+
+                    row.setOnTouchListener(new View.OnTouchListener(){
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            gesture.onTouchEvent(motionEvent);
+                            return true;
+                        }
+
+
+                    });
+
+                    row.setTag(detail);
+                    row.setBackgroundResource(R.drawable.table_row_bg);
+                    // row.invalidate();
+                    // mSaleDetailTable.addView(row);
+//                    mSaleDetailTable.invalidate();
+//                    mSaleDetailTable.refreshDrawableState();
+                }
+
+//                mSaleDetailTable.invalidate();
+//                mSaleDetailTable.refreshDrawableState();
+                // mSaleDetailTable.invalidate();
+
+            }
+
+            @Override
+            public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
+
+            }
+        });
     }
 }

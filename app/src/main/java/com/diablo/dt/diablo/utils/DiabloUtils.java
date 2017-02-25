@@ -1,6 +1,13 @@
 package com.diablo.dt.diablo.utils;
 
+import android.content.Context;
+import android.widget.TableRow;
+import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.AuthenShop;
+import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Retailer;
 
@@ -58,5 +65,67 @@ public class DiabloUtils {
         }
 
         return r;
+    }
+
+    public TableRow addCell(Context context, TableRow row, String value){
+        TextView cell = new TextView(context);
+        TableRow.LayoutParams lp = new TableRow.LayoutParams();
+        lp.setMargins(0, 0, 25, 0);
+        cell.setText(value);
+        cell.setTextSize(22);
+        cell.setHeight(125);
+        row.addView(cell);
+        return  row;
+    }
+
+    public TableRow addCell(Context context, TableRow row, Integer value){
+        TextView cell = new TextView(context);
+        TableRow.LayoutParams lp = new TableRow.LayoutParams();
+        lp.setMargins(0, 0, 25, 0);
+        cell.setText(value.toString());
+        cell.setTextSize(22);
+        cell.setHeight(125);
+        row.addView(cell);
+        return  row;
+    }
+
+    public TableRow addCell(Context context, TableRow row, float value){
+        TextView cell = new TextView(context);
+        TableRow.LayoutParams lp = new TableRow.LayoutParams();
+        lp.setMargins(0, 0, 25, 0);
+        cell.setText(Float.toString(value));
+        cell.setTextSize(22);
+        cell.setHeight(125);
+        row.addView(cell);
+        return  row;
+    }
+
+    // swip top, left, down, right
+    public int getSlope(float x1, float y1, float x2, float y2) {
+        Double angle = Math.toDegrees(Math.atan2(y1 - y2, x2 - x1));
+        if (angle > 45 && angle <= 135)
+            // top
+            return DiabloEnum.SWIP_TOP;
+        if (angle >= 135 && angle < 180 || angle < -135 && angle > -180)
+            // left
+            return DiabloEnum.SWIP_LEFT;
+        if (angle < -45 && angle>= -135)
+            // down
+            return DiabloEnum.SWIP_DOWN;
+        if (angle > -45 && angle <= 45)
+            // right
+            return DiabloEnum.SWIP_RIGHT;
+
+        return DiabloEnum.SWIP_NONE;
+    }
+
+    public void debugDialog(Context context, String title, String message){
+        new MaterialDialog.Builder(context)
+                .title(title)
+                .content(message)
+                // .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                .positiveText(context.getResources().getString(R.string.login_ok))
+                .positiveColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                .show();
     }
 }

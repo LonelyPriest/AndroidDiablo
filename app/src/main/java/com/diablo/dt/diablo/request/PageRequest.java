@@ -1,5 +1,6 @@
 package com.diablo.dt.diablo.request;
 
+import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -15,8 +16,8 @@ public class PageRequest {
     public Integer mCount;
 
     PageRequest(){
-        mPage = 1;
-        mCount = 10;
+        mPage = DiabloEnum.DEFAULT_PAGE;
+        mCount = DiabloEnum.DEFAULT_ITEMS_PER_PAGE;
     }
 
     PageRequest(Integer page, Integer count){
@@ -28,7 +29,7 @@ public class PageRequest {
         return mMatch;
     }
 
-    public void setmMatch(String match) {
+    public void setMatch(String match) {
         this.mMatch = match;
     }
 

@@ -42,8 +42,8 @@ public class SaleDetailResponse extends Response{
     public class SaleDetail{
         @SerializedName("id")
         Integer id;
-//        @SerializedName("order_id")
-//        Integer orderId;
+        @SerializedName("order_id")
+        Integer orderId;
         @SerializedName("rsn")
         String rsn;
 
@@ -86,6 +86,14 @@ public class SaleDetailResponse extends Response{
 
         public Integer getId() {
             return this.id;
+        }
+
+        public Integer getOrderId() {
+            return this.orderId;
+        }
+
+        public void setOrderId (Integer orderId){
+            this.orderId = orderId;
         }
 
         public String getRsn() {
