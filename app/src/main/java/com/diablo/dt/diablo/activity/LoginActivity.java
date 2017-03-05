@@ -10,17 +10,20 @@ import android.view.View;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.diablo.dt.diablo.Client.BaseSettingClient;
 import com.diablo.dt.diablo.Client.EmployeeClient;
 import com.diablo.dt.diablo.Client.RetailerClient;
 import com.diablo.dt.diablo.Client.RightClient;
 import com.diablo.dt.diablo.Client.WLoginClient;
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.entity.BaseSetting;
 import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profie;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.response.LoginResponse;
 import com.diablo.dt.diablo.response.LoginUserInfoResponse;
+import com.diablo.dt.diablo.rest.BaseSettingInterface;
 import com.diablo.dt.diablo.rest.EmployeeInterface;
 import com.diablo.dt.diablo.rest.RetailerInterface;
 import com.diablo.dt.diablo.rest.RightInterface;
@@ -45,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_main);
 
         mContext = this;
-        Profie.getInstance().setContext(mContext);
+        Profie.getInstance().setContext(this.getApplicationContext());
 
         loginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
         passwordWrap = (TextInputLayout) findViewById(R.id.login_password_holder);
@@ -87,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                                 getLoginUserInfo();
                                 getEmployee();
                                 getRetailer();
+                                getBaseSetting();
 
                                 Intent intent = new Intent(mContext, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -178,6 +182,24 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Employee>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void getBaseSetting(){
+        BaseSettingInterface face = BaseSettingClient.getClient().create(BaseSettingInterface.class);
+        Call<List<BaseSetting>> call = face.listBaseSetting(Profie.getInstance().getToken());
+        call.enqueue(new Callback<List<BaseSetting>>() {
+            @Override
+            public void onResponse(Call<List<BaseSetting>> call, Response<List<BaseSetting>> response) {
+                Log.d("LOGIN:", "success to get employee");
+                Profie.getInstance().setBaseSettings(response.body());
+                Profie.getInstance();
+            }
+
+            @Override
+            public void onFailure(Call<List<BaseSetting>> call, Throwable t) {
 
             }
         });

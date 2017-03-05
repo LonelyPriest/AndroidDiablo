@@ -8,23 +8,23 @@ import com.google.gson.annotations.SerializedName;
 
 public class Retailer {
     @SerializedName("id")
-    Integer id;
+    private Integer id;
     @SerializedName("name")
-    String name;
+    private String name;
     @SerializedName("mobile")
-    String mobile;
+    private String mobile;
     @SerializedName("address")
-    String address;
+    private String address;
     @SerializedName("balance")
-    Float balance;
+    private Float balance;
     @SerializedName("cid")
-    Integer city;
+    private Integer city;
     @SerializedName("pid")
-    Integer province;
+    private Integer province;
     @SerializedName("entry_date")
-    String entryDate;
+    private String entryDate;
     @SerializedName("merchant")
-    Integer merchant;
+    private Integer merchant;
 
     public Retailer(){
 

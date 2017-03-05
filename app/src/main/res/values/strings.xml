@@ -51,6 +51,21 @@
         <item>日期</item>
     </string-array>
 
+    <string-array name="thead_sale">
+        <item>序号</item>
+        <item>货号</item>
+        <item>品名</item>
+        <item>库存</item>
+        <item>价类型</item>
+        <item>单价</item>
+        <item>折扣</item>
+        <item>折价</item>
+        <item>数量</item>
+        <item>合计</item>
+        <item>备注</item>
+        <item>操作</item>
+    </string-array>
+
     <string name="order_id">序号</string>
     <string name="rsn">单号</string>
     <string name="transe">交易</string>
@@ -68,6 +83,16 @@
     <string name="card">刷卡</string>
     <string name="wire">汇款</string>
     <string name="date">日期</string>
+    <string name="comment">备注</string>
+
+    <string name="good">货号</string>
+    <string name="brand">品名</string>
+    <string name="stock">库存</string>
+    <string name="price_type">价类型</string>
+    <string name="price">单价</string>
+    <string name="discount">折扣</string>
+    <string name="calculate">合计</string>
+    <string name="operater">操作</string>
     
     <string name="activity_title_about_us">About Us</string>
     <string name="activity_title_privacy_policy">Privacy Policy</string>
@@ -79,7 +104,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sale_in_fragment">Sale In fragment</string>
 
-    <string name="diablo_server">http://192.168.3.193:63551/</string>
+    <string name="diablo_server">http://192.168.0.109:63551/</string>
 
     <!-- Login -->
     <string name="login">登录</string>
@@ -97,5 +122,13 @@
     <!-- error -->
     <string name="invalid_name_password">用户名或密码错误</string>
     <string name="network_unreachable">连接服务器失败，请确认该设备网络连接正常</string>
+
+    <!-- hint -->
+    <string name="please_input_retailer">客户</string>
+    <string name="please_input_good">货号</string>
+
+    <!-- button -->
+    <string name="add">新增</string>
+    <string name="money_off">未付</string>
 
 </resources>

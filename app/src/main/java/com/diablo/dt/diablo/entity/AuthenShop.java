@@ -8,15 +8,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class AuthenShop {
     @SerializedName("func_id")
-    Integer funcId;
+    private Integer funcId;
     @SerializedName("name")
-    String name;
+    private String name;
     @SerializedName("repo_id")
-    Integer repo;
+    private Integer repo;
     @SerializedName("shop_id")
-    Integer shop;
+    private Integer shop;
     @SerializedName("type")
-    Integer type;
+    private Integer type;
 
     public AuthenShop(){
 

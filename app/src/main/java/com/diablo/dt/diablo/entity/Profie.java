@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public class Profie {
-    private static Profie mPofile = new Profie();
+    private static Profie mPofile;
     private static final String mSessionId = DiabloEnum.SESSION_ID;
     private static Integer mTableRows = DiabloEnum.ROW_SIZE;
 
@@ -81,6 +81,9 @@ public class Profie {
 
     // retailer
     private List<Retailer> mRetailers;
+
+    // base settings
+    private List<BaseSetting> mBaseSettings;
 
     /*
     * Login user info
@@ -273,5 +276,17 @@ public class Profie {
 
     public List<Retailer> getRetailers(){
         return this.mRetailers;
+    }
+
+    /*
+    * Base setting
+    * */
+
+    public List<BaseSetting> getBaseSettings() {
+        return this.mBaseSettings;
+    }
+
+    public void setBaseSettings(List<BaseSetting> baseSettings) {
+        this.mBaseSettings = baseSettings;
     }
 }

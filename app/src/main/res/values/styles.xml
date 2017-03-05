@@ -32,4 +32,10 @@
         <item name="colorControlActivated">@color/colorPrimary</item>
     </style>
 
+    <style name="Autocomplete" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:background">@color/bluedark</item>
+        <item name="colorControlNormal">@color/greendark</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
+
 </resources>

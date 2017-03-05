@@ -1,14 +1,33 @@
 package com.diablo.dt.diablo.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.activity.adapter.EmployeeAdapter;
+import com.diablo.dt.diablo.activity.adapter.RetailerAdapter;
+import com.diablo.dt.diablo.entity.AuthenShop;
+import com.diablo.dt.diablo.entity.DiabloEnum;
+import com.diablo.dt.diablo.entity.Profie;
+import com.diablo.dt.diablo.utils.DiabloUtils;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +48,9 @@ public class SaleIn extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private String [] mTitles;
+    private TableLayout mSaleTable;
 
     public SaleIn() {
         // Required empty public constructor
@@ -59,13 +81,66 @@ public class SaleIn extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        mTitles = getResources().getStringArray(R.array.thead_sale);
+
+        // get all stocks
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sale_in, container, false);
+        View view = inflater.inflate(R.layout.fragment_sale_in, container, false);
+
+        // retailer
+        AutoCompleteTextView autoCompleteRetailer =
+                (AutoCompleteTextView) view.findViewById(R.id.sale_select_retailer);
+
+        RetailerAdapter retailerAdapter = new RetailerAdapter(
+                getContext(),
+                R.layout.typeahead_retailer,
+                R.id.typeahead_select_retailer,
+                Profie.getInstance().getRetailers());
+
+        autoCompleteRetailer.setThreshold(1);
+        autoCompleteRetailer.setAdapter(retailerAdapter);
+
+        // shop
+        TextView shopView = (TextView) view.findViewById(R.id.sale_selected_shop);
+        Integer loginShop = Profie.getInstance().getLoginShop();
+        if ( loginShop.equals(DiabloEnum.INVALID_INDEX) ){
+            loginShop = Profie.getInstance().getAvailableShopIds().get(0);
+        }
+        AuthenShop shop = DiabloUtils.getInstance().getShop(Profie.getInstance().getSortAvailableShop(), loginShop);
+        shopView.setText(shop.getName());
+
+        // current time
+        Calendar calendar = Calendar.getInstance();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
+        String currentDate = format.format(calendar.getTime());
+        TextView viewDate = (TextView) view.findViewById(R.id.sale_selected_date);
+        viewDate.setText(currentDate);
+
+        // employee
+        Spinner employeeSpinner = (Spinner) view.findViewById(R.id.sale_select_employee);
+
+        EmployeeAdapter employeeAdapter = new EmployeeAdapter(
+                getContext(),
+                R.layout.typeahead_employee,
+                R.id.typeahead_select_employee,
+                Profie.getInstance().getEmployees());
+        employeeSpinner.setAdapter(employeeAdapter);
+
+        // table
+        mSaleTable = (TableLayout)view.findViewById(R.id.t_sale);
+        mSaleTable.addView(addHead());
+        mSaleTable.addView(addEmptyRow());
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,4 +181,58 @@ public class SaleIn extends Fragment {
         // TODO: Update argument type and name
         void onSaleInFragmentInteraction(Uri uri);
     }
+
+    private TableRow addHead(){
+        TableRow row = new TableRow(this.getContext());
+        for (String title: mTitles){
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+            TextView cell = new TextView(this.getContext());
+            // font
+            cell.setTypeface(null, Typeface.BOLD);
+            cell.setTextColor(Color.BLACK);
+            // right-margin
+
+            if (getResources().getString(R.string.good).equals(title)){
+                lp.weight = 1.5f;
+            }
+            cell.setLayoutParams(lp);
+            cell.setText(title);
+            cell.setTextSize(18);
+
+            row.addView(cell);
+        }
+
+        return row;
+    };
+
+    private TableRow addEmptyRow(){
+        // lp.setMargins(0, 0, 10, 0);
+        TableRow row = new TableRow(this.getContext());
+        for (String title: mTitles){
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+            if (getResources().getString(R.string.good).equals(title)){
+                EditText eCell = new EditText(this.getContext());
+                eCell.setTextColor(Color.BLACK);
+                // right-margin
+                lp.weight = 1.5f;
+                eCell.setLayoutParams(lp);
+                eCell.setHint(R.string.please_input_good);
+                eCell.setTextSize(16);
+                row.addView(eCell);
+            } else {
+                TextView cell = new TextView(this.getContext());
+                // font
+                cell.setTextColor(Color.BLACK);
+                // right-margin
+                cell.setLayoutParams(lp);
+                // cell.setText(title);
+                cell.setTextSize(16);
+                row.addView(cell);
+            }
+
+
+        }
+
+        return row;
+    };
 }

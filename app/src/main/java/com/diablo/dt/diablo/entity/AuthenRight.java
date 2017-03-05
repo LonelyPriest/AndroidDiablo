@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class AuthenRight {
     @SerializedName("action")
-    String action;
+    private String action;
     @SerializedName("id")
-    Integer rightId;
+    private Integer rightId;
     @SerializedName("name")
-    String name;
+    private String name;
     @SerializedName("parent")
-    String parent;
+    private String parent;
 
     public AuthenRight(){
 
