@@ -289,4 +289,27 @@ public class Profie {
     public void setBaseSettings(List<BaseSetting> baseSettings) {
         this.mBaseSettings = baseSettings;
     }
+
+    public String getConfig(String name, String defaultValue){
+        return this.getConfig(DiabloEnum.INVALID_INDEX, name, defaultValue);
+    };
+
+    public String getConfig(Integer shop, String name, String defaultValue){
+        String find = defaultValue;
+        for (BaseSetting base: mBaseSettings){
+            if (base.getShop().equals(shop) && base.getEName().equals(name)){
+               find = base.getValue();
+            }
+        }
+
+        if (find.equals(defaultValue)){
+            for (BaseSetting base: mBaseSettings){
+                if (base.getShop().equals(DiabloEnum.INVALID_INDEX) && base.getEName().equals(name)){
+                    find = base.getValue();
+                }
+            }
+        }
+
+        return find;
+    };
 }

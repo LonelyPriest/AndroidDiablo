@@ -31,6 +31,11 @@ public class DiabloEnum {
     public static final Integer DEFAULT_PAGE = 1;
     public static final Integer DEFAULT_ITEMS_PER_PAGE = 10;
 
+    // base setting
+    public static final String  START_TIME = "qtime_start";
+    public static final Integer NON_REPO = 0;
+    public static final Integer USE_REPO = 1;
+
     private DiabloEnum(){
 
     }

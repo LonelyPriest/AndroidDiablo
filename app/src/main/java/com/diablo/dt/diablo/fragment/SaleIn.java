@@ -6,28 +6,34 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.diablo.dt.diablo.Client.StockClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.adapter.EmployeeAdapter;
+import com.diablo.dt.diablo.activity.adapter.MatchStockAdapter;
 import com.diablo.dt.diablo.activity.adapter.RetailerAdapter;
 import com.diablo.dt.diablo.entity.AuthenShop;
 import com.diablo.dt.diablo.entity.DiabloEnum;
+import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profie;
+import com.diablo.dt.diablo.request.MatchStockRequest;
+import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,6 +57,10 @@ public class SaleIn extends Fragment {
 
     private String [] mTitles;
     private TableLayout mSaleTable;
+    private Integer mLoginShop;
+    private String mCurrentDate;
+
+    private List<MatchStock> matchStocks;
 
     public SaleIn() {
         // Required empty public constructor
@@ -84,9 +94,15 @@ public class SaleIn extends Fragment {
 
         mTitles = getResources().getStringArray(R.array.thead_sale);
 
+        mLoginShop = Profie.getInstance().getLoginShop();
+        if ( mLoginShop.equals(DiabloEnum.INVALID_INDEX) ){
+            mLoginShop = Profie.getInstance().getAvailableShopIds().get(0);
+        }
+
+        mCurrentDate = DiabloUtils.getInstance().currentDate();
+
         // get all stocks
-
-
+        this.getAllMatchStock();
     }
 
     @Override
@@ -110,19 +126,12 @@ public class SaleIn extends Fragment {
 
         // shop
         TextView shopView = (TextView) view.findViewById(R.id.sale_selected_shop);
-        Integer loginShop = Profie.getInstance().getLoginShop();
-        if ( loginShop.equals(DiabloEnum.INVALID_INDEX) ){
-            loginShop = Profie.getInstance().getAvailableShopIds().get(0);
-        }
-        AuthenShop shop = DiabloUtils.getInstance().getShop(Profie.getInstance().getSortAvailableShop(), loginShop);
+        AuthenShop shop = DiabloUtils.getInstance().getShop(Profie.getInstance().getSortAvailableShop(), mLoginShop);
         shopView.setText(shop.getName());
 
         // current time
-        Calendar calendar = Calendar.getInstance();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
-        String currentDate = format.format(calendar.getTime());
         TextView viewDate = (TextView) view.findViewById(R.id.sale_selected_date);
-        viewDate.setText(currentDate);
+        viewDate.setText(DiabloUtils.getInstance().currentDatetime());
 
         // employee
         Spinner employeeSpinner = (Spinner) view.findViewById(R.id.sale_select_employee);
@@ -137,7 +146,7 @@ public class SaleIn extends Fragment {
         // table
         mSaleTable = (TableLayout)view.findViewById(R.id.t_sale);
         mSaleTable.addView(addHead());
-        mSaleTable.addView(addEmptyRow());
+        // mSaleTable.addView(addEmptyRow());
 
 
         return view;
@@ -211,13 +220,25 @@ public class SaleIn extends Fragment {
         for (String title: mTitles){
             TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
             if (getResources().getString(R.string.good).equals(title)){
-                EditText eCell = new EditText(this.getContext());
+                AutoCompleteTextView eCell = new AutoCompleteTextView(this.getContext());
                 eCell.setTextColor(Color.BLACK);
                 // right-margin
                 lp.weight = 1.5f;
                 eCell.setLayoutParams(lp);
                 eCell.setHint(R.string.please_input_good);
                 eCell.setTextSize(16);
+
+                eCell.setDropDownHeight(500);
+                eCell.setDropDownWidth(800);
+                MatchStockAdapter adapter = new MatchStockAdapter(
+                        getContext(),
+                        R.layout.typeahead_match_stock_on_sale,
+                        R.id.typeahead_select_stock_on_sale,
+                        matchStocks);
+
+                eCell.setThreshold(1);
+                eCell.setAdapter(adapter);
+
                 row.addView(eCell);
             } else {
                 TextView cell = new TextView(this.getContext());
@@ -235,4 +256,27 @@ public class SaleIn extends Fragment {
 
         return row;
     };
+
+    private void getAllMatchStock(){
+        StockInterface face = StockClient.getClient().create(StockInterface.class);
+        Call<List<MatchStock>> call = face.matchAllStock(
+                Profie.getInstance().getToken(),
+                new MatchStockRequest(
+                        Profie.getInstance().getConfig(mLoginShop, DiabloEnum.START_TIME, mCurrentDate),
+                        mLoginShop,
+                        DiabloEnum.USE_REPO));
+        call.enqueue(new Callback<List<MatchStock>>() {
+            @Override
+            public void onResponse(Call<List<MatchStock>> call, Response<List<MatchStock>> response) {
+                Log.d("LOGIN:", "success to get retailer");
+                matchStocks = response.body();
+                mSaleTable.addView(addEmptyRow());
+            }
+
+            @Override
+            public void onFailure(Call<List<MatchStock>> call, Throwable t) {
+                Log.d("LOGIN:", "failed to get retailer");
+            }
+        });
+    }
 }

@@ -9,31 +9,32 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.entity.MatchStock;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by buxianhui on 17/3/5.
+ * Created by buxianhui on 17/3/7.
  */
 
-public class RetailerAdapter extends ArrayAdapter<Retailer> {
+
+public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     private Context context;
     private Integer resource;
     private Integer textViewResourceId;
-    private List<Retailer> items;
-    private List<Retailer> tempItems;
-    private List<Retailer> suggestions;
+    private List<MatchStock> items;
+    private List<MatchStock> tempItems;
+    private List<MatchStock> suggestions;
 
-    public RetailerAdapter(Context context, Integer resource, Integer textViewResourceId, List<Retailer> items) {
+    public MatchStockAdapter(Context context, Integer resource, Integer textViewResourceId, List<MatchStock> items) {
         super(context, resource, textViewResourceId, items);
         this.context = context;
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
         this.items = items;
-        tempItems = new ArrayList<Retailer>(items); // this makes the difference.
-        suggestions = new ArrayList<Retailer>();
+        tempItems = new ArrayList<MatchStock>(items); // this makes the difference.
+        suggestions = new ArrayList<MatchStock>();
     }
 
     @NonNull
@@ -45,11 +46,11 @@ public class RetailerAdapter extends ArrayAdapter<Retailer> {
             view = inflater.inflate(resource, parent, false);
         }
 
-        Retailer people = items.get(position);
+        MatchStock people = items.get(position);
         if (people != null) {
-            TextView lblName = (TextView) view.findViewById(textViewResourceId);
-            if (lblName != null)
-                lblName.setText(people.getName());
+            TextView dropdownView = (TextView) view.findViewById(textViewResourceId);
+            if (dropdownView != null)
+                dropdownView.setText(people.getName());
         }
         return view;
     }
@@ -66,14 +67,14 @@ public class RetailerAdapter extends ArrayAdapter<Retailer> {
     private Filter nameFilter = new Filter() {
         @Override
         public CharSequence convertResultToString(Object resultValue) {
-            return ((Retailer) resultValue).getName();
+            return ((MatchStock) resultValue).getName();
         }
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             if (constraint != null) {
                 suggestions.clear();
-                for (Retailer people : tempItems) {
+                for (MatchStock people : tempItems) {
                     if (people.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
                         suggestions.add(people);
                     }
@@ -89,10 +90,10 @@ public class RetailerAdapter extends ArrayAdapter<Retailer> {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            List<Retailer> filterList = (ArrayList<Retailer>) results.values;
+            List<MatchStock> filterList = (ArrayList<MatchStock>) results.values;
             if (results.count > 0) {
                 clear();
-                for (Retailer people : filterList) {
+                for (MatchStock people : filterList) {
                     add(people);
                     notifyDataSetChanged();
                 }
@@ -100,3 +101,4 @@ public class RetailerAdapter extends ArrayAdapter<Retailer> {
         }
     };
 }
+

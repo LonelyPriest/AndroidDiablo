@@ -11,7 +11,11 @@ import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Retailer;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by buxianhui on 17/2/24.
@@ -127,5 +131,17 @@ public class DiabloUtils {
                 .positiveText(context.getResources().getString(R.string.login_ok))
                 .positiveColor(context.getResources().getColor(R.color.colorPrimaryDark))
                 .show();
+    }
+
+    public String currentDate(){
+        Calendar calendar = Calendar.getInstance();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        return format.format(calendar.getTime());
+    }
+
+    public String currentDatetime(){
+        Calendar calendar = Calendar.getInstance();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
+        return format.format(calendar.getTime());
     }
 }
