@@ -7,9 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -100,9 +102,6 @@ public class SaleIn extends Fragment {
         }
 
         mCurrentDate = DiabloUtils.getInstance().currentDate();
-
-        // get all stocks
-        this.getAllMatchStock();
     }
 
     @Override
@@ -148,8 +147,14 @@ public class SaleIn extends Fragment {
         mSaleTable.addView(addHead());
         // mSaleTable.addView(addEmptyRow());
 
-
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // get all stocks
+        this.getAllMatchStock();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -202,7 +207,7 @@ public class SaleIn extends Fragment {
             // right-margin
 
             if (getResources().getString(R.string.good).equals(title)){
-                lp.weight = 1.5f;
+                lp.weight = 2f;
             }
             cell.setLayoutParams(lp);
             cell.setText(title);
@@ -223,22 +228,48 @@ public class SaleIn extends Fragment {
                 AutoCompleteTextView eCell = new AutoCompleteTextView(this.getContext());
                 eCell.setTextColor(Color.BLACK);
                 // right-margin
-                lp.weight = 1.5f;
+                lp.weight = 2f;
                 eCell.setLayoutParams(lp);
                 eCell.setHint(R.string.please_input_good);
-                eCell.setTextSize(16);
+                eCell.setTextSize(18);
+                eCell.setTextColor(Color.BLACK);
 
-                eCell.setDropDownHeight(500);
-                eCell.setDropDownWidth(800);
+                eCell.setDropDownWidth(500);
+                eCell.setDropDownHeight(-2);
+                eCell.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED);
+
+                eCell.setDropDownHorizontalOffset((eCell.getMeasuredWidth() * 3));
+                eCell.setDropDownVerticalOffset(-1000);
                 MatchStockAdapter adapter = new MatchStockAdapter(
                         getContext(),
                         R.layout.typeahead_match_stock_on_sale,
                         R.id.typeahead_select_stock_on_sale,
-                        matchStocks);
+                        matchStocks,
+                        row);
 
                 eCell.setThreshold(1);
                 eCell.setAdapter(adapter);
 
+                eCell.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long extra) {
+                        MatchStock selectStock = (MatchStock) adapterView.getItemAtPosition(position);
+                        if (adapterView.getAdapter() instanceof MatchStockAdapter){
+                            TableRow selectRow = ((MatchStockAdapter) adapterView.getAdapter()).getRow();
+                            for (Integer i=0; i<selectRow.getChildCount(); i++){
+                                View cell = selectRow.getChildAt(i);
+                                String name = (String)cell.getTag();
+                                if (getResources().getString(R.string.price_type).equals(name)){
+                                    ((TextView)cell).setText(getResources().getString(R.string.tag_price));
+                                } else if (getResources().getString(R.string.price).equals(name)){
+                                    ((TextView)cell).setText(Float.toString(selectStock.getTagPrice()));
+                                }
+
+                            }
+                        }
+                    }
+                });
+                eCell.setTag(title);
                 row.addView(eCell);
             } else {
                 TextView cell = new TextView(this.getContext());
@@ -247,7 +278,9 @@ public class SaleIn extends Fragment {
                 // right-margin
                 cell.setLayoutParams(lp);
                 // cell.setText(title);
-                cell.setTextSize(16);
+                cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
+                cell.setTextSize(18);
+                cell.setTag(title);
                 row.addView(cell);
             }
 

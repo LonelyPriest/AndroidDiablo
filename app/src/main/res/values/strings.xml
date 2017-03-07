@@ -54,7 +54,6 @@
     <string-array name="thead_sale">
         <item>序号</item>
         <item>货号</item>
-        <item>品名</item>
         <item>库存</item>
         <item>价类型</item>
         <item>单价</item>
@@ -93,6 +92,12 @@
     <string name="discount">折扣</string>
     <string name="calculate">合计</string>
     <string name="operater">操作</string>
+
+    <string name="tag_price">吊牌价</string>
+    <string name="pkg_price">批发价</string>
+    <string name="price3">价3</string>
+    <string name="price4">价4</string>
+    <string name="price5">价5</string>
     
     <string name="activity_title_about_us">About Us</string>
     <string name="activity_title_privacy_policy">Privacy Policy</string>

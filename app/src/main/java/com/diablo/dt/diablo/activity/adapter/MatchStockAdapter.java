@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.diablo.dt.diablo.entity.MatchStock;
@@ -23,11 +24,16 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     private Context context;
     private Integer resource;
     private Integer textViewResourceId;
+    private TableRow mRow;
     private List<MatchStock> items;
     private List<MatchStock> tempItems;
     private List<MatchStock> suggestions;
 
-    public MatchStockAdapter(Context context, Integer resource, Integer textViewResourceId, List<MatchStock> items) {
+    public MatchStockAdapter(Context context,
+                             Integer resource,
+                             Integer textViewResourceId,
+                             List<MatchStock> items,
+                             TableRow row) {
         super(context, resource, textViewResourceId, items);
         this.context = context;
         this.resource = resource;
@@ -35,11 +41,13 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
         this.items = items;
         tempItems = new ArrayList<MatchStock>(items); // this makes the difference.
         suggestions = new ArrayList<MatchStock>();
+
+        this.mRow = row;
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, final ViewGroup parent) {
         View view = convertView;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -100,5 +108,9 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
             }
         }
     };
+
+    public TableRow getRow(){
+        return this.mRow;
+    }
 }
 
