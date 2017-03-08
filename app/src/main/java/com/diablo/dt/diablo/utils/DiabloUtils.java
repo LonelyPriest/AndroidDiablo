@@ -1,6 +1,8 @@
 package com.diablo.dt.diablo.utils;
 
 import android.content.Context;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -16,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import static java.lang.String.format;
 
 /**
  * Created by buxianhui on 17/2/24.
@@ -143,5 +147,59 @@ public class DiabloUtils {
         Calendar calendar = Calendar.getInstance();
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
         return format.format(calendar.getTime());
+    }
+
+    public String toString(Float value){
+        if (value == Math.round(value)){
+            return String.format(Locale.CHINA, "%d", Math.round(value));
+        }
+        return String.format(Locale.CHINA, "%.2f", value);
+    }
+
+    public String toString(Integer value){
+        return format(Locale.CHINA, "%d", value);
+    }
+
+    public Integer toInteger(String value){
+        if (!value.isEmpty())
+            return Integer.parseInt(value);
+
+        else
+            return 0;
+    }
+
+    public Float toFloat(String value){
+        return Float.parseFloat(value);
+    };
+
+    public Float priceWithDiscount(Float price, Float discount){
+        return (price * discount) / 100;
+    }
+
+    public Float priceWithDiscount(String price, Float discount){
+        return  (Float.parseFloat(price) * discount) / 100;
+    }
+
+    public void openKeyboard(Context context){
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+    }
+
+    public void focusAndShowKeyboard(Context context, final View view){
+        view.requestFocus();
+//        view.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                final InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+//                view.requestFocus(); // needed if you have more then one input
+//            }
+//        }, 200);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+//        view.requestFocus();
+        // imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        // imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     }
 }

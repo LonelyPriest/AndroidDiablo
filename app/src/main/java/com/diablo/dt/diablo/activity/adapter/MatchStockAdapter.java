@@ -25,9 +25,10 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     private Integer resource;
     private Integer textViewResourceId;
     private TableRow mRow;
-    private List<MatchStock> items;
-    private List<MatchStock> tempItems;
-    private List<MatchStock> suggestions;
+    private List<MatchStock> originStocks;
+    private List<MatchStock> filterStocks;
+    private Filter filter;
+    // private List<MatchStock> suggestions;
 
     public MatchStockAdapter(Context context,
                              Integer resource,
@@ -38,9 +39,8 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
         this.context = context;
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
-        this.items = items;
-        tempItems = new ArrayList<MatchStock>(items); // this makes the difference.
-        suggestions = new ArrayList<MatchStock>();
+        this.originStocks = items;
+        this.filterStocks = new ArrayList<MatchStock>();
 
         this.mRow = row;
     }
@@ -54,11 +54,11 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
             view = inflater.inflate(resource, parent, false);
         }
 
-        MatchStock people = items.get(position);
-        if (people != null) {
+        MatchStock stock = this.originStocks.get(position);
+        if (stock != null) {
             TextView dropdownView = (TextView) view.findViewById(textViewResourceId);
             if (dropdownView != null)
-                dropdownView.setText(people.getName());
+                dropdownView.setText(stock.getName());
         }
         return view;
     }
@@ -66,7 +66,9 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     @NonNull
     @Override
     public Filter getFilter() {
-        return nameFilter;
+        if (null == filter)
+            filter = nameFilter;
+        return filter;
     }
 
     /**
@@ -80,29 +82,33 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
+
             if (constraint != null) {
-                suggestions.clear();
-                for (MatchStock people : tempItems) {
-                    if (people.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                        suggestions.add(people);
+                FilterResults filterResults = new FilterResults();
+                final List<MatchStock> matchStocks = new ArrayList<MatchStock>();
+
+                for (MatchStock obj : originStocks){
+                    if (obj.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        matchStocks.add(obj);
                     }
                 }
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = suggestions;
-                filterResults.count = suggestions.size();
+
+                filterResults.values = matchStocks;
+                filterResults.count = matchStocks.size();
                 return filterResults;
             } else {
                 return new FilterResults();
             }
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            List<MatchStock> filterList = (ArrayList<MatchStock>) results.values;
+            filterStocks = (ArrayList<MatchStock>) results.values;
+            clear();
             if (results.count > 0) {
-                clear();
-                for (MatchStock people : filterList) {
-                    add(people);
+                for (MatchStock stock : filterStocks) {
+                    add(stock);
                     notifyDataSetChanged();
                 }
             }
