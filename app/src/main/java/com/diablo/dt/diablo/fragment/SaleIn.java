@@ -13,8 +13,11 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -73,6 +76,7 @@ public class SaleIn extends Fragment {
     private String [] mTitles;
     private String [] mPriceType;
     private TableLayout mSaleTable;
+    private TableRow mCurrentSelectRow;
     private Integer mLoginShop;
     private String mCurrentDate;
 
@@ -130,6 +134,8 @@ public class SaleIn extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale_in, container, false);
 
+
+
         // retailer
         AutoCompleteTextView autoCompleteRetailer =
                 (AutoCompleteTextView) view.findViewById(R.id.sale_select_retailer);
@@ -165,7 +171,7 @@ public class SaleIn extends Fragment {
         // table
         mSaleTable = (TableLayout)view.findViewById(R.id.t_sale);
         mSaleTable.addView(addHead());
-        // mSaleTable.addView(addEmptyRow());
+        this.getAllMatchStock();
 
         return view;
     }
@@ -175,7 +181,6 @@ public class SaleIn extends Fragment {
         super.onStart();
         // DiabloUtils.getInstance().openKeyboard(getContext());
         // get all stocks
-        this.getAllMatchStock();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -232,7 +237,7 @@ public class SaleIn extends Fragment {
             if (getResources().getString(R.string.good).equals(title)){
                 lp.weight = 2f;
             } else if (getResources().getString(R.string.order_id).equals(title)){
-                lp.weight = 0.5f;
+                lp.weight = 0.8f;
             } else if (getResources().getString(R.string.price_type).equals(title)){
                 lp.weight = 1.5f;
             } else if (getResources().getString(R.string.comment).equals(title)){
@@ -292,9 +297,10 @@ public class SaleIn extends Fragment {
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long extra) {
                         MatchStock selectStock = (MatchStock) adapterView.getItemAtPosition(position);
                         SaleStock s = new SaleStock(selectStock, mSelectPrice);
+                        row.setTag(s);
                         // TableRow selectRow = ((MatchStockAdapter) adapterView.getAdapter()).getRow();
                         for (Integer i=0; i<row.getChildCount(); i++){
-                            View cell = row.getChildAt(i);
+                            final View cell = row.getChildAt(i);
                             String name = (String)cell.getTag();
 
                             if (getResources().getString(R.string.good).equals(name)) {
@@ -302,17 +308,32 @@ public class SaleIn extends Fragment {
                             }
 
                             if (getResources().getString(R.string.price).equals(name)) {
-                                ((TextView)cell).setText(getValidPrice(s));
+                                DiabloUtils.instance().setTextViewValue((TextView) cell, s.getValidPrice());
                             }
                             else if (getResources().getString(R.string.discount).equals(name)){
-                                ((TextView)cell).setText(utils.toString(s.getDiscount()));
+                                DiabloUtils.instance().setTextViewValue((TextView) cell, s.getDiscount());
                             }
                             else if (getResources().getString(R.string.fprice).equals(name)){
-                                ((TextView)cell).setText(
-                                        utils.toString(
-                                                utils.priceWithDiscount(
-                                                        getValidPrice(s),
-                                                        selectStock.getDiscount())));
+                                DiabloUtils.instance().setEditTextValue((EditText)cell, s.getFinalPrice());
+                                ((EditText)cell).addTextChangedListener(new TextWatcher() {
+                                    @Override
+                                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                    }
+
+                                    @Override
+                                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    }
+
+                                    @Override
+                                    public void afterTextChanged(Editable editable) {
+                                        SaleStock s = (SaleStock) row.getTag();
+                                        Float price = DiabloUtils.instance().toFloat(editable.toString());
+                                        s.setFinalPrice(price);
+                                        View calCell = SaleStockHandler.getColumn(getContext(), row, R.string.calculate);
+                                        DiabloUtils.instance().setTextViewValue((TextView) calCell, s.getSalePrice());
+                                    }
+                                });
                             }
 
                             if (getResources().getString(R.string.amount).equals(name)){
@@ -321,8 +342,6 @@ public class SaleIn extends Fragment {
                             }
 
                         }
-
-                        row.setTag(s);
                     }
                 });
                 eCell.setTag(title);
@@ -398,7 +417,7 @@ public class SaleIn extends Fragment {
                 // font
                 cell.setTextColor(Color.BLACK);
                 // right-margin
-                lp.weight = 0.5f;
+                lp.weight = 0.8f;
                 cell.setLayoutParams(lp);
                 // cell.setText(title);
                 cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
@@ -406,7 +425,21 @@ public class SaleIn extends Fragment {
                 cell.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 cell.setTag(title);
                 row.addView(cell);
-            } else if (getResources().getString(R.string.comment).equals(title)){
+            } else if(getResources().getString(R.string.fprice).equals(title)){
+                final EditText cell = new EditText(this.getContext());
+                // font
+                cell.setTextColor(Color.BLACK);
+                // right-margin
+                cell.setLayoutParams(lp);
+                // cell.setText(title);
+                cell.setGravity(Gravity.CENTER_VERTICAL);
+                // cell.setTextColor(Color.RED);
+                cell.setTextSize(18);
+                cell.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                cell.setTag(title);
+                row.addView(cell);
+            }
+            else if (getResources().getString(R.string.comment).equals(title)){
                 final EditText cell = new EditText(this.getContext());
                 // font
                 cell.setTextColor(Color.BLACK);
@@ -480,10 +513,9 @@ public class SaleIn extends Fragment {
                 cell.setTag(title);
                 row.addView(cell);
             }
-
-
         }
 
+        // row.setBackgroundResource(R.drawable.table_row_bg);
         return row;
     };
 
@@ -510,58 +542,31 @@ public class SaleIn extends Fragment {
         });
     }
 
-    private String getValidPriceName(){
-        String name;
-        switch (mSelectPrice){
-            case 1:
-                name = getResources().getString(R.string.tag_price);
-                break;
-            case 2:
-                name = getResources().getString(R.string.pkg_price);
-                break;
-            case 3:
-                name = getResources().getString(R.string.price3);
-                break;
-            case 4:
-                name = getResources().getString(R.string.price4);
-                break;
-            case 5:
-                name = getResources().getString(R.string.price5);
-                break;
-            default:
-                name = getResources().getString(R.string.tag_price);
-                break;
-        }
-
-        return name;
-    }
-
-    private String getValidPrice(SaleStock stock){
-        String price;
-        DiabloUtils utils = DiabloUtils.getInstance();
-        switch (mSelectPrice){
-            case 1:
-                price = utils.toString(stock.getTagPrice());
-                break;
-            case 2:
-                price = utils.toString(stock.getPkgPrice());
-                break;
-            case 3:
-                price = utils.toString(stock.getPrice3());
-                break;
-            case 4:
-                price = utils.toString(stock.getPrice4());
-                break;
-            case 5:
-                price = utils.toString(stock.getPrice5());
-                break;
-            default:
-                price = utils.toString(stock.getTagPrice());
-                break;
-        }
-
-        return price;
-    }
+//    private String getValidPriceName(){
+//        String name;
+//        switch (mSelectPrice){
+//            case 1:
+//                name = getResources().getString(R.string.tag_price);
+//                break;
+//            case 2:
+//                name = getResources().getString(R.string.pkg_price);
+//                break;
+//            case 3:
+//                name = getResources().getString(R.string.price3);
+//                break;
+//            case 4:
+//                name = getResources().getString(R.string.price4);
+//                break;
+//            case 5:
+//                name = getResources().getString(R.string.price5);
+//                break;
+//            default:
+//                name = getResources().getString(R.string.tag_price);
+//                break;
+//        }
+//
+//        return name;
+//    }
 
     private class SaleStock {
         private Integer orderId;
@@ -581,6 +586,7 @@ public class SaleIn extends Fragment {
         private Float price4;
         private Float price5;
         private Float discount;
+        private Float finalPrice;
 
         private Integer saleTotal;
 
@@ -690,11 +696,11 @@ public class SaleIn extends Fragment {
             this.selectedPrice = selectedPrice;
         }
 
-        public Integer getState() {
+        private Integer getState() {
             return state;
         }
 
-        public void setState(Integer state) {
+        private void setState(Integer state) {
             this.state = state;
         }
 
@@ -721,7 +727,20 @@ public class SaleIn extends Fragment {
                     break;
             }
 
-            return price;
+            setFinalPrice(price);
+            return getFinalPrice();
+        }
+
+        private void  setFinalPrice(Float price){
+            this.finalPrice = price;
+        }
+
+        private Float getFinalPrice(){
+            return this.finalPrice;
+        }
+
+        private Float getSalePrice(){
+            return DiabloUtils.getInstance().priceWithDiscount(finalPrice, discount) * saleTotal;
         }
     }
 
@@ -746,14 +765,28 @@ public class SaleIn extends Fragment {
                 if (null != cell){
                     SaleStock s = (SaleStock)row.getTag();
                     s.setSaleTotal(msg.arg1);
-                    ((TextView)cell).setText(utils.toString((s.getValidPrice() * msg.arg1)));
+                    DiabloUtils.instance().setTextViewValue((TextView)cell, s.getSalePrice());
+
                     if (DiabloEnum.STARTING_SALE.equals(s.getState())){
+                        s.setState(DiabloEnum.FINISHED_SALE);
+
                         View orderCell =  getColumn(mFragment.get().getContext(), row, R.string.order_id);
                         if (null != orderCell){
-                            ((TextView)orderCell).setText(utils.toString(((SaleIn) mFragment.get()).getValidRow()));
+                            Integer rowId =  ((SaleIn) mFragment.get()).getValidRow();
+                            s.setOrderId(rowId);
+                            ((TextView)orderCell).setText(utils.toString(rowId));
                         }
 
-                        s.setState(DiabloEnum.FINISHED_SALE);
+                        row.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View view) {
+                                ((SaleIn)mFragment.get()).setCurrentSelectRow((TableRow) view);
+                                view.showContextMenu();
+                                return true;
+                            }
+                        });
+
+                        mFragment.get().registerForContextMenu(row);
                         ((SaleIn)mFragment.get()).addEmptyRowToTable();
                     }
 
@@ -788,5 +821,23 @@ public class SaleIn extends Fragment {
 
         // head does not include
         return rows - 1;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_on_sale, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        Integer orderId = ((SaleStock)this.mCurrentSelectRow.getTag()).getOrderId();
+        DiabloUtils.getInstance().makeToast(getContext(), orderId);
+        return true;
+    }
+
+    public void setCurrentSelectRow(TableRow selectRow) {
+        this.mCurrentSelectRow = selectRow;
     }
 }

@@ -3,8 +3,10 @@ package com.diablo.dt.diablo.utils;
 import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.R;
@@ -29,6 +31,14 @@ public class DiabloUtils {
     private static DiabloUtils mInstance;
 
     public static DiabloUtils getInstance() {
+        if (null == mInstance){
+            mInstance = new DiabloUtils();
+        }
+
+        return mInstance;
+    }
+
+    public static DiabloUtils instance() {
         if (null == mInstance){
             mInstance = new DiabloUtils();
         }
@@ -90,7 +100,7 @@ public class DiabloUtils {
         TextView cell = new TextView(context);
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
-        cell.setText(value.toString());
+        cell.setText(toString(value));
         cell.setTextSize(22);
         cell.setHeight(125);
         row.addView(cell);
@@ -101,11 +111,27 @@ public class DiabloUtils {
         TextView cell = new TextView(context);
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
-        cell.setText(Float.toString(value));
+        cell.setText(toString(value));
         cell.setTextSize(22);
         cell.setHeight(125);
         row.addView(cell);
         return  row;
+    }
+
+    public void setTextViewValue(TextView view, Integer value){
+        view.setText(toString(value));
+    }
+
+    public void setTextViewValue(TextView view, Float value){
+        view.setText(toString(value));
+    }
+
+    public void setEditTextValue(EditText view, Integer value){
+        view.setText(toString(value));
+    }
+
+    public void setEditTextValue(EditText view, Float value){
+        view.setText(toString(value));
     }
 
     // swip top, left, down, right
@@ -169,7 +195,11 @@ public class DiabloUtils {
     }
 
     public Float toFloat(String value){
-        return Float.parseFloat(value);
+        try {
+            return Float.parseFloat(value);
+        } catch (Exception e){
+            return 0f;
+        }
     };
 
     public Float priceWithDiscount(Float price, Float discount){
@@ -201,5 +231,20 @@ public class DiabloUtils {
 //        view.requestFocus();
         // imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         // imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    public void makeToast(Context context, Integer value){
+        Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void makeToast(Context context, String value){
+        Toast toast = Toast.makeText(context, value, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void makeToast(Context context, Float value){
+        Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

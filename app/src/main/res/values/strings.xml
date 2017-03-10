@@ -62,7 +62,7 @@
         <item>数量</item>
         <item>合计</item>
         <item>备注</item>
-        <item>操作</item>
+        <!--<item>操作</item>-->
     </string-array>
 
     <string-array name="price_type_on_sale">
@@ -146,5 +146,6 @@
     <string name="money_off">未付</string>
     <string name="btn_delete">删除</string>
     <string name="btn_modify">修改</string>
+    <string name="delete">删除</string>
 
 </resources>
