@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.activity.adapter;
+package com.diablo.dt.diablo.adapter;
 
 import android.content.Context;
 import android.graphics.Color;

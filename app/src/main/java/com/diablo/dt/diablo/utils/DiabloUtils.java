@@ -1,6 +1,8 @@
 package com.diablo.dt.diablo.utils;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -188,7 +190,7 @@ public class DiabloUtils {
 
     public Integer toInteger(String value){
         if (!value.isEmpty())
-            return Integer.parseInt(value);
+            return Integer.parseInt(value.trim());
 
         else
             return 0;
@@ -196,7 +198,7 @@ public class DiabloUtils {
 
     public Float toFloat(String value){
         try {
-            return Float.parseFloat(value);
+            return Float.parseFloat(value.trim());
         } catch (Exception e){
             return 0f;
         }
@@ -243,8 +245,32 @@ public class DiabloUtils {
         toast.show();
     }
 
-    public void makeToast(Context context, Float value){
+    public void makeToast(Context context, Float value) {
         Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    public interface Payment{
+        public void setPayment(String param);
+    }
+
+    public void addTextChangedListenerOfPayment(EditText view, final Payment payment){
+        view.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String inputValue = editable.toString().trim();
+                payment.setPayment(inputValue);
+            }
+        });
     }
 }

@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.activity.adapter;
+package com.diablo.dt.diablo.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Retailer;
 
 import java.util.ArrayList;
@@ -20,30 +18,40 @@ import java.util.List;
  * Created by buxianhui on 17/3/5.
  */
 
-public class EmployeeAdapter extends ArrayAdapter<Employee> {
-    Context context;
-    Integer resource, textViewResourceId;
-    List<Employee> items, tempItems, suggestions;
+public class RetailerAdapter extends ArrayAdapter<Retailer> {
+    private Context context;
+    private Integer resource;
+    private Integer textViewResourceId;
+    private List<Retailer> items;
+    private List<Retailer> tempItems;
+    private List<Retailer> suggestions;
 
-    public EmployeeAdapter(Context context, Integer resource, Integer textViewResourceId, List<Employee> items) {
+    public RetailerAdapter(Context context, Integer resource, Integer textViewResourceId, List<Retailer> items) {
         super(context, resource, textViewResourceId, items);
         this.context = context;
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
         this.items = items;
-        tempItems = new ArrayList<Employee>(items); // this makes the difference.
-        suggestions = new ArrayList<Employee>();
+        tempItems = new ArrayList<Retailer>(items); // this makes the difference.
+        suggestions = new ArrayList<Retailer>();
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
-    }
+        View view = convertView;
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(resource, parent, false);
+        }
 
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
+        Retailer people = items.get(position);
+        if (people != null) {
+            TextView lblName = (TextView) view.findViewById(textViewResourceId);
+            if (lblName != null)
+                lblName.setText(people.getName());
+        }
+        return view;
     }
 
     @NonNull
@@ -65,7 +73,7 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
         protected FilterResults performFiltering(CharSequence constraint) {
             if (constraint != null) {
                 suggestions.clear();
-                for (Employee people : tempItems) {
+                for (Retailer people : tempItems) {
                     if (people.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
                         suggestions.add(people);
                     }
@@ -81,30 +89,14 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            List<Employee> filterList = (ArrayList<Employee>) results.values;
+            List<Retailer> filterList = (ArrayList<Retailer>) results.values;
             if (results.count > 0) {
                 clear();
-                for (Employee people : filterList) {
+                for (Retailer people : filterList) {
                     add(people);
                     notifyDataSetChanged();
                 }
             }
         }
-    };
-
-    private View getCustomView(int position, View convertView, ViewGroup parent){
-        View view = convertView;
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.typeahead_employee, parent, false);
-        }
-
-        Employee people = items.get(position);
-        if (people != null) {
-            TextView lblName = (TextView) view.findViewById(textViewResourceId);
-            if (lblName != null)
-                lblName.setText(people.getName());
-        }
-        return view;
     };
 }

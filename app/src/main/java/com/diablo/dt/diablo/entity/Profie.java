@@ -267,6 +267,18 @@ public class Profie {
         return this.mEmployees;
     }
 
+    public Integer getIndexOfEmployee(Integer employeeId){
+        Integer index = DiabloEnum.INVALID_INDEX;
+        for (Integer i=0; i<mEmployees.size(); i++){
+            if (mEmployees.get(i).getId().equals(employeeId)){
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
     /*
     * Retailer
     * */

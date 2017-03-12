@@ -3,6 +3,8 @@ package com.diablo.dt.diablo.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -30,6 +32,7 @@ import com.diablo.dt.diablo.rest.RightInterface;
 import com.diablo.dt.diablo.rest.WLoginInterfacae;
 import com.diablo.dt.diablo.utils.DiabloError;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
     TextInputLayout loginWrap, passwordWrap;
     Context mContext;
+
+    private final LoginHandler mLoginHandler = new LoginHandler(this);
     // private CoordinatorLayout coordinatorLayout;
 
     @Override
@@ -88,33 +93,45 @@ public class LoginActivity extends AppCompatActivity {
                                 Profie.getInstance().setToken(response.body().getToken());
                                 // get profile from server, include login data, authen data, etc...
                                 getLoginUserInfo();
-                                getEmployee();
-                                getRetailer();
-                                getBaseSetting();
+                                // getEmployee();
+                                // getRetailer();
+                                // getBaseSetting();
 
-                                Intent intent = new Intent(mContext, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                finish();
+//                                Intent intent = new Intent(mContext, MainActivity.class);
+//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                startActivity(intent);
+//                                finish();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
-                            String error = DiabloError.getInstance().getError(1199);
-                            new MaterialDialog.Builder(mContext)
-                                    .title(R.string.user_login)
-                                    .content(error)
-                                    // .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
-                                    .positiveText(mContext.getResources().getString(R.string.login_ok))
-                                    .positiveColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
-                                    .show();
+                            loginError(1199);
                         }
                     });
                 }
             }
         });
+    }
+
+    public void gotoMain(){
+        Intent intent = new Intent(mContext, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    public void loginError(Integer ecode){
+        String error = DiabloError.getInstance().getError(ecode);
+        new MaterialDialog.Builder(mContext)
+                .title(R.string.user_login)
+                .content(error)
+                // .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                .positiveText(mContext.getResources().getString(R.string.login_ok))
+                .positiveColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                .show();
     }
 
     @Override
@@ -139,11 +156,17 @@ public class LoginActivity extends AppCompatActivity {
                 Profie.getInstance().setLoginShops(user.getShops());
                 Profie.getInstance().setLoginRights(user.getRights());
                 Profie.getInstance().initLoginUser();
+
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 10;
+                message.sendToTarget();
             }
 
             @Override
             public void onFailure(Call<LoginUserInfoResponse> call, Throwable t) {
-
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 11;
+                message.sendToTarget();
             }
         });
     }
@@ -160,12 +183,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<List<Retailer>> call, Response<List<Retailer>> response) {
                 Log.d("LOGIN:", "success to get retailer");
                 Profie.getInstance().setRetailers(response.body());
-                Profie.getInstance();
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 20;
+                message.sendToTarget();
             }
 
             @Override
             public void onFailure(Call<List<Retailer>> call, Throwable t) {
                 Log.d("LOGIN:", "failed to get retailer");
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 21;
+                message.sendToTarget();
             }
         });
     }
@@ -178,11 +206,16 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
                 Log.d("LOGIN:", "success to get employee");
                 Profie.getInstance().setEmployees(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 30;
+                message.sendToTarget();
             }
 
             @Override
             public void onFailure(Call<List<Employee>> call, Throwable t) {
-
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 31;
+                message.sendToTarget();
             }
         });
     }
@@ -195,12 +228,16 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<List<BaseSetting>> call, Response<List<BaseSetting>> response) {
                 Log.d("LOGIN:", "success to get employee");
                 Profie.getInstance().setBaseSettings(response.body());
-                Profie.getInstance();
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 40;
+                message.sendToTarget();
             }
 
             @Override
             public void onFailure(Call<List<BaseSetting>> call, Throwable t) {
-
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 41;
+                message.sendToTarget();
             }
         });
     }
@@ -211,5 +248,49 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getSizeGroup(){
 
+    }
+
+
+    private static class LoginHandler extends Handler {
+        private final WeakReference<LoginActivity> mActivity;
+
+        public LoginHandler(LoginActivity activity) {
+            mActivity = new WeakReference<LoginActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            LoginActivity activity = mActivity.get();
+            if (activity != null) {
+                // ...
+                switch (msg.what){
+                    case 10:
+                        activity.getEmployee();
+                        break;
+                    case 11:
+                        activity.loginError(1199);
+                        break;
+                    case 30:
+                        activity.getRetailer();
+                        break;
+                    case 31:
+                        activity.loginError(1199);
+                        break;
+                    case 20:
+                        activity.getBaseSetting();
+                        break;
+                    case 21:
+                        activity.loginError(1199);
+                        break;
+                    case 40:
+                        activity.gotoMain();
+                        break;
+                    case 41:
+                        activity.loginError(1199);
+                    default:
+                        break;
+                }
+            }
+        }
     }
 }

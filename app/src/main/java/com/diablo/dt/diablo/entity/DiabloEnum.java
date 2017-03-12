@@ -37,6 +37,12 @@ public class DiabloEnum {
     public static final Integer NON_REPO = 0;
     public static final Integer USE_REPO = 1;
 
+    public static final String TAG_PRICE = "1";
+    public static final String PKG_PRICE = "2";
+    public static final String PRICE3    = "3";
+    public static final String PRICE4    = "4";
+    public static final String PRICE5    = "5";
+
     // on sale
     public static final Integer STARTING_SALE = 0;
     public static final Integer FINISHED_SALE = 1;

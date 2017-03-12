@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.activity.adapter;
+package com.diablo.dt.diablo.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.entity.MatchStock;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,17 +32,21 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     public MatchStockAdapter(Context context,
                              Integer resource,
                              Integer textViewResourceId,
-                             List<MatchStock> items,
+                             List<MatchStock> stocks,
                              TableRow row) {
-        super(context, resource, textViewResourceId, items);
+        super(context, resource, textViewResourceId, stocks);
         this.context = context;
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
-        this.originStocks = items;
-        this.filterStocks = new ArrayList<MatchStock>();
+        // this.originStocks = stocks;
+        this.filterStocks = stocks;
 
         this.mRow = row;
     }
+
+//    public TableRow getRow(){
+//        return this.mRow;
+//    }
 
     @NonNull
     @Override
@@ -54,7 +57,7 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
             view = inflater.inflate(resource, parent, false);
         }
 
-        MatchStock stock = this.originStocks.get(position);
+        MatchStock stock = filterStocks.get(position);
         if (stock != null) {
             TextView dropdownView = (TextView) view.findViewById(textViewResourceId);
             if (dropdownView != null)
@@ -67,56 +70,43 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     @Override
     public Filter getFilter() {
         if (null == filter)
-            filter = nameFilter;
+            filter = new StockFilter();
         return filter;
     }
 
-    /**
-     * Custom Filter implementation for custom suggestions we provide.
-     */
-    private Filter nameFilter = new Filter() {
+    private class StockFilter extends Filter{
         @Override
-        public CharSequence convertResultToString(Object resultValue) {
-            return ((MatchStock) resultValue).getName();
-        }
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filterStocks;
+            filterResults.count = filterStocks.size();
+//            if (charSequence == null || charSequence.length() == 0){
+//                filterResults.values = filterStocks;
+//                filterResults.count = filterStocks.size();
+//                notifyDataSetChanged();
+//            }
+//            else  {
+//
+//                final List<MatchStock> matchStocks = new ArrayList<MatchStock>();
+//
+//                for (MatchStock obj : filterStocks){
+//                    if (obj.getName().contains(charSequence.toString())) {
+//                        matchStocks.add(obj);
+//                    }
+//                }
+//
+//                filterResults.values = matchStocks;
+//                filterResults.count = matchStocks.size();
+//            }
 
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-
-            if (constraint != null) {
-                FilterResults filterResults = new FilterResults();
-                final List<MatchStock> matchStocks = new ArrayList<MatchStock>();
-
-                for (MatchStock obj : originStocks){
-                    if (obj.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                        matchStocks.add(obj);
-                    }
-                }
-
-                filterResults.values = matchStocks;
-                filterResults.count = matchStocks.size();
-                return filterResults;
-            } else {
-                return new FilterResults();
-            }
+            return filterResults;
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            filterStocks = (ArrayList<MatchStock>) results.values;
-            clear();
-            if (results.count > 0) {
-                for (MatchStock stock : filterStocks) {
-                    add(stock);
-                    notifyDataSetChanged();
-                }
-            }
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            notifyDataSetChanged();
         }
-    };
-
-    public TableRow getRow(){
-        return this.mRow;
     }
 }
 
