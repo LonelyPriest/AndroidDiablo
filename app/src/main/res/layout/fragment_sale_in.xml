@@ -23,14 +23,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/please_input_retailer"
+            android:selectAllOnFocus="true"
+            android:completionThreshold="1"
+            android:gravity="center_horizontal"
             android:layout_weight="0.8" />
 
-        <ImageView
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_place_black_24dp"
+            android:drawableStart="@drawable/ic_place_black_24dp"
             android:layout_weight="0.2"
-            android:contentDescription="@string/shop"/>
+            android:text="@string/shop"/>
         <EditText
             android:id="@+id/sale_selected_shop"
             android:focusable="false"
@@ -67,7 +70,10 @@
             android:id="@+id/sale_select_employee"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:spinnerMode="dropdown"
             android:layout_weight="0.8"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -76,95 +82,12 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-            android:src="@drawable/ic_insert_comment_black_24dp"
-            android:contentDescription="@string/comment" />
-
-        <EditText
-            android:id="@+id/sale_comment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/comment"
-            android:layout_weight="1.15"/>
-
-
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:src="@drawable/ic_money_off_black_24dp"
-            android:contentDescription="@string/money_off"/>
-        <EditText
-            android:id="@+id/sale_cash"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/cash"
-            android:textColor="@color/colorPrimary"
-            android:inputType="numberSigned|numberDecimal"
-            android:layout_weight="0.8"/>
-
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:src="@drawable/ic_credit_card_black_24dp"
-            android:contentDescription="@string/card" />
-        <EditText
-            android:id="@+id/sale_card"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/card"
-            android:textColor="@color/colorPrimary"
-            android:inputType="numberSigned|numberDecimal"
-            android:layout_weight="0.8" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:src="@drawable/ic_network_wifi_black_24dp"
-            android:contentDescription="@string/wire" />
-        <EditText
-            android:id="@+id/sale_wire"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/wire"
-            android:textColor="@color/colorPrimary"
-            android:inputType="numberSigned|numberDecimal"
-            android:layout_weight="0.8" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:src="@drawable/ic_attach_money_black_24dp"
-            android:contentDescription="@string/balace" />
-        <EditText
-            android:id="@+id/sale_balance"
-            android:focusable="false"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/balace"
-            android:layout_weight="0.8" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:src="@drawable/ic_local_airport_black_24dp"
-            android:contentDescription="@string/amount" />
+            android:drawableStart="@drawable/ic_local_airport_black_24dp"
+            android:text="@string/amount" />
 
         <EditText
             android:id="@+id/sale_total"
@@ -172,44 +95,87 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:hint="@string/amount"
-            android:layout_weight="1.15"/>
-
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:src="@drawable/ic_remove_circle_outline_black_24dp"
-            android:contentDescription="@string/verificate"/>
-        <EditText
-            android:id="@+id/sale_verificate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/verificate"
-            android:inputType="numberSigned|numberDecimal"
+            android:textColor="@color/red"
+            android:gravity="center_horizontal"
             android:layout_weight="0.8"/>
 
-
-        <ImageView
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-            android:src="@drawable/ic_attach_money_black_24dp"
-            android:contentDescription="@string/should_pay" />
+            android:drawableStart="@drawable/ic_attach_money_black_24dp"
+            android:text="@string/should_pay" />
         <EditText
             android:id="@+id/sale_should_pay"
             android:focusable="false"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/should_pay"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center_horizontal"
             android:layout_weight="0.8" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:drawableStart="@drawable/ic_attach_money_black_24dp"
+            android:text="@string/cash" />
+        <EditText
+            android:id="@+id/sale_cash"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/cash"
+            android:textColor="@color/red"
+            android:inputType="numberSigned|numberDecimal"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.8"/>
 
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-            android:src="@drawable/ic_attach_money_black_24dp"
-            android:contentDescription="@string/has_pay" />
+            android:src="@drawable/ic_insert_comment_black_24dp"
+            android:contentDescription="@string/comment" />
+        <EditText
+            android:id="@+id/sale_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/comment"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.8"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:drawableStart="@drawable/ic_attach_money_black_24dp"
+            android:text="@string/retailer_balance" />
+        <EditText
+            android:id="@+id/sale_balance"
+            android:focusable="false"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/retailer_balance"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.8" />
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:drawableStart="@drawable/ic_attach_money_black_24dp"
+            android:text="@string/has_pay" />
         <EditText
             android:id="@+id/sale_has_pay"
             android:focusable="false"
@@ -217,6 +183,93 @@
             android:layout_height="wrap_content"
             android:hint="@string/has_pay"
             android:textColor="@color/colorPrimary"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.8" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:drawableStart="@drawable/ic_credit_card_black_24dp"
+            android:text="@string/card" />
+        <EditText
+            android:id="@+id/sale_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/card"
+            android:textColor="@color/red"
+            android:inputType="numberSigned|numberDecimal"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.8" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:src="@drawable/ic_directions_subway_black_24dp"
+            android:contentDescription="@string/cost_on_sale"/>
+        <Spinner
+            android:id="@+id/sale_select_extra_cost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:spinnerMode="dropdown"
+            android:layout_weight="0.8"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:drawableStart="@drawable/ic_attach_money_black_24dp"
+            android:text="@string/retailer_accBalance" />
+        <EditText
+            android:id="@+id/sale_accbalance"
+            android:focusable="false"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/retailer_accBalance"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.8" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:drawableStart="@drawable/ic_remove_circle_outline_black_24dp"
+            android:text="@string/verificate"/>
+        <EditText
+            android:id="@+id/sale_verificate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/verificate"
+            android:inputType="numberSigned|numberDecimal"
+            android:gravity="center_horizontal"
+            android:textColor="@color/red"
+            android:layout_weight="0.8"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:drawableStart="@drawable/ic_network_wifi_black_24dp"
+            android:text="@string/wire" />
+        <EditText
+            android:id="@+id/sale_wire"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/wire"
+            android:textColor="@color/red"
+            android:inputType="numberSigned|numberDecimal"
+            android:gravity="center_horizontal"
             android:layout_weight="0.8" />
 
         <ImageView
@@ -224,21 +277,29 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:src="@drawable/ic_attach_money_black_24dp"
-            android:contentDescription="@string/acc_balance" />
+            android:contentDescription="@string/cost_on_sale"/>
         <EditText
-            android:id="@+id/sale_accbalance"
-            android:focusable="false"
+            android:id="@+id/sale_extra_cost"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/acc_balance"
-            android:layout_weight="0.8" />
+            android:hint="@string/cost_on_sale"
+            android:inputType="numberSigned|numberDecimal"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.8"/>
     </LinearLayout>
+
+    <TableLayout
+        android:id="@+id/t_sale_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+    </TableLayout>
 
     <ScrollView
         android:id="@+id/t_sale_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
+        android:layout_marginTop="10dp">
         <TableLayout
             android:id="@+id/t_sale"
             android:layout_width="match_parent"

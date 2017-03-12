@@ -73,6 +73,10 @@
         <item>价5</item>
     </string-array>
 
+    <string-array name="extra_cost_on_sale">
+        <item>代付运费</item>
+    </string-array>
+
     <string name="order_id">序号</string>
     <string name="rsn">单号</string>
     <string name="transe">交易</string>
@@ -140,6 +144,9 @@
     <!-- hint -->
     <string name="please_input_retailer">客户</string>
     <string name="please_input_good">货号</string>
+    <string name="retailer_balance">欠款</string>
+    <string name="retailer_accBalance">结余</string>
+    <string name="cost_on_sale">费用</string>
 
     <!-- button -->
     <string name="add">新增</string>

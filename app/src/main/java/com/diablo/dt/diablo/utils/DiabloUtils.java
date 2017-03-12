@@ -269,7 +269,7 @@ public class DiabloUtils {
             @Override
             public void afterTextChanged(Editable editable) {
                 String inputValue = editable.toString().trim();
-                payment.setPayment(inputValue);
+                    payment.setPayment(editable.toString().trim());
             }
         });
     }

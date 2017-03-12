@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -30,7 +31,6 @@ import android.widget.TextView;
 import com.diablo.dt.diablo.Client.StockClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
-import com.diablo.dt.diablo.adapter.RetailerAdapter;
 import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
 import com.diablo.dt.diablo.entity.AuthenShop;
 import com.diablo.dt.diablo.entity.DiabloEnum;
@@ -41,7 +41,9 @@ import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.entity.SaleCalc;
 import com.diablo.dt.diablo.request.MatchStockRequest;
 import com.diablo.dt.diablo.rest.StockInterface;
+import com.diablo.dt.diablo.task.MatchRetailerTask;
 import com.diablo.dt.diablo.task.MatchStockTask;
+import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.lang.ref.WeakReference;
@@ -74,20 +76,29 @@ public class SaleIn extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private DiabloUtils utils = DiabloUtils.instance();
+
     private String [] mTitles;
     private String [] mPriceType;
+    private String [] mExtraCost;
+
+    private TableLayout mSaleTableHead;
     private TableLayout mSaleTable;
     private TableRow mCurrentSelectRow;
+
     private Integer mLoginShop;
     private Integer mLoginEmployee;
-
+    private Integer mLoginRetailer;
     private Integer mSelectPrice;
 
     private List<MatchStock> mMatchStocks;
+    private Retailer mSelectRetailer;
 
     private SaleCalc mSaleCalc;
 
     private View mViewShouldPay;
+    private View mViewSaleTotal;
+    private View mViewBalance;
+    private View mViewAccBalance;
 
     public SaleIn() {
         // Required empty public constructor
@@ -121,6 +132,7 @@ public class SaleIn extends Fragment {
 
         mTitles = getResources().getStringArray(R.array.thead_sale);
         mPriceType = getResources().getStringArray(R.array.price_type_on_sale);
+        mExtraCost = getResources().getStringArray(R.array.extra_cost_on_sale);
 
         mLoginShop = Profie.getInstance().getLoginShop();
         if ( mLoginShop.equals(DiabloEnum.INVALID_INDEX) ){
@@ -130,6 +142,11 @@ public class SaleIn extends Fragment {
         mLoginEmployee = Profie.getInstance().getLoginEmployee();
         if ( mLoginEmployee.equals(DiabloEnum.INVALID_INDEX)){
             mLoginEmployee = Profie.getInstance().getEmployees().get(0).getId();
+        }
+
+        mLoginRetailer = Profie.getInstance().getLoginRetailer();
+        if (mLoginRetailer.equals(DiabloEnum.INVALID_INDEX)){
+            mLoginRetailer = Profie.getInstance().getRetailers().get(0).getId();
         }
 
         mSelectPrice = utils.toInteger(
@@ -144,26 +161,34 @@ public class SaleIn extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale_in, container, false);
 
-
-
         // retailer
-        final AutoCompleteTextView autoCompleteRetailer =
-                (AutoCompleteTextView) view.findViewById(R.id.sale_select_retailer);
+        mViewBalance = (EditText)view.findViewById(R.id.sale_balance);
+        mViewAccBalance = (EditText)view.findViewById(R.id.sale_accbalance);
 
-        RetailerAdapter retailerAdapter = new RetailerAdapter(
-                getContext(),
-                R.layout.typeahead_retailer,
-                R.id.typeahead_select_retailer,
-                Profie.getInstance().getRetailers());
+        final AutoCompleteTextView autoCompleteRetailer = (AutoCompleteTextView) view.findViewById(R.id.sale_select_retailer);
+        resetRetailerBalance(mLoginRetailer);
+        resetRetailerBalanceView();
+        autoCompleteRetailer.setText(mSelectRetailer.getName());
 
-        autoCompleteRetailer.setThreshold(1);
-        autoCompleteRetailer.setAdapter(retailerAdapter);
+        new TextChangeOnAutoComplete(autoCompleteRetailer).addListen(new TextChangeOnAutoComplete.TextWatch() {
+            @Override
+            public void afterTextChanged(String value) {
+                if (value.length() > 0) {
+                    new MatchRetailerTask(
+                            getContext(),
+                            autoCompleteRetailer,
+                            Profie.getInstance().getRetailers()).execute(value);
+                }
+            }
+        });
+
         autoCompleteRetailer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Retailer selectRetailer = (Retailer) adapterView.getItemAtPosition(i);
+                resetRetailerBalance(selectRetailer.getId());
+                resetRetailerBalanceView();
                 autoCompleteRetailer.setText(selectRetailer.getName());
-                mSaleCalc.setRetailer(selectRetailer.getId());
             }
         });
 
@@ -186,10 +211,6 @@ public class SaleIn extends Fragment {
                 R.layout.typeahead_employee,
                 R.id.typeahead_select_employee,
                 Profie.getInstance().getEmployees());
-        Integer startEmployeeIndex = Profie.getInstance().getIndexOfEmployee(mLoginEmployee);
-        employeeSpinner.setSelection(startEmployeeIndex);
-        mSaleCalc.setEmployee(Profie.getInstance().getEmployees().get(startEmployeeIndex).getNumber());
-        employeeSpinner.setAdapter(employeeAdapter);
         employeeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -202,6 +223,26 @@ public class SaleIn extends Fragment {
 
             }
         });
+        employeeSpinner.setAdapter(employeeAdapter);
+
+        // extra cost
+        final Spinner extraCostSpinner = (Spinner) view.findViewById(R.id.sale_select_extra_cost);
+        ArrayAdapter<CharSequence> extraCostAdapter = ArrayAdapter.createFromResource(
+                getContext(),
+                R.array.extra_cost_on_sale, android.R.layout.simple_spinner_item);
+        extraCostAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        extraCostSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        extraCostSpinner.setAdapter(extraCostAdapter);
 
         // comment
         EditText comment = (EditText) view.findViewById(R.id.sale_comment);
@@ -215,6 +256,7 @@ public class SaleIn extends Fragment {
         // haspay
         final EditText hasPay = (EditText) view.findViewById(R.id.sale_has_pay);
         mViewShouldPay = (EditText) view.findViewById(R.id.sale_should_pay);
+        mViewSaleTotal = (EditText) view.findViewById(R.id.sale_total);
 
         // cash
         EditText cash = (EditText) view.findViewById(R.id.sale_cash);
@@ -223,18 +265,24 @@ public class SaleIn extends Fragment {
             public void setPayment(String param) {
                 mSaleCalc.setCash(utils.toFloat(param));
                 mSaleCalc.resetHasPay();
+                calcRetailerAccBalance();
+
                 utils.setEditTextValue(hasPay, mSaleCalc.getHasPay());
+                resetRetailerAccBalanceView();
             }
         });
 
         // card
-        EditText card = (EditText) view.findViewById(R.id.sale_card);
+        final EditText card = (EditText) view.findViewById(R.id.sale_card);
         utils.addTextChangedListenerOfPayment(card, new DiabloUtils.Payment() {
             @Override
             public void setPayment(String param) {
                 mSaleCalc.setCard(utils.toFloat(param));
                 mSaleCalc.resetHasPay();
+                calcRetailerAccBalance();
+
                 utils.setEditTextValue(hasPay, mSaleCalc.getHasPay());
+                resetRetailerAccBalanceView();
             }
         });
 
@@ -245,7 +293,10 @@ public class SaleIn extends Fragment {
             public void setPayment(String param) {
                 mSaleCalc.setWire(utils.toFloat(param));
                 mSaleCalc.resetHasPay();
+                calcRetailerAccBalance();
+
                 utils.setEditTextValue(hasPay, mSaleCalc.getHasPay());
+                resetRetailerAccBalanceView();
             }
         });
 
@@ -255,12 +306,16 @@ public class SaleIn extends Fragment {
             @Override
             public void setPayment(String param) {
                 mSaleCalc.setVerificate(utils.toFloat(param));
+                // resetShouldPay();
+                calcRetailerAccBalance();
+                resetRetailerAccBalanceView();
             }
         });
 
         // table
         mSaleTable = (TableLayout)view.findViewById(R.id.t_sale);
-        mSaleTable.addView(addHead());
+        mSaleTableHead = (TableLayout)view.findViewById(R.id.t_sale_head) ;
+        mSaleTableHead.addView(addHead());
         this.getAllMatchStock();
 
         return view;
@@ -347,7 +402,6 @@ public class SaleIn extends Fragment {
         // lp.setMargins(0, 0, 10, 0);
         final TableRow row = new TableRow(this.getContext());
         // row.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
         final DiabloUtils utils = DiabloUtils.getInstance();
 
         for (String title: mTitles){
@@ -356,39 +410,25 @@ public class SaleIn extends Fragment {
                 final AutoCompleteTextView eCell = new AutoCompleteTextView(this.getContext());
                 eCell.setRawInputType(InputType.TYPE_CLASS_NUMBER);
                 eCell.requestFocus();
-                // utils.focusAndShowKeyboard(getContext(), eCell);
-                // eCell.setTextColor(Color.BLACK);
-                // right-margin
                 lp.weight = 2f;
                 eCell.setLayoutParams(lp);
                 eCell.setHint(R.string.please_input_good);
+                eCell.setHintTextColor(Color.GRAY);
                 eCell.setTextSize(18);
                 eCell.setTextColor(Color.BLACK);
-
                 eCell.setDropDownWidth(500);
-                eCell.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED);
-
-                eCell.setDropDownHorizontalOffset((eCell.getMeasuredWidth() * 3));
-                // eCell.setDropDownVerticalOffset(-1000);
                 eCell.setThreshold(1);
+//              eCell.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED);
+//
+//               eCell.setDropDownHorizontalOffset((eCell.getMeasuredWidth() * 3));
+                // eCell.setDropDownVerticalOffset(-1000);
 
-                eCell.addTextChangedListener(new TextWatcher() {
+                new TextChangeOnAutoComplete(eCell).addListen(new TextChangeOnAutoComplete.TextWatch() {
                     @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        if (editable.toString().length() > 0){
-                            new MatchStockTask(getContext(), eCell, row, mMatchStocks).execute(editable.toString());
+                    public void afterTextChanged(String value) {
+                        if (value.length() > 0) {
+                            new MatchStockTask(getContext(), eCell, row, mMatchStocks).execute(value);
                         }
-
                     }
                 });
 
@@ -839,19 +879,21 @@ public class SaleIn extends Fragment {
                         row.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View view) {
-                                f.setCurrentSelectRow((TableRow) view);
+                                // f.setCurrentSelectRow((TableRow) view);
                                 view.showContextMenu();
+
                                 return true;
                             }
                         });
 
-                        mFragment.get().registerForContextMenu(row);
+                        f.registerForContextMenu(row);
                         f.addEmptyRowToTable();
                     }
+                    f.resetShouldPay();
+                    f.calcRetailerAccBalance();
 
-                    Float shouldPay = f.resetShouldPay();
-                    DiabloUtils.instance().setEditTextValue((EditText) f.getShouldPay(), shouldPay);
-
+                    f.setCalcView();
+                    f.resetRetailerAccBalanceView();
                 }
             }
         }
@@ -871,23 +913,24 @@ public class SaleIn extends Fragment {
     }
 
     public void addEmptyRowToTable(){
-        mSaleTable.addView(addEmptyRow(), 1);
+        mSaleTable.addView(addEmptyRow(), 0);
     }
 
     public Integer getValidRowId(){
         Integer rows = 0;
         for (int i=0; i<mSaleTable.getChildCount(); i++){
             View row = mSaleTable.getChildAt(i);
-            if (row instanceof TableRow) rows++;
+            if (row instanceof TableRow) {
+                rows++;
+            }
         }
-
-        // head does not include
-        return rows - 1;
+        return rows;
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        setCurrentSelectRow((TableRow) v);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_on_sale, menu);
     }
@@ -898,7 +941,7 @@ public class SaleIn extends Fragment {
 
         if (getResources().getString(R.string.delete) == item.getTitle()){
             mCurrentSelectRow.removeAllViews();
-            for (int i=2; i<mSaleTable.getChildCount(); i++){
+            for (int i=1; i<mSaleTable.getChildCount(); i++){
                 View row = mSaleTable.getChildAt(i);
                 if (row instanceof TableRow) {
                     if (((SaleStock)row.getTag()).getOrderId().equals(orderId)){
@@ -909,8 +952,8 @@ public class SaleIn extends Fragment {
             }
 
             // reorder
-            Integer newOrderId = mSaleTable.getChildCount() - 2;
-            for (int i=2; i<mSaleTable.getChildCount(); i++){
+            Integer newOrderId = mSaleTable.getChildCount() - 1;
+            for (int i=1; i<mSaleTable.getChildCount(); i++){
                 View row = mSaleTable.getChildAt(i);
                 if (row instanceof TableRow) {
                     ((SaleStock)row.getTag()).setOrderId(newOrderId);
@@ -918,9 +961,15 @@ public class SaleIn extends Fragment {
                     newOrderId--;
                 }
             }
+
+            resetShouldPay();
+            calcRetailerAccBalance();
+
+            setCalcView();
+            resetRetailerAccBalanceView();
+            DiabloUtils.instance().makeToast(getContext(), mSaleTable.getChildCount());
         }
 
-        DiabloUtils.instance().makeToast(getContext(), mSaleTable.getChildCount());
         return true;
     }
 
@@ -928,35 +977,64 @@ public class SaleIn extends Fragment {
         this.mCurrentSelectRow = selectRow;
     }
 
-    public View getShouldPay(){
-        return mViewShouldPay;
+    public void setCalcView(){
+        utils.setEditTextValue((EditText)mViewShouldPay, mSaleCalc.getShouldPay());
+        utils.setEditTextValue(
+                (EditText) mViewSaleTotal,
+                Math.abs(mSaleCalc.getSellTotal()) + Math.abs(mSaleCalc.getRejectTotal()));
     }
 
-    public Float resetShouldPay(){
+    public void calcRetailerAccBalance(){
+        if (mSaleCalc.getShouldPay() != null){
+            Float accBalance = mSaleCalc.getBalance()
+                    + mSaleCalc.getShouldPay()
+                    - mSaleCalc.getVerificate()
+                    - mSaleCalc.getHasPay();
+            mSaleCalc.setAccBalance(accBalance);
+        }
+    }
+
+    public void resetRetailerBalance(Integer retailerId){
+        mSaleCalc.setRetailer(retailerId);
+        mSelectRetailer = Profie.getInstance().getRetailerById(retailerId);
+        mSaleCalc.setBalance(mSelectRetailer.getBalance());
+        mSaleCalc.setAccBalance(mSelectRetailer.getBalance());
+    }
+
+    public void resetRetailerAccBalanceView(){
+        utils.setEditTextValue((EditText)mViewAccBalance, mSaleCalc.getAccBalance());
+    }
+
+    public void resetRetailerBalanceView(){
+        utils.setEditTextValue((EditText)mViewBalance, mSaleCalc.getBalance());
+        utils.setEditTextValue((EditText)mViewAccBalance, mSaleCalc.getAccBalance());
+    }
+
+    public void resetShouldPay(){
         // calculate stock
         Integer total     = 0;
         Integer sell      = 0;
         Integer reject    = 0;
         Float   shouldPay = 0f;
 
-        for (int i=2; i<mSaleTable.getChildCount(); i++){
+        for (int i=1; i<mSaleTable.getChildCount(); i++){
             View row = mSaleTable.getChildAt(i);
-            SaleStock stock = (SaleStock)row.getTag();
-            total += stock.getSaleTotal();
-            if (stock.getSaleTotal() > 0){
-                sell += stock.getSaleTotal();
-            } else {
-                reject += stock.getSaleTotal();
-            }
+            if (row instanceof TableRow){
+                SaleStock stock = (SaleStock)row.getTag();
+                total += stock.getSaleTotal();
+                if (stock.getSaleTotal() > 0){
+                    sell += stock.getSaleTotal();
+                } else {
+                    reject += stock.getSaleTotal();
+                }
 
-            shouldPay += stock.getSalePrice();
+                shouldPay += stock.getSalePrice();
+            }
         }
 
         mSaleCalc.setTotal(total);
         mSaleCalc.setSellTotal(sell);
         mSaleCalc.setRejectTotal(reject);
         mSaleCalc.setShouldPay(shouldPay);
-
-        return mSaleCalc.getShouldPay();
     }
 }

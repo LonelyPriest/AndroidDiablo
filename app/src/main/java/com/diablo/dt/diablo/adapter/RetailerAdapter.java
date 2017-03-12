@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.entity.Retailer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,18 +21,14 @@ public class RetailerAdapter extends ArrayAdapter<Retailer> {
     private Context context;
     private Integer resource;
     private Integer textViewResourceId;
-    private List<Retailer> items;
-    private List<Retailer> tempItems;
-    private List<Retailer> suggestions;
+    private List<Retailer> filterRetailers;
 
-    public RetailerAdapter(Context context, Integer resource, Integer textViewResourceId, List<Retailer> items) {
-        super(context, resource, textViewResourceId, items);
+    public RetailerAdapter(Context context, Integer resource, Integer textViewResourceId, List<Retailer> retailers) {
+        super(context, resource, textViewResourceId, retailers);
         this.context = context;
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
-        this.items = items;
-        tempItems = new ArrayList<Retailer>(items); // this makes the difference.
-        suggestions = new ArrayList<Retailer>();
+        this.filterRetailers = retailers;
     }
 
     @NonNull
@@ -45,11 +40,10 @@ public class RetailerAdapter extends ArrayAdapter<Retailer> {
             view = inflater.inflate(resource, parent, false);
         }
 
-        Retailer people = items.get(position);
-        if (people != null) {
-            TextView lblName = (TextView) view.findViewById(textViewResourceId);
-            if (lblName != null)
-                lblName.setText(people.getName());
+        Retailer retailer = filterRetailers.get(position);
+        if (retailer != null) {
+            TextView retailerView = (TextView) view.findViewById(textViewResourceId);
+                retailerView.setText(retailer.getName());
         }
         return view;
     }
@@ -71,32 +65,15 @@ public class RetailerAdapter extends ArrayAdapter<Retailer> {
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            if (constraint != null) {
-                suggestions.clear();
-                for (Retailer people : tempItems) {
-                    if (people.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                        suggestions.add(people);
-                    }
-                }
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = suggestions;
-                filterResults.count = suggestions.size();
-                return filterResults;
-            } else {
-                return new FilterResults();
-            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filterRetailers;
+            filterResults.count = filterRetailers.size();
+            return filterResults;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            List<Retailer> filterList = (ArrayList<Retailer>) results.values;
-            if (results.count > 0) {
-                clear();
-                for (Retailer people : filterList) {
-                    add(people);
-                    notifyDataSetChanged();
-                }
-            }
+           notifyDataSetChanged();
         }
     };
 }

@@ -44,13 +44,15 @@ public class SaleCalc {
     private Integer rejectTotal;
 
     public SaleCalc(){
-        this.retailer = -1;
+        retailer = -1;
 
         cash = 0f;
         card = 0f;
         wire = 0f;
-
         verificate = 0f;
+
+        // shouldPay = 0f;
+        hasPay = 0f;
     };
 
     public Integer getRetailer() {

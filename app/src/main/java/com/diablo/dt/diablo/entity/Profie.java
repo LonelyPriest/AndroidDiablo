@@ -77,10 +77,10 @@ public class Profie {
     private List<AuthenShop> mSortRepo = new ArrayList<>();
 
     // employee
-    private List<Employee> mEmployees;
+    private List<Employee> mEmployees = new ArrayList<>();
 
     // retailer
-    private List<Retailer> mRetailers;
+    private List<Retailer> mRetailers = new ArrayList<>();
 
     // base settings
     private List<BaseSetting> mBaseSettings;
@@ -260,7 +260,13 @@ public class Profie {
     * Employee
     * */
     public void setEmployees(List<Employee> employees) {
-        this.mEmployees = employees;
+        for(Employee e: employees){
+            if (e.getId().equals(mLoginEmployee)){
+                mEmployees.add(0, e);
+            } else {
+                mEmployees.add(e);
+            }
+        }
     }
 
     public List<Employee> getEmployees(){
@@ -283,11 +289,25 @@ public class Profie {
     * Retailer
     * */
     public void setRetailers(List<Retailer> retailers){
-        this.mRetailers = retailers;
+        for (Retailer r: retailers){
+            mRetailers.add(r);
+        }
     }
 
     public List<Retailer> getRetailers(){
         return this.mRetailers;
+    }
+
+    public Retailer getRetailerById(Integer retailerId){
+        Retailer retailer = null;
+        for (Integer i=0; i<mRetailers.size(); i++){
+            if (mRetailers.get(i).getId().equals(retailerId)){
+                retailer = mRetailers.get(i);
+                break;
+            }
+        }
+
+        return retailer;
     }
 
     /*

@@ -44,10 +44,6 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
         this.mRow = row;
     }
 
-//    public TableRow getRow(){
-//        return this.mRow;
-//    }
-
     @NonNull
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {
@@ -80,25 +76,6 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
             FilterResults filterResults = new FilterResults();
             filterResults.values = filterStocks;
             filterResults.count = filterStocks.size();
-//            if (charSequence == null || charSequence.length() == 0){
-//                filterResults.values = filterStocks;
-//                filterResults.count = filterStocks.size();
-//                notifyDataSetChanged();
-//            }
-//            else  {
-//
-//                final List<MatchStock> matchStocks = new ArrayList<MatchStock>();
-//
-//                for (MatchStock obj : filterStocks){
-//                    if (obj.getName().contains(charSequence.toString())) {
-//                        matchStocks.add(obj);
-//                    }
-//                }
-//
-//                filterResults.values = matchStocks;
-//                filterResults.count = matchStocks.size();
-//            }
-
             return filterResults;
         }
 

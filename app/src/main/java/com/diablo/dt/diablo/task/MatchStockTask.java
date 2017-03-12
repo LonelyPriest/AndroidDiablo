@@ -51,12 +51,15 @@ public class MatchStockTask extends AsyncTask<String, Void, Void> {
                 mMatchedStocks,
                 mRow);
 
+        mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
+
         if (mMatchedStocks.size() > 10){
-            mCompleteView.setDropDownVerticalOffset(-1000);
+            mCompleteView.setDropDownVerticalOffset(-9999);
         }
         else{
-            mCompleteView.setDropDownVerticalOffset(-100);
+            mCompleteView.setDropDownVerticalOffset(-mCompleteView.getHeight());
         }
+
         mCompleteView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
