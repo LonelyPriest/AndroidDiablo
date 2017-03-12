@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,14 +80,14 @@ public class SaleIn extends Fragment {
 
     private String [] mTitles;
     private String [] mPriceType;
-    private String [] mExtraCost;
+    // private String [] mExtraCost;
 
-    private TableLayout mSaleTableHead;
+    // private TableLayout mSaleTableHead;
     private TableLayout mSaleTable;
     private TableRow mCurrentSelectRow;
 
     private Integer mLoginShop;
-    private Integer mLoginEmployee;
+    // private Integer mLoginEmployee;
     private Integer mLoginRetailer;
     private Integer mSelectPrice;
 
@@ -132,17 +133,17 @@ public class SaleIn extends Fragment {
 
         mTitles = getResources().getStringArray(R.array.thead_sale);
         mPriceType = getResources().getStringArray(R.array.price_type_on_sale);
-        mExtraCost = getResources().getStringArray(R.array.extra_cost_on_sale);
+        // mExtraCost = getResources().getStringArray(R.array.extra_cost_on_sale);
 
         mLoginShop = Profie.getInstance().getLoginShop();
         if ( mLoginShop.equals(DiabloEnum.INVALID_INDEX) ){
             mLoginShop = Profie.getInstance().getAvailableShopIds().get(0);
         }
 
-        mLoginEmployee = Profie.getInstance().getLoginEmployee();
-        if ( mLoginEmployee.equals(DiabloEnum.INVALID_INDEX)){
-            mLoginEmployee = Profie.getInstance().getEmployees().get(0).getId();
-        }
+//        mLoginEmployee = Profie.getInstance().getLoginEmployee();
+//        if ( mLoginEmployee.equals(DiabloEnum.INVALID_INDEX)){
+//            mLoginEmployee = Profie.getInstance().getEmployees().get(0).getId();
+//        }
 
         mLoginRetailer = Profie.getInstance().getLoginRetailer();
         if (mLoginRetailer.equals(DiabloEnum.INVALID_INDEX)){
@@ -160,6 +161,7 @@ public class SaleIn extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale_in, container, false);
+        setHasOptionsMenu(true);
 
         // retailer
         mViewBalance = (EditText)view.findViewById(R.id.sale_balance);
@@ -225,7 +227,7 @@ public class SaleIn extends Fragment {
         });
         employeeSpinner.setAdapter(employeeAdapter);
 
-        // extra cost
+        // extra cost type
         final Spinner extraCostSpinner = (Spinner) view.findViewById(R.id.sale_select_extra_cost);
         ArrayAdapter<CharSequence> extraCostAdapter = ArrayAdapter.createFromResource(
                 getContext(),
@@ -234,7 +236,7 @@ public class SaleIn extends Fragment {
         extraCostSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                
+                mSaleCalc.setExtraCostType(i);
             }
 
             @Override
@@ -243,6 +245,17 @@ public class SaleIn extends Fragment {
             }
         });
         extraCostSpinner.setAdapter(extraCostAdapter);
+
+        // extra cost
+        final EditText extraCost = (EditText) view.findViewById(R.id.sale_extra_cost);
+        utils.addTextChangedListenerOfPayment(extraCost, new DiabloUtils.Payment() {
+            @Override
+            public void setPayment(String param) {
+                mSaleCalc.setExtraCost(utils.toFloat(param));
+                calcRetailerAccBalance();
+                resetRetailerAccBalanceView();
+            }
+        });
 
         // comment
         EditText comment = (EditText) view.findViewById(R.id.sale_comment);
@@ -314,9 +327,8 @@ public class SaleIn extends Fragment {
 
         // table
         mSaleTable = (TableLayout)view.findViewById(R.id.t_sale);
-        mSaleTableHead = (TableLayout)view.findViewById(R.id.t_sale_head) ;
-        mSaleTableHead.addView(addHead());
-        this.getAllMatchStock();
+        ((TableLayout)view.findViewById(R.id.t_sale_head)).addView(addHead());
+        getAllMatchStock();
 
         return view;
     }
@@ -455,6 +467,8 @@ public class SaleIn extends Fragment {
                                 DiabloUtils.instance().setTextViewValue((TextView) cell, s.getDiscount());
                             }
                             else if (getResources().getString(R.string.fprice).equals(name)){
+                                cell.setFocusableInTouchMode(true);
+                                cell.setFocusable(true);
                                 DiabloUtils.instance().setEditTextValue((EditText)cell, s.getFinalPrice());
                                 ((EditText)cell).addTextChangedListener(new TextWatcher() {
                                     @Override
@@ -478,6 +492,8 @@ public class SaleIn extends Fragment {
                             }
 
                             if (getResources().getString(R.string.amount).equals(name)){
+                                cell.setFocusableInTouchMode(true);
+                                cell.setFocusable(true);
                                 cell.requestFocus();
                             }
 
@@ -513,6 +529,7 @@ public class SaleIn extends Fragment {
                 cell.setTextSize(18);
                 cell.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_SIGNED);
                 cell.setTag(title);
+                cell.setFocusable(false);
 
                 cell.addTextChangedListener(new TextWatcher() {
                     private Timer timer=new Timer();
@@ -577,6 +594,7 @@ public class SaleIn extends Fragment {
                 cell.setTextSize(18);
                 cell.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 cell.setTag(title);
+                cell.setFocusable(false);
                 row.addView(cell);
             }
             else if (getResources().getString(R.string.comment).equals(title)){
@@ -973,6 +991,14 @@ public class SaleIn extends Fragment {
         return true;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.sale_in_action, menu);
+        MenuItem save = menu.findItem(R.id.sale_in_save);
+        // ((Button)save.getActionView()).setTextColor(Color.BLUE);
+    }
+
     public void setCurrentSelectRow(TableRow selectRow) {
         this.mCurrentSelectRow = selectRow;
     }
@@ -988,6 +1014,7 @@ public class SaleIn extends Fragment {
         if (mSaleCalc.getShouldPay() != null){
             Float accBalance = mSaleCalc.getBalance()
                     + mSaleCalc.getShouldPay()
+                    + mSaleCalc.getExtraCost()
                     - mSaleCalc.getVerificate()
                     - mSaleCalc.getHasPay();
             mSaleCalc.setAccBalance(accBalance);

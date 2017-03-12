@@ -27,6 +27,10 @@ public class SaleCalc {
     private Float card;
     @SerializedName("wire")
     private Float wire;
+    @SerializedName("e_pay_type")
+    private Integer extraCostType;
+    @SerializedName("e_pay")
+    private Float extraCost;
     @SerializedName("verificate")
     private Float verificate;
     @SerializedName("should_pay")
@@ -49,6 +53,7 @@ public class SaleCalc {
         cash = 0f;
         card = 0f;
         wire = 0f;
+        extraCost = 0f;
         verificate = 0f;
 
         // shouldPay = 0f;
@@ -127,6 +132,22 @@ public class SaleCalc {
         this.wire = wire;
     }
 
+    public Integer getExtraCostType() {
+        return extraCostType;
+    }
+
+    public void setExtraCostType(Integer extraCostType) {
+        this.extraCostType = extraCostType;
+    }
+
+    public Float getExtraCost() {
+        return extraCost;
+    }
+
+    public void setExtraCost(Float extraCost) {
+        this.extraCost = extraCost;
+    }
+
     public Float getVerificate() {
         return verificate;
     }
@@ -147,12 +168,8 @@ public class SaleCalc {
         return hasPay;
     }
 
-//    public void setHasPay(Float pay) {
-//        this.hasPay = pay;
-//    }
-
     public void resetHasPay(){
-        this.hasPay = cash + card + wire;
+        hasPay = cash + card + wire;
     }
 
     public Float getAccBalance() {

@@ -154,5 +154,12 @@
     <string name="btn_delete">删除</string>
     <string name="btn_modify">修改</string>
     <string name="delete">删除</string>
+    <string name="btn_save">保存</string>
+    <string name="btn_draft">草稿</string>
+    <string name="btn_next">下一单</string>
+    <string name="btn_back">返回</string>
+
+    <string name="slide_sale_manager">销售管理</string>
+    <string name="slide_stock_manager">采购管理</string>
 
 </resources>
