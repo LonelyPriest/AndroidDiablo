@@ -79,6 +79,7 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
             }
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             List<Employee> filterList = (ArrayList<Employee>) results.values;

@@ -3,6 +3,7 @@ package com.diablo.dt.diablo.utils;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.AuthenShop;
-import com.diablo.dt.diablo.entity.DiabloEnum;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Retailer;
 
@@ -87,37 +87,40 @@ public class DiabloUtils {
         return r;
     }
 
-    public TableRow addCell(Context context, TableRow row, String value){
+    public View addCell(Context context, TableRow row, String value){
         TextView cell = new TextView(context);
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
         cell.setText(value);
         cell.setTextSize(22);
-        cell.setHeight(125);
+        cell.setHeight(110);
+        cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
-        return  row;
+        return  cell;
     }
 
-    public TableRow addCell(Context context, TableRow row, Integer value){
+    public View addCell(Context context, TableRow row, Integer value){
         TextView cell = new TextView(context);
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
         cell.setText(toString(value));
         cell.setTextSize(22);
-        cell.setHeight(125);
+        cell.setHeight(110);
+        cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
-        return  row;
+        return  cell;
     }
 
-    public TableRow addCell(Context context, TableRow row, float value){
+    public View addCell(Context context, TableRow row, float value){
         TextView cell = new TextView(context);
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
         cell.setText(toString(value));
         cell.setTextSize(22);
-        cell.setHeight(125);
+        cell.setHeight(110);
+        cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
-        return  row;
+        return  cell;
     }
 
     public void setTextViewValue(TextView view, Integer value){

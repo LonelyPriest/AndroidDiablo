@@ -6,10 +6,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -18,20 +16,23 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.Client.WSaleClient;
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.entity.DiabloEnum;
+import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.entity.Profie;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
-import com.diablo.dt.diablo.utils.DiabloHorizontalScroll;
-import com.diablo.dt.diablo.utils.DiabloOnGestureLintener;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,7 +68,8 @@ public class SaleDetail extends Fragment {
     * */
     TableRow[] mRows;
 
-    private TableLayout mSaleDetailTable;
+    private android.widget.TableLayout mSaleDetailTable;
+    private SwipyRefreshLayout mSaleDetailTableSwipe;
 
     private Context mContext;
 
@@ -119,41 +121,88 @@ public class SaleDetail extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
 
+        ((MainActivity)getActivity()).selectMenuItem(2);
+
         mSaleDetailTable = (TableLayout) view.findViewById(R.id.t_sale_detail);
-        mSaleDetailTable.setClickable(false);
 
-        DiabloHorizontalScroll hScrollView = (DiabloHorizontalScroll)view.findViewById(R.id.t_sale_detail_hscroll);
+//        final DiabloTableSwipRefreshLayout tableSwipe = (DiabloTableSwipRefreshLayout)view.findViewById(R.id.t_sale_detail_swipe);
+//        tableSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                DiabloUtils.instance().makeToast(getContext(), "refresh");
+//                tableSwipe.setRefreshing(false);
+//            }
+//        });
+//
+//        tableSwipe.setOnLoadListener(new DiabloTableSwipRefreshLayout.OnLoadListener() {
+//            @Override
+//            public void onLoad() {
+//                DiabloUtils.instance().makeToast(getContext(), "onLoad");
+//                tableSwipe.setLoading(false);
+//            }
+//        });
 
-        GestureDetectorCompat gesture = new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(hScrollView) {
+        mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
+        mSaleDetailTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
+
+        mSaleDetailTableSwipe.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
-            public boolean actionOfOnFlint(View view, Integer direction) {
-                // DiabloUtils u = DiabloUtils.getInstance();
-                if (direction.equals(DiabloEnum.SWIP_LEFT)){
-                    return false;
-                } else if (direction.equals(DiabloEnum.SWIP_RIGHT)){
-                    return false;
-                } else if (direction.equals(DiabloEnum.SWIP_TOP)){
-                    // u.debugDialog(mContext, "滑动", "方向->top");
+            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+                if (direction == SwipyRefreshLayoutDirection.TOP){
+                    if (!mCurrentPage.equals(DiabloEnum.DEFAULT_PAGE)){
+                        mCurrentPage--;
+                        mRequest.setPage(mCurrentPage);
+                        pageChanged();
+                    } else {
+                        DiabloUtils.instance().makeToast(
+                                getContext(),
+                                getContext().getResources().getString(R.string.refresh_none));
+                        mSaleDetailTableSwipe.setRefreshing(false);
+                    }
+
+                } else if (direction == SwipyRefreshLayoutDirection.BOTTOM){
                     mCurrentPage++;
                     mRequest.setPage(mCurrentPage);
                     pageChanged();
-                    return true;
-                } else if (direction.equals(DiabloEnum.SWIP_DOWN)){
-                    // u.debugDialog(mContext, "滑动", "方向->down");
-                    mCurrentPage--;
-                    if (!mCurrentPage.equals(0)){
-                        mRequest.setPage(mCurrentPage);
-                        view.postInvalidateOnAnimation();
-                        pageChanged();
-                    }
-                    return true;
-                } else {
-                    return false;
                 }
             }
         });
 
-        hScrollView.setGestureDetect(gesture);
+
+        // mSaleDetailTable.setClickable(false);
+
+//        DiabloHorizontalScroll hScrollView = (DiabloHorizontalScroll)view.findViewById(R.id.t_sale_detail_hscroll);
+//
+//        GestureDetectorCompat gesture = new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(hScrollView) {
+//            @Override
+//            public boolean actionOfOnFlint(View view, Integer direction) {
+//                // DiabloUtils u = DiabloUtils.getInstance();
+//                if (direction.equals(DiabloEnum.SWIP_LEFT)){
+//                    return false;
+//                } else if (direction.equals(DiabloEnum.SWIP_RIGHT)){
+//                    return false;
+//                } else if (direction.equals(DiabloEnum.SWIP_TOP)){
+//                    // u.debugDialog(mContext, "滑动", "方向->top");
+//                    mCurrentPage++;
+//                    mRequest.setPage(mCurrentPage);
+//                    pageChanged();
+//                    return true;
+//                } else if (direction.equals(DiabloEnum.SWIP_DOWN)){
+//                    // u.debugDialog(mContext, "滑动", "方向->down");
+//                    mCurrentPage--;
+//                    if (!mCurrentPage.equals(0)){
+//                        mRequest.setPage(mCurrentPage);
+//                        view.postInvalidateOnAnimation();
+//                        pageChanged();
+//                    }
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+//            }
+//        });
+
+//        hScrollView.setGestureDetect(gesture);
 
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
@@ -171,6 +220,9 @@ public class SaleDetail extends Fragment {
 
             row.addView(cell);
         }
+
+        // TableLayout head = ((TableLayout)view.findViewById(R.id.t_sale_detail_head));
+        // head.addView(row);
 
         mSaleDetailTable.addView(row);
 
@@ -234,6 +286,8 @@ public class SaleDetail extends Fragment {
             @Override
             public void onResponse(Call<SaleDetailResponse> call, Response<SaleDetailResponse> response) {
                 Log.d("SALE_DETAIL %s", response.toString());
+
+                mSaleDetailTableSwipe.setRefreshing(false);
                 SaleDetailResponse base = response.body();
                 List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
 
@@ -241,7 +295,7 @@ public class SaleDetail extends Fragment {
                 DiabloUtils u = DiabloUtils.getInstance();
                 // mSaleDetailTable.removeAllViews();
                 for (Integer i=0; i<mRequest.getCount(); i++){
-                    TableRow row = mRows[i];
+                    final TableRow row = mRows[i];
                     // TableRow row = new TableRow(mContext);
                     // mSaleDetailTable.addView(row);
                     row.removeAllViews();
@@ -298,36 +352,53 @@ public class SaleDetail extends Fragment {
                         }
                     }
 
-                    final GestureDetectorCompat gesture =
-                            new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(row){
-                                @Override
-                                public void actionOfOnLongpress(View view) {
-                                    DiabloUtils u = DiabloUtils.getInstance();
-                                    u.debugDialog(mContext, "方向", "长按");
-                                }
+//                    final GestureDetectorCompat gesture =
+//                            new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(row){
+//                                @Override
+//                                public void actionOfOnLongpress(View view) {
+//                                    DiabloUtils u = DiabloUtils.getInstance();
+//                                    u.debugDialog(mContext, "方向", "长按");
+//                                }
+//
+//                                @Override
+//                                public boolean actionOfOnDown(View view) {
+//                                    for(Integer i=0; i<mSaleDetailTable.getChildCount(); i++){
+//                                        View child = mSaleDetailTable.getChildAt(i);
+//                                        if (child instanceof TableRow){
+//                                            child.setBackgroundResource(R.drawable.table_row_bg);
+//                                        }
+//                                    }
+//                                    view.setBackgroundColor(getResources().getColor(R.color.bluelight));
+//                                    SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
+//                                    return true;
+//                                }
+//                            });
+//
+//                    row.setOnTouchListener(new View.OnTouchListener(){
+//                        @Override
+//                        public boolean onTouch(View view, MotionEvent motionEvent) {
+//                            gesture.onTouchEvent(motionEvent);
+//                            return true;
+//                        }
+//
+//
+//                    });
 
-                                @Override
-                                public boolean actionOfOnDown(View view) {
-                                    for(Integer i=0; i<mSaleDetailTable.getChildCount(); i++){
-                                        View child = mSaleDetailTable.getChildAt(i);
-                                        if (child instanceof TableRow){
-                                            child.setBackgroundResource(R.drawable.table_row_bg);
-                                        }
-                                    }
-                                    view.setBackgroundColor(getResources().getColor(R.color.bluelight));
-                                    SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
-                                    return true;
-                                }
-                            });
-
-                    row.setOnTouchListener(new View.OnTouchListener(){
+                    row.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
-                        public boolean onTouch(View view, MotionEvent motionEvent) {
-                            gesture.onTouchEvent(motionEvent);
+                        public boolean onLongClick(View view) {
+
+                            for(Integer i=0; i<mSaleDetailTable.getChildCount(); i++){
+                                View child = mSaleDetailTable.getChildAt(i);
+                                if (child instanceof TableRow){
+                                    child.setBackgroundResource(R.drawable.table_row_bg);
+                                }
+                            }
+                            view.setBackgroundColor(getResources().getColor(R.color.bluelight));
+                            SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
+                            DiabloUtils.instance().makeToast(mContext, d.getOrderId());
                             return true;
                         }
-
-
                     });
 
                     row.setTag(detail);
@@ -346,7 +417,7 @@ public class SaleDetail extends Fragment {
 
             @Override
             public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
-
+                mSaleDetailTableSwipe.setRefreshing(false);
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.entity;
+package com.diablo.dt.diablo.utils;
 
 /**
  * Created by buxianhui on 17/2/22.
@@ -29,7 +29,7 @@ public class DiabloEnum {
 
     // pagination
     public static final Integer DEFAULT_PAGE = 1;
-    public static final Integer DEFAULT_ITEMS_PER_PAGE = 10;
+    public static final Integer DEFAULT_ITEMS_PER_PAGE = 15;
 
     // base setting
     public static final String  START_TIME = "qtime_start";
@@ -47,6 +47,16 @@ public class DiabloEnum {
     public static final Integer STARTING_SALE = 0;
     public static final Integer FINISHED_SALE = 1;
     public static final Integer UPDATING_SALE = 2;
+
+    public static final String TAG_SALE_IN = "saleIn";
+    public static final String TAG_SALE_OUT = "saleOut";
+    public static final String TAG_SALE_DETAIL = "saleDetail";
+    public static final String TAG_SALE_NOTE = "saleNote";
+
+    public static final String TAG_STOCK_IN = "stockIn";
+    public static final String TAG_STOCK_OUT = "stockOut";
+    public static final String TAG_STOCK_DETAIL = "stockDetail";
+    public static final String TAG_STOCK_NOTE = "stockNote";
 
     private DiabloEnum(){
 

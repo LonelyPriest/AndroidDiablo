@@ -3,6 +3,7 @@ package com.diablo.dt.diablo.entity;
 import android.content.Context;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 
 import java.util.ArrayList;
 import java.util.List;

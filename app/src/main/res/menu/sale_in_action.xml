@@ -3,17 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/sale_in_back"
         android:title="@string/btn_back"
-        app:showAsAction="ifRoom" />
+        android:icon="@drawable/ic_arrow_back_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
+    <item android:id="@+id/sale_in_money_off"
+        android:title="@string/money_off"
+        android:icon="@drawable/ic_directions_run_black_24dp"
+        app:showAsAction="ifRoom|withText" />
 
     <item android:id="@+id/sale_in_draft"
         android:title="@string/btn_draft"
-        app:showAsAction="ifRoom" />
+        android:icon="@drawable/ic_drafts_black_24dp"
+        app:showAsAction="ifRoom|withText" />
 
     <item android:id="@+id/sale_in_save"
         android:title="@string/btn_save"
-        app:showAsAction="ifRoom" />
+        android:icon="@drawable/ic_file_download_black_24dp"
+        app:showAsAction="ifRoom|withText" />
 
     <item android:id="@+id/sale_in_next"
         android:title="@string/btn_next"
-        app:showAsAction="ifRoom"/>
+        android:icon="@drawable/ic_add_circle_black_24dp"
+        app:showAsAction="ifRoom|withText"/>
 </menu>

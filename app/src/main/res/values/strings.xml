@@ -33,10 +33,7 @@
 
     <string-array name="thead_sale_detail">
         <item>序号</item>
-        <item>单号</item>
         <item>交易</item>
-        <item>店铺</item>
-        <item>店员</item>
         <item>客户</item>
         <item>数量</item>
         <item>帐户欠款</item>
@@ -48,6 +45,9 @@
         <item>现金</item>
         <item>刷卡</item>
         <item>汇款</item>
+        <item>店铺</item>
+        <item>店员</item>
+        <item>单号</item>
         <item>日期</item>
     </string-array>
 
@@ -161,5 +161,7 @@
 
     <string name="slide_sale_manager">销售管理</string>
     <string name="slide_stock_manager">采购管理</string>
+
+    <string name="refresh_none">己到达第一页，无需刷新</string>
 
 </resources>

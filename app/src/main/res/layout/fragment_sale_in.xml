@@ -68,6 +68,7 @@
             android:contentDescription="@string/employee"/>
         <Spinner
             android:id="@+id/sale_select_employee"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -127,6 +128,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/cash"
             android:textColor="@color/red"
+            android:selectAllOnFocus="true"
             android:inputType="numberSigned|numberDecimal"
             android:gravity="center_horizontal"
             android:layout_weight="0.8"/>
@@ -142,7 +144,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/comment"
-            android:gravity="center_horizontal"
             android:layout_weight="0.8"/>
 
     </LinearLayout>
@@ -199,6 +200,7 @@
             android:hint="@string/card"
             android:textColor="@color/red"
             android:inputType="numberSigned|numberDecimal"
+            android:selectAllOnFocus="true"
             android:gravity="center_horizontal"
             android:layout_weight="0.8" />
 
@@ -211,6 +213,7 @@
         <Spinner
             android:id="@+id/sale_select_extra_cost"
             android:layout_width="0dp"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:spinnerMode="dropdown"
@@ -252,6 +255,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/verificate"
             android:inputType="numberSigned|numberDecimal"
+            android:selectAllOnFocus="true"
             android:gravity="center_horizontal"
             android:textColor="@color/red"
             android:layout_weight="0.8"/>
@@ -269,6 +273,7 @@
             android:hint="@string/wire"
             android:textColor="@color/red"
             android:inputType="numberSigned|numberDecimal"
+            android:selectAllOnFocus="true"
             android:gravity="center_horizontal"
             android:layout_weight="0.8" />
 
@@ -284,7 +289,6 @@
             android:layout_height="wrap_content"
             android:hint="@string/cost_on_sale"
             android:inputType="numberSigned|numberDecimal"
-            android:gravity="center_horizontal"
             android:layout_weight="0.8"/>
     </LinearLayout>
 

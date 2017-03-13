@@ -4,11 +4,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.diablo.dt.diablo.entity.DiabloEnum;
-
 import static android.R.attr.direction;
-import static com.diablo.dt.diablo.entity.DiabloEnum.SWIPE_MIN_DISTANCE;
-import static com.diablo.dt.diablo.entity.DiabloEnum.SWIPE_THRESHOLD_VELOCITY;
 
 /**
  * Created by buxianhui on 17/2/25.

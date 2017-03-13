@@ -19,7 +19,7 @@ import com.diablo.dt.diablo.Client.RightClient;
 import com.diablo.dt.diablo.Client.WLoginClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.BaseSetting;
-import com.diablo.dt.diablo.entity.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profie;
 import com.diablo.dt.diablo.entity.Retailer;

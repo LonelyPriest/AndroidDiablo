@@ -3,7 +3,7 @@ package com.diablo.dt.diablo.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -21,38 +22,70 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.fragment.SaleDetail;
 import com.diablo.dt.diablo.fragment.SaleIn;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 
 public class MainActivity extends AppCompatActivity implements
         SaleDetail.OnFragmentInteractionListener,
         SaleIn.OnFragmentInteractionListener{
 
-    private NavigationView navigationView;
+    private NavigationView mNavigationView;
     private DrawerLayout drawer;
     private Toolbar toolbar;
-    private FloatingActionButton fab;
 
     // index to identify current nav menu item
-    public static int navItemIndex = 0;
-
-    // tags used to attach the fragments
-    private static final String TAG_SALE_IN = "saleIn";
-    private static final String TAG_SALE_OUT = "saleOut";
-    private static final String TAG_SALE_DETAIL = "saleDetail";
-    private static final String TAG_SALE_NOTE = "saleNote";
-
-    private static final String TAG_STOCK_IN = "stockIn";
-    private static final String TAG_STOCK_OUT = "stockOut";
-    private static final String TAG_STOCK_DETAIL = "stockDetail";
-    private static final String TAG_STOCK_NOTE = "stockNote";
-
-    public static String CURRENT_TAG = TAG_SALE_IN;
+    private static SparseArray<NavigationTag> mNavTagMap = new SparseArray<>();
+    private NavigationTag mCurrentNavTag;
 
     // toolbar titles respected to selected nav menu item
-    private String[] activityTitles;
+    private String[] mActivityTitles;
 
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
+
+    private class NavigationTag {
+        private Integer titleIndex;
+        private String tag;
+        private @IdRes Integer resId;
+
+        private NavigationTag(Integer titleIndex, String tag, @IdRes Integer resId){
+            this.titleIndex = titleIndex;
+            this.tag = tag;
+            this.resId = resId;
+        }
+
+        private Integer getTitleIndex() {
+            return titleIndex;
+        }
+
+        private void setTitleIndex(Integer titleIndex) {
+            this.titleIndex = titleIndex;
+        }
+
+        private String getTag() {
+            return tag;
+        }
+
+        private void setTag(String tag) {
+            this.tag = tag;
+        }
+
+        private Integer getResId() {
+            return resId;
+        }
+
+        private void setResId(Integer resId) {
+            this.resId = resId;
+        }
+
+        private MenuItem getMenuItem(){
+            return MainActivity.this.mNavigationView.getMenu().findItem(resId);
+        }
+
+        private String getTitleName(){
+            return mActivityTitles[titleIndex];
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,29 +97,35 @@ public class MainActivity extends AppCompatActivity implements
         mHandler = new Handler();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        // fab = (FloatingActionButton) findViewById(R.id.fab);
-
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         // load toolbar titles from string resources
-        activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
+        mActivityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
 
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+
+        mNavTagMap.put(0, new NavigationTag(0, DiabloEnum.TAG_SALE_IN, R.id.nav_sale_in));
+        mNavTagMap.put(1, new NavigationTag(1, DiabloEnum.TAG_SALE_OUT, R.id.nav_sale_out));
+        mNavTagMap.put(2, new NavigationTag(2, DiabloEnum.TAG_SALE_DETAIL, R.id.nav_sale_detail));
+        mNavTagMap.put(3, new NavigationTag(3, DiabloEnum.TAG_SALE_NOTE, R.id.nav_sale_note));
+
+        mNavTagMap.put(4, new NavigationTag(4, DiabloEnum.TAG_STOCK_IN, R.id.nav_stock_in));
+        mNavTagMap.put(5, new NavigationTag(5, DiabloEnum.TAG_STOCK_OUT, R.id.nav_stock_out));
+        mNavTagMap.put(6, new NavigationTag(6, DiabloEnum.TAG_STOCK_DETAIL, R.id.nav_stock_detail));
+        mNavTagMap.put(7, new NavigationTag(7, DiabloEnum.TAG_STOCK_OUT, R.id.nav_stock_note));
 
         // initializing navigation menu
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            navItemIndex = 0;
-            CURRENT_TAG = TAG_SALE_IN;
-            MenuItem item = navigationView.getMenu().findItem(R.id.nav_sale_in);
+            selectMenuItem(2);
             loadHomeFragment();
         }
+    }
+
+    public void selectMenuItem(Integer menuItemIndex){
+        mCurrentNavTag = mNavTagMap.get(menuItemIndex);
+        getSupportActionBar().setTitle(mCurrentNavTag.getTitleName());
+        uncheckAllMenuItems();
+        mCurrentNavTag.getMenuItem().setChecked(true);
     }
 
 
@@ -99,15 +138,12 @@ public class MainActivity extends AppCompatActivity implements
         selectNavMenu();
 
         // set toolbar title
-        setToolbarTitle();
+        // setActionBarTitle(mCurrentNavTag.getTitleIndex());
 
         // if user select the current navigation menu again, don't do anything
         // just close the navigation drawer
-        if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
+        if (getSupportFragmentManager().findFragmentByTag(mCurrentNavTag.getTag()) != null) {
             drawer.closeDrawers();
-
-            // show or hide the fab button
-            // toggleFab();
             return;
         }
 
@@ -122,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
                 Fragment fragment = getHomeFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
+                fragmentTransaction.replace(R.id.frame, fragment, mCurrentNavTag.getTag());
                 fragmentTransaction.commitAllowingStateLoss();
             }
         };
@@ -143,34 +179,31 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private Fragment getHomeFragment() {
-        switch (navItemIndex) {
+        switch (mCurrentNavTag.getTitleIndex()) {
             case 0:
-                // sale detail
-                SaleIn saleInFragment = new SaleIn();
-                return  saleInFragment;
-
+                return  new SaleIn();
             case 2:
-                SaleDetail saleDetailFragment = new SaleDetail();
-                return saleDetailFragment;
+                return new SaleDetail();
 
             default:
                 return new SaleDetail();
         }
     }
 
-    private void setToolbarTitle() {
-        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
-    }
+//    public void setActionBarTitle() {
+//        getSupportActionBar().setTitle(mCurrentNavTag.getTitleName());
+//        // getSupportActionBar().setTitle(activityTitles[mNavItemIndex]);
+//    }
 
     private void selectNavMenu() {
-        // navigationView.getMenu().getItem(navItemIndex).setChecked(true);
-        // navigationView.getMenu().getItem(navItemIndex).getSubMenu().getItem()
+        // navigationView.getMenu().getItem(mNavItemIndex).setChecked(true);
+        // navigationView.getMenu().getItem(mNavItemIndex).getSubMenu().getItem()
         // Integer size = navigationView.getMenu().size();
     }
 
     private void setUpNavigationView() {
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
             // This method will trigger on item Click of navigation menu
             @Override
@@ -179,24 +212,19 @@ public class MainActivity extends AppCompatActivity implements
                 switch (menuItem.getItemId()) {
                     //Replacing the main content with ContentFragment Which is our Inbox View;
                     case R.id.nav_sale_in:
-                        navItemIndex = 0;
-                        CURRENT_TAG = TAG_SALE_IN;
+                        selectMenuItem(0);
                         break;
                     case R.id.nav_sale_out:
-                        navItemIndex = 1;
-                        CURRENT_TAG = TAG_SALE_OUT;
+                        selectMenuItem(1);
                         break;
                     case R.id.nav_sale_detail:
-                        navItemIndex = 2;
-                        CURRENT_TAG = TAG_SALE_DETAIL;
+                        selectMenuItem(2);
                         break;
                     case R.id.nav_sale_note:
-                        navItemIndex = 3;
-                        CURRENT_TAG = TAG_SALE_NOTE;
+                        selectMenuItem(3);
                         break;
                     case R.id.nav_stock_in:
-                        navItemIndex = 4;
-                        CURRENT_TAG = TAG_STOCK_IN;
+                        selectMenuItem(4);
                         break;
 //                    case R.id.nav_about_us:
 //                        // launch new intent instead of loading fragment
@@ -209,17 +237,9 @@ public class MainActivity extends AppCompatActivity implements
 //                        drawer.closeDrawers();
 //                        return true;
                     default:
-                        navItemIndex = 0;
+                        selectMenuItem(0);
+                        break;
                 }
-
-                uncheckAllMenuItems(navigationView);
-                //Checking if the item is in checked state or not, if not make it in checked state
-//                if (menuItem.isChecked()) {
-//                    menuItem.setChecked(false);
-//                } else {
-//                    menuItem.setChecked(true);
-//                }
-                menuItem.setChecked(true);
 
                 loadHomeFragment();
 
@@ -249,8 +269,8 @@ public class MainActivity extends AppCompatActivity implements
         actionBarDrawerToggle.syncState();
     }
 
-    private void uncheckAllMenuItems(NavigationView navigationView) {
-        final Menu menu = navigationView.getMenu();
+    private void uncheckAllMenuItems() {
+        final Menu menu = mNavigationView.getMenu();
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             if (item.hasSubMenu()) {
@@ -269,23 +289,22 @@ public class MainActivity extends AppCompatActivity implements
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawers();
-            return;
         }
 
         // This code loads home fragment when back key is pressed
         // when user is in other fragment than home
-        if (shouldLoadHomeFragOnBackPress) {
-            // checking if user is on other navigation menu
-            // rather than home
-            if (navItemIndex != 0) {
-                navItemIndex = 0;
-                CURRENT_TAG = TAG_SALE_IN;
-                loadHomeFragment();
-                return;
-            }
-        }
+//        if (shouldLoadHomeFragOnBackPress) {
+//            // checking if user is on other navigation menu
+//            // rather than home
+//            if (mNavItemIndex != 0) {
+//                mNavItemIndex = 0;
+//                CURRENT_TAG = TAG_SALE_IN;
+//                loadHomeFragment();
+//                return;
+//            }
+//        }
 
-        super.onBackPressed();
+        // super.onBackPressed();
     }
 
     @Override
@@ -293,14 +312,14 @@ public class MainActivity extends AppCompatActivity implements
         // Inflate the menu; this adds items to the action bar if it is present.
 
         // show menu only when home fragment is selected
-        if (navItemIndex == 0) {
+        // if (mNavItemIndex == 0) {
             // getMenuInflater().inflate(R.menu.main, menu);
-        }
+        // }
 
         // when fragment is notifications, load the menu created for notifications
-        if (navItemIndex == 3) {
+        // if (mNavItemIndex == 3) {
             // getMenuInflater().inflate(R.menu.notifications, menu);
-        }
+        // }
         return true;
     }
 
@@ -333,12 +352,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // show or hide the fab
-    private void toggleFab() {
-        if (navItemIndex == 0)
-            fab.show();
-        else
-            fab.hide();
-    }
+//    private void toggleFab() {
+//        if (mNavItemIndex == 0)
+//            fab.show();
+//        else
+//            fab.hide();
+//    }
 
     @Override
     public void onSaleDetailFragmentInteraction(Uri uri){

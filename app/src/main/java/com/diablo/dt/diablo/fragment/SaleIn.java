@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,7 +36,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
 import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
 import com.diablo.dt.diablo.entity.AuthenShop;
-import com.diablo.dt.diablo.entity.DiabloEnum;
+import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profie;
@@ -45,6 +47,7 @@ import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.task.MatchRetailerTask;
 import com.diablo.dt.diablo.task.MatchStockTask;
 import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.lang.ref.WeakReference;
@@ -71,8 +74,8 @@ public class SaleIn extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+//    private String mParam1;
+//    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -87,7 +90,6 @@ public class SaleIn extends Fragment {
     private TableRow mCurrentSelectRow;
 
     private Integer mLoginShop;
-    // private Integer mLoginEmployee;
     private Integer mLoginRetailer;
     private Integer mSelectPrice;
 
@@ -100,6 +102,11 @@ public class SaleIn extends Fragment {
     private View mViewSaleTotal;
     private View mViewBalance;
     private View mViewAccBalance;
+    private View mViewCash;
+
+    private SparseArray<DiabloButton> mButtons= new SparseArray<>();
+
+    private Integer mRowSize;
 
     public SaleIn() {
         // Required empty public constructor
@@ -123,13 +130,23 @@ public class SaleIn extends Fragment {
         return fragment;
     }
 
+    public void incRow (){
+        mRowSize++;
+    }
+
+    public void decRow (){
+        mRowSize--;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        mRowSize = 0;
 
         mTitles = getResources().getStringArray(R.array.thead_sale);
         mPriceType = getResources().getStringArray(R.array.price_type_on_sale);
@@ -153,6 +170,12 @@ public class SaleIn extends Fragment {
         mSelectPrice = utils.toInteger(
                 Profie.getInstance().getConfig(mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
 
+        mButtons.put(R.id.sale_in_back, new DiabloButton(R.id.sale_in_back));
+        mButtons.put(R.id.sale_in_money_off, new DiabloButton(R.id.sale_in_money_off));
+        mButtons.put(R.id.sale_in_draft, new DiabloButton(R.id.sale_in_draft));
+        mButtons.put(R.id.sale_in_save, new DiabloButton(R.id.sale_in_save));
+        mButtons.put(R.id.sale_in_next, new DiabloButton(R.id.sale_in_next));
+
         mSaleCalc = new SaleCalc();
     }
 
@@ -162,6 +185,7 @@ public class SaleIn extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale_in, container, false);
         setHasOptionsMenu(true);
+        getActivity().supportInvalidateOptionsMenu();
 
         // retailer
         mViewBalance = (EditText)view.findViewById(R.id.sale_balance);
@@ -268,12 +292,12 @@ public class SaleIn extends Fragment {
 
         // haspay
         final EditText hasPay = (EditText) view.findViewById(R.id.sale_has_pay);
-        mViewShouldPay = (EditText) view.findViewById(R.id.sale_should_pay);
-        mViewSaleTotal = (EditText) view.findViewById(R.id.sale_total);
+        mViewShouldPay = view.findViewById(R.id.sale_should_pay);
+        mViewSaleTotal = view.findViewById(R.id.sale_total);
 
         // cash
-        EditText cash = (EditText) view.findViewById(R.id.sale_cash);
-        utils.addTextChangedListenerOfPayment(cash, new DiabloUtils.Payment() {
+        mViewCash = view.findViewById(R.id.sale_cash);
+        utils.addTextChangedListenerOfPayment((EditText) mViewCash, new DiabloUtils.Payment() {
             @Override
             public void setPayment(String param) {
                 mSaleCalc.setCash(utils.toFloat(param));
@@ -672,9 +696,12 @@ public class SaleIn extends Fragment {
         call.enqueue(new Callback<List<MatchStock>>() {
             @Override
             public void onResponse(Call<List<MatchStock>> call, Response<List<MatchStock>> response) {
-                Log.d("LOGIN:", "success to get retailer");
+                Log.d("LO  GIN:", "success to get retailer");
                 mMatchStocks = response.body();
                 mSaleTable.addView(addEmptyRow());
+                mButtons.get(R.id.sale_in_back).enable();
+                mButtons.get(R.id.sale_in_draft).enable();
+                getActivity().invalidateOptionsMenu();
             }
 
             @Override
@@ -904,6 +931,7 @@ public class SaleIn extends Fragment {
                             }
                         });
 
+                        f.incRow();
                         f.registerForContextMenu(row);
                         f.addEmptyRowToTable();
                     }
@@ -932,6 +960,13 @@ public class SaleIn extends Fragment {
 
     public void addEmptyRowToTable(){
         mSaleTable.addView(addEmptyRow(), 0);
+        if (mRowSize == 1){
+            mButtons.get(R.id.sale_in_money_off).enable();
+            mButtons.get(R.id.sale_in_save).enable();
+            mButtons.get(R.id.sale_in_next).enable();
+            // mButtons.get(R.id.sale_in_draft).enable();
+            getActivity().invalidateOptionsMenu();
+        }
     }
 
     public Integer getValidRowId(){
@@ -980,6 +1015,14 @@ public class SaleIn extends Fragment {
                 }
             }
 
+            decRow();
+            if (mRowSize == 0){
+                mButtons.get(R.id.sale_in_save).disable();
+                mButtons.get(R.id.sale_in_money_off).disable();
+                mButtons.get(R.id.sale_in_next).disable();
+                // mButtons.get(R.id.sale_in_draft).disable();
+                getActivity().invalidateOptionsMenu();
+            }
             resetShouldPay();
             calcRetailerAccBalance();
 
@@ -992,11 +1035,42 @@ public class SaleIn extends Fragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        // super.onPrepareOptionsMenu(menu);
+        for (Integer i=0; i<mButtons.size(); i++){
+            Integer key = mButtons.keyAt(i);
+            DiabloButton button = mButtons.get(key);
+            menu.findItem(button.getResId()).setEnabled(button.isEnabled());
+        }
+
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.sale_in_action, menu);
-        MenuItem save = menu.findItem(R.id.sale_in_save);
+        // MenuItem save = menu.findItem(R.id.sale_in_save);
         // ((Button)save.getActionView()).setTextColor(Color.BLUE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.sale_in_money_off:
+                utils.setEditTextValue((EditText) mViewCash, 0);
+                return true;
+            case R.id.sale_in_back:
+                Fragment fragment = new SaleDetail();
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.frame, fragment, DiabloEnum.TAG_SALE_DETAIL);
+                fragmentTransaction.commitAllowingStateLoss();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     public void setCurrentSelectRow(TableRow selectRow) {
