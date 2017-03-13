@@ -48,7 +48,8 @@ public class SaleDetail extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private String [] mTitles;
+    private String [] mTableHeads;
+    private String[]  mSaleTypes;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -106,7 +107,9 @@ public class SaleDetail extends Fragment {
         }
 
         mContext = this.getContext();
-        mTitles = getResources().getStringArray(R.array.thead_sale_detail);
+        mTableHeads = getResources().getStringArray(R.array.thead_sale_detail);
+        mSaleTypes = getResources().getStringArray(R.array.sale_type);
+
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mRequest = new SaleDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
         mRequestCondition = mRequest.new Condition();
@@ -122,7 +125,6 @@ public class SaleDetail extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
 
         ((MainActivity)getActivity()).selectMenuItem(2);
-
         mSaleDetailTable = (TableLayout) view.findViewById(R.id.t_sale_detail);
 
 //        final DiabloTableSwipRefreshLayout tableSwipe = (DiabloTableSwipRefreshLayout)view.findViewById(R.id.t_sale_detail_swipe);
@@ -208,7 +210,7 @@ public class SaleDetail extends Fragment {
         lp.setMargins(0, 0, 25, 0);
 
         TableRow row = new TableRow(this.getContext());
-        for (String title: mTitles){
+        for (String title: mTableHeads){
             TextView cell = new TextView(this.getContext());
             // font
             cell.setTypeface(null, Typeface.BOLD);
@@ -216,7 +218,7 @@ public class SaleDetail extends Fragment {
             // right-margin
             cell.setLayoutParams(lp);
             cell.setText(title);
-            cell.setTextSize(24);
+            cell.setTextSize(20);
 
             row.addView(cell);
         }
@@ -301,14 +303,17 @@ public class SaleDetail extends Fragment {
                     row.removeAllViews();
                     SaleDetailResponse.SaleDetail detail = details.get(i);
 
-                    for (String title: mTitles){
+                    for (String title: mTableHeads){
                         if (getResources().getString(R.string.order_id).equals(title)) {
                             detail.setOrderId(orderId);
                             u.addCell(mContext, row, orderId++);
                         } else if (getResources().getString(R.string.rsn).equals(title)){
                             u.addCell(mContext, row, detail.getRsn());
                         } else if(getResources().getString(R.string.transe).equals(title)){
-                            u.addCell(mContext, row, detail.getType());
+                            TextView cell = u.addCell(mContext, row, mSaleTypes[detail.getType()]);
+                            if (detail.getType().equals(DiabloEnum.SALE_OUT)){
+                                cell.setTextColor(getResources().getColor(R.color.red));
+                            }
                         } else if(getResources().getString(R.string.shop).equals(title)){
                             u.addCell(mContext,
                                     row,
@@ -384,10 +389,9 @@ public class SaleDetail extends Fragment {
 //
 //                    });
 
-                    row.setOnLongClickListener(new View.OnLongClickListener() {
+                    row.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public boolean onLongClick(View view) {
-
+                        public void onClick(View view) {
                             for(Integer i=0; i<mSaleDetailTable.getChildCount(); i++){
                                 View child = mSaleDetailTable.getChildAt(i);
                                 if (child instanceof TableRow){
@@ -395,6 +399,13 @@ public class SaleDetail extends Fragment {
                                 }
                             }
                             view.setBackgroundColor(getResources().getColor(R.color.bluelight));
+                            SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
+                            DiabloUtils.instance().makeToast(mContext, d.getOrderId());
+                        }
+                    });
+                    row.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
                             SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
                             DiabloUtils.instance().makeToast(mContext, d.getOrderId());
                             return true;

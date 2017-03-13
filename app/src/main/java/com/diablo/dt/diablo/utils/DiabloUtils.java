@@ -87,36 +87,43 @@ public class DiabloUtils {
         return r;
     }
 
-    public View addCell(Context context, TableRow row, String value){
+    public TextView addCell(Context context, TableRow row, String value){
         TextView cell = new TextView(context);
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
+        // cell.setTextColor(context.getResources().getColor(R.color.black));
         cell.setText(value);
-        cell.setTextSize(22);
+        cell.setTextSize(18);
         cell.setHeight(110);
         cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
         return  cell;
     }
 
-    public View addCell(Context context, TableRow row, Integer value){
+    public TextView addCell(Context context, TableRow row, Integer value){
         TextView cell = new TextView(context);
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
+        if (value < 0) {
+            cell.setTextColor(context.getResources().getColor(R.color.red));
+        }
         cell.setText(toString(value));
-        cell.setTextSize(22);
+        cell.setTextSize(20);
         cell.setHeight(110);
         cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
         return  cell;
     }
 
-    public View addCell(Context context, TableRow row, float value){
+    public TextView addCell(Context context, TableRow row, float value){
         TextView cell = new TextView(context);
         TableRow.LayoutParams lp = new TableRow.LayoutParams();
         lp.setMargins(0, 0, 25, 0);
+        if (value < 0f) {
+            cell.setTextColor(context.getResources().getColor(R.color.red));
+        }
         cell.setText(toString(value));
-        cell.setTextSize(22);
+        cell.setTextSize(20);
         cell.setHeight(110);
         cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);

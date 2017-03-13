@@ -58,6 +58,9 @@ public class DiabloEnum {
     public static final String TAG_STOCK_DETAIL = "stockDetail";
     public static final String TAG_STOCK_NOTE = "stockNote";
 
+    public static final Integer SALE_IN = 0;
+    public static final Integer SALE_OUT = 1;
+
     private DiabloEnum(){
 
     }

@@ -36,19 +36,20 @@
         <item>交易</item>
         <item>客户</item>
         <item>数量</item>
-        <item>帐户欠款</item>
+        <item>上欠</item>
         <item>应付</item>
         <item>实付</item>
         <item>核销</item>
         <item>费用</item>
-        <item>累计欠款</item>
+        <item>累欠</item>
         <item>现金</item>
         <item>刷卡</item>
         <item>汇款</item>
+        <item>日期</item>
         <item>店铺</item>
         <item>店员</item>
         <item>单号</item>
-        <item>日期</item>
+        <item>备注</item>
     </string-array>
 
     <string-array name="thead_sale">
@@ -73,6 +74,11 @@
         <item>价5</item>
     </string-array>
 
+    <string-array name="sale_type">
+        <item>开单</item>
+        <item>退货</item>
+    </string-array>
+
     <string-array name="extra_cost_on_sale">
         <item>代付运费</item>
     </string-array>
@@ -84,12 +90,12 @@
     <string name="employee">店员</string>
     <string name="retailer">客户</string>
     <string name="amount">数量</string>
-    <string name="balace">帐户欠款</string>
+    <string name="balace">上欠</string>
     <string name="should_pay">应付</string>
     <string name="has_pay">实付</string>
     <string name="verificate">核销</string>
     <string name="epay">费用</string>
-    <string name="acc_balance">累计欠款</string>
+    <string name="acc_balance">累欠</string>
     <string name="cash">现金</string>
     <string name="card">刷卡</string>
     <string name="wire">汇款</string>

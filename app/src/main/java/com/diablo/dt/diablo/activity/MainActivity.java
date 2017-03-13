@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements
         mNavTagMap.put(4, new NavigationTag(4, DiabloEnum.TAG_STOCK_IN, R.id.nav_stock_in));
         mNavTagMap.put(5, new NavigationTag(5, DiabloEnum.TAG_STOCK_OUT, R.id.nav_stock_out));
         mNavTagMap.put(6, new NavigationTag(6, DiabloEnum.TAG_STOCK_DETAIL, R.id.nav_stock_detail));
-        mNavTagMap.put(7, new NavigationTag(7, DiabloEnum.TAG_STOCK_OUT, R.id.nav_stock_note));
+        mNavTagMap.put(7, new NavigationTag(7, DiabloEnum.TAG_STOCK_NOTE, R.id.nav_stock_note));
 
         // initializing navigation menu
         setUpNavigationView();
