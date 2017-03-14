@@ -13,15 +13,19 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.Client.BaseSettingClient;
+import com.diablo.dt.diablo.Client.WgoodClient;
 import com.diablo.dt.diablo.Client.EmployeeClient;
 import com.diablo.dt.diablo.Client.RetailerClient;
 import com.diablo.dt.diablo.Client.RightClient;
 import com.diablo.dt.diablo.Client.WLoginClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.BaseSetting;
+import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.entity.DiabloSizeGroup;
+import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.entity.Employee;
-import com.diablo.dt.diablo.entity.Profie;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.response.LoginResponse;
 import com.diablo.dt.diablo.response.LoginUserInfoResponse;
@@ -40,6 +44,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
+    private final static String LOG_TAG = "LOGIN:";
+
     Button btnLogin;
     TextInputLayout loginWrap, passwordWrap;
     Context mContext;
@@ -53,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_main);
 
         mContext = this;
-        Profie.getInstance().setContext(this.getApplicationContext());
+        Profile.instance().setContext(this.getApplicationContext());
 
         loginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
         passwordWrap = (TextInputLayout) findViewById(R.id.login_password_holder);
@@ -78,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                            Log.d("%s", "LOGIN login success");
+                            Log.d(LOG_TAG, "success to login");
                             // AlertDialogLayout dialog = (AlertDialogLayout)findViewById(R.id.alert_dialog);
                             if (0 != response.body().getCode()){
                                 String error = DiabloError.getInstance().getError(response.body().getCode());
@@ -90,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                                         .positiveColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
                                         .show();
                             } else {
-                                Profie.getInstance().setToken(response.body().getToken());
+                                Profile.instance().setToken(response.body().getToken());
                                 // get profile from server, include login data, authen data, etc...
                                 getLoginUserInfo();
                                 // getEmployee();
@@ -142,20 +148,20 @@ public class LoginActivity extends AppCompatActivity {
     private void getLoginUserInfo(){
         RightInterface rightInterface = RightClient.getClient().create(RightInterface.class);
         Call<LoginUserInfoResponse> rightCall = rightInterface.getLoginUserInfo(
-                Profie.getInstance().getToken());
+                Profile.instance().getToken());
 
         rightCall.enqueue(new Callback<LoginUserInfoResponse>() {
             @Override
             public void onResponse(Call<LoginUserInfoResponse> call, Response<LoginUserInfoResponse> response) {
-                Log.d("LOGIN:", "success to get login user");
+                Log.d(LOG_TAG, "success to get login information");
                 LoginUserInfoResponse user = response.body();
-                Profie.getInstance().setLoginEmployee(user.getLoginEmployee());
-                Profie.getInstance().setLoginFirm(user.getLoginFirm());
-                Profie.getInstance().setLoginRetailer(user.getLoginRetailer());
-                Profie.getInstance().setLoginShop(user.getLoginShop());
-                Profie.getInstance().setLoginShops(user.getShops());
-                Profie.getInstance().setLoginRights(user.getRights());
-                Profie.getInstance().initLoginUser();
+                Profile.instance().setLoginEmployee(user.getLoginEmployee());
+                Profile.instance().setLoginFirm(user.getLoginFirm());
+                Profile.instance().setLoginRetailer(user.getLoginRetailer());
+                Profile.instance().setLoginShop(user.getLoginShop());
+                Profile.instance().setLoginShops(user.getShops());
+                Profile.instance().setLoginRights(user.getRights());
+                Profile.instance().initLoginUser();
 
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 10;
@@ -177,12 +183,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getRetailer(){
         RetailerInterface face = RetailerClient.getClient().create(RetailerInterface.class);
-        Call<List<Retailer>> call = face.listRetailer(Profie.getInstance().getToken());
+        Call<List<Retailer>> call = face.listRetailer(Profile.instance().getToken());
         call.enqueue(new Callback<List<Retailer>>() {
             @Override
             public void onResponse(Call<List<Retailer>> call, Response<List<Retailer>> response) {
-                Log.d("LOGIN:", "success to get retailer");
-                Profie.getInstance().setRetailers(response.body());
+                Log.d(LOG_TAG, "success to get retailer");
+                Profile.instance().setRetailers(response.body());
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 20;
                 message.sendToTarget();
@@ -190,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Retailer>> call, Throwable t) {
-                Log.d("LOGIN:", "failed to get retailer");
+                Log.d(LOG_TAG, "failed to get retailer");
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 21;
                 message.sendToTarget();
@@ -200,12 +206,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getEmployee(){
         EmployeeInterface face = EmployeeClient.getClient().create(EmployeeInterface.class);
-        Call<List<Employee>> call = face.listEmployee(Profie.getInstance().getToken());
+        Call<List<Employee>> call = face.listEmployee(Profile.instance().getToken());
         call.enqueue(new Callback<List<Employee>>() {
             @Override
             public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
-                Log.d("LOGIN:", "success to get employee");
-                Profie.getInstance().setEmployees(response.body());
+                Log.d(LOG_TAG, "success to get employee");
+                Profile.instance().setEmployees(response.body());
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 30;
                 message.sendToTarget();
@@ -222,12 +228,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getBaseSetting(){
         BaseSettingInterface face = BaseSettingClient.getClient().create(BaseSettingInterface.class);
-        Call<List<BaseSetting>> call = face.listBaseSetting(Profie.getInstance().getToken());
+        Call<List<BaseSetting>> call = face.listBaseSetting(Profile.instance().getToken());
         call.enqueue(new Callback<List<BaseSetting>>() {
             @Override
             public void onResponse(Call<List<BaseSetting>> call, Response<List<BaseSetting>> response) {
-                Log.d("LOGIN:", "success to get employee");
-                Profie.getInstance().setBaseSettings(response.body());
+                Log.d(LOG_TAG, "success to get base setting");
+                Profile.instance().setBaseSettings(response.body());
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 40;
                 message.sendToTarget();
@@ -243,11 +249,47 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getColor(){
+        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        Call<List<DiabloColor>> call = face.listColor(Profile.instance().getToken());
+        call.enqueue(new Callback<List<DiabloColor>>() {
+            @Override
+            public void onResponse(Call<List<DiabloColor>> call, Response<List<DiabloColor>> response) {
+                Log.d(LOG_TAG, "success to get color");
+                Profile.instance().setColors(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 50;
+                message.sendToTarget();
+            }
 
+            @Override
+            public void onFailure(Call<List<DiabloColor>> call, Throwable t) {
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 51;
+                message.sendToTarget();
+            }
+        });
     }
 
     private void getSizeGroup(){
+        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        Call<List<DiabloSizeGroup>> call = face.listSizeGroup(Profile.instance().getToken());
+        call.enqueue(new Callback<List<DiabloSizeGroup>>() {
+            @Override
+            public void onResponse(Call<List<DiabloSizeGroup>> call, Response<List<DiabloSizeGroup>> response) {
+                Log.d(LOG_TAG, "success to get size group");
+                Profile.instance().setSizeGroups(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 60;
+                message.sendToTarget();
+            }
 
+            @Override
+            public void onFailure(Call<List<DiabloSizeGroup>> call, Throwable t) {
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 61;
+                message.sendToTarget();
+            }
+        });
     }
 
 
@@ -264,29 +306,42 @@ public class LoginActivity extends AppCompatActivity {
             if (activity != null) {
                 // ...
                 switch (msg.what){
-                    case 10:
+                    case 10: // get employee
                         activity.getEmployee();
                         break;
                     case 11:
                         activity.loginError(1199);
                         break;
-                    case 30:
-                        activity.getRetailer();
-                        break;
-                    case 31:
-                        activity.loginError(1199);
-                        break;
-                    case 20:
+                    case 20: // get base setting
                         activity.getBaseSetting();
                         break;
                     case 21:
                         activity.loginError(1199);
                         break;
-                    case 40:
-                        activity.gotoMain();
+                    case 30:// get retailer
+                        activity.getRetailer();
+                        break;
+                    case 31:
+                        activity.loginError(1199);
+                        break;
+                    case 40: // color
+                        activity.getColor();
                         break;
                     case 41:
                         activity.loginError(1199);
+                        break;
+                    case 50: // size group
+                        activity.getSizeGroup();
+                        break;
+                    case 51:
+                        activity.loginError(1199);
+                    case 60:
+                        activity.gotoMain();
+                        break;
+                    case 61:
+                        activity.loginError(1199);
+                        break;
+
                     default:
                         break;
                 }

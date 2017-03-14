@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,24 +13,24 @@ import java.util.List;
  * Created by buxianhui on 17/2/24.
  */
 
-public class Profie {
-    private static Profie mPofile;
+public class Profile {
+    private static Profile mPofile;
     private static final String mSessionId = DiabloEnum.SESSION_ID;
     private static Integer mTableRows = DiabloEnum.ROW_SIZE;
 
-    private Profie() {
+    private static final String[] SIZE_TITLES = {"si", "sii", "siii", "siv", "sv", "svi"};
 
-    }
+    private Profile() {}
 
-    public static Profie getInstance() {
+    public static Profile instance() {
         if ( null == mPofile ){
-            mPofile = new Profie();
+            mPofile = new Profile();
         }
         return mPofile;
     }
 
     public static Integer getTableRows(){
-        return Profie.mTableRows;
+        return Profile.mTableRows;
     }
 
     // android context
@@ -46,7 +47,7 @@ public class Profie {
     }
 
     public void setToken(String token){
-        mToken = Profie.mSessionId + "=" + token;
+        mToken = Profile.mSessionId + "=" + token;
     }
 
     public String getToken(){
@@ -85,6 +86,12 @@ public class Profie {
 
     // base settings
     private List<BaseSetting> mBaseSettings;
+
+    // color
+    private List<DiabloColor> mColors = new ArrayList<>();
+
+    // size group
+    private List<DiabloSizeGroup> mSizeGroups = new ArrayList<>();
 
     /*
     * Login user info
@@ -345,4 +352,47 @@ public class Profie {
 
         return find;
     };
+
+    /**
+     * color
+     */
+    public void setColors(List<DiabloColor> colors) {
+        for(DiabloColor c: colors){
+            mColors.add(c);
+        }
+    }
+
+    public String getColorName(Integer colorId){
+        String name = DiabloEnum.EMPTY_STRING;
+        for (int i = 0; i < mColors.size(); i++) {
+            if (mColors.get(i).getColorId().equals(colorId)){
+                name = mColors.get(i).getName();
+                break;
+            }
+        }
+        return name;
+    }
+
+    /**
+     * Size Group
+     */
+    public void setSizeGroups(List<DiabloSizeGroup> sizeGroups){
+        for (DiabloSizeGroup s: sizeGroups){
+            mSizeGroups.add(s);
+        }
+    }
+
+    public ArrayList<String> getSortedSizes(String sizeGroups){
+        ArrayList<String> sizes = new ArrayList<>();
+        String [] groups = sizeGroups.split(DiabloEnum.SIZE_SEPARATOR);
+        for (String gId : groups) {
+            for (DiabloSizeGroup s: mSizeGroups){
+                if (DiabloUtils.instance().toInteger(gId).equals(s.getGroupId())){
+                    sizes.addAll(s.getAllSize());
+                }
+            }
+        }
+
+        return sizes;
+    }
 }

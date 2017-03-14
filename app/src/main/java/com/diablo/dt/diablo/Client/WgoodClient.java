@@ -6,14 +6,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by buxianhui on 17/3/6.
+ * Created by buxianhui on 17/3/14.
  */
 
-public class BaseSettingClient {
+public class WgoodClient {
     private static Retrofit retrofit;
-    private static final  String mUrl = "wbase/";
+    private static final  String mUrl = "wgood/";
 
-    private BaseSettingClient(){
+    private WgoodClient(){
 
     }
 

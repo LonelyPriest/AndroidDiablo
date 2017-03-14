@@ -3,7 +3,7 @@ package com.diablo.dt.diablo.utils;
 import android.content.res.Resources;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.entity.Profie;
+import com.diablo.dt.diablo.entity.Profile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class DiabloError {
 
     private static final Map<Integer, String> mErrors;
     static {
-        Resources r = Profie.getInstance().getContext().getResources();
+        Resources r = Profile.instance().getContext().getResources();
 
         mErrors = new HashMap<Integer, String>();
         mErrors.put(1101, r.getString(R.string.invalid_name_password));

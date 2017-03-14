@@ -8,14 +8,21 @@ public class DiabloEnum {
     public static final Integer TABLET = 1;
     public static final Integer ROW_SIZE = 10;
     public static final String  SESSION_ID = "qzg_dyty_session";
+    public static final String  SIZE_SEPARATOR = ",";
 
     public static final Integer INVALID_INDEX = -1;
+    public static final Integer DIABLO_FREE = 0;
+    public static final Integer DIABLO_FALSE = 0;
+    public static final Integer DIABLO_TRUE = 1;
+
 
     //shop
     public static final Integer SHOP_ONLY = 0;
     public static final Integer REPO_ONLY = 1;
     public static final Integer REPO_BAD  = 2;
     public static final Integer BIND_NONE = -1;
+
+    public static final String  EMPTY_STRING = "";
 
     // fling
     public static final Integer SWIP_NONE = 0;
@@ -48,6 +55,7 @@ public class DiabloEnum {
     public static final Integer FINISHED_SALE = 1;
     public static final Integer UPDATING_SALE = 2;
 
+    // frame tag
     public static final String TAG_SALE_IN = "saleIn";
     public static final String TAG_SALE_OUT = "saleOut";
     public static final String TAG_SALE_DETAIL = "saleDetail";
@@ -57,6 +65,8 @@ public class DiabloEnum {
     public static final String TAG_STOCK_OUT = "stockOut";
     public static final String TAG_STOCK_DETAIL = "stockDetail";
     public static final String TAG_STOCK_NOTE = "stockNote";
+
+    public static final String TAG_STOCK_SELECT = "stockSelect";
 
     public static final Integer SALE_IN = 0;
     public static final Integer SALE_OUT = 1;

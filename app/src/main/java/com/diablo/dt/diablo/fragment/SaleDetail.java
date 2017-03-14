@@ -17,11 +17,12 @@ import android.widget.TextView;
 import com.diablo.dt.diablo.Client.WSaleClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
-import com.diablo.dt.diablo.entity.Profie;
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloTableSwipeRefreshLayout;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -70,7 +71,7 @@ public class SaleDetail extends Fragment {
     TableRow[] mRows;
 
     private android.widget.TableLayout mSaleDetailTable;
-    private SwipyRefreshLayout mSaleDetailTableSwipe;
+    private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
 
     private Context mContext;
 
@@ -144,7 +145,8 @@ public class SaleDetail extends Fragment {
 //            }
 //        });
 
-        mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
+        // mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
+        mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mSaleDetailTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
         mSaleDetailTableSwipe.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
@@ -178,7 +180,7 @@ public class SaleDetail extends Fragment {
 //        GestureDetectorCompat gesture = new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(hScrollView) {
 //            @Override
 //            public boolean actionOfOnFlint(View view, Integer direction) {
-//                // DiabloUtils u = DiabloUtils.getInstance();
+//                // DiabloUtils u = DiabloUtils.instance();
 //                if (direction.equals(DiabloEnum.SWIP_LEFT)){
 //                    return false;
 //                } else if (direction.equals(DiabloEnum.SWIP_RIGHT)){
@@ -282,7 +284,7 @@ public class SaleDetail extends Fragment {
         mRequest.getCondtion().setStartTime("2016-01-01");
         mRequest.getCondtion().setEndTime("2016-12-12");
 
-        Call<SaleDetailResponse> call = mSaleRest.filterWsaleNew(Profie.getInstance().getToken(), mRequest);
+        Call<SaleDetailResponse> call = mSaleRest.filterWsaleNew(Profile.instance().getToken(), mRequest);
 
         call.enqueue(new Callback<SaleDetailResponse>() {
             @Override
@@ -318,19 +320,19 @@ public class SaleDetail extends Fragment {
                             u.addCell(mContext,
                                     row,
                                     DiabloUtils.getInstance().getShop(
-                                            Profie.getInstance().getSortShop(),
+                                            Profile.instance().getSortShop(),
                                             detail.getShop()).getName());
                         } else if (getResources().getString(R.string.employee).equals(title)){
                             u.addCell(mContext,
                                     row,
                                     DiabloUtils.getInstance().getEmployeeByNumber(
-                                            Profie.getInstance().getEmployees(),
+                                            Profile.instance().getEmployees(),
                                             detail.getEmployee()).getName());
                         } else if (getResources().getString(R.string.retailer).equals(title)){
                             u.addCell(mContext,
                                     row,
                                     DiabloUtils.getInstance().getRetailer(
-                                            Profie.getInstance().getRetailers(),
+                                            Profile.instance().getRetailers(),
                                             detail.getRetailer()).getName());
                         } else if (getResources().getString(R.string.amount).equals(title)){
                             u.addCell(mContext, row, detail.getTotal());
@@ -361,7 +363,7 @@ public class SaleDetail extends Fragment {
 //                            new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(row){
 //                                @Override
 //                                public void actionOfOnLongpress(View view) {
-//                                    DiabloUtils u = DiabloUtils.getInstance();
+//                                    DiabloUtils u = DiabloUtils.instance();
 //                                    u.debugDialog(mContext, "方向", "长按");
 //                                }
 //
@@ -407,7 +409,8 @@ public class SaleDetail extends Fragment {
                         @Override
                         public boolean onLongClick(View view) {
                             SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
-                            DiabloUtils.instance().makeToast(mContext, d.getOrderId());
+
+
                             return true;
                         }
                     });

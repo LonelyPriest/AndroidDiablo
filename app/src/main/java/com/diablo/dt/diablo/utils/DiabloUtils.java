@@ -1,6 +1,9 @@
 package com.diablo.dt.diablo.utils;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -282,5 +285,20 @@ public class DiabloUtils {
                     payment.setPayment(editable.toString().trim());
             }
         });
+    }
+
+    public void replaceFragment(FragmentManager ft, Fragment fragment, String tag){
+        FragmentTransaction fragmentTransaction = ft.beginTransaction();
+        // fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        fragmentTransaction.replace(R.id.frame_container, fragment, tag);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    public void  replaceFragmentAndAddToBackStack(FragmentManager ft, Fragment fragment, String tag){
+        FragmentTransaction fragmentTransaction = ft.beginTransaction();
+        // fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.frame_container, fragment, tag);
+        fragmentTransaction.commitAllowingStateLoss();
     }
 }

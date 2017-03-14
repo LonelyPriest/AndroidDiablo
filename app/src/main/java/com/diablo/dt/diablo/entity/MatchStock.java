@@ -80,7 +80,7 @@ public class MatchStock {
         return firmId;
     }
 
-    public String getsGroup() {
+    public String getSizeGroup() {
         return sGroup;
     }
 

@@ -18,4 +18,6 @@ public interface StockInterface {
     @POST("match_all_w_inventory")
     Call<List<MatchStock>> matchAllStock(
             @Header("cookie") String token, @Body MatchStockRequest request);
+    @POST("list_w_inventory")
+    Call <List<MatchStock>> getStock(@Header("cookie") String token);
 }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -39,9 +38,10 @@ import com.diablo.dt.diablo.entity.AuthenShop;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.MatchStock;
-import com.diablo.dt.diablo.entity.Profie;
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.entity.SaleCalc;
+import com.diablo.dt.diablo.entity.SaleStock;
 import com.diablo.dt.diablo.request.MatchStockRequest;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.task.MatchRetailerTask;
@@ -49,6 +49,7 @@ import com.diablo.dt.diablo.task.MatchStockTask;
 import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
+import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -67,7 +68,7 @@ import retrofit2.Response;
  * Use the {@link SaleIn#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SaleIn extends Fragment {
+public class SaleIn extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -152,23 +153,23 @@ public class SaleIn extends Fragment {
         mPriceType = getResources().getStringArray(R.array.price_type_on_sale);
         // mExtraCost = getResources().getStringArray(R.array.extra_cost_on_sale);
 
-        mLoginShop = Profie.getInstance().getLoginShop();
+        mLoginShop = Profile.instance().getLoginShop();
         if ( mLoginShop.equals(DiabloEnum.INVALID_INDEX) ){
-            mLoginShop = Profie.getInstance().getAvailableShopIds().get(0);
+            mLoginShop = Profile.instance().getAvailableShopIds().get(0);
         }
 
-//        mLoginEmployee = Profie.getInstance().getLoginEmployee();
+//        mLoginEmployee = Profile.instance().getLoginEmployee();
 //        if ( mLoginEmployee.equals(DiabloEnum.INVALID_INDEX)){
-//            mLoginEmployee = Profie.getInstance().getEmployees().get(0).getId();
+//            mLoginEmployee = Profile.instance().getEmployees().get(0).getId();
 //        }
 
-        mLoginRetailer = Profie.getInstance().getLoginRetailer();
+        mLoginRetailer = Profile.instance().getLoginRetailer();
         if (mLoginRetailer.equals(DiabloEnum.INVALID_INDEX)){
-            mLoginRetailer = Profie.getInstance().getRetailers().get(0).getId();
+            mLoginRetailer = Profile.instance().getRetailers().get(0).getId();
         }
 
         mSelectPrice = utils.toInteger(
-                Profie.getInstance().getConfig(mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
+                Profile.instance().getConfig(mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
 
         mButtons.put(R.id.sale_in_back, new DiabloButton(R.id.sale_in_back));
         mButtons.put(R.id.sale_in_money_off, new DiabloButton(R.id.sale_in_money_off));
@@ -203,7 +204,7 @@ public class SaleIn extends Fragment {
                     new MatchRetailerTask(
                             getContext(),
                             autoCompleteRetailer,
-                            Profie.getInstance().getRetailers()).execute(value);
+                            Profile.instance().getRetailers()).execute(value);
                 }
             }
         });
@@ -220,7 +221,7 @@ public class SaleIn extends Fragment {
 
         // shop
         EditText shopView = (EditText) view.findViewById(R.id.sale_selected_shop);
-        AuthenShop shop = DiabloUtils.getInstance().getShop(Profie.getInstance().getSortAvailableShop(), mLoginShop);
+        AuthenShop shop = DiabloUtils.getInstance().getShop(Profile.instance().getSortAvailableShop(), mLoginShop);
         shopView.setText(shop.getName());
         mSaleCalc.setShop(shop.getShop());
 
@@ -236,7 +237,7 @@ public class SaleIn extends Fragment {
                 getContext(),
                 R.layout.typeahead_employee,
                 R.id.typeahead_select_employee,
-                Profie.getInstance().getEmployees());
+                Profile.instance().getEmployees());
         employeeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -360,7 +361,7 @@ public class SaleIn extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        // DiabloUtils.getInstance().openKeyboard(getContext());
+        // DiabloUtils.instance().openKeyboard(getContext());
         // get all stocks
     }
 
@@ -516,9 +517,19 @@ public class SaleIn extends Fragment {
                             }
 
                             if (getResources().getString(R.string.amount).equals(name)){
-                                cell.setFocusableInTouchMode(true);
-                                cell.setFocusable(true);
-                                cell.requestFocus();
+                                // free color, free size
+                                if ( DiabloEnum.DIABLO_FREE.equals(s.getFree()) ){
+                                    cell.setFocusableInTouchMode(true);
+                                    cell.setFocusable(true);
+                                    cell.requestFocus();
+                                } else {
+                                    Bundle args = new Bundle();
+                                    args.putString("stock", new Gson().toJson(s));
+                                    Fragment f = new StockSelect();
+                                    f.setArguments(args);
+                                    utils.replaceFragment(getFragmentManager(), f, DiabloEnum.TAG_STOCK_SELECT);
+                                }
+
                             }
 
                         }
@@ -688,9 +699,9 @@ public class SaleIn extends Fragment {
     private void getAllMatchStock(){
         StockInterface face = StockClient.getClient().create(StockInterface.class);
         Call<List<MatchStock>> call = face.matchAllStock(
-                Profie.getInstance().getToken(),
+                Profile.instance().getToken(),
                 new MatchStockRequest(
-                        Profie.getInstance().getConfig(mLoginShop, DiabloEnum.START_TIME, DiabloUtils.getInstance().currentDate()),
+                        Profile.instance().getConfig(mLoginShop, DiabloEnum.START_TIME, DiabloUtils.getInstance().currentDate()),
                         mLoginShop,
                         DiabloEnum.USE_REPO));
         call.enqueue(new Callback<List<MatchStock>>() {
@@ -711,181 +722,7 @@ public class SaleIn extends Fragment {
         });
     }
 
-    private class SaleStock {
-        private Integer orderId;
 
-        private String styleNumber;
-        private String brand;
-        private String type;
-
-        private Integer brandId;
-        private Integer typeId;
-        private Integer stockExist;
-        private Integer selectedPrice;
-
-        private Float tagPrice;
-        private Float pkgPrice;
-        private Float price3;
-        private Float price4;
-        private Float price5;
-        private Float discount;
-        private Float finalPrice;
-
-        private Integer saleTotal;
-
-        private String comment;
-
-        private Integer state;
-
-
-        private SaleStock(MatchStock stock, Integer selectedPrice) {
-            this.styleNumber = stock.getStyleNumber();
-            this.brand = stock.getBrand();
-            this.type = stock.getType();
-            this.brandId = stock.getBrandId();
-            this.typeId = stock.getTypeId();
-            this.tagPrice = stock.getTagPrice();
-            this.pkgPrice = stock.getPkgPrice();
-            this.price3 = stock.getPrice3();
-            this.price4 = stock.getPrice4();
-            this.price5 = stock.getPrice5();
-            this.discount = stock.getDiscount();
-
-            this.selectedPrice = selectedPrice;
-            this.state = DiabloEnum.STARTING_SALE;
-        }
-
-        private String getStyleNumber() {
-            return styleNumber;
-        }
-
-        private String getBrand() {
-            return brand;
-        }
-
-        private String getType() {
-            return type;
-        }
-
-        private Integer getBrandId() {
-            return brandId;
-        }
-
-        private Integer getTypeId() {
-            return typeId;
-        }
-
-        private Integer getSelectedPrice() {
-            return selectedPrice;
-        }
-
-        private Float getTagPrice() {
-            return tagPrice;
-        }
-
-        private Float getPkgPrice() {
-            return pkgPrice;
-        }
-
-        private Float getPrice3() {
-            return price3;
-        }
-
-        private Float getPrice4() {
-            return price4;
-        }
-
-        private Float getPrice5() {
-            return price5;
-        }
-
-        private Float getDiscount() {
-            return discount;
-        }
-
-        private Integer getOrderId() {
-            return orderId;
-        }
-
-        private void setOrderId(Integer orderId) {
-            this.orderId = orderId;
-        }
-
-        private Integer getStockExist() {
-            return stockExist;
-        }
-
-        private void setStockExist(Integer stockExist) {
-            this.stockExist = stockExist;
-        }
-
-        private Integer getSaleTotal() {
-            return saleTotal;
-        }
-
-        private void setSaleTotal(Integer saleTotal) {
-            this.saleTotal = saleTotal;
-        }
-
-        private String getComment() {
-            return comment;
-        }
-
-        private void setComment(String comment) {
-            this.comment = comment;
-        }
-
-        private void setSelectedPrice(Integer selectedPrice) {
-            this.selectedPrice = selectedPrice;
-        }
-
-        private Integer getState() {
-            return state;
-        }
-
-        private void setState(Integer state) {
-            this.state = state;
-        }
-
-        private Float getValidPrice(){
-            Float price;
-            switch (mSelectPrice){
-                case 1:
-                    price = getTagPrice();
-                    break;
-                case 2:
-                    price = getPkgPrice();
-                    break;
-                case 3:
-                    price = getPrice3();
-                    break;
-                case 4:
-                    price = getPrice4();
-                    break;
-                case 5:
-                    price = getPrice5();
-                    break;
-                default:
-                    price = getTagPrice();
-                    break;
-            }
-
-            setFinalPrice(price);
-            return getFinalPrice();
-        }
-
-        private void  setFinalPrice(Float price){
-            this.finalPrice = price;
-        }
-
-        private Float getFinalPrice(){
-            return this.finalPrice;
-        }
-
-        private Float getSalePrice(){
-            return DiabloUtils.getInstance().priceWithDiscount(finalPrice, discount) * saleTotal;
-        }
-    }
 
     private static class SaleStockHandler extends Handler{
         private final static Integer SALE_TOTAL_CHANGED = 1;
@@ -1061,11 +898,7 @@ public class SaleIn extends Fragment {
                 utils.setEditTextValue((EditText) mViewCash, 0);
                 return true;
             case R.id.sale_in_back:
-                Fragment fragment = new SaleDetail();
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.frame, fragment, DiabloEnum.TAG_SALE_DETAIL);
-                fragmentTransaction.commitAllowingStateLoss();
+                utils.replaceFragment(getFragmentManager(), new SaleDetail(), DiabloEnum.TAG_SALE_DETAIL);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -1097,7 +930,7 @@ public class SaleIn extends Fragment {
 
     public void resetRetailerBalance(Integer retailerId){
         mSaleCalc.setRetailer(retailerId);
-        mSelectRetailer = Profie.getInstance().getRetailerById(retailerId);
+        mSelectRetailer = Profile.instance().getRetailerById(retailerId);
         mSaleCalc.setBalance(mSelectRetailer.getBalance());
         mSaleCalc.setAccBalance(mSelectRetailer.getBalance());
     }

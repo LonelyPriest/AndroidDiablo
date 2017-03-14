@@ -5,7 +5,7 @@
     android:orientation="vertical"
     tools:context="com.diablo.dt.diablo.fragment.SaleDetail">
 
-    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+    <com.diablo.dt.diablo.utils.DiabloTableSwipeRefreshLayout
         android:id="@+id/t_sale_detail_swipe"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
@@ -26,7 +26,31 @@
             </HorizontalScrollView>
         </ScrollView>
 
-    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+    </com.diablo.dt.diablo.utils.DiabloTableSwipeRefreshLayout>
+
+
+    <!--<com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout-->
+        <!--android:id="@+id/t_sale_detail_swipe"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+            <!--<HorizontalScrollView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
+
+                <!--<TableLayout-->
+                    <!--android:id="@+id/t_sale_detail"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content">-->
+                <!--</TableLayout>-->
+
+            <!--</HorizontalScrollView>-->
+        <!--</ScrollView>-->
+
+    <!--</com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>-->
 
 
 

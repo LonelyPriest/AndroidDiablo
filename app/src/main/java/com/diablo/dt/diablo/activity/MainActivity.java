@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,6 +22,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.fragment.SaleDetail;
 import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 public class MainActivity extends AppCompatActivity implements
         SaleDetail.OnFragmentInteractionListener,
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(2);
+            selectMenuItem(0);
             loadHomeFragment();
         }
     }
@@ -155,11 +155,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void run() {
                 // update the main content by replacing fragments
-                Fragment fragment = getHomeFragment();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.frame, fragment, mCurrentNavTag.getTag());
-                fragmentTransaction.commitAllowingStateLoss();
+                DiabloUtils.instance().replaceFragment(
+                        getSupportFragmentManager(), getHomeFragment(), mCurrentNavTag.getTag());
             }
         };
 
@@ -368,4 +365,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onSaleInFragmentInteraction(Uri uri) {
 
     }
+
+//    @Override
+//    public void onStockSelectFragmentInteraction(Uri uri) {
+//
+//    }
 }
