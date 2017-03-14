@@ -524,7 +524,9 @@ public class SaleIn extends Fragment{
                                     cell.requestFocus();
                                 } else {
                                     Bundle args = new Bundle();
-                                    args.putString("stock", new Gson().toJson(s));
+                                    args.putInt(DiabloEnum.BUNDLE_PARAM_SHOP, mSaleCalc.getShop());
+                                    args.putInt(DiabloEnum.BUNDLE_PARAM_RETAILER, mSaleCalc.getRetailer());
+                                    args.putString(DiabloEnum.BUNDLE_PARAM_SALE_STOCK, new Gson().toJson(s));
                                     Fragment f = new StockSelect();
                                     f.setArguments(args);
                                     utils.replaceFragment(getFragmentManager(), f, DiabloEnum.TAG_STOCK_SELECT);

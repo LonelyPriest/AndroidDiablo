@@ -59,13 +59,21 @@ public class SaleStock {
     public class SaleStockAmount {
         private Integer colorId;
         private String  colorName;
-        private Integer sizeId;
+        private String  size;
         private Integer stock;
         private Integer sellCount;
 
-        public SaleStockAmount(Integer colorId, Integer sizeId){
+        public SaleStockAmount(Integer colorId, String colorName, String size){
             this.colorId = colorId;
-            this.sizeId = sizeId;
+            this.size = size;
+            this.colorName = colorName;
+            this.stock = 0;
+            this.sellCount = 0;
+        }
+
+        public SaleStockAmount(Integer colorId, String size){
+            this.colorId = colorId;
+            this.size = size;
             this.colorName = Profile.instance().getColorName(colorId);
             this.stock = 0;
             this.sellCount = 0;
@@ -79,8 +87,8 @@ public class SaleStock {
             return colorName;
         }
 
-        public Integer getSizeId() {
-            return sizeId;
+        public String getSizeId() {
+            return size;
         }
 
         public Integer getStock() {

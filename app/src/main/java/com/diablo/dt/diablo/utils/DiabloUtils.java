@@ -301,4 +301,5 @@ public class DiabloUtils {
         fragmentTransaction.replace(R.id.frame_container, fragment, tag);
         fragmentTransaction.commitAllowingStateLoss();
     }
+
 }

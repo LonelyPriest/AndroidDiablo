@@ -284,7 +284,7 @@ public class SaleDetail extends Fragment {
         mRequest.getCondtion().setStartTime("2016-01-01");
         mRequest.getCondtion().setEndTime("2016-12-12");
 
-        Call<SaleDetailResponse> call = mSaleRest.filterWsaleNew(Profile.instance().getToken(), mRequest);
+        Call<SaleDetailResponse> call = mSaleRest.filterWSaleNew(Profile.instance().getToken(), mRequest);
 
         call.enqueue(new Callback<SaleDetailResponse>() {
             @Override

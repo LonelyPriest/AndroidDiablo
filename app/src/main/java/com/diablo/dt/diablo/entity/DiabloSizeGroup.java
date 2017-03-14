@@ -27,8 +27,9 @@ public class DiabloSizeGroup {
     @SerializedName("svi")
     private String SVI;
 
+    private List<String> mSortedSizeNames;
     public DiabloSizeGroup(){
-
+        this.mSortedSizeNames = new ArrayList<>();
     }
 
     public Integer getGroupId() {
@@ -63,17 +64,17 @@ public class DiabloSizeGroup {
         return SVI;
     }
 
-    public List<String> getAllSize(){
-        ArrayList<String> sizes = new ArrayList<>();
+    public void genSortedSizeNames(){
+        mSortedSizeNames.add(getSI());
+        mSortedSizeNames.add(getSII());
+        mSortedSizeNames.add(getSIII());
+        mSortedSizeNames.add(getSIV());
+        mSortedSizeNames.add(getSV());
+        mSortedSizeNames.add(getSVI());
+    }
 
-        sizes.add(getSI());
-        sizes.add(getSII());
-        sizes.add(getSIII());
-        sizes.add(getSIV());
-        sizes.add(getSV());
-        sizes.add(getSVI());
-
-        return sizes;
+    public List<String> getSortedSizeNames(){
+        return mSortedSizeNames;
     }
 
 }

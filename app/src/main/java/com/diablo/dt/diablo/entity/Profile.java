@@ -364,6 +364,7 @@ public class Profile {
 
     public String getColorName(Integer colorId){
         String name = DiabloEnum.EMPTY_STRING;
+
         for (int i = 0; i < mColors.size(); i++) {
             if (mColors.get(i).getColorId().equals(colorId)){
                 name = mColors.get(i).getName();
@@ -373,6 +374,16 @@ public class Profile {
         return name;
     }
 
+    public DiabloColor getColor(Integer colorId) {
+        for (int i = 0; i < mColors.size(); i++) {
+            if (mColors.get(i).getColorId().equals(colorId)){
+               return mColors.get(i);
+            }
+        }
+
+        return new DiabloColor();
+    }
+
     /**
      * Size Group
      */
@@ -380,15 +391,19 @@ public class Profile {
         for (DiabloSizeGroup s: sizeGroups){
             mSizeGroups.add(s);
         }
+
+        for (DiabloSizeGroup s: mSizeGroups){
+            s.genSortedSizeNames();
+        }
     }
 
-    public ArrayList<String> getSortedSizes(String sizeGroups){
+    public ArrayList<String> genSortedSizeNamesByGroups(String sizeGroups){
         ArrayList<String> sizes = new ArrayList<>();
         String [] groups = sizeGroups.split(DiabloEnum.SIZE_SEPARATOR);
         for (String gId : groups) {
             for (DiabloSizeGroup s: mSizeGroups){
                 if (DiabloUtils.instance().toInteger(gId).equals(s.getGroupId())){
-                    sizes.addAll(s.getAllSize());
+                    sizes.addAll(s.getSortedSizeNames());
                 }
             }
         }
