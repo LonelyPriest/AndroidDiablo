@@ -10,6 +10,8 @@ public class DiabloEnum {
     public static final String  SESSION_ID = "qzg_dyty_session";
     public static final String  SIZE_SEPARATOR = ",";
 
+    public static final Integer DIABLO_INVALID_NUM = 0x8fffffff;
+
     public static final Integer INVALID_INDEX = -1;
     public static final Integer DIABLO_FREE = 0;
     public static final Integer DIABLO_FALSE = 0;

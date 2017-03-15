@@ -46,66 +46,20 @@ public class SaleStock {
     private String  comment;
 
 
-    private List<SaleStockAmount>  amounts = new ArrayList<>();
+    private List<SaleStockAmount> amounts;
 
     public void addAmount(SaleStockAmount amount){
         amounts.add(amount);
     }
 
-    public List<SaleStockAmount> getAmounts(){
-        return amounts;
+    public void setAmounts(List<SaleStockAmount> amounts) {
+        for (SaleStockAmount a: amounts){
+            this.amounts.add(a);
+        }
     }
 
-    public class SaleStockAmount {
-        private Integer colorId;
-        private String  colorName;
-        private String  size;
-        private Integer stock;
-        private Integer sellCount;
-
-        public SaleStockAmount(Integer colorId, String colorName, String size){
-            this.colorId = colorId;
-            this.size = size;
-            this.colorName = colorName;
-            this.stock = 0;
-            this.sellCount = 0;
-        }
-
-        public SaleStockAmount(Integer colorId, String size){
-            this.colorId = colorId;
-            this.size = size;
-            this.colorName = Profile.instance().getColorName(colorId);
-            this.stock = 0;
-            this.sellCount = 0;
-        }
-
-        public Integer getColorId() {
-            return colorId;
-        }
-
-        public String getColorName() {
-            return colorName;
-        }
-
-        public String getSizeId() {
-            return size;
-        }
-
-        public Integer getStock() {
-            return stock;
-        }
-
-        public void setStock(Integer stock) {
-            this.stock = stock;
-        }
-
-        public Integer getSellCount() {
-            return sellCount;
-        }
-
-        public void setSellCount(Integer sellCount) {
-            this.sellCount = sellCount;
-        }
+    public List<SaleStockAmount> getAmounts(){
+        return amounts;
     }
 
     public SaleStock(MatchStock stock, Integer selectedPrice) {
@@ -137,6 +91,8 @@ public class SaleStock {
         this.stockExist = 0;
         this.selectedPrice = selectedPrice;
         this.state = DiabloEnum.STARTING_SALE;
+
+        amounts = new ArrayList<>();
     }
 
     public String getStyleNumber() {

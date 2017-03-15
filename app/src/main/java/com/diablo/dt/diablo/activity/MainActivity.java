@@ -22,7 +22,8 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.fragment.SaleDetail;
 import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.utils.DiabloEnum;
-import com.diablo.dt.diablo.utils.DiabloUtils;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         SaleDetail.OnFragmentInteractionListener,
@@ -135,35 +136,35 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void loadHomeFragment() {
         // selecting appropriate nav menu item
-        selectNavMenu();
+        // selectNavMenu();
 
         // set toolbar title
         // setActionBarTitle(mCurrentNavTag.getTitleIndex());
 
         // if user select the current navigation menu again, don't do anything
         // just close the navigation drawer
-        if (getSupportFragmentManager().findFragmentByTag(mCurrentNavTag.getTag()) != null) {
+        Fragment f = getSupportFragmentManager().findFragmentByTag(mCurrentNavTag.getTag());
+        if (null != f && f.isVisible()) {
             drawer.closeDrawers();
             return;
         }
 
-        // Sometimes, when fragment has huge data, screen seems hanging
-        // when switching between navigation menus
-        // So using runnable, the fragment is loaded with cross fade effect
-        // This effect can be seen in GMail app
-        Runnable mPendingRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // update the main content by replacing fragments
-                DiabloUtils.instance().replaceFragment(
-                        getSupportFragmentManager(), getHomeFragment(), mCurrentNavTag.getTag());
-            }
-        };
+        Fragment currentFragment = getCurrentSelectedFragment();
+        switchFragment(currentFragment, mCurrentNavTag.getTag());
 
-        // If mPendingRunnable is not null, then add to the message queue
-        if (mPendingRunnable != null) {
-            mHandler.post(mPendingRunnable);
-        }
+//        Runnable mPendingRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                // update the main content by replacing fragment
+//                DiabloUtils.instance().replaceFragment(
+//                        getSupportFragmentManager(), getCurrentSelectedFragment(), mCurrentNavTag.getTag());
+//            }
+//        };
+//
+//        // If mPendingRunnable is not null, then add to the message queue
+//        if (mPendingRunnable != null) {
+//            mHandler.post(mPendingRunnable);
+//        }
 
         // show or hide the fab button
         // toggleFab();
@@ -175,16 +176,41 @@ public class MainActivity extends AppCompatActivity implements
         invalidateOptionsMenu();
     }
 
-    private Fragment getHomeFragment() {
-        switch (mCurrentNavTag.getTitleIndex()) {
-            case 0:
-                return  new SaleIn();
-            case 2:
-                return new SaleDetail();
-
-            default:
-                return new SaleDetail();
+    public void switchFragment(Fragment to, String toTag){
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (!to.isAdded()){
+            transaction.add(R.id.frame_container, to, toTag);
+        } else {
+            transaction.show(to);
         }
+
+        // transaction.hide(from);
+
+        // hide others
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Integer i=0; null != fragments && i<fragments.size(); i++){
+            Fragment fragment = fragments.get(i);
+            if ( null != fragment && !fragment.getTag().equals(toTag) ){
+                transaction.hide(fragment);
+            }
+        }
+
+        transaction.commitAllowingStateLoss();
+    }
+
+    private Fragment getCurrentSelectedFragment() {
+        Fragment f = getSupportFragmentManager().findFragmentByTag(mCurrentNavTag.getTag());
+        if (f == null) {
+            if (mCurrentNavTag.getTitleIndex().equals(0)){
+                f = new SaleIn();
+            } else if (mCurrentNavTag.getTitleIndex().equals(2)){
+                f = new SaleDetail();
+            } else {
+                f = new SaleDetail();
+            }
+
+        }
+        return f;
     }
 
 //    public void setActionBarTitle() {

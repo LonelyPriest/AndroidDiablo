@@ -204,7 +204,6 @@ public class DiabloUtils {
     public Integer toInteger(String value){
         if (!value.isEmpty())
             return Integer.parseInt(value.trim());
-
         else
             return 0;
     }

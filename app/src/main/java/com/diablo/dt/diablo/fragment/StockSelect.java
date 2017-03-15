@@ -1,17 +1,22 @@
 package com.diablo.dt.diablo.fragment;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.diablo.dt.diablo.Client.StockClient;
 import com.diablo.dt.diablo.Client.WSaleClient;
@@ -19,6 +24,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.SaleStock;
+import com.diablo.dt.diablo.entity.SaleStockAmount;
 import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.request.LastSaleRequest;
 import com.diablo.dt.diablo.request.StockRequest;
@@ -26,6 +32,7 @@ import com.diablo.dt.diablo.response.LastSaleResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloSaleTable;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.google.gson.Gson;
 
@@ -57,6 +64,7 @@ public class StockSelect extends Fragment {
 
     private List<String> mOrderedSizes = new ArrayList<>();
     private List<DiabloColor> mOrderColors = new ArrayList<>();
+    // private List<SaleStockAmount> mStockAmounts = new ArrayList<>();
 
     private List<Stock> mStocks;
     private List<LastSaleResponse> mLastStocks;
@@ -97,6 +105,8 @@ public class StockSelect extends Fragment {
             mSelectRetailer = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_RETAILER);
             mSaleStock = new Gson().fromJson(getArguments().getString(DiabloEnum.BUNDLE_PARAM_SALE_STOCK), SaleStock.class);
         }
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -110,7 +120,16 @@ public class StockSelect extends Fragment {
         getStock();
         getLastTransactionOfRetailer();
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar()
+                .setTitle(getResources().getString(R.string.select_stock));
+
         return view;
+    }
+
+    private void init(){
+        mOrderColors.clear();
+        mOrderedSizes.clear();
+        mViewTable.removeAllViews();
     }
 
     private void getStock(){
@@ -139,10 +158,13 @@ public class StockSelect extends Fragment {
                     if (!color.includeIn(mOrderColors)){
                         mOrderColors.add(color);
                     }
+
+                    SaleStockAmount amount = new SaleStockAmount(s.getColorId(), s.getSize());
+                    amount.setStock(s.getExist());
+                    mSaleStock.getAmounts().add(amount);
                 }
 
                 ArrayList<String> orderedSizes = Profile.instance().genSortedSizeNamesByGroups(mSaleStock.getSizeGroup());
-
                 for (String s: orderedSizes){
                     if (usedSizes.contains(s)){
                         mOrderedSizes.add(s);
@@ -157,60 +179,40 @@ public class StockSelect extends Fragment {
                     }
                 }
 
-                // head
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-                TableRow head = new TableRow(getContext());
-
-                // empty
-                TextView cell = new TextView(getContext());
-                cell.setLayoutParams(lp);
-                head.addView(cell);
-
-                for (Integer i=0; i<mOrderedSizes.size(); i++){
-                    cell = new TextView(getContext());
-                    cell.setLayoutParams(lp);
-                    cell.setTextSize(20);
-                    cell.setHeight(100);
-                    cell.setTypeface(null, Typeface.BOLD);
-                    cell.setText(mOrderedSizes.get(i));
-                    head.addView(cell);
-                }
-
-                head.setBackgroundResource(R.drawable.table_row_bg);
-                mViewTable.addView(head);
-
-                // add content row
-                TableRow rows [] = new TableRow[mOrderColors.size()];
-                for (Integer i=0; i<rows.length; i++){
-                    rows[i] = new TableRow(getContext());
-                    rows[i].setBackgroundResource(R.drawable.table_row_bg);
-                    mViewTable.addView(rows[i]);
-                }
-                rows[rows.length-1].setBackgroundResource(R.drawable.table_row_last_bg);
-
-                for (Integer i=0; i<rows.length; i++){
-                    TableRow row = rows[i];
-                    TextView col0 = new TextView(getContext());
-                    col0.setLayoutParams(lp);
-                    col0.setTextSize(20);
-                    col0.setHeight(100);
-                    col0.setTypeface(null, Typeface.BOLD);
-                    col0.setText(mOrderColors.get(i).getName());
-                    row.addView(col0);
-
-                    for (Integer j=0; j<mOrderedSizes.size(); j++){
-                        TextView col = new TextView(getContext());
-                        col.setLayoutParams(lp);
-                        col.setTextSize(20);
-                        col.setHeight(100);
-                        Stock s = findStock(mOrderColors.get(i).getColorId(), mOrderedSizes.get(j));
-                        if ( null != s){
-                            utils.setTextViewValue(col, s.getExist());
-                        }
-                        row.addView(col);
+                DiabloSaleTable saleTable = new DiabloSaleTable(getContext(), mViewTable, mOrderColors,mOrderedSizes);
+                saleTable.setStockListener(new DiabloSaleTable.OnStockListener() {
+                    @Override
+                    public Stock getStockByColorAndSize(Integer colorId, String size) {
+                        return findStock(colorId, size);
                     }
-                }
 
+                    @Override
+                    public void onStockSelected(EditText cell, final Integer colorId, final String size) {
+                        cell.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+                                for (SaleStockAmount amount: mSaleStock.getAmounts()){
+                                    if (amount.getColorId().equals(colorId) && amount.getSize().equals(size)){
+                                        amount.setSellCount(DiabloUtils.instance().toInteger(editable.toString()));
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+
+                saleTable.genHead();
+                saleTable.genContent();
             }
 
             @Override
@@ -242,6 +244,37 @@ public class StockSelect extends Fragment {
                 Log.d(LOG_TAG, "fail to get last stock");
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        menu.add(Menu.NONE, 100, Menu.NONE, getResources().getString(R.string.btn_cancel)).setIcon(R.drawable.ic_close_black_24dp)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+        menu.add(Menu.NONE, 101, Menu.NONE, getResources().getString(R.string.btn_save))
+                .setIcon(R.drawable.ic_check_black_24dp)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case 100: // cancel
+                switchFragmentToSaleIn(R.integer.action_cancel);
+                break;
+            case 101: // save
+                switchFragmentToSaleIn(R.integer.action_save);
+                break;
+            default:
+                break;
+        }
+
+
+
+        return true;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -283,6 +316,7 @@ public class StockSelect extends Fragment {
 //        void onStockSelectFragmentInteraction(Uri uri);
 //    }
 
+
     public Stock findStock(Integer colorId, String size){
         for ( Integer i=0; i<mStocks.size(); i++){
             Stock s = mStocks.get(i);
@@ -292,5 +326,56 @@ public class StockSelect extends Fragment {
         }
 
         return null;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        // utils.makeToast(getContext(), hidden ? "hidden" : "show");
+        if (!hidden){
+            init();
+            getStock();
+            getLastTransactionOfRetailer();
+        }
+    }
+
+    public void setSaleStock(String saleStockJson) {
+        this.mSaleStock = new Gson().fromJson(saleStockJson, SaleStock.class);
+    }
+
+    public void setSelectShop(Integer shop) {
+        this.mSelectShop = shop;
+    }
+
+    public void setSelectRetailer(Integer retailer) {
+        this.mSelectRetailer = retailer;
+    }
+
+    private void switchFragmentToSaleIn(final Integer action){
+        SaleIn to = (SaleIn)getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_IN);
+        if (null != to){
+            to.setComesForm(R.integer.COMES_FORM_STOCK_SELECT_ON_SALE);
+            to.setStockListener(new SaleIn.OnStockSelectListener() {
+                @Override
+                public Integer StockSelectAction() {
+                    return action;
+                }
+
+                @Override
+                public SaleStock afterStockSelected() {
+                    return mSaleStock;
+                }
+            });
+        } else {
+            to = new SaleIn();
+        }
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        if (!to.isAdded()){
+            transaction.hide(StockSelect.this).add(R.id.frame_container, to).commit();
+        } else {
+            transaction.hide(StockSelect.this).show(to).commit();
+        }
+
     }
 }

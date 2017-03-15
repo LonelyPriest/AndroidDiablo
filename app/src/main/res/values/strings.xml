@@ -166,10 +166,19 @@
     <string name="btn_draft">草稿</string>
     <string name="btn_next">下一单</string>
     <string name="btn_back">返回</string>
+    <string name="btn_cancel">取消</string>
+
+    <string name="select_stock">请选择库存</string>
 
     <string name="slide_sale_manager">销售管理</string>
     <string name="slide_stock_manager">采购管理</string>
 
     <string name="refresh_none">己到达第一页，无需刷新</string>
+
+    <integer name="action_save">900</integer>
+    <integer name="action_cancel">901</integer>
+
+    <integer name="COMES_FORM_STOCK_SELECT_ON_SALE">0x7ffffffa</integer>
+    <integer name="COMES_FORM_SELF">0x7fffffff</integer>
 
 </resources>
