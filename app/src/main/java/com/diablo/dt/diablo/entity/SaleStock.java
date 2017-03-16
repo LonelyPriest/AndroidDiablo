@@ -38,7 +38,6 @@ public class SaleStock {
     private String  sizeGroup;
     private String  path;
 
-
     private Float   finalPrice;
     private Integer second;
     private Integer saleTotal;
@@ -52,15 +51,23 @@ public class SaleStock {
         amounts.add(amount);
     }
 
+    public void clearAmounts(){
+        amounts.clear();
+    }
+
     public void setAmounts(List<SaleStockAmount> amounts) {
         amounts.clear();
         for (SaleStockAmount a: amounts){
-            this.amounts.add(a);
+            amounts.add(a);
         }
     }
 
     public List<SaleStockAmount> getAmounts(){
         return amounts;
+    }
+
+    public SaleStock(){
+        amounts = new ArrayList<>();
     }
 
     public SaleStock(MatchStock stock, Integer selectedPrice) {

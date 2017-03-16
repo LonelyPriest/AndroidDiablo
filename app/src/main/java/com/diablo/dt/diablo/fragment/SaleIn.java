@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -801,6 +803,16 @@ public class SaleIn extends Fragment{
                 if (null != cell){
                     SaleStock s = (SaleStock)row.getTag();
                     s.setSaleTotal(msg.arg1);
+
+                    if (DiabloEnum.DIABLO_FREE.equals(s.getFree())){
+                        SaleStockAmount amount = new SaleStockAmount(
+                                DiabloEnum.DIABLO_FREE_COLOR,
+                                DiabloEnum.DIABLO_FREE_SIZE);
+                        amount.setSellCount(msg.arg1);
+                        s.clearAmounts();
+                        s.addAmount(amount);
+                    }
+
                     DiabloUtils.instance().setTextViewValue((TextView)cell, s.getSalePrice());
 
                     final SaleIn f = ((SaleIn)mFragment.get());
@@ -835,14 +847,15 @@ public class SaleIn extends Fragment{
                     f.setCalcView();
                     f.resetRetailerAccBalanceView();
 
-                    if (DiabloEnum.DIABLO_FREE.equals(s.getFree())){
-                        SaleStockAmount amount = new SaleStockAmount(
-                                DiabloEnum.DIABLO_FREE_COLOR,
-                                DiabloEnum.DIABLO_FREE_SIZE);
-                        s.setAmounts();
-                    }
                     // save to db
+                    // delete old
+                    if (f.mRowSize == 1){
+                        f.dbInstance.deleteSaleCalc(f.mSaleCalc);
+                        f.dbInstance.deleteAllSaleStock(f.mSaleCalc);
+                        f.dbInstance.addSaleCalc(f.mSaleCalc);
+                    }
 
+                    f.dbInstance.replaceSaleStock(f.mSaleCalc, s);
                 }
             }
         }
@@ -869,13 +882,6 @@ public class SaleIn extends Fragment{
             mButtons.get(R.id.sale_in_next).enable();
             // mButtons.get(R.id.sale_in_draft).enable();
             getActivity().invalidateOptionsMenu();
-
-            // save new
-            dbInstance.deleteSaleCalc(mSaleCalc);
-            dbInstance.deleteAllSaleStock(mSaleCalc);
-
-            dbInstance.addSaleCalc(mSaleCalc);
-            dbInstance.addSaleStock(mSaleCalc, mSaleStocks.get(0));
         }
     }
 
@@ -900,7 +906,8 @@ public class SaleIn extends Fragment{
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Integer orderId = ((SaleStock)mCurrentSelectRow.getTag()).getOrderId();
+        SaleStock removed = (SaleStock)mCurrentSelectRow.getTag();
+        Integer orderId = removed.getOrderId();
 
         if (getResources().getString(R.string.delete) == item.getTitle()){
             mCurrentSelectRow.removeAllViews();
@@ -914,6 +921,20 @@ public class SaleIn extends Fragment{
                 }
             }
 
+            // delete from lists
+            int index = DiabloEnum.INVALID_INDEX;
+            for (int i=0; i<mSaleStocks.size(); i++){
+                if (mSaleStocks.get(i).getOrderId().equals(orderId)){
+                    index = i;
+                    break;
+                }
+            }
+
+            mSaleStocks.remove(index);
+            dbInstance.deleteSaleStock(mSaleCalc, removed);
+
+            decRow();
+
             // reorder
             Integer newOrderId = mSaleTable.getChildCount() - 1;
             for (int i=1; i<mSaleTable.getChildCount(); i++){
@@ -925,7 +946,6 @@ public class SaleIn extends Fragment{
                 }
             }
 
-            decRow();
             if (mRowSize == 0){
                 mButtons.get(R.id.sale_in_save).disable();
                 mButtons.get(R.id.sale_in_money_off).disable();
@@ -933,6 +953,7 @@ public class SaleIn extends Fragment{
                 // mButtons.get(R.id.sale_in_draft).disable();
                 getActivity().invalidateOptionsMenu();
             }
+
             resetShouldPay();
             calcRetailerAccBalance();
 
@@ -979,6 +1000,39 @@ public class SaleIn extends Fragment{
                 ((MainActivity)getActivity()).switchFragment(f, DiabloEnum.TAG_SALE_DETAIL);
                 // utils.replaceFragment(getFragmentManager(), new SaleDetail(), DiabloEnum.TAG_SALE_DETAIL);
                 break;
+            case R.id.sale_in_draft:
+                // get draft from db
+                List<SaleCalc> calcs = dbInstance.queryAllSaleCalc();
+                if (null != calcs) {
+
+                    String [] titles = new String[calcs.size()];
+                    final SparseArray<SaleCalc> sparseCalcs = new SparseArray<>();
+                    int index = 0;
+                    for (SaleCalc c: calcs){
+                        String name = Profile.instance().getRetailerById(c.getRetailer()).getName();
+                        String shop = utils.getShop(Profile.instance().getSortAvailableShop(), c.getShop()).getName();
+                        titles[index] = name + "-" + shop;
+                        sparseCalcs.put(index, c);
+                        index++;
+                    }
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setIcon(R.drawable.ic_drafts_black_24dp);
+                    builder.setTitle(getContext().getResources().getString(R.string.draft_select));
+                    builder.setSingleChoiceItems(titles, 0, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            dialog.dismiss();
+                            utils.makeToast(getContext(), i);
+                            SaleCalc c = sparseCalcs.get(i);
+                            recoverFromDB(c);
+                        }
+                    });
+
+                    builder.create().show();
+                }
+
+                break;
             default:
                 // return super.onOptionsItemSelected(item);
                 break;
@@ -986,6 +1040,10 @@ public class SaleIn extends Fragment{
         }
 
         return true;
+    }
+
+    public void recoverFromDB(SaleCalc calc){
+        dbInstance.querySaleCalc(calc);
     }
 
     public void setCurrentSelectRow(TableRow selectRow) {
@@ -1066,14 +1124,14 @@ public class SaleIn extends Fragment{
                     case R.integer.action_save:
                         for (SaleStock ms: mSaleStocks){
                             if (ms.getOrderId().equals(s.getOrderId())){
+                                ms.clearAmounts();
                                 Integer saleTotal = 0;
                                 for (SaleStockAmount a: amounts){
+                                    ms.addAmount(a);
                                     if (a.getSellCount() != 0){
                                         saleTotal += a.getSellCount();
-                                        ms.addAmount(a);
                                     }
                                 }
-
                                 ms.setSaleTotal(saleTotal);
                                 TableRow row = getRowByOrderId(s.getOrderId());
                                 View cell = SaleStockHandler.getColumn(getContext(), row, R.string.amount);
