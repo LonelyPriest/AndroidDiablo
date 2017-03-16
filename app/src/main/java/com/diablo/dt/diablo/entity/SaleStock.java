@@ -53,6 +53,7 @@ public class SaleStock {
     }
 
     public void setAmounts(List<SaleStockAmount> amounts) {
+        amounts.clear();
         for (SaleStockAmount a: amounts){
             this.amounts.add(a);
         }

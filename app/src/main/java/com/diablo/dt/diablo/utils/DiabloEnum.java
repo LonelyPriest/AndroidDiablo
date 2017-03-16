@@ -78,6 +78,13 @@ public class DiabloEnum {
     public static final Integer SALE_IN = 0;
     public static final Integer SALE_OUT = 1;
 
+    /**
+     * DB table
+     */
+    public static final String W_SALE = "w_sale";
+    public static final String W_SALE_DETAIL = "w_sale_detail";
+    public static final String W_SALE_DETAIL_AMOUNT = "w_sale_detail_amount";
+
     private DiabloEnum(){
 
     }

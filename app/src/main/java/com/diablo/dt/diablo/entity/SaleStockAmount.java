@@ -1,5 +1,7 @@
 package com.diablo.dt.diablo.entity;
 
+import com.diablo.dt.diablo.utils.DiabloEnum;
+
 /**
  * Created by buxianhui on 17/3/15.
  */
@@ -22,7 +24,9 @@ public class SaleStockAmount {
     public SaleStockAmount(Integer colorId, String size){
         this.colorId = colorId;
         this.size = size;
-        this.colorName = Profile.instance().getColorName(colorId);
+        if (!DiabloEnum.DIABLO_FREE_COLOR.equals(colorId)) {
+            this.colorName = Profile.instance().getColorName(colorId);
+        }
         this.stock = 0;
         this.sellCount = 0;
     }

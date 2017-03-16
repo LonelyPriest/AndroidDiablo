@@ -248,17 +248,17 @@ public class DiabloUtils {
     }
 
     public void makeToast(Context context, Integer value){
-        Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_LONG);
         toast.show();
     }
 
     public void makeToast(Context context, String value){
-        Toast toast = Toast.makeText(context, value, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(context, value, Toast.LENGTH_LONG);
         toast.show();
     }
 
     public void makeToast(Context context, Float value) {
-        Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_LONG);
         toast.show();
     }
 

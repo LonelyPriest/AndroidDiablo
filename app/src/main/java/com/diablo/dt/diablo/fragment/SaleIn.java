@@ -50,6 +50,7 @@ import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.task.MatchRetailerTask;
 import com.diablo.dt.diablo.task.MatchStockTask;
 import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
+import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.google.gson.Gson;
@@ -92,6 +93,7 @@ public class SaleIn extends Fragment{
 
     private final static String LOG_TAG = "SALE_IN:";
     private DiabloUtils utils = DiabloUtils.instance();
+    private DiabloDBManager dbInstance;
 
     private String [] mTitles;
     private String [] mPriceType;
@@ -165,6 +167,7 @@ public class SaleIn extends Fragment{
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        dbInstance = DiabloDBManager.instance();
         mRowSize = 0;
         mComesFrom = R.integer.COMES_FORM_SELF;
 
@@ -218,6 +221,7 @@ public class SaleIn extends Fragment{
         resetRetailerBalance(mLoginRetailer);
         resetRetailerBalanceView();
         autoCompleteRetailer.setText(mSelectRetailer.getName());
+        mSaleCalc.setRetailer(mLoginRetailer);
 
         new TextChangeOnAutoComplete(autoCompleteRetailer).addListen(new TextChangeOnAutoComplete.TextWatch() {
             @Override
@@ -238,6 +242,11 @@ public class SaleIn extends Fragment{
                 resetRetailerBalance(selectRetailer.getId());
                 resetRetailerBalanceView();
                 autoCompleteRetailer.setText(selectRetailer.getName());
+                mSaleCalc.setRetailer(mLoginRetailer);
+
+                if (null != dbInstance.querySaleCalc(mSaleCalc)){
+                    utils.makeToast(getContext(), getContext().getResources().getString(R.string.draft_exist));
+                }
             }
         });
 
@@ -246,6 +255,10 @@ public class SaleIn extends Fragment{
         AuthenShop shop = DiabloUtils.getInstance().getShop(Profile.instance().getSortAvailableShop(), mLoginShop);
         shopView.setText(shop.getName());
         mSaleCalc.setShop(shop.getShop());
+
+        if (null != dbInstance.querySaleCalc(mSaleCalc)){
+            utils.makeToast(getContext(), getContext().getResources().getString(R.string.draft_exist));
+        }
 
         // current time
         String datetime = DiabloUtils.getInstance().currentDatetime();
@@ -815,11 +828,21 @@ public class SaleIn extends Fragment{
                         f.registerForContextMenu(row);
                         f.addEmptyRowToTable();
                     }
+
                     f.resetShouldPay();
                     f.calcRetailerAccBalance();
 
                     f.setCalcView();
                     f.resetRetailerAccBalanceView();
+
+                    if (DiabloEnum.DIABLO_FREE.equals(s.getFree())){
+                        SaleStockAmount amount = new SaleStockAmount(
+                                DiabloEnum.DIABLO_FREE_COLOR,
+                                DiabloEnum.DIABLO_FREE_SIZE);
+                        s.setAmounts();
+                    }
+                    // save to db
+
                 }
             }
         }
@@ -846,6 +869,13 @@ public class SaleIn extends Fragment{
             mButtons.get(R.id.sale_in_next).enable();
             // mButtons.get(R.id.sale_in_draft).enable();
             getActivity().invalidateOptionsMenu();
+
+            // save new
+            dbInstance.deleteSaleCalc(mSaleCalc);
+            dbInstance.deleteAllSaleStock(mSaleCalc);
+
+            dbInstance.addSaleCalc(mSaleCalc);
+            dbInstance.addSaleStock(mSaleCalc, mSaleStocks.get(0));
         }
     }
 
