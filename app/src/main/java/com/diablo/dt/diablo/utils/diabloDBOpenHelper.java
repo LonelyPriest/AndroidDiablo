@@ -56,6 +56,7 @@ public class DiabloDBOpenHelper extends SQLiteOpenHelper {
                 + ", brand integer not null"
                 + ", color integer not null"
                 + ", size text not null"
+                + ", exist integer not null"
                 + ", total integer not null"
                 + ", unique(retailer, shop, style_number, brand, color, size) ON CONFLICT REPLACE)";
 

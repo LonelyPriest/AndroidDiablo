@@ -149,6 +149,14 @@
     <string name="invalid_name_password">用户名或密码错误</string>
     <string name="network_unreachable">连接服务器失败，请确认该设备网络连接正常</string>
 
+    <!-- sale -->
+    <string name="refresh_none">己到达第一页，无需刷新</string>
+    <string name="draft_exist">该客户有草稿存在，请先行取出，继续操作将会覆盖原有草稿</string>
+    <string name="draft_select">请选择草稿</string>
+    <string name="draft_none">系统无草稿存在</string>
+    <string name="draft_clear_success">清除草稿成功</string>
+    <string name="sale_stock_exist">该款号已存在，请重新选择，序号：</string>
+
     <!-- hint -->
     <string name="please_input_retailer">客户</string>
     <string name="please_input_good">货号</string>
@@ -167,15 +175,12 @@
     <string name="btn_next">下一单</string>
     <string name="btn_back">返回</string>
     <string name="btn_cancel">取消</string>
+    <string name="btn_draft_clear">清除草稿</string>
 
     <string name="select_stock">请选择库存</string>
 
     <string name="slide_sale_manager">销售管理</string>
     <string name="slide_stock_manager">采购管理</string>
-
-    <string name="refresh_none">己到达第一页，无需刷新</string>
-    <string name="draft_exist">该客户有草稿存在，请先行取出，继续操作将会覆盖原有草稿</string>
-    <string name="draft_select">请选择草稿</string>
 
     <integer name="action_save">900</integer>
     <integer name="action_cancel">901</integer>

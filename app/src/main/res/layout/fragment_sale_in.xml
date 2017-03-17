@@ -23,7 +23,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/please_input_retailer"
-            android:selectAllOnFocus="true"
             android:completionThreshold="1"
             android:gravity="center_horizontal"
             android:layout_weight="0.8" />

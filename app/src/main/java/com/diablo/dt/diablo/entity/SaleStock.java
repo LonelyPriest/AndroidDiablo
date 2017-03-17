@@ -66,6 +66,15 @@ public class SaleStock {
         return amounts;
     }
 
+    public Integer getExistStock(){
+        Integer total = 0;
+        for (SaleStockAmount a: amounts){
+            total += a.getStock();
+        }
+
+        return total;
+    }
+
     public SaleStock(){
         amounts = new ArrayList<>();
     }
@@ -103,6 +112,10 @@ public class SaleStock {
         amounts = new ArrayList<>();
     }
 
+    public void setStyleNumber(String styleNumber){
+        this.styleNumber = styleNumber;
+    }
+
     public String getStyleNumber() {
         return styleNumber;
     }
@@ -117,6 +130,10 @@ public class SaleStock {
 
     public Integer getBrandId() {
         return brandId;
+    }
+
+    public void setBrandId(Integer brandId){
+        this.brandId = brandId;
     }
 
     public Integer getTypeId() {
@@ -149,6 +166,10 @@ public class SaleStock {
 
     public Float getDiscount() {
         return discount;
+    }
+
+    public void setDiscount(Float discount) {
+        this.discount = discount;
     }
 
     public Integer getFirmId() {
@@ -270,5 +291,9 @@ public class SaleStock {
 
     public Float getSalePrice(){
         return DiabloUtils.getInstance().priceWithDiscount(finalPrice, discount) * saleTotal;
+    }
+
+    public String getName() {
+        return this.styleNumber + "/" + this.brand + "/" + this.type;
     }
 }

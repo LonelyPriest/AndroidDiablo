@@ -11,10 +11,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -33,7 +30,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.diablo.dt.diablo.Client.StockClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
@@ -47,25 +43,19 @@ import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.entity.SaleCalc;
 import com.diablo.dt.diablo.entity.SaleStock;
 import com.diablo.dt.diablo.entity.SaleStockAmount;
-import com.diablo.dt.diablo.request.MatchStockRequest;
-import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.task.MatchRetailerTask;
 import com.diablo.dt.diablo.task.MatchStockTask;
 import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloSaleAmountChangeWatcher;
+import com.diablo.dt.diablo.utils.DiabloSaleRow;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.diablo.dt.diablo.R.string.amount;
 
@@ -110,12 +100,13 @@ public class SaleIn extends Fragment{
     private Integer mSelectPrice;
 
     private List<MatchStock> mMatchStocks;
-    private List<SaleStock> mSaleStocks = new ArrayList<>();
+    private List<SaleStock> mSaleStocks;
 
     private Retailer mSelectRetailer;
-
     private SaleCalc mSaleCalc;
 
+    private AutoCompleteTextView mRetailerView;
+    private EditText mShopView;
     private View mViewShouldPay;
     private View mViewSaleTotal;
     private View mViewBalance;
@@ -169,19 +160,11 @@ public class SaleIn extends Fragment{
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        dbInstance = DiabloDBManager.instance();
-        mRowSize = 0;
-        mComesFrom = R.integer.COMES_FORM_SELF;
-
         mTitles = getResources().getStringArray(R.array.thead_sale);
         mPriceType = getResources().getStringArray(R.array.price_type_on_sale);
         // mExtraCost = getResources().getStringArray(R.array.extra_cost_on_sale);
 
         mLoginShop = Profile.instance().getLoginShop();
-        if ( mLoginShop.equals(DiabloEnum.INVALID_INDEX) ){
-            mLoginShop = Profile.instance().getAvailableShopIds().get(0);
-        }
-
 //        mLoginEmployee = Profile.instance().getLoginEmployee();
 //        if ( mLoginEmployee.equals(DiabloEnum.INVALID_INDEX)){
 //            mLoginEmployee = Profile.instance().getEmployees().get(0).getId();
@@ -200,7 +183,12 @@ public class SaleIn extends Fragment{
         mButtons.put(R.id.sale_in_draft, new DiabloButton(R.id.sale_in_draft));
         mButtons.put(R.id.sale_in_save, new DiabloButton(R.id.sale_in_save));
         mButtons.put(R.id.sale_in_next, new DiabloButton(R.id.sale_in_next));
+        mButtons.put(R.id.sale_in_clear_draft, new DiabloButton(R.id.sale_in_clear_draft));
 
+        dbInstance = DiabloDBManager.instance();
+        mRowSize = 0;
+        mComesFrom = R.integer.COMES_FORM_SELF;
+        mSaleStocks = new ArrayList<>();
         mSaleCalc = new SaleCalc();
     }
 
@@ -219,31 +207,31 @@ public class SaleIn extends Fragment{
         mViewBalance = (EditText)view.findViewById(R.id.sale_balance);
         mViewAccBalance = (EditText)view.findViewById(R.id.sale_accbalance);
 
-        final AutoCompleteTextView autoCompleteRetailer = (AutoCompleteTextView) view.findViewById(R.id.sale_select_retailer);
+        mRetailerView = (AutoCompleteTextView) view.findViewById(R.id.sale_select_retailer);
         resetRetailerBalance(mLoginRetailer);
         resetRetailerBalanceView();
-        autoCompleteRetailer.setText(mSelectRetailer.getName());
+        mRetailerView.setText(mSelectRetailer.getName());
         mSaleCalc.setRetailer(mLoginRetailer);
 
-        new TextChangeOnAutoComplete(autoCompleteRetailer).addListen(new TextChangeOnAutoComplete.TextWatch() {
+        new TextChangeOnAutoComplete(mRetailerView).addListen(new TextChangeOnAutoComplete.TextWatch() {
             @Override
             public void afterTextChanged(String value) {
                 if (value.length() > 0) {
                     new MatchRetailerTask(
                             getContext(),
-                            autoCompleteRetailer,
+                            mRetailerView,
                             Profile.instance().getRetailers()).execute(value);
                 }
             }
         });
 
-        autoCompleteRetailer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mRetailerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Retailer selectRetailer = (Retailer) adapterView.getItemAtPosition(i);
                 resetRetailerBalance(selectRetailer.getId());
                 resetRetailerBalanceView();
-                autoCompleteRetailer.setText(selectRetailer.getName());
+                mRetailerView.setText(selectRetailer.getName());
                 mSaleCalc.setRetailer(mLoginRetailer);
 
                 if (null != dbInstance.querySaleCalc(mSaleCalc)){
@@ -253,9 +241,9 @@ public class SaleIn extends Fragment{
         });
 
         // shop
-        EditText shopView = (EditText) view.findViewById(R.id.sale_selected_shop);
+        mShopView = (EditText) view.findViewById(R.id.sale_selected_shop);
         AuthenShop shop = DiabloUtils.getInstance().getShop(Profile.instance().getSortAvailableShop(), mLoginShop);
-        shopView.setText(shop.getName());
+        mShopView.setText(shop.getName());
         mSaleCalc.setShop(shop.getShop());
 
         if (null != dbInstance.querySaleCalc(mSaleCalc)){
@@ -472,11 +460,86 @@ public class SaleIn extends Fragment{
         return row;
     };
 
+    private TableRow genRowWithStock(final SaleStock stock){
+        final DiabloSaleRow diabloRow = new DiabloSaleRow(getContext(), mTitles, stock);
+        diabloRow.genRow(stock.getFree());
+
+        for (String title: mTitles){
+            if (getResources().getString(R.string.order_id).equals(title)){
+                TextView cell = (TextView)diabloRow.getCell(title);
+                utils.setTextViewValue(cell, stock.getOrderId());
+            }
+            else if (getResources().getString(R.string.good).equals(title)){
+                TextView cell = (TextView)diabloRow.getCell(title);
+                cell.setText(stock.getName());
+            }
+            else if (getResources().getString(R.string.stock).equals(title)){
+                ((TextView)diabloRow.getCell(title)).setText(utils.toString(stock.getExistStock()));
+            }
+            else if (getResources().getString(R.string.price_type).equals(title)) {
+                Spinner cell = (Spinner)diabloRow.getCell(title);
+                SpinnerStringAdapter adapter=new SpinnerStringAdapter(
+                        this.getContext(),
+                        android.R.layout.simple_spinner_dropdown_item,
+                        mPriceType);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                cell.setAdapter(adapter);
+                cell.setSelection(stock.getSelectedPrice() - 1);
+            }
+            else if (getResources().getString(R.string.price).equals(title)){
+                TextView cell = (TextView)diabloRow.getCell(title);
+                utils.setTextViewValue(cell, stock.getValidPrice());
+                // utils.setTextViewValue(cell, stock.getTagPrice());
+            }
+            else if (getResources().getString(R.string.discount).equals(title)){
+                TextView cell = (TextView)diabloRow.getCell(title);
+                utils.setTextViewValue(cell, stock.getDiscount());
+            }
+            else if(getResources().getString(R.string.fprice).equals(title)){
+                EditText cell = (EditText) diabloRow.getCell(title);
+                utils.setEditTextValue(cell, stock.getFinalPrice());
+                utils.addTextChangedListenerOfPayment(cell, new DiabloUtils.Payment() {
+                    @Override
+                    public void setPayment(String param) {
+                        Float price = utils.toFloat(param);
+                        diabloRow.getStock().setFinalPrice(price);
+                        View calCell = diabloRow.getCell(R.string.calculate);
+                        if (null != calCell){
+                            utils.setTextViewValue((TextView) calCell, diabloRow.getStock().getSalePrice());
+                        }
+                    }
+                });
+
+            }
+            else if (getResources().getString(R.string.amount).equals(title)){
+                EditText cell = (EditText) diabloRow.getCell(title);
+                utils.setEditTextValue(cell, stock.getSaleTotal());
+                cell.addTextChangedListener(new DiabloSaleAmountChangeWatcher(mHandler, diabloRow.getRow()));
+            }
+            else if (getResources().getString(R.string.calculate).equals(title)){
+                TextView cell = (TextView)diabloRow.getCell(title);
+                cell.setText(utils.toString(stock.getSalePrice()));
+            }
+            else if (getResources().getString(R.string.comment).equals(title)){
+                EditText cell = (EditText) diabloRow.getCell(title);
+                cell.setText(stock.getComment());
+
+                utils.addTextChangedListenerOfPayment(cell, new DiabloUtils.Payment() {
+                    @Override
+                    public void setPayment(String param) {
+                        if (!param.isEmpty())
+                            diabloRow.getStock().setComment(param);
+                    }
+                });
+            }
+        }
+        return diabloRow.getRow();
+    };
+
     private TableRow addEmptyRow(){
         // lp.setMargins(0, 0, 10, 0);
         final TableRow row = new TableRow(this.getContext());
         // row.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        final DiabloUtils utils = DiabloUtils.getInstance();
 
         for (String title: mTitles){
             TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
@@ -494,9 +557,6 @@ public class SaleIn extends Fragment{
                 eCell.setDropDownWidth(500);
                 eCell.setThreshold(1);
 //              eCell.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED);
-//
-//               eCell.setDropDownHorizontalOffset((eCell.getMeasuredWidth() * 3));
-                // eCell.setDropDownVerticalOffset(-1000);
 
                 new TextChangeOnAutoComplete(eCell).addListen(new TextChangeOnAutoComplete.TextWatch() {
                     @Override
@@ -510,86 +570,85 @@ public class SaleIn extends Fragment{
                 eCell.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long extra) {
-                        MatchStock selectStock = (MatchStock) adapterView.getItemAtPosition(position);
-                        final SaleStock s = new SaleStock(selectStock, mSelectPrice);
-                        mSaleStocks.add(s);
+                        MatchStock matchedStock = (MatchStock) adapterView.getItemAtPosition(position);
+                        Integer matchedOrderId = findSaleStock(matchedStock);
+                        if (!matchedOrderId.equals(DiabloEnum.INVALID_INDEX)){
+                            eCell.setText(DiabloEnum.EMPTY_STRING);
+                            utils.makeToast(
+                                    getContext(),
+                                    getContext().getResources().getString(R.string.sale_stock_exist)
+                                            + utils.toString(matchedOrderId));
+                        } else {
+                            final SaleStock s = new SaleStock(matchedStock, mSelectPrice);
+                            row.setTag(s);
+                            mSaleStocks.add(s);
 
-                        row.setTag(s);
-                        // TableRow selectRow = ((MatchStockAdapter) adapterView.getAdapter()).getRow();
-                        for (Integer i=0; i<row.getChildCount(); i++){
-                            final View cell = row.getChildAt(i);
-                            String name = (String)cell.getTag();
+                            for (Integer i=0; i<row.getChildCount(); i++){
+                                final View cell = row.getChildAt(i);
+                                String name = (String)cell.getTag();
 
-                            if (getResources().getString(R.string.good).equals(name)) {
-                                cell.setFocusable(false);
-                                ((AutoCompleteTextView )cell).setText(selectStock.getName());
-                            }
+                                if (getResources().getString(R.string.good).equals(name)) {
+                                    cell.setFocusable(false);
+                                    ((AutoCompleteTextView )cell).setText(s.getName());
+                                }
 
-                            if (getResources().getString(R.string.price).equals(name)) {
-                                DiabloUtils.instance().setTextViewValue((TextView) cell, s.getValidPrice());
-                            }
-                            else if (getResources().getString(R.string.discount).equals(name)){
-                                DiabloUtils.instance().setTextViewValue((TextView) cell, s.getDiscount());
-                            }
-                            else if (getResources().getString(R.string.fprice).equals(name)){
-                                cell.setFocusableInTouchMode(true);
-                                cell.setFocusable(true);
-                                DiabloUtils.instance().setEditTextValue((EditText)cell, s.getFinalPrice());
-                                ((EditText)cell).addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable editable) {
-                                        SaleStock s = (SaleStock) row.getTag();
-                                        Float price = DiabloUtils.instance().toFloat(editable.toString());
-                                        s.setFinalPrice(price);
-                                        View calCell = SaleStockHandler.getColumn(getContext(), row, R.string.calculate);
-                                        DiabloUtils.instance().setTextViewValue((TextView) calCell, s.getSalePrice());
-                                    }
-                                });
-                            }
-
-                            if (getResources().getString(amount).equals(name)){
-                                // free color, free size
-                                if ( DiabloEnum.DIABLO_FREE.equals(s.getFree()) ){
+                                if (getResources().getString(R.string.price).equals(name)) {
+                                    DiabloUtils.instance().setTextViewValue((TextView) cell, s.getValidPrice());
+                                }
+                                else if (getResources().getString(R.string.discount).equals(name)){
+                                    DiabloUtils.instance().setTextViewValue((TextView) cell, s.getDiscount());
+                                }
+                                else if (getResources().getString(R.string.fprice).equals(name)){
                                     cell.setFocusableInTouchMode(true);
                                     cell.setFocusable(true);
-                                    cell.requestFocus();
-                                } else {
-                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                    // find
-                                    StockSelect to = (StockSelect)getFragmentManager().findFragmentByTag(DiabloEnum.TAG_STOCK_SELECT);
-                                    if (null == to){
-                                        Bundle args = new Bundle();
-                                        args.putInt(DiabloEnum.BUNDLE_PARAM_SHOP, mSaleCalc.getShop());
-                                        args.putInt(DiabloEnum.BUNDLE_PARAM_RETAILER, mSaleCalc.getRetailer());
-                                        args.putString(DiabloEnum.BUNDLE_PARAM_SALE_STOCK, new Gson().toJson(s));
-                                        to = new StockSelect();
-                                        to.setArguments(args);
+                                    DiabloUtils.instance().setEditTextValue((EditText)cell, s.getFinalPrice());
+                                    utils.addTextChangedListenerOfPayment((EditText) cell, new DiabloUtils.Payment() {
+                                        @Override
+                                        public void setPayment(String param) {
+                                            SaleStock s = (SaleStock) row.getTag();
+                                            Float price = utils.toFloat(param);
+                                            s.setFinalPrice(price);
+                                            View calCell = SaleStockHandler.getColumn(getContext(), row, R.string.calculate);
+                                            utils.setTextViewValue((TextView) calCell, s.getSalePrice());
+                                        }
+                                    });
+                                }
+
+                                if (getResources().getString(amount).equals(name)){
+                                    // free color, free size
+                                    if ( DiabloEnum.DIABLO_FREE.equals(s.getFree()) ){
+                                        cell.setFocusableInTouchMode(true);
+                                        cell.setFocusable(true);
+                                        cell.requestFocus();
                                     } else {
-                                        to.setSelectShop(mSaleCalc.getShop());
-                                        to.setSelectRetailer(mSaleCalc.getRetailer());
-                                        to.setSaleStock(new Gson().toJson(s));
+                                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                        // find
+                                        StockSelect to = (StockSelect)getFragmentManager().findFragmentByTag(DiabloEnum.TAG_STOCK_SELECT);
+                                        if (null == to){
+                                            Bundle args = new Bundle();
+                                            args.putInt(DiabloEnum.BUNDLE_PARAM_SHOP, mSaleCalc.getShop());
+                                            args.putInt(DiabloEnum.BUNDLE_PARAM_RETAILER, mSaleCalc.getRetailer());
+                                            args.putString(DiabloEnum.BUNDLE_PARAM_SALE_STOCK, new Gson().toJson(s));
+                                            to = new StockSelect();
+                                            to.setArguments(args);
+                                        } else {
+                                            to.setSelectShop(mSaleCalc.getShop());
+                                            to.setSelectRetailer(mSaleCalc.getRetailer());
+                                            to.setSaleStock(new Gson().toJson(s));
+                                        }
+
+                                        if (!to.isAdded()){
+                                            transaction.hide(SaleIn.this).add(R.id.frame_container, to, DiabloEnum.TAG_STOCK_SELECT).commit();
+                                        } else {
+                                            transaction.hide(SaleIn.this).show(to).commit();
+                                        }
                                     }
 
-                                    if (!to.isAdded()){
-                                        transaction.hide(SaleIn.this).add(R.id.frame_container, to, DiabloEnum.TAG_STOCK_SELECT).commit();
-                                    } else {
-                                        transaction.hide(SaleIn.this).show(to).commit();
-                                    }
+                                    ((EditText)cell).addTextChangedListener(new DiabloSaleAmountChangeWatcher(mHandler, row));
 
-                                    // utils.replaceFragment(getFragmentManager(), f, DiabloEnum.TAG_STOCK_SELECT);
                                 }
 
                             }
-
                         }
                     }
                 });
@@ -602,8 +661,7 @@ public class SaleIn extends Fragment{
                 SpinnerStringAdapter adapter=new SpinnerStringAdapter(
                         this.getContext(),
                         android.R.layout.simple_spinner_dropdown_item,
-                        mPriceType,
-                        row);
+                        mPriceType);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 sCell.setAdapter(adapter);
                 sCell.setSelection(mSelectPrice - 1);
@@ -612,64 +670,19 @@ public class SaleIn extends Fragment{
             }
             else if (getResources().getString(amount).equals(title)){
                 final EditText cell = new EditText(this.getContext());
-                // font
                 cell.setTextColor(Color.BLACK);
-                // right-margin
                 cell.setLayoutParams(lp);
-                // cell.setText(title);
                 cell.setGravity(Gravity.CENTER_VERTICAL);
                 cell.setTextColor(Color.RED);
                 cell.setTextSize(18);
                 cell.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_SIGNED);
                 cell.setTag(title);
                 cell.setFocusable(false);
-
-                cell.addTextChangedListener(new TextWatcher() {
-                    private Timer timer=new Timer();
-                    private final long DELAY = 500; // milliseconds
-                    private String inputValue;
-
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (timer != null) timer.cancel();
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        inputValue = editable.toString();
-                        timer.cancel();
-                        timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                Message message = Message.obtain(mHandler);
-                                message.what = SaleStockHandler.SALE_TOTAL_CHANGED;
-                                if (inputValue.length() == 1 && inputValue.startsWith("-")){
-                                    message.arg1 = 0;
-                                } else {
-                                    message.arg1 = utils.toInteger(inputValue);
-                                }
-
-                                message.obj = row;
-                                message.sendToTarget();
-                            }
-                        }, DELAY);
-                    }
-                });
                 row.addView(cell);
             } else if (getResources().getString(R.string.order_id).equals(title)){
                 TextView cell = new TextView(this.getContext());
-                // font
-                cell.setTextColor(Color.BLACK);
-                // right-margin
                 lp.weight = 0.8f;
                 cell.setLayoutParams(lp);
-                // cell.setText(title);
                 cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
                 cell.setTextSize(18);
                 cell.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -677,13 +690,9 @@ public class SaleIn extends Fragment{
                 row.addView(cell);
             } else if(getResources().getString(R.string.fprice).equals(title)){
                 final EditText cell = new EditText(this.getContext());
-                // font
                 cell.setTextColor(Color.BLACK);
-                // right-margin
                 cell.setLayoutParams(lp);
-                // cell.setText(title);
                 cell.setGravity(Gravity.CENTER_VERTICAL);
-                // cell.setTextColor(Color.RED);
                 cell.setTextSize(18);
                 cell.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 cell.setTag(title);
@@ -698,27 +707,16 @@ public class SaleIn extends Fragment{
                 cell.setLayoutParams(lp);
                 cell.setTextSize(16);
                 cell.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                cell.setTag(title);
 
-                cell.addTextChangedListener(new TextWatcher() {
+                utils.addTextChangedListenerOfPayment(cell, new DiabloUtils.Payment() {
                     @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        final String inputValue = editable.toString();
-                        if (!inputValue.isEmpty())
-                            ((SaleStock)row.getTag()).setComment(editable.toString());
+                    public void setPayment(String param) {
+                        if (!param.isEmpty())
+                            ((SaleStock)row.getTag()).setComment(param);
                     }
                 });
 
+                cell.setTag(title);
                 row.addView(cell);
             }
 //            else if (getResources().getString(R.string.operater).equals(title)){
@@ -754,38 +752,18 @@ public class SaleIn extends Fragment{
         return row;
     };
 
-    private void getAllMatchStock(){
-        StockInterface face = StockClient.getClient().create(StockInterface.class);
-        Call<List<MatchStock>> call = face.matchAllStock(
-                Profile.instance().getToken(),
-                new MatchStockRequest(
-                        Profile.instance().getConfig(mLoginShop, DiabloEnum.START_TIME, DiabloUtils.getInstance().currentDate()),
-                        mLoginShop,
-                        DiabloEnum.USE_REPO));
-        call.enqueue(new Callback<List<MatchStock>>() {
-            @Override
-            public void onResponse(Call<List<MatchStock>> call, Response<List<MatchStock>> response) {
-                Log.d(LOG_TAG, "success to get retailer");
-                mMatchStocks = response.body();
-                mSaleTable.addView(addEmptyRow());
-                mButtons.get(R.id.sale_in_back).enable();
-                mButtons.get(R.id.sale_in_draft).enable();
-                getActivity().invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onFailure(Call<List<MatchStock>> call, Throwable t) {
-                Log.d(LOG_TAG, "failed to get match stock");
-            }
-        });
+    private void getAllMatchStock() {
+        mMatchStocks = Profile.instance().getMatchStocks();
+        mSaleTable.addView(addEmptyRow());
+        mButtons.get(R.id.sale_in_back).enable();
+        mButtons.get(R.id.sale_in_draft).enable();
+        getActivity().invalidateOptionsMenu();
     }
 
-
-
-    private static class SaleStockHandler extends Handler{
-        private final static Integer SALE_TOTAL_CHANGED = 1;
-        private final static Integer SALE_PRICE_TYPE_SELECTED = 2;
-        private final static Integer SALE_GOOD_SELECTED = 3;
+    public static class SaleStockHandler extends Handler{
+        public final static Integer SALE_TOTAL_CHANGED = 1;
+        public final static Integer SALE_PRICE_TYPE_SELECTED = 2;
+        public final static Integer SALE_GOOD_SELECTED = 3;
 
         private final DiabloUtils utils = DiabloUtils.getInstance();
 
@@ -813,7 +791,7 @@ public class SaleIn extends Fragment{
                         s.addAmount(amount);
                     }
 
-                    DiabloUtils.instance().setTextViewValue((TextView)cell, s.getSalePrice());
+                    utils.setTextViewValue((TextView)cell, s.getSalePrice());
 
                     final SaleIn f = ((SaleIn)mFragment.get());
                     if (DiabloEnum.STARTING_SALE.equals(s.getState())){
@@ -829,9 +807,7 @@ public class SaleIn extends Fragment{
                         row.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View view) {
-                                // f.setCurrentSelectRow((TableRow) view);
                                 view.showContextMenu();
-
                                 return true;
                             }
                         });
@@ -841,11 +817,7 @@ public class SaleIn extends Fragment{
                         f.addEmptyRowToTable();
                     }
 
-                    f.resetShouldPay();
-                    f.calcRetailerAccBalance();
-
-                    f.setCalcView();
-                    f.resetRetailerAccBalanceView();
+                    f.reCalculatePayment();
 
                     // save to db
                     // delete old
@@ -894,6 +866,51 @@ public class SaleIn extends Fragment{
             }
         }
         return rows;
+    }
+
+    public void resetWith(SaleCalc calc, List<SaleStock> stocks){
+        mSaleTable.removeAllViews();
+        mLoginRetailer = calc.getRetailer();
+        mLoginShop = calc.getShop();
+        mSaleCalc = calc;
+        mSaleStocks = stocks;
+
+        mRowSize = 0;
+        mComesFrom = R.integer.COMES_FORM_SELF;
+
+        // reset retailer
+        resetRetailerBalance(mLoginRetailer);
+        resetRetailerBalanceView();
+        mRetailerView.setText(mSelectRetailer.getName());
+
+        // reset shop
+        AuthenShop selectShop = DiabloUtils.getInstance().getShop(Profile.instance().getSortAvailableShop(), mLoginShop);
+        mShopView.setText(selectShop.getName());
+
+        // restore table
+        for(SaleStock s: stocks){
+            TableRow row = genRowWithStock(s);
+            mSaleTable.addView(row, 0);
+            row.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    view.showContextMenu();
+                    return true;
+                }
+            });
+            registerForContextMenu(row);
+
+            incRow();
+        }
+
+        mSaleTable.addView(addEmptyRow(), 0);
+
+        reCalculatePayment();
+
+        mButtons.get(R.id.sale_in_money_off).enable();
+        mButtons.get(R.id.sale_in_save).enable();
+        mButtons.get(R.id.sale_in_next).enable();
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -954,11 +971,7 @@ public class SaleIn extends Fragment{
                 getActivity().invalidateOptionsMenu();
             }
 
-            resetShouldPay();
-            calcRetailerAccBalance();
-
-            setCalcView();
-            resetRetailerAccBalanceView();
+            reCalculatePayment();
             DiabloUtils.instance().makeToast(getContext(), mSaleTable.getChildCount());
         }
 
@@ -971,7 +984,9 @@ public class SaleIn extends Fragment{
         for (Integer i=0; i<mButtons.size(); i++){
             Integer key = mButtons.keyAt(i);
             DiabloButton button = mButtons.get(key);
-            menu.findItem(button.getResId()).setEnabled(button.isEnabled());
+            if (!button.getResId().equals(R.id.sale_in_clear_draft)){
+                menu.findItem(button.getResId()).setEnabled(button.isEnabled());
+            }
         }
 
         super.onPrepareOptionsMenu(menu);
@@ -1004,7 +1019,6 @@ public class SaleIn extends Fragment{
                 // get draft from db
                 List<SaleCalc> calcs = dbInstance.queryAllSaleCalc();
                 if (null != calcs) {
-
                     String [] titles = new String[calcs.size()];
                     final SparseArray<SaleCalc> sparseCalcs = new SparseArray<>();
                     int index = 0;
@@ -1025,13 +1039,18 @@ public class SaleIn extends Fragment{
                             dialog.dismiss();
                             utils.makeToast(getContext(), i);
                             SaleCalc c = sparseCalcs.get(i);
-                            recoverFromDB(c);
+                            resetWith(c, recoverFromDB(c));;
                         }
                     });
 
                     builder.create().show();
+                } else {
+                    utils.makeToast(getContext(), item.getTitle().toString());
                 }
-
+                break;
+            case R.id.sale_in_clear_draft:
+                dbInstance.clearAll();
+                utils.makeToast(getContext(), getContext().getResources().getString(R.string.draft_clear_success));
                 break;
             default:
                 // return super.onOptionsItemSelected(item);
@@ -1042,8 +1061,8 @@ public class SaleIn extends Fragment{
         return true;
     }
 
-    public void recoverFromDB(SaleCalc calc){
-        dbInstance.querySaleCalc(calc);
+    public List<SaleStock> recoverFromDB(SaleCalc calc){
+        return dbInstance.querySaleStock(calc);
     }
 
     public void setCurrentSelectRow(TableRow selectRow) {
@@ -1112,6 +1131,14 @@ public class SaleIn extends Fragment{
         mSaleCalc.setShouldPay(shouldPay);
     }
 
+    private void reCalculatePayment(){
+        resetShouldPay();
+        calcRetailerAccBalance();
+
+        setCalcView();
+        resetRetailerAccBalanceView();
+    }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         // utils.makeToast(getContext(), hidden ? "hidden" : "show");
@@ -1170,6 +1197,19 @@ public class SaleIn extends Fragment{
         return null;
     }
 
+    private Integer findSaleStock(MatchStock mStock){
+        Integer orderId = DiabloEnum.INVALID_INDEX;
+        for (SaleStock s: mSaleStocks){
+            if (s.getStyleNumber().equals(mStock.getStyleNumber())
+                    && s.getBrandId().equals(mStock.getBrandId())){
+                orderId = s.getOrderId();
+                break;
+            }
+        }
+
+        return orderId;
+    }
+
     public void setStockListener(OnStockSelectListener listener){
         mStockSelectListener = listener;
     }
@@ -1178,4 +1218,5 @@ public class SaleIn extends Fragment{
         Integer StockSelectAction();
         SaleStock afterStockSelected();
     }
+
 }

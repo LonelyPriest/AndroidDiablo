@@ -93,11 +93,17 @@ public class Profile {
     // size group
     private List<DiabloSizeGroup> mSizeGroups = new ArrayList<>();
 
+    // matched stocks
+    private List<MatchStock> matchStocks = new ArrayList<>();
+
     /*
     * Login user info
     * */
     public Integer getLoginShop() {
-        return this.mLoginShop;
+        if ( mLoginShop.equals(DiabloEnum.INVALID_INDEX) ){
+          mLoginShop = Profile.instance().getAvailableShopIds().get(0);
+        }
+        return mLoginShop;
     }
 
     public void setLoginShop(Integer loginShop) {
@@ -403,11 +409,36 @@ public class Profile {
         for (String gId : groups) {
             for (DiabloSizeGroup s: mSizeGroups){
                 if (DiabloUtils.instance().toInteger(gId).equals(s.getGroupId())){
-                    sizes.addAll(s.getSortedSizeNames());
+                    for (String name: s.getSortedSizeNames()){
+                        if (!sizes.contains(name)){
+                            sizes.add(name);
+                        }
+                    }
                 }
             }
         }
 
         return sizes;
+    }
+
+    public List<MatchStock> getMatchStocks() {
+        return matchStocks;
+    }
+
+    public void setMatchStocks(List<MatchStock> matchStocks) {
+        this.matchStocks = new ArrayList<>(matchStocks);
+    }
+
+    public MatchStock getMatchStock(String styleNumber, Integer brandId){
+        MatchStock stock = null;
+        for (MatchStock m: matchStocks){
+            if (styleNumber.equals(m.getStyleNumber())
+                    && brandId.equals(m.getBrandId())){
+                stock = m;
+                break;
+            }
+        }
+
+        return stock;
     }
 }

@@ -13,28 +13,33 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.Client.BaseSettingClient;
-import com.diablo.dt.diablo.Client.WgoodClient;
 import com.diablo.dt.diablo.Client.EmployeeClient;
 import com.diablo.dt.diablo.Client.RetailerClient;
 import com.diablo.dt.diablo.Client.RightClient;
+import com.diablo.dt.diablo.Client.StockClient;
 import com.diablo.dt.diablo.Client.WLoginClient;
+import com.diablo.dt.diablo.Client.WgoodClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.BaseSetting;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
-import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.rest.WGoodInterface;
-import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.entity.Employee;
+import com.diablo.dt.diablo.entity.MatchStock;
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.request.MatchStockRequest;
 import com.diablo.dt.diablo.response.LoginResponse;
 import com.diablo.dt.diablo.response.LoginUserInfoResponse;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
 import com.diablo.dt.diablo.rest.EmployeeInterface;
 import com.diablo.dt.diablo.rest.RetailerInterface;
 import com.diablo.dt.diablo.rest.RightInterface;
+import com.diablo.dt.diablo.rest.StockInterface;
+import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.rest.WLoginInterfacae;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -292,11 +297,40 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void getAllMatchStock(){
+        StockInterface face = StockClient.getClient().create(StockInterface.class);
+        Integer loginShop = Profile.instance().getLoginShop();
+        Call<List<MatchStock>> call = face.matchAllStock(
+                Profile.instance().getToken(),
+                new MatchStockRequest(
+                        Profile.instance().getConfig(loginShop, DiabloEnum.START_TIME, DiabloUtils.getInstance().currentDate()),
+                        loginShop,
+                        DiabloEnum.USE_REPO));
+        call.enqueue(new Callback<List<MatchStock>>() {
+            @Override
+            public void onResponse(Call<List<MatchStock>> call, Response<List<MatchStock>> response) {
+                Log.d(LOG_TAG, "success to get match stock");
+                Profile.instance().setMatchStocks(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 70;
+                message.sendToTarget();
+            }
+
+            @Override
+            public void onFailure(Call<List<MatchStock>> call, Throwable t) {
+                Log.d(LOG_TAG, "failed to get match stock");
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 71;
+                message.sendToTarget();
+            }
+        });
+    }
+
 
     private static class LoginHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
 
-        public LoginHandler(LoginActivity activity) {
+        private LoginHandler(LoginActivity activity) {
             mActivity = new WeakReference<LoginActivity>(activity);
         }
 
@@ -336,9 +370,15 @@ public class LoginActivity extends AppCompatActivity {
                     case 51:
                         activity.loginError(1199);
                     case 60:
-                        activity.gotoMain();
+                        activity.getAllMatchStock();
                         break;
                     case 61:
+                        activity.loginError(1199);
+                        break;
+                    case 70:
+                        activity.gotoMain();
+                        break;
+                    case 71:
                         activity.loginError(1199);
                         break;
 

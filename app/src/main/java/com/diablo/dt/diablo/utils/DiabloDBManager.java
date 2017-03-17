@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.diablo.dt.diablo.entity.MatchStock;
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.SaleCalc;
 import com.diablo.dt.diablo.entity.SaleStock;
 import com.diablo.dt.diablo.entity.SaleStockAmount;
@@ -36,6 +38,7 @@ public class DiabloDBManager {
         }
 
         this.mSQLiteDB = DiabloDBOpenHelper.instance(context).getWritableDatabase();
+        // DiabloUtils.instance().makeToast(context, mSQLiteDB.getPath());
     }
 
     private DiabloDBManager() {
@@ -160,32 +163,86 @@ public class DiabloDBManager {
         }
     }
 
-    public void querySaleStock(SaleCalc calc){
+    private SaleStock getSaleStocks(List<SaleStock> stocks, String styleNumber, Integer brandId){
+        SaleStock stock = null;
+        for (SaleStock s: stocks){
+            if (styleNumber.equals(s.getStyleNumber())
+                    && brandId.equals(s.getBrandId())){
+                stock = s;
+                break;
+            }
+        }
+
+        return stock;
+    }
+
+    public List<SaleStock> querySaleStock(SaleCalc calc){
         String sql0 = "select a.style_number, a.brand, a.sell_type, a.second, a.discount, a.price"
-                + ", b.color, b.size, b.total"
+                + ", b.color, b.size, b.exist, b.total"
                 + " from w_sale_detail a"
                 + " left join w_sale_detail_amount b"
                 + " on a.retailer=b.retailer and a.shop=b.shop"
                 + " and a.style_number=b.style_number"
                 + " and a.brand=b.brand"
                 + " where a.retailer=? and a.shop=?";
-        Cursor cursor = mSQLiteDB.rawQuery(
+        Cursor c = mSQLiteDB.rawQuery(
                 sql0,
                 new String[] {utils.toString(calc.getRetailer()), utils.toString(calc.getShop())});
 
         List<SaleStock> saleStocks = new ArrayList<>();
-//        try {
-//            while (cursor.moveToNext()){
-//
-//                SaleStock s = new SaleStock();
-//                c.setRetailer(cursor.getInt(cursor.getColumnIndex("retailer")));
-//                c.setShop(cursor.getInt(cursor.getColumnIndex("shop")));
-//                c.setComment(cursor.getString(cursor.getColumnIndex("comment")));
-//                calcs.add(c);
-//            }
-//        } finally {
-//            cursor.close();
-//        }
+        Integer orderId = 0;
+        try {
+            while (c.moveToNext()){
+                String styleNumber = c.getString(c.getColumnIndex("style_number"));
+                Integer brand = c.getInt(c.getColumnIndex("brand"));
+
+                SaleStock stock = getSaleStocks(saleStocks, styleNumber, brand);
+                if (null == stock){
+                    MatchStock matchStock = Profile.instance().getMatchStock(styleNumber, brand);
+
+                    Integer selectPrice = c.getInt(c.getColumnIndex("sell_type"));
+                    SaleStock s = new SaleStock(matchStock, selectPrice);
+
+                    orderId++;
+                    s.setOrderId(orderId);
+                    s.setState(DiabloEnum.FINISHED_SALE);
+                    s.setSecond(c.getInt(c.getColumnIndex("second")));
+                    s.setDiscount(c.getFloat(c.getColumnIndex("discount")));
+                    s.setFinalPrice(c.getFloat(c.getColumnIndex("price")));
+
+                    SaleStockAmount amount = new SaleStockAmount(
+                            c.getInt(c.getColumnIndex("color")),
+                            c.getString(c.getColumnIndex("size")));
+
+                    Integer saleTotal = c.getInt(c.getColumnIndex("total"));
+                    Integer stockExist = c.getInt(c.getColumnIndex("exist"));
+                    amount.setSellCount(saleTotal);
+                    amount.setStock(stockExist);
+
+                    s.setSaleTotal(saleTotal);
+                    s.setStockExist(stockExist);
+                    s.addAmount(amount);
+                    saleStocks.add(s);
+                } else {
+                    SaleStockAmount amount = new SaleStockAmount(
+                            c.getInt(c.getColumnIndex("color")),
+                            c.getString(c.getColumnIndex("size")));
+
+                    Integer saleTotal = c.getInt(c.getColumnIndex("total"));
+                    Integer stockExist = c.getInt(c.getColumnIndex("exist"));
+                    amount.setSellCount(saleTotal);
+                    amount.setStock(stockExist);
+
+                    stock.setSaleTotal(stock.getSaleTotal() + saleTotal);
+                    stock.setStockExist(stock.getExistStock() + stockExist);
+                    stock.addAmount(amount);
+                }
+            }
+        } finally {
+            c.close();
+        }
+
+        return saleStocks.size() == 0 ? null : saleStocks;
 
     }
 
@@ -193,15 +250,6 @@ public class DiabloDBManager {
         mSQLiteDB.beginTransaction();
 
         try {
-//            String sql1 = "insert into " + DiabloEnum.W_SALE + "(retailer, shop, comment)"
-//                    + " values(?, ?, ?)";
-//            SQLiteStatement s1 = mSQLiteDB.compileStatement(sql1);
-//            s1.bindString(1, utils.toString(calc.getRetailer()));
-//            s1.bindString(2, utils.toString(calc.getShop()));
-//            s1.bindString(3, calc.getComment());
-//            s1.execute();
-//            s1.clearBindings();
-
             String sql0 = "delete from " + DiabloEnum.W_SALE_DETAIL
                     + " where"
                     + " retailer=? and shop=? and style_number=? and brand=?";
@@ -240,8 +288,8 @@ public class DiabloDBManager {
             s2.clearBindings();
 
             String sql3 = "insert into " + DiabloEnum.W_SALE_DETAIL_AMOUNT
-                    + "(retailer, shop, style_number, brand, color, size, total)"
-                    + " values(?, ?, ?, ?, ?, ?, ?)";
+                    + "(retailer, shop, style_number, brand, color, size, exist, total)"
+                    + " values(?, ?, ?, ?, ?, ?, ?, ?)";
             SQLiteStatement s3 = mSQLiteDB.compileStatement(sql3);
 
             for (SaleStockAmount a : stock.getAmounts()) {
@@ -249,35 +297,39 @@ public class DiabloDBManager {
                 s3.bindString(2, utils.toString(calc.getShop()));
                 s3.bindString(3, stock.getStyleNumber());
                 s3.bindString(4, utils.toString(stock.getBrandId()));
+
                 s3.bindString(5, utils.toString(a.getColorId()));
                 s3.bindString(6, a.getSize());
-                s3.bindString(7, utils.toString(stock.getSaleTotal()));
+                s3.bindString(7, utils.toString(a.getStock()));
+                s3.bindString(8, utils.toString(a.getSellCount()));
                 s3.execute();
                 s3.clearBindings();
             }
-
-//        ContentValues v = new ContentValues();
-//        v.put("style_number", stock.getStyleNumber());
-//        v.put("brand", stock.getBrandId());
-//        v.put("sell_type", stock.getSelectedPrice());
-//        v.put("second", stock.getSecond());
-//        v.put("discount", stock.getDiscount());
-//        v.put("price", stock.getFinalPrice());
-//
-//        for (SaleStockAmount a: stock.getAmounts()){
-//            ContentValues v1 = new ContentValues();
-//            v1.put("style_number", stock.getStyleNumber());
-//            v1.put("brand", stock.getBrandId());
-//            v1.put("color", a.getColorId());
-//            v1.put("size", a.getSize());
-//            v1.put("total", a.getSellCount());
-//            mSQLiteDB.insert(DiabloEnum.W_SALE_DETAIL_AMOUNT, null, v1);
-//        }
             mSQLiteDB.setTransactionSuccessful();
         } finally {
             mSQLiteDB.endTransaction();
         }
         // mSQLiteDB.endTransaction();
+    }
+
+    public void clearAll(){
+        mSQLiteDB.beginTransaction();
+        try {
+            String sql0 = "delete from " + DiabloEnum.W_SALE;
+            SQLiteStatement s0 = mSQLiteDB.compileStatement(sql0);
+            s0.execute();
+
+            String sql1 = "delete from " + DiabloEnum.W_SALE_DETAIL;
+            SQLiteStatement s1 = mSQLiteDB.compileStatement(sql1);
+            s1.execute();
+
+            String sql2 = "delete from " + DiabloEnum.W_SALE_DETAIL_AMOUNT;
+            SQLiteStatement s2 = mSQLiteDB.compileStatement(sql2);
+            s2.execute();
+            mSQLiteDB.setTransactionSuccessful();
+        } finally {
+            mSQLiteDB.endTransaction();
+        }
     }
 
     public void close(){
