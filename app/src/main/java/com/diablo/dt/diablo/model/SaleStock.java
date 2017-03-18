@@ -1,5 +1,6 @@
-package com.diablo.dt.diablo.entity;
+package com.diablo.dt.diablo.model;
 
+import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 

@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteStatement;
 
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.entity.SaleCalc;
-import com.diablo.dt.diablo.entity.SaleStock;
-import com.diablo.dt.diablo.entity.SaleStockAmount;
+import com.diablo.dt.diablo.model.SaleCalc;
+import com.diablo.dt.diablo.model.SaleStock;
+import com.diablo.dt.diablo.model.SaleStockAmount;
 
 import java.util.ArrayList;
 import java.util.List;

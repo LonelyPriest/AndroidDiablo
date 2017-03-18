@@ -1,5 +1,6 @@
-package com.diablo.dt.diablo.entity;
+package com.diablo.dt.diablo.model;
 
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**

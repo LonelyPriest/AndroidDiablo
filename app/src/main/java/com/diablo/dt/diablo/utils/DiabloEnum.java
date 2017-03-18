@@ -18,6 +18,7 @@ public class DiabloEnum {
     public static final Integer DIABLO_TRUE = 1;
     public static final Integer DIABLO_FREE_COLOR = 0;
     public static final String  DIABLO_FREE_SIZE = "0";
+    public static final String  DIABLO_STRING_ZERO = "0";
 
     public static final String BUNDLE_PARAM_SALE_STOCK = "SALE_STOCK";
     public static final String BUNDLE_PARAM_SHOP = "SHOP";

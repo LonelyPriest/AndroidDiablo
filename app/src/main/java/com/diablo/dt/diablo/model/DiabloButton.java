@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.entity;
+package com.diablo.dt.diablo.model;
 
 import android.support.annotation.IdRes;
 

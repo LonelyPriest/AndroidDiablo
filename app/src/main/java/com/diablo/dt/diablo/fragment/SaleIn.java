@@ -35,14 +35,14 @@ import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
 import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
 import com.diablo.dt.diablo.entity.AuthenShop;
-import com.diablo.dt.diablo.entity.DiabloButton;
+import com.diablo.dt.diablo.model.DiabloButton;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
-import com.diablo.dt.diablo.entity.SaleCalc;
-import com.diablo.dt.diablo.entity.SaleStock;
-import com.diablo.dt.diablo.entity.SaleStockAmount;
+import com.diablo.dt.diablo.model.SaleCalc;
+import com.diablo.dt.diablo.model.SaleStock;
+import com.diablo.dt.diablo.model.SaleStockAmount;
 import com.diablo.dt.diablo.task.MatchRetailerTask;
 import com.diablo.dt.diablo.task.MatchStockTask;
 import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
@@ -111,7 +111,15 @@ public class SaleIn extends Fragment{
     private View mViewSaleTotal;
     private View mViewBalance;
     private View mViewAccBalance;
+
     private View mViewCash;
+    private View mViewCard;
+    private View mViewWire;
+    private View mViewVerificate;
+    private View mViewDatetime;
+    private View mViewComment;
+    private View mViewExtraCost;
+    private View mViewExtraCostType;
 
     private SparseArray<DiabloButton> mButtons= new SparseArray<>();
 
@@ -1051,6 +1059,8 @@ public class SaleIn extends Fragment{
             case R.id.sale_in_clear_draft:
                 dbInstance.clearAll();
                 utils.makeToast(getContext(), getContext().getResources().getString(R.string.draft_clear_success));
+                break;
+            case R.id.sale_in_next:
                 break;
             default:
                 // return super.onOptionsItemSelected(item);

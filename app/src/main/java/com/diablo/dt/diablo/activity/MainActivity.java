@@ -27,8 +27,7 @@ import com.diablo.dt.diablo.utils.DiabloEnum;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
-        SaleDetail.OnFragmentInteractionListener,
-        SaleIn.OnFragmentInteractionListener{
+        SaleDetail.OnFragmentInteractionListener{
 
     private final static String LOG_TAG = "MainActivity:";
     private NavigationView mNavigationView;
@@ -388,11 +387,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onSaleDetailFragmentInteraction(Uri uri){
-
-    }
-
-    @Override
-    public void onSaleInFragmentInteraction(Uri uri) {
 
     }
 

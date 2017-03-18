@@ -14,7 +14,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.diablo.dt.diablo.Client.WSaleClient;
+import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.entity.Profile;

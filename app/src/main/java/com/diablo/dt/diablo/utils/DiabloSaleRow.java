@@ -14,7 +14,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.entity.SaleStock;
+import com.diablo.dt.diablo.model.SaleStock;
 
 import java.util.HashMap;
 import java.util.Map;

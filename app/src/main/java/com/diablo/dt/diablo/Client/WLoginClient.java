@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.Client;
+package com.diablo.dt.diablo.client;
 
 import com.diablo.dt.diablo.entity.Profile;
 

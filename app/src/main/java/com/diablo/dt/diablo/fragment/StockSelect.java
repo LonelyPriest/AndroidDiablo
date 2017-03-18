@@ -18,13 +18,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TableLayout;
 
-import com.diablo.dt.diablo.Client.StockClient;
-import com.diablo.dt.diablo.Client.WSaleClient;
+import com.diablo.dt.diablo.client.StockClient;
+import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.entity.SaleStock;
-import com.diablo.dt.diablo.entity.SaleStockAmount;
+import com.diablo.dt.diablo.model.SaleStock;
+import com.diablo.dt.diablo.model.SaleStockAmount;
 import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.request.LastSaleRequest;
 import com.diablo.dt.diablo.request.StockRequest;
