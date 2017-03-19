@@ -23,4 +23,6 @@ public interface WSaleInterface {
 
     @POST("get_last_sale")
     Call<List<LastSaleResponse>> getLastSale(@Header("cookie") String token, @Body LastSaleRequest request);
+
+
 }

@@ -1,5 +1,7 @@
 package com.diablo.dt.diablo.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -12,40 +14,67 @@ import java.util.List;
  */
 
 public class SaleStock {
+    @SerializedName("order_id")
     private Integer orderId;
+    @SerializedName("style_number")
     private String  styleNumber;
+    @SerializedName("brand")
     private String  brand;
+    @SerializedName("type")
     private String  type;
 
+    @SerializedName("brand_id")
     private Integer brandId;
+    @SerializedName("type_id")
     private Integer typeId;
+    @SerializedName("firm_id")
     private Integer firmId;
 
+    @SerializedName("sex")
     private Integer sex;
+    @SerializedName("season")
     private Integer season;
+    @SerializedName("year")
     private Integer year;
 
     private Integer stockExist;
-    private Integer selectedPrice;
 
     private Float tagPrice;
     private Float pkgPrice;
     private Float price3;
     private Float price4;
     private Float price5;
+    @SerializedName("fdiscount")
     private Float discount;
-
-    private Integer free;
-    private String  sizeGroup;
-    private String  path;
-
+    @SerializedName("fprice")
     private Float   finalPrice;
+
+    @SerializedName("path")
+    private String  path;
+    @SerializedName("second")
     private Integer second;
-    private Integer saleTotal;
-    private Integer state;
+
+    @SerializedName("sizes")
+    private List<String> orderSizes;
+    @SerializedName("s_group")
+    private String  sizeGroup;
+    @SerializedName("colors")
+    private List<String> colors;
+    @SerializedName("free")
+    private Integer free;
+    @SerializedName("comment")
     private String  comment;
 
+    @SerializedName("sell_total")
+    private Integer saleTotal;
 
+    @SerializedName("sell_style")
+    private Integer selectedPrice;
+
+    @SerializedName("state")
+    private Integer state;
+
+    @SerializedName("amounts")
     private List<SaleStockAmount> amounts;
 
     public void addAmount(SaleStockAmount amount){

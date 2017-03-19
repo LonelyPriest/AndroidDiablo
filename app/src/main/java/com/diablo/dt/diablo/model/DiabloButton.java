@@ -12,6 +12,7 @@ public class DiabloButton {
 
     public DiabloButton(@IdRes Integer resId){
         this.resId = resId;
+        enable = true;
     }
 
     public Integer getResId() {

@@ -1,6 +1,5 @@
 package com.diablo.dt.diablo.model;
 
-import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -28,18 +27,21 @@ public class SaleCalc {
     private Float card;
     @SerializedName("wire")
     private Float wire;
-    @SerializedName("e_pay_type")
-    private Integer extraCostType;
-    @SerializedName("e_pay")
-    private Float extraCost;
     @SerializedName("verificate")
     private Float verificate;
     @SerializedName("should_pay")
     private Float shouldPay;
     @SerializedName("has_pay")
     private Float hasPay;
+    @SerializedName("sys_customer")
+    private boolean isSysRetailer;
     @SerializedName("accBalance")
     private Float accBalance;
+
+    @SerializedName("e_pay_type")
+    private Integer extraCostType;
+    @SerializedName("e_pay")
+    private Float extraCost;
 
     @SerializedName("total")
     private Integer total;
@@ -47,8 +49,6 @@ public class SaleCalc {
     private Integer sellTotal;
     @SerializedName("reject_total")
     private Integer rejectTotal;
-
-    private OnCalcChangedListener mListener;
 
     public SaleCalc(){
         retailer = -1;
@@ -58,27 +58,9 @@ public class SaleCalc {
         wire = 0f;
         extraCost  = 0f;
         verificate = 0f;
+        shouldPay  = 0f;
         hasPay     = 0f;
     }
-
-    public SaleCalc(OnCalcChangedListener listener){
-        retailer = -1;
-
-        cash = 0f;
-        card = 0f;
-        wire = 0f;
-        extraCost  = 0f;
-        verificate = 0f;
-        hasPay     = 0f;
-
-        mListener = listener;
-        mListener.onCashChanged(cash);
-        mListener.onCardChanged(card);
-        mListener.onWireChanged(wire);
-        mListener.onExtraConstChanged(extraCost);
-        mListener.onVerificateChanged(verificate);
-        mListener.onCommentChanged(DiabloEnum.EMPTY_STRING);
-    };
 
     public Integer getRetailer() {
         return retailer;
@@ -86,7 +68,6 @@ public class SaleCalc {
 
     public void setRetailer(Integer retailer) {
         this.retailer = retailer;
-        mListener.onRetailerChanged(retailer);
     }
 
     public Integer getShop() {
@@ -119,7 +100,6 @@ public class SaleCalc {
 
     public void setComment(String comment) {
         this.comment = comment;
-        this.mListener.onCommentChanged(comment);
     }
 
     public Float getBalance() {
@@ -136,7 +116,6 @@ public class SaleCalc {
 
     public void setCash(Float cash) {
         this.cash = cash;
-        this.mListener.onCashChanged(cash);
     }
 
     public Float getCard() {
@@ -145,7 +124,6 @@ public class SaleCalc {
 
     public void setCard(Float card) {
         this.card = card;
-        this.mListener.onCardChanged(card);
     }
 
     public Float getWire() {
@@ -154,7 +132,6 @@ public class SaleCalc {
 
     public void setWire(Float wire) {
         this.wire = wire;
-        this.mListener.onWireChanged(wire);
     }
 
     public Integer getExtraCostType() {
@@ -171,7 +148,6 @@ public class SaleCalc {
 
     public void setExtraCost(Float extraCost) {
         this.extraCost = extraCost;
-        this.mListener.onExtraConstChanged(extraCost);
     }
 
     public Float getVerificate() {
@@ -180,7 +156,6 @@ public class SaleCalc {
 
     public void setVerificate(Float verificate) {
         this.verificate = verificate;
-        this.mListener.onVerificateChanged(verificate);
     }
 
     public Float getShouldPay() {
@@ -195,7 +170,7 @@ public class SaleCalc {
         return hasPay;
     }
 
-    public void resetHasPay(){
+    public void calcHasPay(){
         hasPay = cash + card + wire;
     }
 
@@ -231,17 +206,16 @@ public class SaleCalc {
         this.rejectTotal = rejectTotal;
     }
 
-    public void setCalcChangedListener(OnCalcChangedListener listener){
-        this.mListener = listener;
+    public void setSysRetailer(boolean isSysRetailer) {
+        this.isSysRetailer = isSysRetailer;
     }
 
-    public interface OnCalcChangedListener{
-        public void onCashChanged(Float s);
-        public void onCardChanged(Float s);
-        public void onWireChanged(Float s);
-        public void onVerificateChanged(Float s);
-        public void onExtraConstChanged(Float s);
-        public void onCommentChanged(String s);
-        public void onRetailerChanged(Integer s);
+    public void resetCash() {
+        cash = 0f;
+    }
+
+    public Float calcAccBalance(){
+        accBalance = balance + shouldPay + extraCost - verificate - hasPay;
+        return accBalance;
     }
 }

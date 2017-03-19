@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloColor;
-import com.diablo.dt.diablo.entity.Stock;
+import com.diablo.dt.diablo.model.SaleStockAmount;
 
 import java.util.List;
 
@@ -82,10 +82,10 @@ public class DiabloSaleTable {
     public void genHead(){
         // empty
         TextView cell = new TextView(mContext);
-        TableRow.LayoutParams lp = genRowWeight(1f);
-        cell.setLayoutParams(lp);
+        cell.setLayoutParams(genRowWeight(0.8f));
         mHead.addView(cell);
 
+        TableRow.LayoutParams lp = genRowWeight(1f);
         for (Integer i=0; i<mOrderedSizes.size(); i++){
             cell = new TextView(mContext);
             cell.setLayoutParams(lp);
@@ -105,7 +105,7 @@ public class DiabloSaleTable {
         for (Integer i=0; i<mRows.length; i++){
             TableRow row = mRows[i];
             TextView col0 = new TextView(mContext);
-            col0.setLayoutParams(lp);
+            col0.setLayoutParams(genRowWeight(0.8f));
             setTextCellStyle(col0, 20, 100);
             col0.setTypeface(null, Typeface.BOLD);
             col0.setText(mOrderedColors.get(i).getName());
@@ -114,30 +114,33 @@ public class DiabloSaleTable {
 
             for (Integer j=0; j<mOrderedSizes.size(); j++){
                 TextView col = new TextView(mContext);
-                col.setLayoutParams(lp);
                 setTextCellStyle(col, 20, 100);
 
-                Stock s = mStockListener.getStockByColorAndSize(
+                SaleStockAmount a = mStockListener.getStockByColorAndSize(
                         mOrderedColors.get(i).getColorId(), mOrderedSizes.get(j));
 
-                if (null != s){
-                    col.setLayoutParams(genRowWeight(0.2f));
+                if (null != a){
+                    col.setLayoutParams(lp02f);
                     col.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
-                    DiabloUtils.instance().setTextViewValue(col, s.getExist());
+                    DiabloUtils.instance().setTextViewValue(col, a.getStock());
                     row.addView(col);
 
                     EditText editCol = new EditText(mContext);
-                    editCol.setLayoutParams(genRowWeight(0.8f));
+                    editCol.setLayoutParams(lp08f);
                     setEditCellStyle(editCol, 20, 100);
                     editCol.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
                     editCol.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_SIGNED);
                     editCol.setTextColor(Color.RED);
+                    if (0 != a.getSellCount()) {
+                        editCol.setText(DiabloUtils.instance().toString(a.getSellCount()));
+                    }
                     row.addView(editCol);
 
                     mStockListener.onStockSelected(editCol, mOrderedColors.get(i).getColorId(), mOrderedSizes.get(j));
 
 
                 } else {
+                    col.setLayoutParams(lp);
                     row.addView(col);
                 }
             }
@@ -149,7 +152,7 @@ public class DiabloSaleTable {
     }
 
     public interface OnStockListener {
-        Stock getStockByColorAndSize(Integer colorId, String size);
+        SaleStockAmount getStockByColorAndSize(Integer colorId, String size);
         void onStockSelected(EditText cell, Integer colorId, String size);
     }
 

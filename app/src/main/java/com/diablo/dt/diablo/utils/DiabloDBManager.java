@@ -246,7 +246,7 @@ public class DiabloDBManager {
 
     }
 
-    public void replaceSaleStock(SaleCalc calc, SaleStock stock) {
+    public void replaceSaleStock(SaleCalc calc, SaleStock stock, Integer startRetailer) {
         mSQLiteDB.beginTransaction();
 
         try {
@@ -304,6 +304,29 @@ public class DiabloDBManager {
                 s3.bindString(8, utils.toString(a.getSellCount()));
                 s3.execute();
                 s3.clearBindings();
+            }
+
+            if (!calc.getRetailer().equals(startRetailer)) {
+                String sql4 = "update " + DiabloEnum.W_SALE + " set retailer=? where retailer=?";
+                SQLiteStatement s4 = mSQLiteDB.compileStatement(sql4);
+                s4.bindString(1, utils.toString(calc.getRetailer()));
+                s4.bindString(2, utils.toString(startRetailer));
+                s4.execute();
+                s4.clearBindings();
+
+                String sql5 = "update " + DiabloEnum.W_SALE_DETAIL + " set retailer=? where retailer=?";
+                SQLiteStatement s5 = mSQLiteDB.compileStatement(sql5);
+                s5.bindString(1, utils.toString(calc.getRetailer()));
+                s5.bindString(2, utils.toString(startRetailer));
+                s5.execute();
+                s5.clearBindings();
+
+                String sql6 = "update " + DiabloEnum.W_SALE_DETAIL_AMOUNT + " set retailer=? where retailer=?";
+                SQLiteStatement s6 = mSQLiteDB.compileStatement(sql6);
+                s6.bindString(1, utils.toString(calc.getRetailer()));
+                s6.bindString(2, utils.toString(startRetailer));
+                s6.execute();
+                s6.clearBindings();
             }
             mSQLiteDB.setTransactionSuccessful();
         } finally {

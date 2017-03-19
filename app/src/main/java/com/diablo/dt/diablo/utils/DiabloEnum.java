@@ -23,6 +23,7 @@ public class DiabloEnum {
     public static final String BUNDLE_PARAM_SALE_STOCK = "SALE_STOCK";
     public static final String BUNDLE_PARAM_SHOP = "SHOP";
     public static final String BUNDLE_PARAM_RETAILER = "RETAILER";
+    public static final String BUNDLE_PARAM_ACTION = "ACTION";
 
     //shop
     public static final Integer SHOP_ONLY = 0;

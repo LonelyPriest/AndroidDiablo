@@ -1,5 +1,7 @@
 package com.diablo.dt.diablo.utils;
 
+import static java.lang.String.format;
+
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,8 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
-import static java.lang.String.format;
 
 /**
  * Created by buxianhui on 17/2/24.
@@ -209,6 +209,10 @@ public class DiabloUtils {
     }
 
     public Float toFloat(String value){
+        if (value.trim().isEmpty()) {
+            return 0f;
+        }
+
         try {
             return Float.parseFloat(value.trim());
         } catch (Exception e){

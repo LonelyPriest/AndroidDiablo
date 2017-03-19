@@ -39,6 +39,7 @@ public class DiabloSaleAmountChangeWatcher implements TextWatcher {
     @Override
     public void afterTextChanged(Editable editable) {
         final String inputValue = editable.toString().trim();
+
         mTimer.cancel();
         mTimer = new Timer();
         mTimer.schedule(new TimerTask() {

@@ -311,7 +311,7 @@ public class SaleDetail extends Fragment {
                             u.addCell(mContext, row, orderId++);
                         } else if (getResources().getString(R.string.rsn).equals(title)){
                             u.addCell(mContext, row, detail.getRsn());
-                        } else if(getResources().getString(R.string.transe).equals(title)){
+                        } else if(getResources().getString(R.string.trans).equals(title)){
                             TextView cell = u.addCell(mContext, row, mSaleTypes[detail.getType()]);
                             if (detail.getType().equals(DiabloEnum.SALE_OUT)){
                                 cell.setTextColor(getResources().getColor(R.color.red));
@@ -336,7 +336,7 @@ public class SaleDetail extends Fragment {
                                             detail.getRetailer()).getName());
                         } else if (getResources().getString(R.string.amount).equals(title)){
                             u.addCell(mContext, row, detail.getTotal());
-                        } else if (getResources().getString(R.string.balace).equals(title)){
+                        } else if (getResources().getString(R.string.balance).equals(title)){
                             u.addCell(mContext, row, detail.getBalance());
                         } else if (getResources().getString(R.string.should_pay).equals(title)){
                             u.addCell(mContext, row, detail.getShouldPay());
