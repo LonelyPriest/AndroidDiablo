@@ -5,6 +5,7 @@ import com.diablo.dt.diablo.request.NewSaleRequest;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.LastSaleResponse;
 import com.diablo.dt.diablo.response.NewSaleResponse;
+import com.diablo.dt.diablo.response.PrintResponse;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 
 import java.util.List;
@@ -28,4 +29,7 @@ public interface WSaleInterface {
 
     @POST("new_w_sale")
     Call<NewSaleResponse> startSale(@Header("cookie") String token, @Body NewSaleRequest request);
+
+    @POST("print_w_sale")
+    Call<PrintResponse> startPrint(@Header("cookie") String token, @Body NewSaleRequest.DiabloRSN rsn);
 }

@@ -16,7 +16,7 @@ public class NewSaleResponse extends Response {
     private Integer pcode;
 
     @SerializedName("style_number")
-    private String style_number;
+    private String styleNumber;
     @SerializedName("order_id")
     private Integer orderId;
     @SerializedName("cbalance")
@@ -25,20 +25,56 @@ public class NewSaleResponse extends Response {
     private Float lastBalance;
 
     @SerializedName("pinfo")
-    private List<PrinterResponse> pinfos;
+    private List<printResponse> pinfos;
 
     public NewSaleResponse() {
 
     }
 
-    private class PrinterResponse {
+    public static class printResponse {
         @SerializedName("device")
         private Integer device;
         @SerializedName("ecode")
         private Integer ecode;
 
-        private PrinterResponse() {
+        private printResponse() {
 
         }
+
+        public Integer getDevice() {
+            return device;
+        }
+
+        public Integer getEcode() {
+            return ecode;
+        }
+    }
+
+    public String getRsn() {
+        return rsn;
+    }
+
+    public Integer getPcode() {
+        return pcode;
+    }
+
+    public String getStyleNumber() {
+        return styleNumber;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public Float getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public Float getLastBalance() {
+        return lastBalance;
+    }
+
+    public List<printResponse> getPinfos() {
+        return pinfos;
     }
 }

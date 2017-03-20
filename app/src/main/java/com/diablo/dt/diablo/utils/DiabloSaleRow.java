@@ -1,12 +1,13 @@
 package com.diablo.dt.diablo.utils;
 
+import static com.diablo.dt.diablo.R.string.amount;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -18,8 +19,6 @@ import com.diablo.dt.diablo.model.SaleStock;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.diablo.dt.diablo.R.string.amount;
 
 /**
  * Created by buxianhui on 17/3/17.
@@ -64,7 +63,7 @@ public class DiabloSaleRow {
 
         View cell = null;
         for (String title: mColNames){
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
             if (res.getString(R.string.order_id).equals(title)){
                 lp.weight = 0.8f;
                 cell = new TextView(mContext);

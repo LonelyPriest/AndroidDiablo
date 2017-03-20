@@ -123,6 +123,40 @@ public class DiabloDBManager {
         }
     }
 
+    public void clearRetailerSaleStock(SaleCalc calc){
+        mSQLiteDB.beginTransaction();
+        try {
+//            mSQLiteDB.delete(DiabloEnum.W_SALE_DETAIL, "retailer=? and shop=?", args);
+//            mSQLiteDB.delete(DiabloEnum.W_SALE_DETAIL_AMOUNT, "retailer=? and shop=?", args);
+            String sql0 = "delete from " + DiabloEnum.W_SALE
+                + " where retailer=? and shop=?";
+            SQLiteStatement s0 = mSQLiteDB.compileStatement(sql0);
+            s0.bindString(1, utils.toString(calc.getRetailer()));
+            s0.bindString(2, utils.toString(calc.getShop()));
+            s0.execute();
+            s0.clearBindings();
+
+            String sql1 = "delete from " + DiabloEnum.W_SALE_DETAIL
+                + " where retailer=? and shop=?";
+            SQLiteStatement s1 = mSQLiteDB.compileStatement(sql1);
+            s1.bindString(1, utils.toString(calc.getRetailer()));
+            s1.bindString(2, utils.toString(calc.getShop()));
+            s1.execute();
+            s1.clearBindings();
+
+            String sql2 = "delete from " + DiabloEnum.W_SALE_DETAIL_AMOUNT
+                + " where retailer=? and shop=?";
+            SQLiteStatement s2 = mSQLiteDB.compileStatement(sql2);
+            s2.bindString(1, utils.toString(calc.getRetailer()));
+            s2.bindString(2, utils.toString(calc.getShop()));
+            s2.execute();
+            s2.clearBindings();
+            mSQLiteDB.setTransactionSuccessful();
+        } finally {
+            mSQLiteDB.endTransaction();
+        }
+    }
+
     public void deleteSaleStock(SaleCalc calc, SaleStock stock){
 
 //        String [] args = {

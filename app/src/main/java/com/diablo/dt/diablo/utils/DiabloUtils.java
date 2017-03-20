@@ -2,31 +2,40 @@ package com.diablo.dt.diablo.utils;
 
 import static java.lang.String.format;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.AuthenShop;
 import com.diablo.dt.diablo.entity.Employee;
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.request.NewSaleRequest;
+import com.diablo.dt.diablo.response.NewSaleResponse;
+import com.diablo.dt.diablo.response.PrintResponse;
+import com.diablo.dt.diablo.rest.WSaleInterface;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by buxianhui on 17/2/24.
@@ -90,48 +99,7 @@ public class DiabloUtils {
         return r;
     }
 
-    public TextView addCell(Context context, TableRow row, String value){
-        TextView cell = new TextView(context);
-        TableRow.LayoutParams lp = new TableRow.LayoutParams();
-        lp.setMargins(0, 0, 25, 0);
-        // cell.setTextColor(context.getResources().getColor(R.color.black));
-        cell.setText(value);
-        cell.setTextSize(18);
-        cell.setHeight(110);
-        cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
-    }
 
-    public TextView addCell(Context context, TableRow row, Integer value){
-        TextView cell = new TextView(context);
-        TableRow.LayoutParams lp = new TableRow.LayoutParams();
-        lp.setMargins(0, 0, 25, 0);
-        if (value < 0) {
-            cell.setTextColor(context.getResources().getColor(R.color.red));
-        }
-        cell.setText(toString(value));
-        cell.setTextSize(20);
-        cell.setHeight(110);
-        cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
-    }
-
-    public TextView addCell(Context context, TableRow row, float value){
-        TextView cell = new TextView(context);
-        TableRow.LayoutParams lp = new TableRow.LayoutParams();
-        lp.setMargins(0, 0, 25, 0);
-        if (value < 0f) {
-            cell.setTextColor(context.getResources().getColor(R.color.red));
-        }
-        cell.setText(toString(value));
-        cell.setTextSize(20);
-        cell.setHeight(110);
-        cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
-    }
 
     public void setTextViewValue(TextView view, Integer value){
         view.setText(toString(value));
@@ -184,6 +152,13 @@ public class DiabloUtils {
         return format.format(calendar.getTime());
     }
 
+    public String nextDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 1);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        return format.format(calendar.getTime());
+    }
+
     public String currentDatetime(){
         Calendar calendar = Calendar.getInstance();
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
@@ -228,10 +203,18 @@ public class DiabloUtils {
         return  (Float.parseFloat(price) * discount) / 100;
     }
 
-    public void openKeyboard(Context context){
+    public void openKeyboard(Context context, View view){
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        // view.requestFocus();
+        imm.showSoftInput(view, 0);
+        // imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
 
+    public void hiddenKeyboard(Context context){
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        // ((Activity)context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        imm.hideSoftInputFromWindow(((Activity)context).getCurrentFocus().getWindowToken(), 0);
     }
 
     public void focusAndShowKeyboard(Context context, final View view){
@@ -303,5 +286,41 @@ public class DiabloUtils {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.frame_container, fragment, tag);
         fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    public void startPrint(final Context context, final Integer titleRes, String rsn) {
+        final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+        Call<PrintResponse> call = face.startPrint(Profile.instance().getToken(), new NewSaleRequest.DiabloRSN(rsn));
+
+        call.enqueue(new Callback<PrintResponse>() {
+            @Override
+            public void onResponse(Call<PrintResponse> call, Response<PrintResponse> response) {
+                PrintResponse pres = response.body();
+                if (pres.getPcode().equals(DiabloEnum.SUCCESS)) {
+                    DiabloUtils.instance().makeToast(context, context.getString(R.string.print_success));
+                } else {
+                    String eMessage = context.getString(R.string.print_failed);
+                    List<NewSaleResponse.printResponse> pInfos = pres.getPinfos();
+                    if (null == pInfos || 0 == pInfos.size()) {
+                        eMessage = DiabloError.getInstance().getError(pres.getCode());
+                    } else {
+                        for (NewSaleResponse.printResponse p: pInfos) {
+                            eMessage += "[" + p.getDevice().toString() + "]"
+                                + DiabloError.getInstance().getError(p.getEcode());
+                        }
+                    }
+                    new DiabloAlertDialog(
+                        context, context.getString(titleRes), eMessage).create();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PrintResponse> call, Throwable t) {
+                new DiabloAlertDialog(
+                    context,
+                    context.getString(R.string.nav_sale_in),
+                    DiabloError.getInstance().getError(99)).create();
+            }
+        });
     }
 }

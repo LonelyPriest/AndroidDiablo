@@ -29,10 +29,25 @@ public class DiabloError {
         Resources r = Profile.instance().getContext().getResources();
 
         mErrors = new SparseArray<>();
+        mErrors.put(99, r.getString(R.string.network_invalid));
         mErrors.put(1101, r.getString(R.string.invalid_name_password));
         mErrors.put(1199, r.getString(R.string.network_unreachable));
 
-        mErrors.put(2703, "明细未知，请删除后重新增加");
+        mErrors.put(2703, r.getString(R.string.error_style_number));
+
+        mErrors.put(2411, r.getString(R.string.print_wrong_printer_sn));
+        mErrors.put(2412, r.getString(R.string.print_failed_to_deliver_recode));
+        mErrors.put(2413, r.getString(R.string.print_long_content));
+        mErrors.put(2414, r.getString(R.string.print_error_params));
+        mErrors.put(2415, r.getString(R.string.print_timeout));
+        mErrors.put(2416, r.getString(R.string.print_unknown_error));
+
+        mErrors.put(2419, r.getString(R.string.rg_print_not_connect));
+        mErrors.put(2420, r.getString(R.string.rg_print_no_paper));
+        mErrors.put(2421, r.getString(R.string.rg_print_wrong_state));
+        mErrors.put(2422, r.getString(R.string.rg_print_wrong_printer_conn));
+        mErrors.put(2423, r.getString(R.string.rg_print_lack_size));
+
     }
 
     public String getError(Integer ecode){

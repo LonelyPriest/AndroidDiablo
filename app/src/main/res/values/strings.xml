@@ -33,6 +33,7 @@
 
     <string-array name="thead_sale_detail">
         <item>序号</item>
+        <item>单号</item>
         <item>交易</item>
         <item>客户</item>
         <item>数量</item>
@@ -40,16 +41,15 @@
         <item>应付</item>
         <item>实付</item>
         <item>核销</item>
-        <item>费用</item>
+        <!--<item>费用</item>-->
         <item>累欠</item>
-        <item>现金</item>
-        <item>刷卡</item>
-        <item>汇款</item>
+        <!--<item>现金</item>-->
+        <!--<item>刷卡</item>-->
+        <!--<item>汇款</item>-->
         <item>日期</item>
         <item>店铺</item>
         <item>店员</item>
-        <item>单号</item>
-        <item>备注</item>
+        <!--<item>备注</item>-->
     </string-array>
 
     <string-array name="thead_sale">
@@ -151,9 +151,33 @@
     <string name="invalid_name_password">用户名或密码错误</string>
     <string name="network_unreachable">连接服务器失败，请确认该设备网络连接正常</string>
     <string name="error_style_number">明细未知，请删除后重新添加</string>
+    <string name="network_invalid">网络故障，请检查网络连接情况</string>
+
+    <string name="print_wrong_printer_sn">"打印机编号错误"</string>
+    <string name="print_failed_to_deliver_recode">"服务器处理订单失败"</string>
+    <string name="print_long_content">打印内容太长"</string>
+    <string name="print_error_params">"打印请求参数错误"</string>
+    <string name="print_timeout">打印请求超时，请重试或联系服务人员</string>
+    <string name="print_unknown_error">"未知原因，请系统服务人员"</string>
+
+    <string name="rg_print_failed_and_connect_provider">打印机打印失败，请联系服务人员查找原因</string>
+    <string name="rg_print_not_connect">打印机未连接</string>
+    <string name="rg_print_no_paper">打印机缺纸</string>
+    <string name="rg_print_wrong_state">打印状态未知，请联系服务人员</string>
+    <string name="rg_print_wrong_printer_conn">打印机连接设备不存在，请检查设备编号是否正确</string>
+    <string name="rg_print_lack_size">打印格式缺少尺码，请在打印格式设置中选中尺码</string>
+    
+
+
+    <!-- message -->
+    <string name="print_success">打印消息发送成功，请等待服务器打印！！</string>
+    <string name="print_failed">打印消息发送失败！！</string>
+    <string name="sale_success">开单成功，单号：</string>
+    <string name="sale_start_print_or_not">，是否打印销售单？</string>
 
     <!-- sale -->
-    <string name="refresh_none">己到达第一页，无需刷新</string>
+    <string name="refresh_top">己到达第一页，无需刷新</string>
+    <string name="refresh_bottom">已到达最后一页，无需刷新</string>
     <string name="draft_exist">该客户有草稿存在，请先行取出，继续操作将会覆盖原有草稿</string>
     <string name="draft_select">请选择草稿</string>
     <string name="draft_none">系统无草稿存在</string>

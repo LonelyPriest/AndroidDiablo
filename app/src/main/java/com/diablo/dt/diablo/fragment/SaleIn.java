@@ -312,7 +312,7 @@ public class SaleIn extends Fragment{
     private TableRow addHead(){
         TableRow row = new TableRow(this.getContext());
         for (String title: mTitles){
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
             TextView cell = new TextView(this.getContext());
             // font
             cell.setTypeface(null, Typeface.BOLD);
@@ -417,12 +417,13 @@ public class SaleIn extends Fragment{
     private TableRow addEmptyRow(){
         final TableRow row = new TableRow(this.getContext());
         for (String title: mTitles){
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
             if (getResources().getString(R.string.good).equals(title)){
                 final AutoCompleteTextView eCell = new AutoCompleteTextView(this.getContext());
                 eCell.setRawInputType(InputType.TYPE_CLASS_NUMBER);
                 // eCell.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 eCell.requestFocus();
+                utils.openKeyboard(getContext(), eCell);
                 lp.weight = 2f;
                 eCell.setLayoutParams(lp);
                 eCell.setHint(R.string.please_input_good);
@@ -894,7 +895,7 @@ public class SaleIn extends Fragment{
 
                     builder.create().show();
                 } else {
-                    utils.makeToast(getContext(), item.getTitle().toString());
+                    utils.makeToast(getContext(), getContext().getString(R.string.draft_none));
                 }
                 break;
             case R.id.sale_in_clear_draft:
@@ -999,6 +1000,11 @@ public class SaleIn extends Fragment{
 
                 mComesFrom = R.integer.COMES_FORM_SELF;
             }
+//            else {
+//                View cell = ((TableRow) mSaleTable.getChildAt(0)).getChildAt(1);
+//                cell.requestFocus();
+//                utils.openKeyboard(getContext(), cell);
+//            }
         }
     }
 
@@ -1128,24 +1134,50 @@ public class SaleIn extends Fragment{
     }
 
     private void startRequest(NewSaleRequest request) {
-        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+        final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
         Call<NewSaleResponse> call = face.startSale(Profile.instance().getToken(), request);
 
         call.enqueue(new Callback<NewSaleResponse>() {
             @Override
             public void onResponse(Call<NewSaleResponse> call, Response<NewSaleResponse> response) {
                 mButtons.get(R.id.sale_in_save).enable();
-                NewSaleResponse res = response.body();
+                final NewSaleResponse res = response.body();
+                if (res.getCode().equals(DiabloEnum.SUCCESS)) {
+                    // refresh balance
+                    SaleCalc calc = mSaleCalcController.getSaleCalc();
+                    Profile.instance().getRetailerById(calc.getRetailer()).setBalance(calc.getAccBalance());
+                    // delete draft
+                    dbInstance.clearRetailerSaleStock(mSaleCalcController.getSaleCalc());
+                    init();
 
-                new DiabloAlertDialog(
-                    getContext(),
-                    getResources().getString(R.string.nav_sale_in),
-                     DiabloError.getInstance().getError(res.getCode()) + res.getError()).create();
+                    new DiabloAlertDialog(
+                        getContext(),
+                        true,
+                        getResources().getString(R.string.nav_sale_in),
+                        getContext().getString(R.string.sale_success)
+                            + res.getRsn()
+                            + getContext().getString(R.string.sale_start_print_or_not) ,
+                        new DiabloAlertDialog.OnOkClickListener() {
+                            @Override
+                            public void onOk() {
+                                utils.startPrint(getContext(), R.string.nav_sale_in, res.getRsn());
+                            }
+                        }).create();
+                } else {
+                    new DiabloAlertDialog(
+                        getContext(),
+                        getResources().getString(R.string.nav_sale_in),
+                        DiabloError.getInstance().getError(res.getCode()) + res.getError()).create();
+                }
             }
 
             @Override
             public void onFailure(Call<NewSaleResponse> call, Throwable t) {
                 mButtons.get(R.id.sale_in_save).enable();
+                new DiabloAlertDialog(
+                    getContext(),
+                    getResources().getString(R.string.nav_sale_in),
+                    DiabloError.getInstance().getError(99)).create();
             }
         });
     }

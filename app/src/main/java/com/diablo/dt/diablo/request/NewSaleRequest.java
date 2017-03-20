@@ -348,7 +348,7 @@ public class NewSaleRequest {
     }
 
     public static class DiabloPrintAttr {
-        @SerializedName("im_printer")
+        @SerializedName("im_print")
         private Integer immediatelyPrint;
         @SerializedName("retailer_id")
         private Integer retailerId;
@@ -381,6 +381,23 @@ public class NewSaleRequest {
 
         public void setEmployee(String employee) {
             this.employee = employee;
+        }
+    }
+
+    public static class DiabloRSN {
+        @SerializedName("rsn")
+        private String rsn;
+
+        public DiabloRSN(String rsn) {
+            this.rsn = rsn;
+        }
+
+        public void setRsn(String rsn){
+            this.rsn = rsn;
+        }
+
+        public String getRsn() {
+            return rsn;
         }
     }
 }

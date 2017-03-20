@@ -1,7 +1,8 @@
 package com.diablo.dt.diablo.request;
 
-import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.google.gson.annotations.SerializedName;
+
+import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**
  * Created by buxianhui on 17/2/23.
