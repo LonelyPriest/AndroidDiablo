@@ -12,7 +12,7 @@
       android:layout_marginTop="10dp">
   </TableLayout>
 
-  <com.diablo.dt.diablo.utils.DiabloTableSwipeRefreshLayout
+  <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
       android:id="@+id/t_sale_detail_swipe"
       android:layout_width="wrap_content"
       android:layout_height="match_parent">
@@ -20,16 +20,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableLayout
-            android:id="@+id/t_sale_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-        </TableLayout>
+      <TableLayout
+          android:id="@+id/t_sale_detail"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp">
+      </TableLayout>
 
     </ScrollView>
+  </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
-  </com.diablo.dt.diablo.utils.DiabloTableSwipeRefreshLayout>
+  <!--<com.diablo.dt.diablo.utils.DiabloTableSwipeRefreshLayout-->
+      <!--android:id="@+id/t_sale_detail_swipe"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="match_parent">-->
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<TableLayout-->
+            <!--android:id="@+id/t_sale_detail"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp">-->
+        <!--</TableLayout>-->
+
+    <!--</ScrollView>-->
+
+  <!--</com.diablo.dt.diablo.utils.DiabloTableSwipeRefreshLayout>-->
 
 
 </LinearLayout>

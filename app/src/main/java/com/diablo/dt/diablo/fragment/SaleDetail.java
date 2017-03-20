@@ -24,7 +24,6 @@ import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
-import com.diablo.dt.diablo.utils.DiabloTableSwipeRefreshLayout;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -73,7 +72,8 @@ public class SaleDetail extends Fragment {
     // TableRow[] mRows;
 
     private android.widget.TableLayout mSaleDetailTable;
-    private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
+    private  SwipyRefreshLayout mSaleDetailTableSwipe;
+    // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
 
     private Integer mCurrentPage;
     private Integer mTotalPage;
@@ -144,8 +144,8 @@ public class SaleDetail extends Fragment {
 //            }
 //        });
 
-        // mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
-        mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
+        mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
+        // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mSaleDetailTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
         mSaleDetailTableSwipe.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
