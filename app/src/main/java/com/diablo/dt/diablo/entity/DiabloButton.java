@@ -1,5 +1,7 @@
-package com.diablo.dt.diablo.model;
+package com.diablo.dt.diablo.entity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.IdRes;
 
 /**
@@ -7,10 +9,13 @@ import android.support.annotation.IdRes;
  */
 
 public class DiabloButton {
+    private Context context;
+
     private @IdRes Integer resId;
     private boolean enable;
 
-    public DiabloButton(@IdRes Integer resId){
+    public DiabloButton(Context context, @IdRes Integer resId){
+        this.context = context;
         this.resId = resId;
         enable = true;
     }
@@ -29,9 +34,11 @@ public class DiabloButton {
 
     public void disable() {
         this.enable = false;
+        ((Activity)context).invalidateOptionsMenu();
     }
 
     public void enable(){
         this.enable = true;
+        ((Activity)context).invalidateOptionsMenu();
     }
 }

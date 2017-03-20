@@ -1,53 +1,31 @@
 package com.diablo.dt.diablo.model;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by buxianhui on 17/3/12.
  */
 
 public class SaleCalc {
-    @SerializedName("retailer")
     private Integer retailer;
-    @SerializedName("shop")
     private Integer shop;
 
-    @SerializedName("datetime")
     private String datetime;
-    @SerializedName("employee")
     private String employee;
-    @SerializedName("comment")
     private String comment;
 
-    @SerializedName("balance")
     private Float balance;
-    @SerializedName("cash")
     private Float cash;
-    @SerializedName("card")
     private Float card;
-    @SerializedName("wire")
     private Float wire;
-    @SerializedName("verificate")
     private Float verificate;
-    @SerializedName("should_pay")
     private Float shouldPay;
-    @SerializedName("has_pay")
     private Float hasPay;
-    @SerializedName("sys_customer")
-    private boolean isSysRetailer;
-    @SerializedName("accBalance")
     private Float accBalance;
 
-    @SerializedName("e_pay_type")
     private Integer extraCostType;
-    @SerializedName("e_pay")
     private Float extraCost;
 
-    @SerializedName("total")
     private Integer total;
-    @SerializedName("sell_total")
     private Integer sellTotal;
-    @SerializedName("reject_total")
     private Integer rejectTotal;
 
     public SaleCalc(){
@@ -204,10 +182,6 @@ public class SaleCalc {
 
     public void setRejectTotal(Integer rejectTotal) {
         this.rejectTotal = rejectTotal;
-    }
-
-    public void setSysRetailer(boolean isSysRetailer) {
-        this.isSysRetailer = isSysRetailer;
     }
 
     public void resetCash() {

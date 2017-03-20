@@ -87,6 +87,14 @@ public class DiabloSaleCalcController {
         return mSaleCalc;
     }
 
+    public String getSelectRetailerName() {
+        return ((AutoCompleteTextView) mSaleCalcView.getViewRetailer()).getText().toString().trim();
+    }
+
+    public String getShopName() {
+        return ((EditText) mSaleCalcView.getViewShop()).getText().toString().trim();
+    }
+
     public void setRetailerWatcher(final Context context, final List<Retailer> retailers) {
         final AutoCompleteTextView r = (AutoCompleteTextView) mSaleCalcView.getViewRetailer();
         mOnAutoCompletedRetailerListener = new TextChangeOnAutoComplete.TextWatch() {

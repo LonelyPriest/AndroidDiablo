@@ -50,6 +50,7 @@ public class DiabloEnum {
     // base setting
     public static final String  START_TIME = "qtime_start";
     public static final String  START_PRICE = "price_type";
+    public static final String  START_RETAILER = "s_customer";
     public static final Integer NON_REPO = 0;
     public static final Integer USE_REPO = 1;
 

@@ -1,7 +1,5 @@
 package com.diablo.dt.diablo.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
@@ -10,15 +8,10 @@ import com.diablo.dt.diablo.utils.DiabloEnum;
  */
 
 public class SaleStockAmount {
-    @SerializedName("cid")
     private Integer colorId;
-    @SerializedName("cname")
     private String  colorName;
-    @SerializedName("size")
     private String  size;
-    @SerializedName("stock")
     private Integer stock;
-    @SerializedName("sell_count")
     private Integer sellCount;
 
     public SaleStockAmount(Integer colorId, String colorName, String size){

@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.model;
+package com.diablo.dt.diablo.entity;
 
 /**
  * Created by buxianhui on 17/3/18.

@@ -55,8 +55,8 @@ public class StockSelect extends Fragment {
 
     private TableLayout mViewTable;
 
-    private List<String> mOrderedSizes = new ArrayList<>();
-    private List<DiabloColor> mOrderColors = new ArrayList<>();
+//    private List<String> mOrderedSizes = new ArrayList<>();
+//    private List<DiabloColor> mOrderColors = new ArrayList<>();
     // private List<SaleStockAmount> mStockAmounts = new ArrayList<>();
 
     private List<Stock> mStocks;
@@ -111,8 +111,8 @@ public class StockSelect extends Fragment {
     }
 
     private void init(){
-        mOrderColors.clear();
-        mOrderedSizes.clear();
+//        mOrderColors.clear();
+//        mOrderedSizes.clear();
         mViewTable.removeAllViews();
 
         // get stock
@@ -176,46 +176,49 @@ public class StockSelect extends Fragment {
 
 
     private void startModify() {
-        ArrayList<String> usedSizes = new ArrayList<>();
-        for(SaleStockAmount a: mSaleStock.getAmounts()){
-            if (!usedSizes.contains(a.getSize())){
-                usedSizes.add(a.getSize());
-            }
+//        ArrayList<String> usedSizes = new ArrayList<>();
+//        for(SaleStockAmount a: mSaleStock.getAmounts()){
+//            if (!usedSizes.contains(a.getSize())){
+//                usedSizes.add(a.getSize());
+//            }
+//
+//            DiabloColor color = Profile.instance().getColor(a.getColorId());
+//            if (!color.includeIn(mOrderColors)){
+//                mOrderColors.add(color);
+//            }
+//        }
+//
+//        ArrayList<String> orderedSizes = Profile.instance().genSortedSizeNamesByGroups(mSaleStock.getSizeGroup());
+//        for (String s: orderedSizes){
+//            if (usedSizes.contains(s)){
+//                mOrderedSizes.add(s);
+//            }
+//        }
+//
+//        if (mOrderedSizes.size() != usedSizes.size()){
+//            for (String s: usedSizes){
+//                if (!mOrderedSizes.contains(s)){
+//                    mOrderedSizes.add(0, s);
+//                }
+//            }
+//        }
 
-            DiabloColor color = Profile.instance().getColor(a.getColorId());
-            if (!color.includeIn(mOrderColors)){
-                mOrderColors.add(color);
-            }
-        }
-
-        ArrayList<String> orderedSizes = Profile.instance().genSortedSizeNamesByGroups(mSaleStock.getSizeGroup());
-        for (String s: orderedSizes){
-            if (usedSizes.contains(s)){
-                mOrderedSizes.add(s);
-            }
-        }
-
-        if (mOrderedSizes.size() != usedSizes.size()){
-            for (String s: usedSizes){
-                if (!mOrderedSizes.contains(s)){
-                    mOrderedSizes.add(0, s);
-                }
-            }
-        }
-
-        startSelect();
+        startSelect(mSaleStock.getColors(), mSaleStock.getOrderSizes());
     }
 
     private void startAdd() {
-        ArrayList<String> usedSizes = new ArrayList<>();
+        ArrayList<String> usedSizes   = new ArrayList<>();
+        List<String> orderedSizes     = new ArrayList<>();
+        List<DiabloColor> orderColors = new ArrayList<>();
+
         for(Stock s: mStocks){
             if (!usedSizes.contains(s.getSize())){
                 usedSizes.add(s.getSize());
             }
 
             DiabloColor color = Profile.instance().getColor(s.getColorId());
-            if (!color.includeIn(mOrderColors)){
-                mOrderColors.add(color);
+            if (!color.includeIn(orderColors)){
+                orderColors.add(color);
             }
 
 
@@ -224,26 +227,28 @@ public class StockSelect extends Fragment {
             mSaleStock.getAmounts().add(amount);
         }
 
-        ArrayList<String> orderedSizes = Profile.instance().genSortedSizeNamesByGroups(mSaleStock.getSizeGroup());
-        for (String s: orderedSizes){
+        ArrayList<String> sizes = Profile.instance().genSortedSizeNamesByGroups(mSaleStock.getSizeGroup());
+        for (String s: sizes){
             if (usedSizes.contains(s)){
-                mOrderedSizes.add(s);
+                orderedSizes.add(s);
             }
         }
 
-        if (mOrderedSizes.size() != usedSizes.size()){
+        if (orderedSizes.size() != usedSizes.size()){
             for (String s: usedSizes){
-                if (!mOrderedSizes.contains(s)){
-                    mOrderedSizes.add(0, s);
+                if (!orderedSizes.contains(s)){
+                    orderedSizes.add(0, s);
                 }
             }
         }
 
-        startSelect();
+        mSaleStock.setColors(orderColors);
+        mSaleStock.setOrderSizes(orderedSizes);
+        startSelect(orderColors, orderedSizes);
     }
 
-    private void startSelect() {
-        DiabloSaleTable saleTable = new DiabloSaleTable(getContext(), mViewTable, mOrderColors, mOrderedSizes);
+    private void startSelect(List<DiabloColor> colors, List<String> orderedSizes) {
+        DiabloSaleTable saleTable = new DiabloSaleTable(getContext(), mViewTable, colors, orderedSizes);
         saleTable.setStockListener(new DiabloSaleTable.OnStockListener() {
             @Override
             public SaleStockAmount getStockByColorAndSize(Integer colorId, String size) {

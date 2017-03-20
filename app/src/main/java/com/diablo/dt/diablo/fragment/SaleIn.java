@@ -36,17 +36,24 @@ import android.widget.TextView;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
+import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.controller.DiabloSaleCalcController;
+import com.diablo.dt.diablo.entity.DiabloButton;
+import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.model.DiabloButton;
 import com.diablo.dt.diablo.model.SaleCalc;
 import com.diablo.dt.diablo.model.SaleStock;
 import com.diablo.dt.diablo.model.SaleStockAmount;
+import com.diablo.dt.diablo.request.NewSaleRequest;
+import com.diablo.dt.diablo.response.NewSaleResponse;
+import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.task.MatchStockTask;
 import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
+import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.utils.DiabloSaleRow;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -55,6 +62,10 @@ import com.diablo.dt.diablo.view.DiabloSaleCalcView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SaleIn extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
@@ -83,6 +94,7 @@ public class SaleIn extends Fragment{
     private Integer mLoginShop;
     private Integer mStartRetailer;
     private Integer mSelectPrice;
+    private Integer mSysRetailer;
 
     private List<MatchStock> mMatchStocks;
     private List<SaleStock> mSaleStocks;
@@ -138,16 +150,19 @@ public class SaleIn extends Fragment{
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        mSysRetailer = utils.toInteger(
+            Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_STRING_ZERO));
+
         mTitles = getResources().getStringArray(R.array.thead_sale);
         mPriceType = getResources().getStringArray(R.array.price_type_on_sale);
 
         mButtons= new SparseArray<>();
-        mButtons.put(R.id.sale_in_back, new DiabloButton(R.id.sale_in_back));
-        mButtons.put(R.id.sale_in_money_off, new DiabloButton(R.id.sale_in_money_off));
-        mButtons.put(R.id.sale_in_draft, new DiabloButton(R.id.sale_in_draft));
-        mButtons.put(R.id.sale_in_save, new DiabloButton(R.id.sale_in_save));
-        mButtons.put(R.id.sale_in_next, new DiabloButton(R.id.sale_in_next));
-        mButtons.put(R.id.sale_in_clear_draft, new DiabloButton(R.id.sale_in_clear_draft));
+        mButtons.put(R.id.sale_in_back, new DiabloButton(getContext(), R.id.sale_in_back));
+        mButtons.put(R.id.sale_in_money_off, new DiabloButton(getContext(), R.id.sale_in_money_off));
+        mButtons.put(R.id.sale_in_draft, new DiabloButton(getContext(), R.id.sale_in_draft));
+        mButtons.put(R.id.sale_in_save, new DiabloButton(getContext(), R.id.sale_in_save));
+        mButtons.put(R.id.sale_in_next, new DiabloButton(getContext(), R.id.sale_in_next));
+        mButtons.put(R.id.sale_in_clear_draft, new DiabloButton(getContext(), R.id.sale_in_clear_draft));
     }
 
     @Override
@@ -199,7 +214,8 @@ public class SaleIn extends Fragment{
         }
 
         mSelectPrice = utils.toInteger(
-            Profile.instance().getConfig(mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
+            Profile.instance().getConfig(
+                mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
 
         mStartRetailer = retailer;
         mLoginShop = Profile.instance().getLoginShop();
@@ -257,13 +273,13 @@ public class SaleIn extends Fragment{
         mSaleTable.addView(addEmptyRow());
 
         mButtons.get(R.id.sale_in_next).disable();
-        getActivity().invalidateOptionsMenu();
+        // getActivity().invalidateOptionsMenu();
     }
 
-    private void enableBtnNextSale() {
-        mButtons.get(R.id.sale_in_next).enable();
-        getActivity().invalidateOptionsMenu();
-    }
+//    private void enableBtnNextSale() {
+//        mButtons.get(R.id.sale_in_next).enable();
+//        getActivity().invalidateOptionsMenu();
+//    }
 
     private void checkRetailerDraft(SaleCalc calc) {
         if (null != dbInstance.querySaleCalc(calc)){
@@ -396,7 +412,7 @@ public class SaleIn extends Fragment{
             }
         }
         return diabloRow.getRow();
-    };
+    }
 
     private TableRow addEmptyRow(){
         final TableRow row = new TableRow(this.getContext());
@@ -696,7 +712,7 @@ public class SaleIn extends Fragment{
     public void addEmptyRowToTable(){
         mSaleTable.addView(addEmptyRow(), 0);
         if (mRowSize == 1){
-            enableBtnNextSale();
+            mButtons.get(R.id.sale_in_next).enable();
         }
     }
 
@@ -731,7 +747,7 @@ public class SaleIn extends Fragment{
         }
 
         if (mRowSize > 0){
-            enableBtnNextSale();
+            mButtons.get(R.id.sale_in_next).enable();
         }
 
         addEmptyRowToTable();
@@ -795,7 +811,7 @@ public class SaleIn extends Fragment{
                 // mButtons.get(R.id.sale_in_money_off).disable();
                 mButtons.get(R.id.sale_in_next).disable();
                 // mButtons.get(R.id.sale_in_draft).disable();
-                getActivity().invalidateOptionsMenu();
+                // getActivity().invalidateOptionsMenu();
             }
 
             calcShouldPay();
@@ -889,7 +905,8 @@ public class SaleIn extends Fragment{
                 init();
                 break;
             case R.id.sale_in_save:
-
+                mButtons.get(R.id.sale_in_save).disable();
+                startSale();
                 break;
             default:
                 // return super.onOptionsItemSelected(item);
@@ -956,6 +973,9 @@ public class SaleIn extends Fragment{
                                         saleTotal += a.getSellCount();
                                     }
                                 }
+
+                                ms.setColors(s.getColors());
+                                ms.setOrderSizes(s.getOrderSizes());
                                 ms.setSaleTotal(saleTotal);
                                 TableRow row = getRowByOrderId(s.getOrderId());
                                 View cell = SaleStockHandler.getColumn(getContext(), row, R.string.amount);
@@ -1007,6 +1027,127 @@ public class SaleIn extends Fragment{
         }
 
         return orderId;
+    }
+
+    private void startSale() {
+        NewSaleRequest saleRequest = new NewSaleRequest();
+        for (SaleStock s: mSaleStocks) {
+            NewSaleRequest.DiabloSaleStock d = new NewSaleRequest.DiabloSaleStock();
+            d.setOrderId(s.getOrderId());
+            d.setStyleNumber(s.getStyleNumber());
+            d.setBrand(s.getBrand());
+            d.setType(s.getType());
+
+            d.setBrandId(s.getBrandId());
+            d.setTypeId(s.getTypeId());
+            d.setFirmId(s.getFirmId());
+
+            d.setSex(s.getSex());
+            d.setSeason(s.getSeason());
+            d.setYear(s.getYear());
+
+            d.setFdiscount(s.getDiscount());
+            d.setFprice(s.getFinalPrice());
+
+            d.setPath(s.getPath());
+            d.setSecond(s.getSecond() );
+
+            if ( null != s.getOrderSizes() && 0 != s.getOrderSizes().size()) {
+                d.setOrderSizes(new ArrayList<>(s.getOrderSizes()));
+            }
+            d.setSizeGroup(s.getSizeGroup());
+
+            if ( null != s.getColors() && 0 != s.getColors().size()) {
+                List<NewSaleRequest.DiabloSaleColor> saleColors = new ArrayList<>();
+                for (DiabloColor c: s.getColors()) {
+                    NewSaleRequest.DiabloSaleColor saleColor = new NewSaleRequest.DiabloSaleColor();
+                    saleColor.setColorId(c.getColorId());
+                    saleColor.setColorName(c.getName());
+                    saleColors.add(saleColor);
+                }
+                d.setColors(saleColors);
+            }
+
+            d.setFree(s.getFree());
+            d.setComment(s.getComment());
+
+            d.setSaleTotal(s.getSaleTotal());
+            d.setSellTye(s.getSelectedPrice());
+
+            for (SaleStockAmount a: s.getAmounts()) {
+                if ( a.getSellCount() != 0 ){
+                    NewSaleRequest.DiabloSaleStockAmount saleAmount = new NewSaleRequest.DiabloSaleStockAmount();
+                    saleAmount.setColorId(a.getColorId());
+                    saleAmount.setSize(a.getSize());
+                    saleAmount.setSellCount(a.getSellCount());
+                    d.addAmount(saleAmount);
+                }
+            }
+
+            saleRequest.addStock(d);
+        }
+
+        NewSaleRequest.DiabloSaleCalc dCalc = new NewSaleRequest.DiabloSaleCalc();
+        SaleCalc calc = mSaleCalcController.getSaleCalc();
+        dCalc.setRetailer(calc.getRetailer());
+        dCalc.setShop(calc.getShop());
+        dCalc.setDatetime(calc.getDatetime());
+        dCalc.setEmployee(calc.getEmployee());
+        dCalc.setComment(calc.getComment());
+
+        dCalc.setBalance(calc.getBalance());
+        dCalc.setCash(calc.getCash());
+        dCalc.setCard(calc.getCard());
+        dCalc.setWire(calc.getWire());
+        dCalc.setVerificate(calc.getVerificate());
+        dCalc.setShouldPay(calc.getShouldPay());
+        dCalc.setHasPay(calc.getHasPay());
+        dCalc.setSysRetailer(calc.getRetailer().equals(mSysRetailer));
+        dCalc.setAccBalance(calc.getAccBalance());
+
+        dCalc.setExtraCostType(calc.getExtraCostType());
+        dCalc.setExtraCost(calc.getExtraCost());
+
+        dCalc.setTotal(calc.getTotal());
+        dCalc.setSellTotal(calc.getSellTotal());
+        dCalc.setRejectTotal(calc.getRejectTotal());
+
+        saleRequest.setSaleCalc(dCalc);
+
+        //print info
+        NewSaleRequest.DiabloPrintAttr printAttr = new NewSaleRequest.DiabloPrintAttr();
+        printAttr.setImmediatelyPrint(0);
+        printAttr.setRetailerId(calc.getRetailer());
+        printAttr.setRetailerName(mSaleCalcController.getSelectRetailerName());
+        printAttr.setShop(mSaleCalcController.getShopName());
+        printAttr.setEmployee(calc.getEmployee());
+
+        saleRequest.setPrintAttr(printAttr);
+
+        startRequest(saleRequest);
+    }
+
+    private void startRequest(NewSaleRequest request) {
+        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+        Call<NewSaleResponse> call = face.startSale(Profile.instance().getToken(), request);
+
+        call.enqueue(new Callback<NewSaleResponse>() {
+            @Override
+            public void onResponse(Call<NewSaleResponse> call, Response<NewSaleResponse> response) {
+                mButtons.get(R.id.sale_in_save).enable();
+                NewSaleResponse res = response.body();
+
+                new DiabloAlertDialog(
+                    getContext(),
+                    getResources().getString(R.string.nav_sale_in),
+                     DiabloError.getInstance().getError(res.getCode()) + res.getError()).create();
+            }
+
+            @Override
+            public void onFailure(Call<NewSaleResponse> call, Throwable t) {
+                mButtons.get(R.id.sale_in_save).enable();
+            }
+        });
     }
 
     public void setStockListener(OnStockSelectListener listener){
