@@ -24,13 +24,13 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.SaleDetail;
 import com.diablo.dt.diablo.fragment.SaleIn;
+import com.diablo.dt.diablo.fragment.SaleOut;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements
-        SaleDetail.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity {
 
     private final static String LOG_TAG = "MainActivity:";
     private NavigationView mNavigationView;
@@ -209,9 +209,15 @@ public class MainActivity extends AppCompatActivity implements
         if (f == null) {
             if (mCurrentNavTag.getTitleIndex().equals(0)){
                 f = new SaleIn();
-            } else if (mCurrentNavTag.getTitleIndex().equals(2)){
+            }
+            else if (mCurrentNavTag.getTitleIndex().equals(1)) {
+                f = new SaleOut();
+            }
+            else if (mCurrentNavTag.getTitleIndex().equals(2)){
                 f = new SaleDetail();
-            } else {
+            }
+
+            else {
                 f = new SaleDetail();
             }
 
@@ -394,11 +400,6 @@ public class MainActivity extends AppCompatActivity implements
 //        else
 //            fab.hide();
 //    }
-
-    @Override
-    public void onSaleDetailFragmentInteraction(Uri uri){
-
-    }
 
     @Override
     protected void onDestroy() {

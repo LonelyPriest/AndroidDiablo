@@ -29,7 +29,7 @@ import java.util.List;
  * Created by buxianhui on 17/3/19.
  */
 
-public class DiabloSaleCalcController {
+public class DiabloSaleController {
     private static DiabloUtils UTILS = DiabloUtils.instance();
     private SaleCalc mSaleCalc;
     private DiabloSaleCalcView mSaleCalcView;
@@ -65,7 +65,7 @@ public class DiabloSaleCalcController {
         void onRetailerSelected(SaleCalc calc);
     }
 
-    public DiabloSaleCalcController(SaleCalc calc, DiabloSaleCalcView view) {
+    public DiabloSaleController(SaleCalc calc, DiabloSaleCalcView view) {
         this.mSaleCalc = calc;
         this.mSaleCalcView = view;
         this.mSaleCalcView.resetValue();

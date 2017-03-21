@@ -38,7 +38,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
 import com.diablo.dt.diablo.client.WSaleClient;
-import com.diablo.dt.diablo.controller.DiabloSaleCalcController;
+import com.diablo.dt.diablo.controller.DiabloSaleController;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
@@ -105,7 +105,7 @@ public class SaleIn extends Fragment{
 
     // private Retailer mSelectRetailer;
     private DiabloSaleCalcView mSaleCalcView;
-    private DiabloSaleCalcController mSaleCalcController;
+    private DiabloSaleController mSaleCalcController;
 
     private SparseArray<DiabloButton> mButtons;
 
@@ -230,13 +230,13 @@ public class SaleIn extends Fragment{
         mSaleStocks = stocks;
 
 
-        mSaleCalcController = new DiabloSaleCalcController(calc, mSaleCalcView);
+        mSaleCalcController = new DiabloSaleController(calc, mSaleCalcView);
 
         mSaleCalcController.setRetailer(retailer);
         mSaleCalcController.setShop(shop);
         mSaleCalcController.setDatetime(DiabloUtils.getInstance().currentDatetime());
 
-        mSaleCalcController.setDiabloOnRetailerSelected(new DiabloSaleCalcController.OnDiabloRetailerSelectedListener() {
+        mSaleCalcController.setDiabloOnRetailerSelected(new DiabloSaleController.OnDiabloRetailerSelectedListener() {
             @Override
             public void onRetailerSelected(SaleCalc c) {
                 checkRetailerDraft(c);

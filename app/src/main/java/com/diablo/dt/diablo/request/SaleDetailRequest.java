@@ -23,7 +23,7 @@ public class SaleDetailRequest extends PageRequest {
         super(currentPage, itemsPerPage);
     }
 
-    public Condition getCondtion() {
+    public Condition getCondition() {
         return mCondition;
     }
 

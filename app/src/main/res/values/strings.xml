@@ -167,7 +167,6 @@
     <string name="rg_print_wrong_state">打印状态未知，请联系服务人员</string>
     <string name="rg_print_wrong_printer_conn">打印机连接设备不存在，请检查设备编号是否正确</string>
     <string name="rg_print_lack_size">打印格式缺少尺码，请在打印格式设置中选中尺码</string>
-    
 
 
     <!-- message -->
