@@ -1,6 +1,6 @@
 package com.diablo.dt.diablo.controller;
 
-import com.diablo.dt.diablo.model.DiabloRowModel;
+import com.diablo.dt.diablo.model.SaleRowModel;
 import com.diablo.dt.diablo.view.DiabloRowView;
 
 /**
@@ -8,10 +8,10 @@ import com.diablo.dt.diablo.view.DiabloRowView;
  */
 
 public class DiabloSaleRowController {
-    private DiabloRowModel mRowModel;
+    private SaleRowModel mRowModel;
     private DiabloRowView mRowView;
 
-    public DiabloSaleRowController(DiabloRowModel rowModel, DiabloRowView rowView) {
+    public DiabloSaleRowController(SaleRowModel rowModel, DiabloRowView rowView) {
         this.mRowModel = rowModel;
         this.mRowView  = rowView;
     }

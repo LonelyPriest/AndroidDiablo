@@ -10,24 +10,11 @@ import java.util.List;
  */
 
 public class DiabloTableView {
-    private TableLayout mTable;
+    TableLayout mTableView;
     private List<DiabloRowView> mRows;
 
-    public DiabloTableView(TableLayout tableLayout){
-        mTable = tableLayout;
+    public DiabloTableView(TableLayout table){
+        this.mTableView = table;
         this.mRows = new ArrayList<>();
-    }
-
-    public void addRow(DiabloRowView row){
-        mRows.add(0, row);
-        mTable.addView(row.getView());
-    }
-
-    public DiabloRowView top(){
-        return mRows.get(0);
-    }
-
-    public TableLayout getTable(){
-        return this.mTable;
     }
 }

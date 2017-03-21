@@ -1,6 +1,6 @@
 package com.diablo.dt.diablo.controller;
 
-import com.diablo.dt.diablo.model.DiabloTableModel;
+import com.diablo.dt.diablo.model.SaleTableModel;
 import com.diablo.dt.diablo.view.DiabloTableView;
 
 /**
@@ -9,9 +9,9 @@ import com.diablo.dt.diablo.view.DiabloTableView;
 
 public class DiabloSaleTableController {
     private DiabloTableView mTableView;
-    private DiabloTableModel mTableModel;
+    private SaleTableModel mTableModel;
 
-    public DiabloSaleTableController(DiabloTableView tableView, DiabloTableModel tableModel) {
+    public DiabloSaleTableController(DiabloTableView tableView, SaleTableModel tableModel) {
         this.mTableView = tableView;
         this.mTableModel = tableModel;
     }

@@ -90,6 +90,15 @@ public class DiabloEnum {
     public static final String W_SALE_DETAIL = "w_sale_detail";
     public static final String W_SALE_DETAIL_AMOUNT = "w_sale_detail_amount";
 
+
+    /**
+     * View type
+     */
+    public static final Integer DIABLO_TEXT = 1;
+    public static final Integer DIABLO_EDIT = 2;
+    public static final Integer DIABLO_AUTOCOMPLETE = 3;
+    public static final Integer DIABLO_SPINNER = 4;
+
     private DiabloEnum(){
 
     }

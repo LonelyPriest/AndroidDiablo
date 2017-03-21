@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.util.Log;
@@ -340,7 +341,7 @@ public class SaleIn extends Fragment{
         }
 
         return row;
-    };
+    }
 
     private TableRow genRowWithStock(final SaleStock stock){
         final DiabloSaleRow diabloRow = new DiabloSaleRow(getContext(), mTitles, stock);
@@ -556,7 +557,7 @@ public class SaleIn extends Fragment{
                 cell.setLayoutParams(lp);
                 cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
                 cell.setTextSize(18);
-                cell.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
                 cell.setTag(title);
                 row.addView(cell);
             } else if(getResources().getString(R.string.fprice).equals(title)){
@@ -651,7 +652,7 @@ public class SaleIn extends Fragment{
                 }
 
                 View v = SaleStockHandler.getColumn(getContext(), row, R.string.stock);
-                ((TextView)v).setTextColor(getResources().getColor(R.color.red));
+                ((TextView)v).setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                 ((TextView)v).setText(utils.toString(selectStock.getStockExist()));
 
                 if (0 != selectStock.getAmounts().size()) {
