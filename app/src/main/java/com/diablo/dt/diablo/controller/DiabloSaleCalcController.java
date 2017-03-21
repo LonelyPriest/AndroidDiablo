@@ -18,7 +18,7 @@ import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.SaleCalc;
 import com.diablo.dt.diablo.task.MatchRetailerTask;
-import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
+import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloSaleCalcView;
@@ -39,7 +39,7 @@ public class DiabloSaleCalcController {
      * listener
      */
     // retailer
-    private TextChangeOnAutoComplete.TextWatch mOnAutoCompletedRetailerListener;
+    private AutoCompleteTextChangeListener.TextWatch mOnAutoCompletedRetailerListener;
     private AdapterView.OnItemClickListener mOnRetailerClickListener;
 
     // employee
@@ -97,7 +97,7 @@ public class DiabloSaleCalcController {
 
     public void setRetailerWatcher(final Context context, final List<Retailer> retailers) {
         final AutoCompleteTextView r = (AutoCompleteTextView) mSaleCalcView.getViewRetailer();
-        mOnAutoCompletedRetailerListener = new TextChangeOnAutoComplete.TextWatch() {
+        mOnAutoCompletedRetailerListener = new AutoCompleteTextChangeListener.TextWatch() {
             @Override
             public void afterTextChanged(String s) {
                 if (s.trim().length() > 0) {
@@ -106,7 +106,7 @@ public class DiabloSaleCalcController {
             }
         };
 
-        new TextChangeOnAutoComplete(r).addListen(mOnAutoCompletedRetailerListener);
+        new AutoCompleteTextChangeListener(r).addListen(mOnAutoCompletedRetailerListener);
 
         mOnRetailerClickListener = new AdapterView.OnItemClickListener() {
             @Override

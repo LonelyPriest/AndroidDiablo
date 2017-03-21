@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -42,14 +43,16 @@ import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.model.SaleCalc;
 import com.diablo.dt.diablo.model.SaleStock;
 import com.diablo.dt.diablo.model.SaleStockAmount;
 import com.diablo.dt.diablo.request.NewSaleRequest;
 import com.diablo.dt.diablo.response.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
-import com.diablo.dt.diablo.task.MatchStockTask;
-import com.diablo.dt.diablo.task.TextChangeOnAutoComplete;
+import com.diablo.dt.diablo.task.MatchAllStockTask;
+import com.diablo.dt.diablo.task.MatchSingleStockTask;
+import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -70,6 +73,7 @@ import retrofit2.Response;
 public class SaleIn extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String LOG_TAG = "SaleIn:";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -352,7 +356,7 @@ public class SaleIn extends Fragment{
                 cell.setText(stock.getName());
             }
             else if (getResources().getString(R.string.stock).equals(title)){
-                ((TextView)diabloRow.getCell(title)).setText(utils.toString(stock.getExistStock()));
+                ((TextView)diabloRow.getCell(title)).setText(utils.toString(stock.calcExistStock()));
             }
             else if (getResources().getString(R.string.price_type).equals(title)) {
                 Spinner cell = (Spinner)diabloRow.getCell(title);
@@ -441,11 +445,11 @@ public class SaleIn extends Fragment{
                 eCell.setThreshold(1);
 //              eCell.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED);
 
-                new TextChangeOnAutoComplete(eCell).addListen(new TextChangeOnAutoComplete.TextWatch() {
+                new AutoCompleteTextChangeListener(eCell).addListen(new AutoCompleteTextChangeListener.TextWatch() {
                     @Override
                     public void afterTextChanged(String value) {
                         if (value.length() > 0) {
-                            new MatchStockTask(getContext(), eCell, row, mMatchStocks).execute(value);
+                            new MatchAllStockTask(getContext(), eCell, row, mMatchStocks).execute(value);
                         }
                     }
                 });
@@ -503,6 +507,7 @@ public class SaleIn extends Fragment{
                                 if (getResources().getString(amount).equals(name)){
                                     // free color, free size
                                     if ( DiabloEnum.DIABLO_FREE.equals(s.getFree()) ){
+                                        getStockOfSelected(s, row);
                                         cell.setFocusableInTouchMode(true);
                                         cell.setFocusable(true);
                                         cell.requestFocus();
@@ -631,6 +636,48 @@ public class SaleIn extends Fragment{
         }
     }
 
+    private void getStockOfSelected(final SaleStock selectStock, final TableRow row) {
+        MatchSingleStockTask task = new MatchSingleStockTask(
+            selectStock.getStyleNumber(),
+            selectStock.getBrandId(),
+            mSaleCalcController.getSaleCalc().getShop());
+
+        task.setMatchSingleStockTaskListener(new MatchSingleStockTask.OnMatchSingleStockTaskListener() {
+            @Override
+            public void onMatchSuccess(List<Stock> matchedStocks) {
+                Log.d(LOG_TAG, "success to get stock");
+                for (Stock s: matchedStocks) {
+                    selectStock.setStockExist(s.getExist());
+                }
+
+                View v = SaleStockHandler.getColumn(getContext(), row, R.string.stock);
+                ((TextView)v).setTextColor(getResources().getColor(R.color.red));
+                ((TextView)v).setText(utils.toString(selectStock.getStockExist()));
+
+                if (0 != selectStock.getAmounts().size()) {
+                    for (SaleStockAmount amount: selectStock.getAmounts()) {
+                        amount.setStock(selectStock.getStockExist());
+                    }
+                } else {
+                    SaleStockAmount amount = new SaleStockAmount(
+                        DiabloEnum.DIABLO_FREE_COLOR,
+                        DiabloEnum.DIABLO_FREE_SIZE);
+                    amount.setStock(selectStock.getStockExist());
+                    selectStock.clearAmounts();
+                    selectStock.addAmount(amount);
+                }
+
+            }
+
+            @Override
+            public void onMatchFailed(Throwable t) {
+                Log.d(LOG_TAG, "failed to get stock");
+            }
+        });
+
+        task.getStock();
+    }
+
     public static class SaleStockHandler extends Handler{
         public final static Integer SALE_TOTAL_CHANGED = 1;
         public final static Integer SALE_PRICE_TYPE_SELECTED = 2;
@@ -648,18 +695,25 @@ public class SaleIn extends Fragment{
         public void handleMessage(Message msg) {
             if (msg.what == SALE_TOTAL_CHANGED){
                 TableRow row = (TableRow) msg.obj;
-                View cell = getColumn(mFragment.get().getContext(), row, R.string.calculate);
+                View cell = SaleStockHandler.getColumn(mFragment.get().getContext(), row, R.string.calculate);
                 if (null != cell){
                     SaleStock s = (SaleStock)row.getTag();
                     s.setSaleTotal(msg.arg1);
 
                     if (DiabloEnum.DIABLO_FREE.equals(s.getFree())){
-                        SaleStockAmount amount = new SaleStockAmount(
+                        if (0 != s.getAmounts().size()) {
+                            for (SaleStockAmount amount: s.getAmounts()) {
+                                amount.setSellCount(msg.arg1);
+                            }
+                        } else {
+                            SaleStockAmount amount = new SaleStockAmount(
                                 DiabloEnum.DIABLO_FREE_COLOR,
                                 DiabloEnum.DIABLO_FREE_SIZE);
-                        amount.setSellCount(msg.arg1);
-                        s.clearAmounts();
-                        s.addAmount(amount);
+                            amount.setSellCount(msg.arg1);
+                            amount.setStock(s.getStockExist());
+                            s.clearAmounts();
+                            s.addAmount(amount);
+                        }
                     }
 
                     final SaleIn f = ((SaleIn)mFragment.get());
@@ -669,7 +723,7 @@ public class SaleIn extends Fragment{
                         } else {
                             s.setState(DiabloEnum.FINISHED_SALE);
 
-                            View orderCell =  getColumn(mFragment.get().getContext(), row, R.string.order_id);
+                            View orderCell =  SaleStockHandler.getColumn(mFragment.get().getContext(), row, R.string.order_id);
                             if (null != orderCell){
                                 Integer rowId =  f.getValidRowId();
                                 s.setOrderId(rowId);
@@ -978,8 +1032,10 @@ public class SaleIn extends Fragment{
                             if (ms.getOrderId().equals(s.getOrderId())){
                                 ms.clearAmounts();
                                 Integer saleTotal = 0;
+                                Integer exist = 0;
                                 for (SaleStockAmount a: amounts){
                                     ms.addAmount(a);
+                                    exist += a.getStock();
                                     if (a.getSellCount() != 0){
                                         saleTotal += a.getSellCount();
                                     }
@@ -988,9 +1044,14 @@ public class SaleIn extends Fragment{
                                 ms.setColors(s.getColors());
                                 ms.setOrderSizes(s.getOrderSizes());
                                 ms.setSaleTotal(saleTotal);
+                                ms.setStockExist(exist);
+
                                 TableRow row = getRowByOrderId(s.getOrderId());
-                                View cell = SaleStockHandler.getColumn(getContext(), row, R.string.amount);
-                                utils.setEditTextValue((EditText)cell, saleTotal);
+                                View cellAmount = SaleStockHandler.getColumn(getContext(), row, R.string.amount);
+                                View cellStock = SaleStockHandler.getColumn(getContext(), row, R.string.stock);
+
+                                utils.setEditTextValue((EditText)cellAmount, saleTotal);
+                                utils.setTextViewValue((TextView)cellStock, exist);
                                 break;
                             }
                         }
@@ -1201,4 +1262,9 @@ public class SaleIn extends Fragment{
         SaleStock afterStockSelected();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy called");
+    }
 }

@@ -1,112 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
   <style name="EditTextDiabloAppTheme" parent="android:Widget.EditText">
-	  <item name="android:background">@drawable/diabloapptheme_edit_text_holo_light</item>
-	  <item name="android:textColor">#000000</item>
+    <item name="android:background">@drawable/diabloapptheme_edit_text_holo_light</item>
+    <item name="android:textColor">#000000</item>
   </style>
 
   <style name="AutoCompleteTextViewDiabloAppTheme" parent="android:Widget.AutoCompleteTextView">
-      <item name="android:dropDownSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
-	  <item name="android:background">@drawable/diabloapptheme_edit_text_holo_light</item>
-	  <item name="android:textColor">#000000</item>
+    <item name="android:dropDownSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
+    <item name="android:background">@drawable/diabloapptheme_edit_text_holo_light</item>
+    <item name="android:textColor">#000000</item>
   </style>
 
   <style name="CheckBoxDiabloAppTheme" parent="android:Widget.CompoundButton.CheckBox">
-      <item name="android:button">@drawable/diabloapptheme_btn_check_holo_light</item>
+    <item name="android:button">@drawable/diabloapptheme_btn_check_holo_light</item>
   </style>
 
   <style name="RadioButtonDiabloAppTheme" parent="android:Widget.CompoundButton.RadioButton">
-      <item name="android:button">@drawable/diabloapptheme_btn_radio_holo_light</item>
+    <item name="android:button">@drawable/diabloapptheme_btn_radio_holo_light</item>
   </style>
 
   <style name="ButtonDiabloAppTheme" parent="android:Widget.Button">
-	  <item name="android:background">@drawable/diabloapptheme_btn_default_holo_light</item>
-	  <item name="android:minHeight">48dip</item>
-	  <item name="android:minWidth">64dip</item>
-	  <item name="android:textColor">#000000</item>
+    <item name="android:background">@drawable/diabloapptheme_btn_default_holo_light</item>
+    <item name="android:minHeight">48dip</item>
+    <item name="android:minWidth">64dip</item>
+    <item name="android:textColor">#000000</item>
   </style>
 
   <style name="ImageButtonDiabloAppTheme" parent="android:Widget.ImageButton">
-	  <item name="android:background">@drawable/diabloapptheme_btn_default_holo_light</item>
+    <item name="android:background">@drawable/diabloapptheme_btn_default_holo_light</item>
   </style>
 
   <style name="SpinnerDiabloAppTheme" parent="android:Widget.Spinner">
-      <item name="android:background">@drawable/diabloapptheme_spinner_background_holo_light</item>
-      <item name="android:dropDownSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
+    <item name="android:background">@drawable/diabloapptheme_spinner_background_holo_light</item>
+    <item name="android:dropDownSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
   </style>
 
   <style name="SpinnerDropDownItemDiabloAppTheme" parent="android:Widget.DropDownItem.Spinner">
-      <item name="android:checkMark">@drawable/diabloapptheme_btn_radio_holo_light</item>
+    <item name="android:checkMark">@drawable/diabloapptheme_btn_radio_holo_light</item>
   </style>
   <style name="TabDiabloAppTheme">
-      <item name="android:gravity">center_horizontal</item>
-      <item name="android:paddingLeft">16dip</item>
-      <item name="android:paddingRight">16dip</item>
-      <item name="android:background">@drawable/diabloapptheme_tab_indicator_holo</item>
-      <item name="android:layout_width">0dip</item>
-      <item name="android:layout_weight">1</item>
-      <item name="android:minWidth">80dip</item>
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:paddingLeft">16dip</item>
+    <item name="android:paddingRight">16dip</item>
+    <item name="android:background">@drawable/diabloapptheme_tab_indicator_holo</item>
+    <item name="android:layout_width">0dip</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:minWidth">80dip</item>
   </style>
 
   <style name="TabTextDiabloAppTheme">
-	  <item name="android:textColor">#000000</item>
-      <item name="android:textSize">12sp</item>
-      <item name="android:textStyle">bold</item>
-      <!-- v14 <item name="android:textAllCaps">true</item> -->
-      <item name="android:ellipsize">marquee</item>
-      <item name="android:maxLines">2</item>
-      <item name="android:maxWidth">180dip</item>
+    <item name="android:textColor">#000000</item>
+    <item name="android:textSize">12sp</item>
+    <item name="android:textStyle">bold</item>
+    <!-- v14 <item name="android:textAllCaps">true</item> -->
+    <item name="android:ellipsize">marquee</item>
+    <item name="android:maxLines">2</item>
+    <item name="android:maxWidth">180dip</item>
   </style>
 
   <style name="ProgressBarDiabloAppTheme" parent="android:Widget.ProgressBar.Horizontal">
-      <item name="android:progressDrawable">@drawable/diabloapptheme_progress_horizontal_holo_light</item>
-      <item name="android:indeterminateDrawable">@drawable/diabloapptheme_progress_indeterminate_horizontal_holo_light</item>
-      <item name="android:minHeight">16dip</item>
-      <item name="android:maxHeight">16dip</item>
+    <item name="android:progressDrawable">@drawable/diabloapptheme_progress_horizontal_holo_light</item>
+    <item name="android:indeterminateDrawable">@drawable/diabloapptheme_progress_indeterminate_horizontal_holo_light</item>
+    <item name="android:minHeight">16dip</item>
+    <item name="android:maxHeight">16dip</item>
   </style>
 
   <style name="SeekBarDiabloAppTheme" parent="android:Widget.SeekBar">
-      <item name="android:progressDrawable">@drawable/diabloapptheme_scrubber_progress_horizontal_holo_light</item>
-      <item name="android:indeterminateDrawable">@drawable/diabloapptheme_scrubber_progress_horizontal_holo_light</item>
-      <item name="android:minHeight">13dip</item>
-      <item name="android:maxHeight">13dip</item>
-      <item name="android:thumb">@drawable/diabloapptheme_scrubber_control_selector_holo_light</item>
-      <item name="android:thumbOffset">16dip</item>
-      <item name="android:paddingLeft">16dip</item>
-      <item name="android:paddingRight">16dip</item>
+    <item name="android:progressDrawable">@drawable/diabloapptheme_scrubber_progress_horizontal_holo_light</item>
+    <item name="android:indeterminateDrawable">@drawable/diabloapptheme_scrubber_progress_horizontal_holo_light</item>
+    <item name="android:minHeight">13dip</item>
+    <item name="android:maxHeight">13dip</item>
+    <item name="android:thumb">@drawable/diabloapptheme_scrubber_control_selector_holo_light</item>
+    <item name="android:thumbOffset">16dip</item>
+    <item name="android:paddingLeft">16dip</item>
+    <item name="android:paddingRight">16dip</item>
   </style>
 
   <style name="RatingBarBigDiabloAppTheme" parent="android:Widget.RatingBar">
-      <item name="android:progressDrawable">@drawable/diabloapptheme_ratingbar_holo_light</item>
-      <item name="android:indeterminateDrawable">@drawable/diabloapptheme_ratingbar_holo_light</item>
-      <item name="android:minHeight">35dip</item>
-      <item name="android:maxHeight">35dip</item>
+    <item name="android:progressDrawable">@drawable/diabloapptheme_ratingbar_holo_light</item>
+    <item name="android:indeterminateDrawable">@drawable/diabloapptheme_ratingbar_holo_light</item>
+    <item name="android:minHeight">35dip</item>
+    <item name="android:maxHeight">35dip</item>
   </style>
 
   <style name="RatingBarSmallDiabloAppTheme" parent="android:Widget.RatingBar">
-      <item name="android:progressDrawable">@drawable/diabloapptheme_ratingbar_small_holo_light</item>
-      <item name="android:indeterminateDrawable">@drawable/diabloapptheme_ratingbar_small_holo_light</item>
-      <item name="android:minHeight">16dip</item>
-      <item name="android:maxHeight">16dip</item>
+    <item name="android:progressDrawable">@drawable/diabloapptheme_ratingbar_small_holo_light</item>
+    <item name="android:indeterminateDrawable">@drawable/diabloapptheme_ratingbar_small_holo_light</item>
+    <item name="android:minHeight">16dip</item>
+    <item name="android:maxHeight">16dip</item>
   </style>
 
   <style name="ToggleDiabloAppTheme" parent="android:Widget.Button.Toggle">
-      <item name="android:background">@drawable/diabloapptheme_btn_toggle_holo_light</item>
-      <item name="android:minHeight">48dip</item>
-	  <item name="android:textColor">#000000</item>
+    <item name="android:background">@drawable/diabloapptheme_btn_toggle_holo_light</item>
+    <item name="android:minHeight">48dip</item>
+    <item name="android:textColor">#000000</item>
   </style>
 
   <style name="ListViewDiabloAppTheme" parent="android:Widget.ListView">
-      <item name="android:listSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
+    <item name="android:listSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
   </style>
 
   <style name="ListViewDiabloAppTheme.White" parent="android:Widget.ListView.White">
-      <item name="android:listSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
+    <item name="android:listSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
   </style>
 
   <style name="SpinnerItemDiabloAppTheme" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
-      <item name="android:textColor">#000000</item>
+    <item name="android:textColor">#000000</item>
   </style>
 
 </resources>

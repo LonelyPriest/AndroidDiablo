@@ -53,11 +53,11 @@ public class SaleStock {
 
     private List<SaleStockAmount> amounts;
 
-    public void addAmount(SaleStockAmount amount){
+    synchronized public void addAmount(SaleStockAmount amount){
         amounts.add(amount);
     }
 
-    public void clearAmounts(){
+    synchronized public void clearAmounts(){
         amounts.clear();
     }
 
@@ -72,7 +72,7 @@ public class SaleStock {
         return amounts;
     }
 
-    public Integer getExistStock(){
+    public Integer calcExistStock(){
         Integer total = 0;
         for (SaleStockAmount a: amounts){
             total += a.getStock();

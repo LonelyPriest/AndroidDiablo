@@ -11,7 +11,7 @@ import retrofit2.http.POST;
  * Created by buxianhui on 17/2/22.
  */
 
-public interface WLoginInterfacae {
+public interface WLoginInterface {
     @FormUrlEncoded
     @POST("login")
     Call<LoginResponse> login(@Field("user_name") String name,

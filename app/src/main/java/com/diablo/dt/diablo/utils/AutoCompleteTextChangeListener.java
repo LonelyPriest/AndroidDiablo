@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.task;
+package com.diablo.dt.diablo.utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,10 +8,10 @@ import android.widget.AutoCompleteTextView;
  * Created by buxianhui on 17/3/12.
  */
 
-public class TextChangeOnAutoComplete {
+public class AutoCompleteTextChangeListener {
     private AutoCompleteTextView view;
 
-    public TextChangeOnAutoComplete(AutoCompleteTextView view) {
+    public AutoCompleteTextChangeListener(AutoCompleteTextView view) {
         this.view = view;
     }
 

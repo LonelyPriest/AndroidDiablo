@@ -268,7 +268,7 @@ public class DiabloDBManager {
                     amount.setStock(stockExist);
 
                     stock.setSaleTotal(stock.getSaleTotal() + saleTotal);
-                    stock.setStockExist(stock.getExistStock() + stockExist);
+                    stock.setStockExist(stock.calcExistStock() + stockExist);
                     stock.addAmount(amount);
                 }
             }

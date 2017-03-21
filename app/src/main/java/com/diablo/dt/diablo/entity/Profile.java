@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.entity;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 
 public class Profile {
+    private static final String LOG_TAG = "Profile:";
     private static Profile mPofile;
     private static final String mSessionId = DiabloEnum.SESSION_ID;
     private static Integer mTableRows = DiabloEnum.ROW_SIZE;
@@ -95,6 +97,45 @@ public class Profile {
 
     // matched stocks
     private List<MatchStock> matchStocks = new ArrayList<>();
+
+    public void clear(){
+        Log.d(LOG_TAG, "clear called");
+        mLoginShop = DiabloEnum.INVALID_INDEX;
+        mLoginFirm = DiabloEnum.INVALID_INDEX;
+        mLoginEmployee = DiabloEnum.INVALID_INDEX;
+        mLoginRetailer = DiabloEnum.INVALID_INDEX;
+        mLoginType = DiabloEnum.INVALID_INDEX;
+        mLoginRights = null;
+        mLoginShops = null;
+
+        mAvailableShopIds.clear();
+        mShopIds.clear();
+        mBadRepoIds.clear();
+        mRepoIds.clear();
+
+        mSortAvailableShop.clear();
+        mSortShop.clear();
+        mSortBadRepo.clear();
+        mSortRepo.clear();
+
+        // employee
+        mEmployees.clear();
+
+        // retailer
+        mRetailers.clear();
+
+        // base settings
+        mBaseSettings.clear();
+
+        // color
+        mColors.clear();
+
+        // size group
+        mSizeGroups.clear();
+
+        // matched stocks
+        matchStocks.clear();
+    }
 
     /*
     * Login user info

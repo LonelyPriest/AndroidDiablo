@@ -1,6 +1,8 @@
 package com.diablo.dt.diablo.activity;
 
+import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.SaleDetail;
 import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
@@ -252,6 +255,13 @@ public class MainActivity extends AppCompatActivity implements
                     case R.id.nav_stock_in:
                         selectMenuItem(4);
                         break;
+                    case R.id.nav_logout:
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                        break;
 //                    case R.id.nav_about_us:
 //                        // launch new intent instead of loading fragment
 //                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
@@ -395,6 +405,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onDestroy();
         Log.d(LOG_TAG, "onDestroy called");
         DiabloDBManager.instance().close();
+        Profile.instance().clear();
     }
 
     //    @Override

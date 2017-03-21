@@ -36,7 +36,7 @@ import com.diablo.dt.diablo.rest.RetailerInterface;
 import com.diablo.dt.diablo.rest.RightInterface;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.rest.WGoodInterface;
-import com.diablo.dt.diablo.rest.WLoginInterfacae;
+import com.diablo.dt.diablo.rest.WLoginInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -51,8 +51,8 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
     private final static String LOG_TAG = "LOGIN:";
 
-    Button btnLogin;
-    TextInputLayout loginWrap, passwordWrap;
+    Button mBtnLogin;
+    TextInputLayout mLoginWrap, mPasswordWrap;
     Context mContext;
 
     private final LoginHandler mLoginHandler = new LoginHandler(this);
@@ -66,25 +66,26 @@ public class LoginActivity extends AppCompatActivity {
         mContext = this;
         Profile.instance().setContext(this.getApplicationContext());
 
-        loginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
-        passwordWrap = (TextInputLayout) findViewById(R.id.login_password_holder);
+        mLoginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
+        mPasswordWrap = (TextInputLayout) findViewById(R.id.login_password_holder);
 
         // InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         //
-        btnLogin = (Button) findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        mBtnLogin = (Button) findViewById(R.id.btn_login);
+        mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = loginWrap.getEditText().getText().toString();
-                String password = passwordWrap.getEditText().getText().toString();
+                String name = mLoginWrap.getEditText().getText().toString();
+                String password = mPasswordWrap.getEditText().getText().toString();
                 if (name.trim().equals(""))
-                    loginWrap.getEditText().setError("请输入用户名");
+                    mLoginWrap.getEditText().setError("请输入用户名");
                 else if (password.trim().equals(""))
-                    passwordWrap.getEditText().setError("请输入用户密码");
+                    mPasswordWrap.getEditText().setError("请输入用户密码");
                  else {
                     // login
-                    WLoginInterfacae loginInterfacae = WLoginClient.getClient().create(WLoginInterfacae.class);
-                    Call<LoginResponse> call = loginInterfacae.login(name, password, DiabloEnum.TABLET);
+                    mBtnLogin.setClickable(false);
+                    WLoginInterface face = WLoginClient.getClient().create(WLoginInterface.class);
+                    Call<LoginResponse> call = face.login(name, password, DiabloEnum.TABLET);
 
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
@@ -92,27 +93,11 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(LOG_TAG, "success to login");
                             // AlertDialogLayout dialog = (AlertDialogLayout)findViewById(R.id.alert_dialog);
                             if (0 != response.body().getCode()){
-                                String error = DiabloError.getInstance().getError(response.body().getCode());
-                                new MaterialDialog.Builder(mContext)
-                                        .title(R.string.user_login)
-                                        .content(error)
-                                        // .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
-                                        .positiveText(mContext.getResources().getString(R.string.login_ok))
-                                        .positiveColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
-                                        .show();
+                                mBtnLogin.setClickable(true);
+                                loginError(response.body().getCode());
                             } else {
                                 Profile.instance().setToken(response.body().getToken());
-                                // get profile from server, include login data, authen data, etc...
                                 getLoginUserInfo();
-                                // getEmployee();
-                                // getRetailer();
-                                // getBaseSetting();
-
-//                                Intent intent = new Intent(mContext, MainActivity.class);
-//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                startActivity(intent);
-//                                finish();
                             }
                         }
 
@@ -134,8 +119,8 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public void loginError(Integer ecode){
-        String error = DiabloError.getInstance().getError(ecode);
+    public void loginError(Integer code){
+        String error = DiabloError.getInstance().getError(code);
         new MaterialDialog.Builder(mContext)
                 .title(R.string.user_login)
                 .content(error)

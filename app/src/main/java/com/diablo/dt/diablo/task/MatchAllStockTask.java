@@ -16,14 +16,14 @@ import java.util.List;
  * Created by buxianhui on 17/3/11.
  */
 
-public class MatchStockTask extends AsyncTask<String, Void, Void> {
+public class MatchAllStockTask extends AsyncTask<String, Void, Void> {
     private Context mContext;
     private AutoCompleteTextView mCompleteView;
     private TableRow mRow;
     private List<MatchStock> mMatchStocks;
     private List<MatchStock> mMatchedStocks= new ArrayList<MatchStock>();
 
-    public MatchStockTask(Context context, AutoCompleteTextView view, TableRow row, List<MatchStock> stocks){
+    public MatchAllStockTask(Context context, AutoCompleteTextView view, TableRow row, List<MatchStock> stocks){
         this.mContext = context;
         this.mCompleteView = view;
         mMatchStocks = stocks;

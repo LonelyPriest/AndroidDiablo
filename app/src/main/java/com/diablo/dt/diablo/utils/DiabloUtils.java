@@ -156,24 +156,24 @@ public class DiabloUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-        return format.format(calendar.getTime());
+        return format.format(calendar.getTime()).trim();
     }
 
     public String currentDatetime(){
         Calendar calendar = Calendar.getInstance();
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
-        return format.format(calendar.getTime());
+        return format.format(calendar.getTime()).trim();
     }
 
     public String toString(Float value){
         if (value == Math.round(value)){
             return String.format(Locale.CHINA, "%d", Math.round(value));
         }
-        return String.format(Locale.CHINA, "%.2f", value);
+        return String.format(Locale.CHINA, "%.2f", value).trim();
     }
 
     public String toString(Integer value){
-        return format(Locale.CHINA, "%d", value);
+        return format(Locale.CHINA, "%d", value).trim();
     }
 
     public Integer toInteger(String value){

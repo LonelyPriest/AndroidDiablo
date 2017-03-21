@@ -1,17 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+    <!--</style>-->
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -26,18 +21,13 @@
     </style>
 
     <style name="LoginTextLabel">
-        <!-- Hint color and label color in FALSE state -->
         <item name="android:textSize">20sp</item>
-        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
-        <!--<item name="colorAccent">@color/colorGray</item>-->
-        <!--<item name="colorControlNormal">@color/colorPrimary</item>-->
         <item name="colorControlActivated">@color/colorPrimary</item>
     </style>
 
-    <style name="Autocomplete" parent="Widget.AppCompat.Light.AutoCompleteTextView">
-        <item name="android:background">@color/bluedark</item>
-        <item name="colorControlNormal">@color/greendark</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
+    <style name="DiabloNavigationDrawer">
+        <item name="android:textSize">18sp</item>
+        <!--<item name="android:listPreferredItemHeight">40dp</item>-->
     </style>
 
 </resources>

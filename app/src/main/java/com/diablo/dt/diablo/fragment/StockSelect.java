@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.Profile;
@@ -28,10 +27,9 @@ import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.model.SaleStock;
 import com.diablo.dt.diablo.model.SaleStockAmount;
 import com.diablo.dt.diablo.request.LastSaleRequest;
-import com.diablo.dt.diablo.request.StockRequest;
 import com.diablo.dt.diablo.response.LastSaleResponse;
-import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.rest.WSaleInterface;
+import com.diablo.dt.diablo.task.MatchSingleStockTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloSaleTable;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
@@ -126,28 +124,26 @@ public class StockSelect extends Fragment {
     }
 
     private void getStockFromServer(){
-        StockInterface face = StockClient.getClient().create(StockInterface.class);
-        Call<List<Stock>> call = face.getStock(
-                Profile.instance().getToken(),
-                new StockRequest(
-                        mSaleStock.getStyleNumber(),
-                        mSaleStock.getBrandId(),
-                        mSelectShop,
-                        DiabloEnum.USE_REPO));
+        MatchSingleStockTask task = new MatchSingleStockTask(
+            mSaleStock.getStyleNumber(),
+            mSaleStock.getBrandId(),
+            mSelectShop);
 
-        call.enqueue(new Callback<List<Stock>>() {
+        task.setMatchSingleStockTaskListener(new MatchSingleStockTask.OnMatchSingleStockTaskListener() {
             @Override
-            public void onResponse(final Call<List<Stock>> call, Response<List<Stock>> response) {
+            public void onMatchSuccess(List<Stock> stocks) {
                 Log.d(LOG_TAG, "success to get stock");
-                mStocks = new ArrayList<>(response.body());
+                mStocks = stocks;
                 startAdd();
             }
 
             @Override
-            public void onFailure(Call<List<Stock>> call, Throwable t) {
+            public void onMatchFailed(Throwable t) {
                 Log.d(LOG_TAG, "failed to get stock");
             }
         });
+
+        task.getStock();
     }
 
     private void getLastTransactionOfRetailer(){

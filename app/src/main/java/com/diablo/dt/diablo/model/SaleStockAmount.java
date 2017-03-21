@@ -66,7 +66,7 @@ public class SaleStockAmount {
         return stock;
     }
 
-    public void setStock(Integer stock) {
+    synchronized public void setStock(Integer stock) {
         this.stock = stock;
     }
 
