@@ -385,6 +385,13 @@ public class SaleIn extends Fragment{
                         if (null != calCell){
                             utils.setTextViewValue((TextView) calCell, diabloRow.getStock().getSalePrice());
                         }
+
+                        calcShouldPay();
+                        dbInstance.replaceSaleStock(
+                            mSaleCalcController.getSaleCalc(),
+                            diabloRow.getStock(),
+                            mStartRetailer);
+
                     }
                 });
 
@@ -470,6 +477,7 @@ public class SaleIn extends Fragment{
 
                                 if (getResources().getString(R.string.price).equals(name)) {
                                     DiabloUtils.instance().setTextViewValue((TextView) cell, s.getValidPrice());
+                                    s.setFinalPrice(s.getValidPrice());
                                 }
                                 else if (getResources().getString(R.string.discount).equals(name)){
                                     DiabloUtils.instance().setTextViewValue((TextView) cell, s.getDiscount());
@@ -486,6 +494,8 @@ public class SaleIn extends Fragment{
                                             s.setFinalPrice(price);
                                             View calCell = SaleStockHandler.getColumn(getContext(), row, R.string.calculate);
                                             utils.setTextViewValue((TextView) calCell, s.getSalePrice());
+                                            calcShouldPay();
+                                            dbInstance.replaceSaleStock(mSaleCalcController.getSaleCalc(), s, mStartRetailer);
                                         }
                                     });
                                 }

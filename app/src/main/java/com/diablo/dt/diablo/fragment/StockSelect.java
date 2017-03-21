@@ -174,34 +174,44 @@ public class StockSelect extends Fragment {
         });
     }
 
-
     private void startModify() {
-//        ArrayList<String> usedSizes = new ArrayList<>();
-//        for(SaleStockAmount a: mSaleStock.getAmounts()){
-//            if (!usedSizes.contains(a.getSize())){
-//                usedSizes.add(a.getSize());
-//            }
-//
-//            DiabloColor color = Profile.instance().getColor(a.getColorId());
-//            if (!color.includeIn(mOrderColors)){
-//                mOrderColors.add(color);
-//            }
-//        }
-//
-//        ArrayList<String> orderedSizes = Profile.instance().genSortedSizeNamesByGroups(mSaleStock.getSizeGroup());
-//        for (String s: orderedSizes){
-//            if (usedSizes.contains(s)){
-//                mOrderedSizes.add(s);
-//            }
-//        }
-//
-//        if (mOrderedSizes.size() != usedSizes.size()){
-//            for (String s: usedSizes){
-//                if (!mOrderedSizes.contains(s)){
-//                    mOrderedSizes.add(0, s);
-//                }
-//            }
-//        }
+        if ( null == mSaleStock.getColors() || null == mSaleStock.getOrderSizes()) {
+            ArrayList<String> usedSizes = new ArrayList<>();
+            List<String> orderedSizes     = new ArrayList<>();
+            List<DiabloColor> orderColors = new ArrayList<>();
+
+
+            for(SaleStockAmount a: mSaleStock.getAmounts()){
+                if (!usedSizes.contains(a.getSize())){
+                    usedSizes.add(a.getSize());
+                }
+
+                DiabloColor color = Profile.instance().getColor(a.getColorId());
+                if (!color.includeIn(orderColors)){
+                    orderColors.add(color);
+                }
+            }
+
+            ArrayList<String> sizes = Profile.instance().genSortedSizeNamesByGroups(mSaleStock.getSizeGroup());
+            for (String s: sizes){
+                if (usedSizes.contains(s)){
+                    orderedSizes.add(s);
+                }
+            }
+
+            if (orderedSizes.size() != usedSizes.size()){
+                for (String s: usedSizes){
+                    if (!orderedSizes.contains(s)){
+                        orderedSizes.add(0, s);
+                    }
+                }
+            }
+
+            mSaleStock.setColors(orderColors);
+            mSaleStock.setOrderSizes(orderedSizes);
+
+            // startSelect(orderColors, orderedSizes);
+        }
 
         startSelect(mSaleStock.getColors(), mSaleStock.getOrderSizes());
     }
@@ -244,6 +254,7 @@ public class StockSelect extends Fragment {
 
         mSaleStock.setColors(orderColors);
         mSaleStock.setOrderSizes(orderedSizes);
+
         startSelect(orderColors, orderedSizes);
     }
 
@@ -260,9 +271,15 @@ public class StockSelect extends Fragment {
                 cell.addTextChangedListener(new DiabloTextWatcher() {
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        String inputValue = editable.toString().trim();
+
                         for (SaleStockAmount amount: mSaleStock.getAmounts()){
                             if (amount.getColorId().equals(colorId) && amount.getSize().equals(size)){
-                                amount.setSellCount(DiabloUtils.instance().toInteger(editable.toString()));
+                                if (inputValue.length() == 1 && inputValue.startsWith("-")){
+                                    amount.setSellCount(0);
+                                } else {
+                                    amount.setSellCount(DiabloUtils.instance().toInteger(inputValue));
+                                }
                             }
                         }
                     }

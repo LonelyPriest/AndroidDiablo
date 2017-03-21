@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="AutoCompleteTextViewDiabloAppTheme" parent="android:Widget.Holo.Light.AutoCompleteTextView">
+      <item name="android:dropDownSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
+	    <item name="android:background">@drawable/diabloapptheme_edit_text_holo_light</item>
+  </style>
+
+  <style name="ButtonDiabloAppTheme" parent="android:Widget.Holo.Light.Button">
+	  <item name="android:background">@drawable/diabloapptheme_btn_default_holo_light</item>
+  </style>
+
+  <style name="ImageButtonDiabloAppTheme" parent="android:Widget.Holo.Light.ImageButton">
+	  <item name="android:background">@drawable/diabloapptheme_btn_default_holo_light</item>
+  </style>
+
+  <style name="SpinnerDiabloAppTheme" parent="android:Widget.Holo.Light.Spinner">
+      <item name="android:background">@drawable/diabloapptheme_spinner_background_holo_light</item>
+      <item name="android:dropDownSelector">@drawable/diabloapptheme_list_selector_holo_light</item>
+  </style>
+
+  <style name="ProgressBarDiabloAppTheme" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+      <item name="android:progressDrawable">@drawable/diabloapptheme_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/diabloapptheme_progress_indeterminate_horizontal_holo_light</item>
+  </style>
+
+  <style name="SeekBarDiabloAppTheme" parent="android:Widget.Holo.Light.SeekBar">
+      <item name="android:progressDrawable">@drawable/diabloapptheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/diabloapptheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:thumb">@drawable/diabloapptheme_scrubber_control_selector_holo_light</item>
+  </style>
+
+  <style name="RatingBarBigDiabloAppTheme" parent="android:Widget.Holo.Light.RatingBar.Indicator">
+      <item name="android:progressDrawable">@drawable/diabloapptheme_ratingbar_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/diabloapptheme_ratingbar_holo_light</item>
+  </style>
+
+  <style name="RatingBarSmallDiabloAppTheme" parent="android:Widget.Holo.Light.RatingBar.Small">
+      <item name="android:progressDrawable">@drawable/diabloapptheme_ratingbar_small_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/diabloapptheme_ratingbar_small_holo_light</item>
+  </style>
+
+  <style name="ToggleDiabloAppTheme" parent="android:Widget.Holo.Light.Button.Toggle">
+      <item name="android:background">@drawable/diabloapptheme_btn_toggle_holo_light</item>
+  </style>
+
+</resources>

@@ -295,8 +295,8 @@ public class SaleDetail extends Fragment {
         // hidden keyboard
         // DiabloUtils.instance().hiddenKeyboard(getContext());
         // get data from from web server
-        // mRequest.getCondtion().setStartTime(DiabloUtils.instance().currentDate());
-        mRequest.getCondtion().setStartTime("2016-01-01");
+        mRequest.getCondtion().setStartTime(DiabloUtils.instance().currentDate());
+        // mRequest.getCondtion().setStartTime("2016-01-01");
         mRequest.getCondtion().setEndTime(DiabloUtils.instance().nextDate());
 
         Call<SaleDetailResponse> call = mSaleRest.filterWSaleNew(Profile.instance().getToken(), mRequest);

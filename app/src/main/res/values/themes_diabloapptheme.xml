@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="DiabloAppTheme.NoActionBar" parent="@style/_DiabloAppTheme">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+  </style>
+
+  <style name="DiabloAppTheme" parent="@style/_DiabloAppTheme"/>
+
+  <style name="_DiabloAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <item name="android:editTextStyle">@style/EditTextDiabloAppTheme</item>
+
+    <item name="android:textColorHighlight">#9933b5e5</item>
+
+    <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewDiabloAppTheme</item>
+
+    <item name="android:checkboxStyle">@style/CheckBoxDiabloAppTheme</item>
+
+    <item name="android:radioButtonStyle">@style/RadioButtonDiabloAppTheme</item>
+
+    <item name="android:buttonStyle">@style/ButtonDiabloAppTheme</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonDiabloAppTheme</item>
+
+    <item name="android:spinnerStyle">@style/SpinnerDiabloAppTheme</item>
+
+    <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemDiabloAppTheme</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarDiabloAppTheme</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarDiabloAppTheme</item>
+
+    <item name="android:ratingBarStyleIndicator">@style/RatingBarBigDiabloAppTheme</item>
+
+    <item name="android:ratingBarStyleSmall">@style/RatingBarSmallDiabloAppTheme</item>
+
+    <item name="android:buttonStyleToggle">@style/ToggleDiabloAppTheme</item>
+
+    <item name="android:listViewStyle">@style/ListViewDiabloAppTheme</item>
+
+    <item name="android:listViewWhiteStyle">@style/ListViewDiabloAppTheme.White</item>
+
+    <item name="android:spinnerItemStyle">@style/SpinnerItemDiabloAppTheme</item>
+
+
+  </style>
+
+</resources>

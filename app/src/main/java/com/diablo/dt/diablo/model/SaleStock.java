@@ -306,8 +306,9 @@ public class SaleStock {
                 break;
         }
 
-        setFinalPrice(price);
-        return getFinalPrice();
+        // setFinalPrice(price);
+        // return getFinalPrice();
+        return price;
     }
 
 
