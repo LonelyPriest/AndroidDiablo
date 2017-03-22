@@ -52,10 +52,6 @@ public class DiabloSaleCalcView {
         this.mViewShop = shop;
     }
 
-    public View getViewDatetime() {
-        return mViewDatetime;
-    }
-
     public void setViewDatetime(View datetime) {
         this.mViewDatetime = datetime;
     }
@@ -65,19 +61,11 @@ public class DiabloSaleCalcView {
     }
 
     public void setViewEmployee(View employee) {
-        this.mViewEmployee = employee;
-    }
-
-    public View getViewSaleTotal() {
-        return mViewSaleTotal;
+            this.mViewEmployee = employee;
     }
 
     public void setViewSaleTotal(View saleTotal) {
         this.mViewSaleTotal = saleTotal;
-    }
-
-    public View getViewShouldPay() {
-        return mViewShouldPay;
     }
 
     public void setViewShouldPay(View shouldPay) {
@@ -100,16 +88,8 @@ public class DiabloSaleCalcView {
         this.mViewComment = comment;
     }
 
-    public View getViewBalance() {
-        return mViewBalance;
-    }
-
     public void setViewBalance(View balance) {
         this.mViewBalance = balance;
-    }
-
-    public View getViewHasPay() {
-        return mViewHasPay;
     }
 
     public void setViewHasPay(View hasPay) {
@@ -121,7 +101,7 @@ public class DiabloSaleCalcView {
     }
 
     public void setViewCard(View card) {
-        this.mViewCard = card;
+            this.mViewCard = card;
     }
 
     public View getViewExtraCost() {
@@ -130,10 +110,6 @@ public class DiabloSaleCalcView {
 
     public void setViewExtraCost(View extraCost) {
         this.mViewExtraCost = extraCost;
-    }
-
-    public View getViewAccBalance() {
-        return mViewAccBalance;
     }
 
     public void setViewAccBalance(View balance) {
@@ -165,11 +141,15 @@ public class DiabloSaleCalcView {
     }
 
     public void setBalanceValue(Float v) {
-        ((EditText)mViewBalance).setText(DiabloUtils.instance().toString(v));
+        if (null != mViewBalance) {
+            ((EditText)mViewBalance).setText(DiabloUtils.instance().toString(v));
+        }
     }
 
     public void setAccBalanceValue(Float v){
-        ((EditText)mViewAccBalance).setText(DiabloUtils.instance().toString(v));
+        if (null != mViewAccBalance) {
+            ((EditText)mViewAccBalance).setText(DiabloUtils.instance().toString(v));
+        }
     }
 
     public void setShopValue(String s) {
@@ -177,55 +157,81 @@ public class DiabloSaleCalcView {
     }
 
     public void setDatetimeValue(String s) {
-        ((EditText)mViewDatetime).setText(s.trim());
+        if (null != mViewDatetime) {
+            ((EditText)mViewDatetime).setText(s.trim());
+        }
     }
 
     public void setRetailerValue(String s){
-        ((AutoCompleteTextView)mViewRetailer).setText(s.trim());
+        if (null != mViewRetailer) {
+            ((AutoCompleteTextView)mViewRetailer).setText(s.trim());
+        }
     }
 
     public void setSaleTotalValue(Integer s) {
-        ((EditText)mViewSaleTotal).setText(DiabloUtils.instance().toString(s));
+        if (null != mViewSaleTotal) {
+            ((EditText)mViewSaleTotal).setText(DiabloUtils.instance().toString(s));
+        }
     }
 
     public void setShouldPayValue(Float s) {
-        ((EditText)mViewShouldPay).setText(DiabloUtils.instance().toString(s));
+        if (null != mViewShouldPay) {
+            ((EditText)mViewShouldPay).setText(DiabloUtils.instance().toString(s));
+        }
     }
 
     public void setHasPayValue(Float s){
-        ((EditText)mViewHasPay).setText(DiabloUtils.instance().toString(s));
+        if (null != mViewHasPay) {
+            ((EditText)mViewHasPay).setText(DiabloUtils.instance().toString(s));
+        }
     }
 
     public void resetCashValue() {
-        ((EditText)mViewCash).setText(DiabloEnum.EMPTY_STRING);
+        if (null != mViewCash) {
+            ((EditText)mViewCash).setText(DiabloEnum.EMPTY_STRING);
+        }
     }
 
     private void resetCardValue() {
-        ((EditText)mViewCard).setText(DiabloEnum.EMPTY_STRING);
+        if (null != mViewCard) {
+            ((EditText)mViewCard).setText(DiabloEnum.EMPTY_STRING);
+        }
     }
 
     private void resetWireValue() {
-        ((EditText)mViewWire).setText(DiabloEnum.EMPTY_STRING);
+        if (null != mViewWire) {
+            ((EditText)mViewWire).setText(DiabloEnum.EMPTY_STRING);
+        }
     }
 
     private void resetVerificateValue() {
-        ((EditText)mViewVerificate).setText(DiabloEnum.EMPTY_STRING);
+        if ( null != mViewVerificate) {
+            ((EditText)mViewVerificate).setText(DiabloEnum.EMPTY_STRING);
+        }
     }
 
     private void resetExtraCostValue() {
-        ((EditText)mViewExtraCost).setText(DiabloEnum.EMPTY_STRING);
+        if (null != mViewExtraCost) {
+            ((EditText)mViewExtraCost).setText(DiabloEnum.EMPTY_STRING);
+        }
     }
 
     private void resetShouldPayValue() {
-        ((EditText)mViewShouldPay).setText(DiabloEnum.EMPTY_STRING);
+        if (null != mViewShouldPay) {
+            ((EditText)mViewShouldPay).setText(DiabloEnum.EMPTY_STRING);
+        }
     }
 
     private void resetHasPayValue() {
-        ((EditText)mViewHasPay).setText(DiabloEnum.EMPTY_STRING);
+        if (null != mViewHasPay) {
+            ((EditText)mViewHasPay).setText(DiabloEnum.EMPTY_STRING);
+        }
     }
 
     private void resetSaleTotalValue() {
-        ((EditText)mViewSaleTotal).setText(DiabloEnum.EMPTY_STRING);
+        if (null != mViewSaleTotal) {
+            ((EditText)mViewSaleTotal).setText(DiabloEnum.EMPTY_STRING);
+        }
     }
 
     public void resetValue(){

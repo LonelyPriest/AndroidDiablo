@@ -1,5 +1,7 @@
 package com.diablo.dt.diablo.model;
 
+import com.diablo.dt.diablo.utils.DiabloEnum;
+
 /**
  * Created by buxianhui on 17/3/12.
  */
@@ -28,7 +30,18 @@ public class SaleCalc {
     private Integer sellTotal;
     private Integer rejectTotal;
 
+    private Integer SaleType;
+
+    public SaleCalc(Integer saleType) {
+        this.SaleType = saleType;
+        init();
+    }
     public SaleCalc(){
+        SaleType = DiabloEnum.SALE_IN;
+        init();
+    }
+
+    private void init() {
         retailer = -1;
 
         cash = 0f;
@@ -156,10 +169,6 @@ public class SaleCalc {
         return accBalance;
     }
 
-    public void setAccBalance(Float accBalance) {
-        this.accBalance = accBalance;
-    }
-
     public Integer getTotal() {
         return total;
     }
@@ -189,7 +198,12 @@ public class SaleCalc {
     }
 
     public Float calcAccBalance(){
-        accBalance = balance + shouldPay + extraCost - verificate - hasPay;
+        if (DiabloEnum.SALE_IN.equals(SaleType)) {
+            accBalance = balance + shouldPay + extraCost - verificate - hasPay;
+        } else if (DiabloEnum.SALE_OUT.equals(SaleType)) {
+            accBalance = balance - shouldPay - extraCost - verificate;
+        }
+
         return accBalance;
     }
 }

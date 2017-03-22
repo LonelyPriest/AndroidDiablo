@@ -16,7 +16,7 @@ public class AutoCompleteTextChangeListener {
     }
 
     public interface TextWatch{
-        public void afterTextChanged(String value);
+        void afterTextChanged(String value);
     }
 
     public void addListen(final TextWatch watch){

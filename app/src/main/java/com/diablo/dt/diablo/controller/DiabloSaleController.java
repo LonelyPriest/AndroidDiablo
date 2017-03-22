@@ -283,6 +283,11 @@ public class DiabloSaleController {
         mSaleCalcView.setSaleTotalValue(total);
     }
 
+    public void setSaleInfo(Integer total) {
+        mSaleCalc.setTotal(total);
+        mSaleCalcView.setSaleTotalValue(total);
+    }
+
     public void setShouldPay(Float shouldPay) {
         mSaleCalc.setShouldPay(shouldPay);
         mSaleCalcView.setShouldPayValue(shouldPay);

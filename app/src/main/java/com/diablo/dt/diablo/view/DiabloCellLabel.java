@@ -82,6 +82,10 @@ public class DiabloCellLabel {
         return mLabelId;
     }
 
+    public Integer getType() {
+        return mType;
+    }
+
 //    public void setWeight(Float weight) {
 //        this.mWeight = weight;
 //    }
@@ -90,9 +94,9 @@ public class DiabloCellLabel {
         this.mGravity = gravity;
     }
 
-    public void setFocusable(boolean focusable) {
-        this.mFocusable = focusable;
-    }
+//    public void setFocusable(boolean focusable) {
+//        this.mFocusable = focusable;
+//    }
 
     public String getLabel() {
         return mLabel;
@@ -107,7 +111,7 @@ public class DiabloCellLabel {
     }
 
     public TableRow.LayoutParams getTableRowLayoutParams() {
-        return new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, mWeight);
+        return new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, mWeight);
     }
 
     public View createCell(Context context) {
@@ -141,16 +145,16 @@ public class DiabloCellLabel {
         else if (mType.equals(DiabloEnum.DIABLO_AUTOCOMPLETE)) {
             cell = new AutoCompleteTextView(context);
             cell.setLayoutParams(lp);
-            ((EditText)cell).setTextColor(ContextCompat.getColor(context, mColor));
-            ((EditText)cell).setTextSize(mSize);
+            ((AutoCompleteTextView)cell).setTextColor(ContextCompat.getColor(context, mColor));
+            ((AutoCompleteTextView)cell).setTextSize(mSize);
 
-            if ( null != mGravity ){
-                ((TextView)cell).setGravity(mGravity);
-            }
+//            if ( null != mGravity ){
+//                ((AutoCompleteTextView)cell).setGravity(mGravity);
+//            }
 
-            if ( null != mInputType) {
-                ((EditText) cell).setInputType(mInputType);
-            }
+//            if ( null != mInputType) {
+//                ((AutoCompleteTextView) cell).setInputType(mInputType);
+//            }
             cell.setFocusable(mFocusable);
         }
         else if (mType.equals(DiabloEnum.DIABLO_SPINNER)) {

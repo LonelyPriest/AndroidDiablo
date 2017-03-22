@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.Profile;
@@ -47,9 +48,12 @@ public class StockSelect extends Fragment {
     private static final String LOG_TAG = "STOCK_SELECT:";
 
     private SaleStock mSaleStock;
-    private Integer mSelectShop;
-    private Integer mSelectRetailer;
-    private Integer mSelectAction;
+    private Integer   mSelectShop;
+    private Integer   mSelectRetailer;
+    private Integer   mComeFrom;
+    private Integer   mActionFrom;
+
+    private Integer   mOperation;
 
     private TableLayout mViewTable;
 
@@ -88,7 +92,8 @@ public class StockSelect extends Fragment {
         if (getArguments() != null) {
             mSelectShop = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_SHOP);
             mSelectRetailer = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_RETAILER);
-            mSelectAction = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_ACTION);
+            mComeFrom  = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_COME_FORM);
+            mActionFrom = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_ACTION);
             mSaleStock = new Gson().fromJson(getArguments().getString(DiabloEnum.BUNDLE_PARAM_SALE_STOCK), SaleStock.class);
         }
 
@@ -114,11 +119,11 @@ public class StockSelect extends Fragment {
         mViewTable.removeAllViews();
 
         // get stock
-        if (R.string.add == mSelectAction){
+        if (R.string.add == mActionFrom){
             getStockFromServer();
             getLastTransactionOfRetailer();
         }
-        else if (R.string.modify == mSelectAction) {
+        else if (R.string.modify == mActionFrom) {
             startModify();
         }
     }
@@ -303,17 +308,17 @@ public class StockSelect extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case 100: // cancel
-                switchFragmentToSaleIn(R.integer.action_cancel);
+                mOperation = R.string.action_cancel;
                 break;
             case 101: // save
-                switchFragmentToSaleIn(R.integer.action_save);
+                mOperation = R.string.action_save;
                 break;
             default:
                 break;
         }
 
+        switchFragmentToSaleIn(mOperation);
         return true;
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -388,27 +393,61 @@ public class StockSelect extends Fragment {
         this.mSelectRetailer = retailer;
     }
 
+    public void setComeFrom(Integer comeFrom) {
+        this.mComeFrom = comeFrom;
+    }
+
     public void setSelectAction(Integer action) {
-        this.mSelectAction = action;
+        this.mActionFrom = action;
+    }
+
+    private OnNoFreeStockSelectListener mNoFreeStockSelectListener =
+        new OnNoFreeStockSelectListener() {
+            @Override
+            public Integer getCurrentOperation() {
+                return mOperation;
+            }
+
+            @Override
+            public SaleStock afterSelectStock() {
+                return mSaleStock;
+            }
+        };
+
+    private Fragment getSaleInFragment() {
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_IN);
+        if (null != to ) {
+            ((SaleIn)to).setNoFreeStockSelectListener(mNoFreeStockSelectListener);
+        } else {
+            to = new SaleIn();
+        }
+
+        ((SaleIn)to).setBackFrom(R.string.back_from_stock_select);
+        return to;
+    }
+
+    private Fragment getSaleOutFragment() {
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_OUT);
+        if (null != to ) {
+            ((SaleOut)to).setNoFreeStockSelectListener(mNoFreeStockSelectListener);
+        } else {
+            to = new SaleOut();
+        }
+
+        ((SaleOut)to).setBackFrom(R.string.back_from_stock_select);
+
+        return to;
     }
 
     private void switchFragmentToSaleIn(final Integer action){
-        SaleIn to = (SaleIn)getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_IN);
-        if (null != to){
-            to.setComesForm(R.integer.COMES_FORM_STOCK_SELECT_ON_SALE);
-            to.setStockListener(new SaleIn.OnStockSelectListener() {
-                @Override
-                public Integer StockSelectAction() {
-                    return action;
-                }
-
-                @Override
-                public SaleStock afterStockSelected() {
-                    return mSaleStock;
-                }
-            });
-        } else {
-            to = new SaleIn();
+        Fragment to = null;
+        if (DiabloEnum.SALE_IN.equals(mComeFrom)) {
+            to = getSaleInFragment();
+            ((MainActivity)getActivity()).selectMenuItem(0);
+        }
+        else if (DiabloEnum.SALE_OUT.equals(mComeFrom)) {
+            to = getSaleOutFragment();
+            ((MainActivity)getActivity()).selectMenuItem(1);
         }
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -417,6 +456,10 @@ public class StockSelect extends Fragment {
         } else {
             transaction.hide(StockSelect.this).show(to).commit();
         }
+    }
 
+    public interface OnNoFreeStockSelectListener {
+        Integer   getCurrentOperation();
+        SaleStock afterSelectStock();
     }
 }

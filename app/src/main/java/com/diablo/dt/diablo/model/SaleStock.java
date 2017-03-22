@@ -81,11 +81,17 @@ public class SaleStock {
         return total;
     }
 
-    public SaleStock(){
+
+    public SaleStock() {
         amounts = new ArrayList<>();
     }
 
     public SaleStock(MatchStock stock, Integer selectedPrice) {
+        init(stock, selectedPrice);
+        amounts = new ArrayList<>();
+    }
+
+    public void init(MatchStock stock, Integer selectPrice) {
         this.orderId = 0;
         this.styleNumber = stock.getStyleNumber();
         this.brand = stock.getBrand();
@@ -112,10 +118,8 @@ public class SaleStock {
 
         this.second     = DiabloEnum.DIABLO_FALSE;
         this.stockExist = 0;
-        this.selectedPrice = selectedPrice;
+        this.selectedPrice = selectPrice;
         this.state = DiabloEnum.STARTING_SALE;
-
-        amounts = new ArrayList<>();
     }
 
     public void setStyleNumber(String styleNumber){
@@ -313,6 +317,9 @@ public class SaleStock {
 
 
     public Float getSalePrice(){
+        if ( null == saleTotal ) {
+            return  0f;
+        }
         return DiabloUtils.getInstance().priceWithDiscount(finalPrice, discount) * saleTotal;
     }
 

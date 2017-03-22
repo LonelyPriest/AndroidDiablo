@@ -210,10 +210,11 @@
     <string name="slide_sale_manager">销售管理</string>
     <string name="slide_stock_manager">采购管理</string>
 
-    <integer name="action_save">900</integer>
-    <integer name="action_cancel">901</integer>
+    <string name="action_save">保存</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_unknown">未知</string>
 
-    <integer name="COMES_FORM_STOCK_SELECT_ON_SALE">0x7ffffffa</integer>
-    <integer name="COMES_FORM_SELF">0x7fffffff</integer>
+    <string name="back_from_stock_select">从库存选择返回</string>
+    <string name="back_from_unknown">从未知返回</string>
 
 </resources>

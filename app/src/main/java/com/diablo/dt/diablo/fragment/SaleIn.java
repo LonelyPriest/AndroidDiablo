@@ -2,8 +2,6 @@ package com.diablo.dt.diablo.fragment;
 
 import static com.diablo.dt.diablo.R.string.amount;
 
-import com.google.gson.Gson;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -13,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
@@ -48,6 +45,7 @@ import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.model.SaleCalc;
 import com.diablo.dt.diablo.model.SaleStock;
 import com.diablo.dt.diablo.model.SaleStockAmount;
+import com.diablo.dt.diablo.model.SaleUtils;
 import com.diablo.dt.diablo.request.NewSaleRequest;
 import com.diablo.dt.diablo.response.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
@@ -82,16 +80,16 @@ public class SaleIn extends Fragment{
 //    private String mParam1;
 //    private String mParam2;
 
-    private OnStockSelectListener mStockSelectListener;
+    private StockSelect.OnNoFreeStockSelectListener mNoFreeStockListener;
 
-    private Integer mComesFrom;
+    private Integer mBackFrom;
 
     // private final static String LOG_TAG = "SALE_IN:";
     private DiabloUtils utils = DiabloUtils.instance();
     private DiabloDBManager dbInstance;
 
     private String [] mTitles;
-    private String [] mPriceType;
+    private String [] mPriceTypes;
 
     private TableLayout mSaleTable;
     private TableRow mCurrentSelectRow;
@@ -142,8 +140,8 @@ public class SaleIn extends Fragment{
         mRowSize--;
     }
 
-    public void setComesForm(Integer form){
-        mComesFrom = form;
+    public void setBackFrom(Integer form){
+        mBackFrom = form;
     }
 
     @Override
@@ -159,7 +157,7 @@ public class SaleIn extends Fragment{
             Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_STRING_ZERO));
 
         mTitles = getResources().getStringArray(R.array.thead_sale);
-        mPriceType = getResources().getStringArray(R.array.price_type_on_sale);
+        mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
 
         mButtons= new SparseArray<>();
         mButtons.put(R.id.sale_in_back, new DiabloButton(getContext(), R.id.sale_in_back));
@@ -227,7 +225,7 @@ public class SaleIn extends Fragment{
 
         dbInstance = DiabloDBManager.instance();
         mRowSize = 0;
-        mComesFrom = R.integer.COMES_FORM_SELF;
+        mBackFrom = R.string.back_from_unknown;
         mSaleStocks = stocks;
 
 
@@ -312,7 +310,7 @@ public class SaleIn extends Fragment{
         super.onDetach();
     }
 
-    private final SaleStockHandler mHandler = new SaleStockHandler(this);
+    private final SaleInHandler mHandler = new SaleInHandler(this);
 
     private TableRow addHead(){
         TableRow row = new TableRow(this.getContext());
@@ -364,7 +362,7 @@ public class SaleIn extends Fragment{
                 SpinnerStringAdapter adapter=new SpinnerStringAdapter(
                         this.getContext(),
                         android.R.layout.simple_spinner_dropdown_item,
-                        mPriceType);
+                    mPriceTypes);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 cell.setAdapter(adapter);
                 cell.setSelection(stock.getSelectedPrice() - 1);
@@ -497,7 +495,7 @@ public class SaleIn extends Fragment{
                                             SaleStock s = (SaleStock) row.getTag();
                                             Float price = utils.toFloat(param);
                                             s.setFinalPrice(price);
-                                            View calCell = SaleStockHandler.getColumn(getContext(), row, R.string.calculate);
+                                            View calCell = SaleInHandler.getColumn(getContext(), row, R.string.calculate);
                                             utils.setTextViewValue((TextView) calCell, s.getSalePrice());
                                             calcShouldPay();
                                             dbInstance.replaceSaleStock(mSaleCalcController.getSaleCalc(), s, mStartRetailer);
@@ -530,10 +528,10 @@ public class SaleIn extends Fragment{
                 Spinner sCell = new Spinner(this.getContext());
                 lp.weight = 1.5f;
                 sCell.setLayoutParams(lp);
-                SpinnerStringAdapter adapter=new SpinnerStringAdapter(
+                SpinnerStringAdapter adapter = new SpinnerStringAdapter(
                         this.getContext(),
                         android.R.layout.simple_spinner_dropdown_item,
-                        mPriceType);
+                    mPriceTypes);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 sCell.setAdapter(adapter);
                 sCell.setSelection(mSelectPrice - 1);
@@ -610,31 +608,9 @@ public class SaleIn extends Fragment{
     }
 
     private void switchToStockSelectFrame(SaleStock stock, Integer action) {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        // find
-        StockSelect to = (StockSelect)getFragmentManager().findFragmentByTag(DiabloEnum.TAG_STOCK_SELECT);
         Integer shop = mSaleCalcController.getShop();
         Integer retailer = mSaleCalcController.getRetailer();
-        if (null == to){
-            Bundle args = new Bundle();
-            args.putInt(DiabloEnum.BUNDLE_PARAM_SHOP, shop);
-            args.putInt(DiabloEnum.BUNDLE_PARAM_RETAILER, retailer);
-            args.putInt(DiabloEnum.BUNDLE_PARAM_ACTION, action);
-            args.putString(DiabloEnum.BUNDLE_PARAM_SALE_STOCK, new Gson().toJson(stock));
-            to = new StockSelect();
-            to.setArguments(args);
-        } else {
-            to.setSelectShop(shop);
-            to.setSelectRetailer(retailer);
-            to.setSelectAction(action);
-            to.setSaleStock(new Gson().toJson(stock));
-        }
-
-        if (!to.isAdded()){
-            transaction.hide(SaleIn.this).add(R.id.frame_container, to, DiabloEnum.TAG_STOCK_SELECT).commit();
-        } else {
-            transaction.hide(SaleIn.this).show(to).commit();
-        }
+        SaleUtils.switchToStockSelectFrame(stock, action, DiabloEnum.SALE_IN, retailer, shop, this);
     }
 
     private void getStockOfSelected(final SaleStock selectStock, final TableRow row) {
@@ -651,7 +627,7 @@ public class SaleIn extends Fragment{
                     selectStock.setStockExist(s.getExist());
                 }
 
-                View v = SaleStockHandler.getColumn(getContext(), row, R.string.stock);
+                View v = SaleInHandler.getColumn(getContext(), row, R.string.stock);
                 ((TextView)v).setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                 ((TextView)v).setText(utils.toString(selectStock.getStockExist()));
 
@@ -679,16 +655,16 @@ public class SaleIn extends Fragment{
         task.getStock();
     }
 
-    public static class SaleStockHandler extends Handler{
+    public static class SaleInHandler extends Handler{
         public final static Integer SALE_TOTAL_CHANGED = 1;
-        public final static Integer SALE_PRICE_TYPE_SELECTED = 2;
-        public final static Integer SALE_GOOD_SELECTED = 3;
+//        public final static Integer SALE_PRICE_TYPE_SELECTED = 2;
+//        public final static Integer SALE_GOOD_SELECTED = 3;
 
         private final DiabloUtils utils = DiabloUtils.getInstance();
 
         WeakReference<Fragment> mFragment;
 
-        SaleStockHandler(Fragment fragment){
+        SaleInHandler(Fragment fragment){
             mFragment = new WeakReference<>(fragment);
         }
 
@@ -696,7 +672,7 @@ public class SaleIn extends Fragment{
         public void handleMessage(Message msg) {
             if (msg.what == SALE_TOTAL_CHANGED){
                 TableRow row = (TableRow) msg.obj;
-                View cell = SaleStockHandler.getColumn(mFragment.get().getContext(), row, R.string.calculate);
+                View cell = SaleInHandler.getColumn(mFragment.get().getContext(), row, R.string.calculate);
                 if (null != cell){
                     SaleStock s = (SaleStock)row.getTag();
                     s.setSaleTotal(msg.arg1);
@@ -724,7 +700,7 @@ public class SaleIn extends Fragment{
                         } else {
                             s.setState(DiabloEnum.FINISHED_SALE);
 
-                            View orderCell =  SaleStockHandler.getColumn(mFragment.get().getContext(), row, R.string.order_id);
+                            View orderCell =  SaleInHandler.getColumn(mFragment.get().getContext(), row, R.string.order_id);
                             if (null != orderCell){
                                 Integer rowId =  f.getValidRowId();
                                 s.setOrderId(rowId);
@@ -1019,16 +995,20 @@ public class SaleIn extends Fragment{
 
     }
 
+    public void setNoFreeStockSelectListener(StockSelect.OnNoFreeStockSelectListener listener){
+        mNoFreeStockListener = listener;
+    }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         // utils.makeToast(getContext(), hidden ? "hidden" : "show");
         if (!hidden){
-            if (mComesFrom.equals(R.integer.COMES_FORM_STOCK_SELECT_ON_SALE)){
-                SaleStock s = mStockSelectListener.afterStockSelected();
+            if (mBackFrom.equals(R.string.back_from_stock_select)){
+                SaleStock s = mNoFreeStockListener.afterSelectStock();
                 List<SaleStockAmount> amounts = s.getAmounts();
 
-                switch (mStockSelectListener.StockSelectAction()){
-                    case R.integer.action_save:
+                switch (mNoFreeStockListener.getCurrentOperation()){
+                    case R.string.action_save:
                         for (SaleStock ms: mSaleStocks){
                             if (ms.getOrderId().equals(s.getOrderId())){
                                 ms.clearAmounts();
@@ -1048,17 +1028,16 @@ public class SaleIn extends Fragment{
                                 ms.setStockExist(exist);
 
                                 TableRow row = getRowByOrderId(s.getOrderId());
-                                View cellAmount = SaleStockHandler.getColumn(getContext(), row, R.string.amount);
-                                View cellStock = SaleStockHandler.getColumn(getContext(), row, R.string.stock);
+                                View cellAmount = SaleInHandler.getColumn(getContext(), row, R.string.amount);
+                                View cellStock = SaleInHandler.getColumn(getContext(), row, R.string.stock);
 
                                 utils.setEditTextValue((EditText)cellAmount, saleTotal);
                                 utils.setTextViewValue((TextView)cellStock, exist);
                                 break;
                             }
                         }
-
                         break;
-                    case R.integer.action_cancel:
+                    case R.string.action_cancel:
                         if (s.getOrderId().equals(0)){
                             TableRow row = (TableRow) mSaleTable.getChildAt(0);
                             row.removeAllViews();
@@ -1070,7 +1049,7 @@ public class SaleIn extends Fragment{
                         break;
                 }
 
-                mComesFrom = R.integer.COMES_FORM_SELF;
+                mBackFrom = R.string.back_from_unknown;
             }
 //            else {
 //                View cell = ((TableRow) mSaleTable.getChildAt(0)).getChildAt(1);
@@ -1252,15 +1231,6 @@ public class SaleIn extends Fragment{
                     DiabloError.getInstance().getError(99)).create();
             }
         });
-    }
-
-    public void setStockListener(OnStockSelectListener listener){
-        mStockSelectListener = listener;
-    }
-
-    public interface OnStockSelectListener {
-        Integer StockSelectAction();
-        SaleStock afterStockSelected();
     }
 
     @Override

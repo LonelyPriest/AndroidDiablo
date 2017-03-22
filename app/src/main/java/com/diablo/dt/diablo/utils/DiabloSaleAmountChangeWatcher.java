@@ -1,10 +1,12 @@
 package com.diablo.dt.diablo.utils;
 
+import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TableRow;
 
+import com.diablo.dt.diablo.controller.DiabloSaleRowController;
 import com.diablo.dt.diablo.fragment.SaleIn;
 
 import java.util.Timer;
@@ -15,15 +17,23 @@ import java.util.TimerTask;
  */
 
 public class DiabloSaleAmountChangeWatcher implements TextWatcher {
-    private SaleIn.SaleStockHandler mSaleStockHandler;
-    private Timer mTimer;
+    private Handler  mHandler;
+    private Timer    mTimer;
     private TableRow mRow;
-    private final long DELAY = 500; // milliseconds
+    private DiabloSaleRowController mRowController;
 
-    public DiabloSaleAmountChangeWatcher(SaleIn.SaleStockHandler handler, TableRow row){
+    public DiabloSaleAmountChangeWatcher(Handler handler, DiabloSaleRowController controller){
+        this.mTimer         =new Timer();
+        this.mHandler       = handler;
+        this.mRowController = controller;
+        this.mRow           = null;
+    }
+
+    public DiabloSaleAmountChangeWatcher(Handler handler, TableRow row){
         this.mTimer =new Timer();
-        this.mSaleStockHandler = handler;
+        this.mHandler = handler;
         this.mRow = row;
+        this.mRowController = null;
     }
 
     @Override
@@ -45,17 +55,20 @@ public class DiabloSaleAmountChangeWatcher implements TextWatcher {
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Message message = Message.obtain(mSaleStockHandler);
-                message.what = SaleIn.SaleStockHandler.SALE_TOTAL_CHANGED;
+                Message message = Message.obtain(mHandler);
+                message.what = SaleIn.SaleInHandler.SALE_TOTAL_CHANGED;
                 if (inputValue.length() == 1 && inputValue.startsWith("-")){
                     message.arg1 = 0;
                 } else {
                     message.arg1 = DiabloUtils.instance().toInteger(inputValue);
                 }
-
-                message.obj = mRow;
+                if ( null != mRow) {
+                    message.obj = mRow;
+                } else if ( null != mRowController ){
+                    message.obj = mRowController;
+                }
                 message.sendToTarget();
             }
-        }, DELAY);
+        }, 500);
     }
 }
