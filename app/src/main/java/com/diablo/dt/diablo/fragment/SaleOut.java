@@ -562,6 +562,9 @@ public class SaleOut extends Fragment {
             case R.id.sale_out_back_to_sale_in:
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
                 break;
+            case R.id.sale_out_save:
+                startSale();
+                break;
             default:
                 // return super.onOptionsItemSelected(item);
                 break;

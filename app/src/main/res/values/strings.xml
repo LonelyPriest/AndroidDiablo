@@ -192,6 +192,10 @@
     <string name="space_4">"    "</string>
     <string name="colon">：</string>
 
+    <!-- retailer -->
+    <string name="input_retailer_name">请输入客户姓名</string>
+    <string name="input_retailer_phone">请输入客户手机，默认为空</string>
+
     <!-- hint -->
     <string name="please_input_retailer">客户</string>
     <string name="please_input_good">货号</string>

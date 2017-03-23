@@ -169,13 +169,13 @@ public class SaleIn extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // option menu
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_sale_in, container, false);
+        final View view = inflater.inflate(R.layout.fragment_sale_in, container, false);
         ((MainActivity)getActivity()).selectMenuItem(0);
 
 
@@ -201,6 +201,28 @@ public class SaleIn extends Fragment{
         mSaleCalcView.setViewCard(view.findViewById(R.id.sale_card));
         mSaleCalcView.setViewWire(view.findViewById(R.id.sale_wire));
         mSaleCalcView.setViewVerificate(view.findViewById(R.id.sale_verificate));
+
+        // add retailer
+        (view.findViewById(R.id.sale_add_retailer)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setView(inflater.inflate(
+                    R.layout.shortcut_create_retailer, (ViewGroup) view.findViewById(R.id.shortcut_create_retailer)))
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+                builder.create().show();
+            }
+        });
 
         mSaleTable = (TableLayout)view.findViewById(R.id.t_sale);
         ((TableLayout)view.findViewById(R.id.t_sale_head)).addView(addHead());
