@@ -37,28 +37,30 @@ public class DiabloDBOpenHelper extends SQLiteOpenHelper {
                 + ", unique(retailer, shop) ON CONFLICT REPLACE)";
 
         String WSaleStock = "create table if not exists w_sale_detail ("
-                + "_id integer primary key autoincrement"
-                + ", retailer integer not null"
-                + ", shop integer not null"
-                + ", style_number text not null"
-                + ", brand integer not null"
-                + ", sell_type integer not null"
-                + ", second integer not null"
-                + ", discount real not null"
-                + ", price real not null"
-                + ", unique(retailer, shop, style_number, brand) ON CONFLICT REPLACE)";
+            + "_id integer primary key autoincrement"
+            + ", retailer integer not null"
+            + ", shop integer not null"
+            + ", style_number text not null"
+            + ", brand integer not null"
+            + ", sell_type integer not null"
+            // + ", type integer not null"
+            + ", second integer not null"
+            + ", discount real not null"
+            + ", price real not null"
+            + ", unique(retailer, shop, style_number, brand, type) ON CONFLICT REPLACE)";
 
         String WSaleStockAmount = "create table if not exists w_sale_detail_amount ("
-                + "_id integer primary key autoincrement"
-                + ", retailer integer not null"
-                + ", shop integer not null"
-                + ", style_number text not null"
-                + ", brand integer not null"
-                + ", color integer not null"
-                + ", size text not null"
-                + ", exist integer not null"
-                + ", total integer not null"
-                + ", unique(retailer, shop, style_number, brand, color, size) ON CONFLICT REPLACE)";
+            + "_id integer primary key autoincrement"
+            + ", retailer integer not null"
+            + ", shop integer not null"
+            + ", style_number text not null"
+            + ", brand integer not null"
+            + ", color integer not null"
+            + ", size text not null"
+            // + ", type integer not null"
+            + ", exist integer not null"
+            + ", total integer not null"
+            + ", unique(retailer, shop, style_number, brand, color, size) ON CONFLICT REPLACE)";
 
         db.execSQL(WSaleCalc);
         db.execSQL(WSaleStock);

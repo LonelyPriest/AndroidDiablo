@@ -336,6 +336,10 @@ public class SaleStock {
         return DiabloUtils.getInstance().priceWithDiscount(finalPrice, discount) * saleTotal;
     }
 
+    public boolean isSame(SaleStock stock) {
+        return stock.getStyleNumber().equals(styleNumber) && stock.getBrandId().equals(brandId);
+    }
+
     public String getName() {
         return this.styleNumber + "/" + this.brand + "/" + this.type;
     }

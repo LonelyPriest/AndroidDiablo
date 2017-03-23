@@ -13,6 +13,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -31,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
@@ -41,6 +43,7 @@ import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.model.SaleCalc;
 import com.diablo.dt.diablo.model.SaleStock;
@@ -58,6 +61,7 @@ import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.utils.DiabloSaleRow;
+import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloSaleCalcView;
 
@@ -107,7 +111,6 @@ public class SaleIn extends Fragment{
     private DiabloSaleController mSaleCalcController;
 
     private SparseArray<DiabloButton> mButtons;
-
     private Integer mRowSize;
 
     public SaleIn() {
@@ -147,11 +150,6 @@ public class SaleIn extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            getArguments().get("1");
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         mSysRetailer = utils.toInteger(
             Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_STRING_ZERO));
@@ -206,21 +204,7 @@ public class SaleIn extends Fragment{
         (view.findViewById(R.id.sale_add_retailer)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setView(inflater.inflate(
-                    R.layout.shortcut_create_retailer, (ViewGroup) view.findViewById(R.id.shortcut_create_retailer)))
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-
-                        }
-                    });
-                builder.create().show();
+                addRetailer(inflater, view);
             }
         });
 
@@ -231,6 +215,54 @@ public class SaleIn extends Fragment{
         init();
 
         return view;
+    }
+
+    public void addRetailer(LayoutInflater inflater, View parent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        final View view = inflater.inflate(
+            R.layout.shortcut_create_retailer, (ViewGroup) parent.findViewById(R.id.shortcut_create_retailer));
+
+        final AlertDialog dialog = builder.setView(view)
+            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    String name = ((EditText) view.findViewById(R.id.retailer_name)).getText().toString().trim();
+                    String phone = ((EditText) view.findViewById(R.id.retailer_phone)).getText().toString().trim();
+
+                    Retailer addedRetailer = new Retailer(name, phone);
+                    addedRetailer.newRetailer(getContext(), new Retailer.OnRetailerChangeListener() {
+                        @Override
+                        public void afterAdd(Integer retailer) {
+                            mSaleCalcController.setRetailer(retailer);
+                            mSaleCalcController.setRetailerWatcher(getContext(), Profile.instance().getRetailers());
+                        }
+                    });
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                }
+            }).create();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+
+        // (EditText) addRetailerDialog.findViewById(R.id.retailer_phone);
+        ((EditText) view.findViewById(R.id.retailer_name)).addTextChangedListener(new DiabloTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().trim().length() < 2) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+                    utils.makeToast(getContext(), "名字必须不小于2个字符", Toast.LENGTH_SHORT);
+                } else {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+                }
+            }
+        });
     }
 
     public void init(Integer retailer, Integer shop, SaleCalc calc, List<SaleStock> stocks) {
@@ -308,7 +340,10 @@ public class SaleIn extends Fragment{
 
     private void checkRetailerDraft(SaleCalc calc) {
         if (null != dbInstance.querySaleCalc(calc)){
-            utils.makeToast(getContext(), getContext().getResources().getString(R.string.draft_exist));
+            utils.makeToast(
+                getContext(),
+                getContext().getResources().getString(R.string.draft_exist),
+                Toast.LENGTH_LONG);
         }
     }
 
@@ -485,7 +520,8 @@ public class SaleIn extends Fragment{
                             utils.makeToast(
                                     getContext(),
                                     getContext().getResources().getString(R.string.sale_stock_exist)
-                                            + utils.toString(matchedOrderId));
+                                            + utils.toString(matchedOrderId),
+                                Toast.LENGTH_LONG);
                         } else {
                             final SaleStock s = new SaleStock(matchedStock, mSelectPrice);
                             row.setTag(s);
@@ -879,7 +915,7 @@ public class SaleIn extends Fragment{
             }
 
             calcShouldPay();
-            DiabloUtils.instance().makeToast(getContext(), mSaleTable.getChildCount());
+            // DiabloUtils.instance().makeToast(getContext(), mSaleTable.getChildCount(), Toast.LENGTH_SHORT);
         }
 
         else if (getResources().getString(R.string.modify) == item.getTitle()){
@@ -927,35 +963,54 @@ public class SaleIn extends Fragment{
                     String [] titles = new String[calcs.size()];
                     final SparseArray<SaleCalc> sparseCalcs = new SparseArray<>();
                     int index = 0;
+                    boolean validRetailer = true;
                     for (SaleCalc c: calcs){
-                        String name = Profile.instance().getRetailerById(c.getRetailer()).getName();
+                        Retailer retailer = Profile.instance().getRetailerById(c.getRetailer());
+                        if (null == retailer) {
+                            validRetailer = false;
+                            break;
+                        }
+
+                        String name = retailer.getName();
                         String shop = utils.getShop(Profile.instance().getSortAvailableShop(), c.getShop()).getName();
                         titles[index] = name + "-" + shop;
                         sparseCalcs.put(index, c);
                         index++;
                     }
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setIcon(R.drawable.ic_drafts_black_24dp);
-                    builder.setTitle(getContext().getResources().getString(R.string.draft_select));
-                    builder.setSingleChoiceItems(titles, 0, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int i) {
-                            dialog.dismiss();
-                            // utils.makeToast(getContext(), i);
-                            SaleCalc c = sparseCalcs.get(i);
-                            resetWith(c, recoverFromDB(c));;
-                        }
-                    });
+                    if (validRetailer) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setIcon(R.drawable.ic_drafts_black_24dp);
+                        builder.setTitle(getContext().getResources().getString(R.string.draft_select));
+                        builder.setSingleChoiceItems(titles, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                dialog.dismiss();
+                                // utils.makeToast(getContext(), i);
+                                SaleCalc c = sparseCalcs.get(i);
+                                resetWith(c, recoverFromDB(c));;
+                            }
+                        });
 
-                    builder.create().show();
+                        builder.create().show();
+                    } else {
+                        utils.makeToast(
+                            getContext(),
+                            getContext().getString(R.string.draft_other),
+                            Toast.LENGTH_LONG);
+                    }
+
+
                 } else {
-                    utils.makeToast(getContext(), getContext().getString(R.string.draft_none));
+                    utils.makeToast(getContext(), getContext().getString(R.string.draft_none), Toast.LENGTH_LONG);
                 }
                 break;
             case R.id.sale_in_clear_draft:
                 dbInstance.clearAll();
-                utils.makeToast(getContext(), getContext().getResources().getString(R.string.draft_clear_success));
+                utils.makeToast(
+                    getContext(),
+                    getContext().getResources().getString(R.string.draft_clear_success),
+                    Toast.LENGTH_SHORT);
                 break;
             case R.id.sale_in_next:
                 init();
@@ -1205,6 +1260,7 @@ public class SaleIn extends Fragment{
         call.enqueue(new Callback<NewSaleResponse>() {
             @Override
             public void onResponse(Call<NewSaleResponse> call, Response<NewSaleResponse> response) {
+                mButtons.get(R.id.sale_in_save).enable();
                 final NewSaleResponse res = response.body();
                 if (DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
                     // refresh balance
@@ -1228,7 +1284,6 @@ public class SaleIn extends Fragment{
                             }
                         }).create();
                 } else {
-                    mButtons.get(R.id.sale_in_save).enable();
                     Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
                     String extraMessage = res == null ? "" : res.getError();
                     new DiabloAlertDialog(

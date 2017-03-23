@@ -73,6 +73,18 @@ public class DiabloSaleTableController {
         }
     }
 
+    public Integer contains(DiabloSaleRowController controller) {
+        Integer orderId = DiabloEnum.INVALID_INDEX;
+        for (DiabloSaleRowController c: mControllers) {
+            if (0 != c.getOrderId() && c.isSameModel(controller)) {
+                orderId = c.getOrderId();
+                break;
+            }
+        }
+
+        return orderId;
+    }
+
     public Integer size() {
         return mControllers.size();
     }
@@ -81,15 +93,4 @@ public class DiabloSaleTableController {
         mTable.removeAllViews();
         mControllers.clear();
     }
-
-//    public DiabloSaleRowController getControllerByOrderId(Integer orderId) {
-//        DiabloSaleRowController controller = null;
-//        for (DiabloSaleRowController c: mControllers) {
-//            if (c.getOrderId().equals(orderId)) {
-//                controller = c;
-//            }
-//        }
-//
-//        return controller;
-//    }
 }

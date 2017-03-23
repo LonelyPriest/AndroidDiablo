@@ -365,6 +365,10 @@ public class Profile {
         return retailer;
     }
 
+    public void appendRetailer(Retailer retailer) {
+        mRetailers.add(0, retailer);
+    }
+
     /*
     * Base setting
     * */

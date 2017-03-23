@@ -1,8 +1,6 @@
 package com.diablo.dt.diablo.activity;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
@@ -21,14 +19,23 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.SaleDetail;
 import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.fragment.SaleOut;
+import com.diablo.dt.diablo.request.LogoutRequest;
+import com.diablo.dt.diablo.rest.BaseSettingInterface;
+import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -262,11 +269,7 @@ public class MainActivity extends AppCompatActivity {
                         selectMenuItem(4);
                         break;
                     case R.id.nav_logout:
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                        logout();
                         break;
 //                    case R.id.nav_about_us:
 //                        // launch new intent instead of loading fragment
@@ -407,6 +410,35 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "onDestroy called");
         DiabloDBManager.instance().close();
         Profile.instance().clear();
+    }
+
+
+    private void logout() {
+        BaseSettingInterface face = BaseSettingClient.getClient().create(BaseSettingInterface.class);
+        Call<com.diablo.dt.diablo.response.Response> call = face.logout(
+            Profile.instance().getToken(), new LogoutRequest("destroy_login_user"));
+        call.enqueue(new Callback<com.diablo.dt.diablo.response.Response>() {
+            @Override
+            public void onResponse(Call<com.diablo.dt.diablo.response.Response> call,
+                                   Response<com.diablo.dt.diablo.response.Response> response) {
+                Log.d(LOG_TAG, "success to destroy session");
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<com.diablo.dt.diablo.response.Response> call, Throwable t) {
+                new DiabloAlertDialog(
+                    MainActivity.this,
+                    getResources().getString(R.string.title_logout),
+                    DiabloError.getInstance().getError(99)).create();
+            }
+        });
+
+
     }
 
     //    @Override

@@ -71,7 +71,9 @@ public class DiabloAlertDialog extends AlertDialog {
             });
         }
 
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     public interface OnOkClickListener {

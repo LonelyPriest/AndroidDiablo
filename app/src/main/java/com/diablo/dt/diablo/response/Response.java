@@ -20,15 +20,7 @@ public class Response {
         return this.code;
     }
 
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
     public String getError() {
         return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 }

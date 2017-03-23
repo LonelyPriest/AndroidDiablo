@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
@@ -47,6 +47,9 @@ public class SaleDetail extends Fragment {
     private String [] mTableHeads;
     private String[]  mSaleTypes;
 
+    private String mStatistic;
+    private String mPagination;
+
     /*
     * rest request
     * */
@@ -60,7 +63,7 @@ public class SaleDetail extends Fragment {
     // TableRow[] mRows;
 
     private android.widget.TableLayout mSaleDetailTable;
-    private  SwipyRefreshLayout mSaleDetailTableSwipe;
+    private SwipyRefreshLayout mSaleDetailTableSwipe;
     // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
 
     private Integer mCurrentPage;
@@ -150,8 +153,9 @@ public class SaleDetail extends Fragment {
                         pageChanged();
                     } else {
                         DiabloUtils.instance().makeToast(
-                                getContext(),
-                                getContext().getResources().getString(R.string.refresh_top));
+                            getContext(),
+                            getContext().getResources().getString(R.string.refresh_top),
+                            Toast.LENGTH_SHORT);
                         mSaleDetailTableSwipe.setRefreshing(false);
                     }
 
@@ -159,7 +163,8 @@ public class SaleDetail extends Fragment {
                     if (mCurrentPage.equals(mTotalPage)) {
                         DiabloUtils.instance().makeToast(
                             getContext(),
-                            getContext().getResources().getString(R.string.refresh_bottom));
+                            getContext().getResources().getString(R.string.refresh_bottom),
+                            Toast.LENGTH_SHORT);
                         mSaleDetailTableSwipe.setRefreshing(false);
                     } else {
                         mCurrentPage++;
@@ -233,6 +238,7 @@ public class SaleDetail extends Fragment {
         head.addView(row);
 
         mSaleDetailTable = (TableLayout) view.findViewById(R.id.t_sale_detail);
+
 //        for (Integer i = 0; i<mRows.length; i++){
 //            mRows[i] = new TableRow(this.getContext());
 //            mSaleDetailTable.addView(mRows[i]);
@@ -277,7 +283,22 @@ public class SaleDetail extends Fragment {
                 mSaleDetailTableSwipe.setRefreshing(false);
                 SaleDetailResponse base = response.body();
                 if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)){
-                    mTotalPage = base.getTotal() / mRequest.getCount() + 1;
+                    mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
+
+                    Resources res = getResources();
+                    mStatistic =
+                        res.getString(R.string.amount) + res.getString(R.string.colon) + UTILS.toString(base.getAmount())
+                            + res.getString(R.string.space_4)
+                            + res.getString(R.string.should_pay) + res.getString(R.string.colon) + UTILS.toString(base.getSPay())
+                            + res.getString(R.string.space_4)
+                            + res.getString(R.string.has_pay) + res.getString(R.string.colon) + UTILS.toString(base.getHPay());
+
+                    // pagination
+                    mPagination = getResources().getString(R.string.current_page) + mCurrentPage.toString()
+                        + getResources().getString(R.string.page)
+                        + getResources().getString(R.string.space_4)
+                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
+                        + getResources().getString(R.string.page);
                 }
 
                 List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
@@ -371,7 +392,6 @@ public class SaleDetail extends Fragment {
                             addCell(row, shortDate, lp);
                         }
                     }
-
 //                    final GestureDetectorCompat gesture =
 //                            new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(row){
 //                                @Override
@@ -430,40 +450,13 @@ public class SaleDetail extends Fragment {
 
                     row.setBackgroundResource(R.drawable.table_row_bg);
                     row.setTag(detail);
-                    // row.invalidate();
                     mSaleDetailTable.addView(row);
-//                    mSaleDetailTable.invalidate();
-//                    mSaleDetailTable.refreshDrawableState();
                 }
 
-                // statistic
                 TableRow row = new TableRow(getContext());
-                row.setBackgroundResource(R.drawable.table_row_last_bg);
-
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-                Resources res = getResources();
-                String statistic =
-                    res.getString(R.string.amount) + res.getString(R.string.colon) + UTILS.toString(base.getAmount())
-                        + res.getString(R.string.space_4)
-                        + res.getString(R.string.should_pay) + res.getString(R.string.colon) + UTILS.toString(base.getSPay())
-                        + res.getString(R.string.space_4)
-                        + res.getString(R.string.has_pay) + res.getString(R.string.colon) + UTILS.toString(base.getHPay());
-
-                TextView cell = addCell(row, statistic, lp);
-                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                cell.setGravity(Gravity.CENTER);
-
-                // pagination
-                String page = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-                    + getResources().getString(R.string.page)
-                    + getResources().getString(R.string.space_4)
-                    + getResources().getString(R.string.total_page) + mTotalPage.toString()
-                    + getResources().getString(R.string.page);
-
-                cell = addCell(row, page, lp);
-                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                cell.setGravity(Gravity.CENTER);
-
+                addCell(row, mStatistic, lp);
+                addCell(row, mPagination, lp);
                 mSaleDetailTable.addView(row);
             }
 
@@ -511,7 +504,7 @@ public class SaleDetail extends Fragment {
         // cell.setTextColor(context.getResources().getColor(R.color.black));
         cell.setText(value.trim());
         cell.setTextSize(18);
-        cell.setHeight(110);
+        // cell.setHeight(105);
         // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
         return  cell;
@@ -526,7 +519,7 @@ public class SaleDetail extends Fragment {
         cell.setLayoutParams(lp);
         cell.setText(DiabloUtils.instance().toString(value).trim());
         cell.setTextSize(20);
-        cell.setHeight(110);
+        // cell.setHeight(120);
         // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
         return  cell;
@@ -542,7 +535,7 @@ public class SaleDetail extends Fragment {
         cell.setLayoutParams(lp);
         cell.setText(DiabloUtils.instance().toString(value).trim());
         cell.setTextSize(20);
-        cell.setHeight(110);
+        // cell.setHeight(120);
         // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
         return  cell;

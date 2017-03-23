@@ -2,6 +2,22 @@ package com.diablo.dt.diablo.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.client.RetailerClient;
+import com.diablo.dt.diablo.response.AddRetailerResponse;
+import com.diablo.dt.diablo.rest.RetailerInterface;
+import com.diablo.dt.diablo.utils.DiabloAlertDialog;
+import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
+import com.diablo.dt.diablo.utils.DiabloUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by buxianhui on 17/2/24.
  */
@@ -26,8 +42,10 @@ public class Retailer {
     @SerializedName("merchant")
     private Integer merchant;
 
-    public Retailer(){
-
+    public Retailer(String name, String phone){
+        this.id = DiabloEnum.INVALID_INDEX;
+        this.name = name;
+        this.mobile = phone;
     }
 
     public Integer getId() {
@@ -100,5 +118,66 @@ public class Retailer {
 
     public void setMerchant(Integer merchant) {
         this.merchant = merchant;
+    }
+
+    public void newRetailer(final Context context, final OnRetailerChangeListener listener) {
+        final RetailerInterface face = RetailerClient.getClient().create(RetailerInterface.class);
+        Call<AddRetailerResponse> call = face.addRetailer(Profile.instance().getToken(), this);
+
+        call.enqueue(new Callback<AddRetailerResponse>() {
+            @Override
+            public void onResponse(Call<AddRetailerResponse> call, Response<AddRetailerResponse> response) {
+                // mButtons.get(R.id.sale_out_save).enable();
+
+                final AddRetailerResponse res = response.body();
+                if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
+                    DiabloUtils.instance().makeToast(
+                        context,
+                        context.getResources().getString(R.string.success_to_add_retailer),
+                        Toast.LENGTH_LONG);
+
+                    Retailer r = Retailer.this;
+                    r.id = res.getInsertId();
+                    if (null == r.getAddress()) {
+                        r.setAddress(DiabloEnum.EMPTY_STRING);
+                    }
+                    if (null == r.getBalance()) {
+                        r.setBalance(0f);
+                    }
+                    if (null == r.getMobile()) {
+                        r.setMobile(DiabloEnum.EMPTY_STRING);
+                    }
+                    if (null == r.getCity()) {
+                        r.setCity(DiabloEnum.INVALID_INDEX);
+                    }
+                    if (null == r.getProvince()) {
+                        r.setProvince(DiabloEnum.INVALID_INDEX);
+                    }
+
+                    Profile.instance().appendRetailer(Retailer.this);
+                    listener.afterAdd(r.id);
+
+                } else {
+                    Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
+                    String extraMessage = res == null ? "" : res.getError();
+                    new DiabloAlertDialog(
+                        context,
+                        context.getResources().getString(R.string.title_add_retailer),
+                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddRetailerResponse> call, Throwable t) {
+                new DiabloAlertDialog(
+                    context,
+                    context.getResources().getString(R.string.title_add_retailer),
+                    DiabloError.getInstance().getError(99)).create();
+            }
+        });
+    }
+
+    public interface OnRetailerChangeListener {
+        void afterAdd(Integer retailer);
     }
 }

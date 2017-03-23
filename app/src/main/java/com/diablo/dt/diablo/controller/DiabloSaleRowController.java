@@ -212,6 +212,19 @@ public class DiabloSaleRowController {
         mSaleStock.addAmount(amount);
     }
 
+    public boolean isSameModel(DiabloSaleRowController controller) {
+        return mSaleStock.isSame(controller.getModel());
+
+    }
+
+    /**
+     * adapter view
+     */
+
+    public void setCellText(Integer cellId, String text){
+        mRowView.setCellText(cellId, text);
+    }
+
     public interface OnActionAfterSelectGood {
         void onActionOfAmount(DiabloSaleRowController controller, DiabloCellView diabloCell);
         void onActionOfFPrice();

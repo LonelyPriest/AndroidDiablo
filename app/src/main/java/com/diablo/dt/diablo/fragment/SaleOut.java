@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.fragment;
 
 import static com.diablo.dt.diablo.R.string.amount;
+import static com.diablo.dt.diablo.R.string.stock;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WSaleClient;
@@ -144,9 +146,9 @@ public class SaleOut extends Fragment {
                     2f);
                 label.setLabelId(R.string.good);
             }
-            else if (getResources().getString(R.string.stock).equals(h)) {
+            else if (getResources().getString(stock).equals(h)) {
                 label = new DiabloCellLabel(h, R.color.red, 18);
-                label.setLabelId(R.string.stock);
+                label.setLabelId(stock);
             }
             else if (getResources().getString(R.string.price_type).equals(h)) {
                 label = new DiabloCellLabel(
@@ -309,16 +311,27 @@ public class SaleOut extends Fragment {
         new DiabloSaleRowController.OnActionAfterSelectGood(){
             @Override
             public void onActionOfAmount(DiabloSaleRowController controller, DiabloCellView cell) {
-                SaleStock stock = controller.getModel();
-                DiabloRowView row = controller.getView();
-                row.getCell(R.string.fprice).setCellFocusable(true);
-                if ( DiabloEnum.DIABLO_FREE.equals(stock.getFree()) ){
-                    cell.setCellFocusable(true);
-                    cell.requestFocus();
-                    row.getCell(R.string.good).setCellFocusable(false);
+                Integer orderId = mSaleTableController.contains(controller);
+                if (!DiabloEnum.INVALID_INDEX.equals(orderId)) {
+                    controller.setCellText(R.string.good, DiabloEnum.EMPTY_STRING);
+                    UTILS.makeToast(
+                        getContext(),
+                        getContext().getResources().getString(R.string.sale_stock_exist)
+                            + UTILS.toString(orderId),
+                        Toast.LENGTH_SHORT);
                 } else {
-                    // switchToStockSelectFrame(s, R.string.add);
-                    switchToStockSelectFrame(controller.getModel(), R.string.add);
+                    SaleStock stock = controller.getModel();
+                    DiabloRowView row = controller.getView();
+                    row.getCell(R.string.fprice).setCellFocusable(true);
+                    if ( DiabloEnum.DIABLO_FREE.equals(stock.getFree()) ){
+                        cell.setCellFocusable(true);
+                        cell.requestFocus();
+                        row.getCell(R.string.good).setCellFocusable(false);
+                    } else {
+                        // switchToStockSelectFrame(s, R.string.
+                        // add);
+                        switchToStockSelectFrame(controller.getModel(), R.string.add);
+                    }
                 }
             }
 
@@ -475,7 +488,7 @@ public class SaleOut extends Fragment {
                                 c.setStockExist(exist);
 
                                 c.getView().setCellText(R.string.amount, saleTotal);
-                                c.getView().setCellText(R.string.stock, exist);
+                                c.getView().setCellText(stock, exist);
                             }
                         }
                         break;

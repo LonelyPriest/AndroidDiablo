@@ -234,23 +234,23 @@ public class DiabloUtils {
         // imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    public void makeToast(Context context, Integer value){
-        Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_LONG);
+    public void makeToast(Context context, Integer value, int lengthLong){
+        Toast toast = Toast.makeText(context, toString(value), lengthLong);
         toast.show();
     }
 
-    public void makeToast(Context context, String value){
-        Toast toast = Toast.makeText(context, value, Toast.LENGTH_LONG);
+    public void makeToast(Context context, String value, int lengthLong){
+        Toast toast = Toast.makeText(context, value, lengthLong);
         toast.show();
     }
 
-    public void makeToast(Context context, Float value) {
-        Toast toast = Toast.makeText(context, toString(value), Toast.LENGTH_LONG);
+    public void makeToast(Context context, Float value, int lengthLong) {
+        Toast toast = Toast.makeText(context, toString(value), lengthLong);
         toast.show();
     }
 
     public interface Payment{
-        public void setPayment(String param);
+        void setPayment(String param);
     }
 
     public void addTextChangedListenerOfPayment(EditText view, final Payment payment){
@@ -288,6 +288,18 @@ public class DiabloUtils {
         fragmentTransaction.commitAllowingStateLoss();
     }
 
+    public Integer calcTotalPage(Integer totalItems, Integer itemsPerPage) {
+        if (totalItems < itemsPerPage) {
+            return 1;
+        }
+        else if (0 == totalItems % itemsPerPage) {
+            return totalItems / itemsPerPage;
+        }
+        else {
+            return totalItems / itemsPerPage + 1;
+        }
+    }
+
     public void startPrint(final Context context, final Integer titleRes, String rsn) {
         final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
         Call<PrintResponse> call = face.startPrint(Profile.instance().getToken(), new NewSaleRequest.DiabloRSN(rsn));
@@ -297,7 +309,10 @@ public class DiabloUtils {
             public void onResponse(Call<PrintResponse> call, Response<PrintResponse> response) {
                 PrintResponse pres = response.body();
                 if (pres.getPcode().equals(DiabloEnum.SUCCESS)) {
-                    DiabloUtils.instance().makeToast(context, context.getString(R.string.print_success));
+                    DiabloUtils.instance().makeToast(
+                        context,
+                        context.getResources().getString(R.string.print_success),
+                        Toast.LENGTH_LONG);
                 } else {
                     String eMessage = context.getString(R.string.print_failed);
                     List<NewSaleResponse.printResponse> pInfos = pres.getPinfos();
@@ -309,8 +324,7 @@ public class DiabloUtils {
                                 + DiabloError.getInstance().getError(p.getEcode());
                         }
                     }
-                    new DiabloAlertDialog(
-                        context, context.getString(titleRes), eMessage).create();
+                    new DiabloAlertDialog(context, context.getString(titleRes), eMessage).create();
                 }
             }
 
