@@ -871,14 +871,11 @@ public class SaleIn extends Fragment{
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-         super.onPrepareOptionsMenu(menu);
+        super.onPrepareOptionsMenu(menu);
         for (Integer i=0; i<mButtons.size(); i++){
             Integer key = mButtons.keyAt(i);
             DiabloButton button = mButtons.get(key);
             menu.findItem(button.getResId()).setEnabled(button.isEnabled());
-//            if (!button.getResId().equals(R.id.sale_in_clear_draft)){
-//                menu.findItem(button.getResId()).setEnabled(button.isEnabled());
-//            }
         }
 
         super.onPrepareOptionsMenu(menu);
@@ -887,7 +884,7 @@ public class SaleIn extends Fragment{
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.action_in_sale, menu);
+        inflater.inflate(R.menu.action_on_sale_in, menu);
         // MenuItem save = menu.findItem(R.id.sale_in_save);
         // ((Button)save.getActionView()).setTextColor(Color.BLUE);
     }
@@ -899,12 +896,7 @@ public class SaleIn extends Fragment{
                 mSaleCalcController.resetCash();
                 break;
             case R.id.sale_in_back:
-                Fragment f = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_DETAIL);
-                if (null == f){
-                    f = new SaleDetail();
-                }
-                ((MainActivity)getActivity()).selectMenuItem(2);
-                ((MainActivity)getActivity()).switchFragment(f, DiabloEnum.TAG_SALE_DETAIL);
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
                 break;
             case R.id.sale_in_draft:
                 // get draft from db
@@ -1191,9 +1183,8 @@ public class SaleIn extends Fragment{
         call.enqueue(new Callback<NewSaleResponse>() {
             @Override
             public void onResponse(Call<NewSaleResponse> call, Response<NewSaleResponse> response) {
-                mButtons.get(R.id.sale_in_save).enable();
                 final NewSaleResponse res = response.body();
-                if (res.getCode().equals(DiabloEnum.SUCCESS)) {
+                if (DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
                     // refresh balance
                     SaleCalc calc = mSaleCalcController.getSaleCalc();
                     Profile.instance().getRetailerById(calc.getRetailer()).setBalance(calc.getAccBalance());
@@ -1215,10 +1206,13 @@ public class SaleIn extends Fragment{
                             }
                         }).create();
                 } else {
+                    mButtons.get(R.id.sale_in_save).enable();
+                    Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
+                    String extraMessage = res == null ? "" : res.getError();
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.nav_sale_in),
-                        DiabloError.getInstance().getError(res.getCode()) + res.getError()).create();
+                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
                 }
             }
 

@@ -7,7 +7,7 @@
         app:showAsAction="ifRoom|withText" />
 
     <item android:id="@+id/sale_in_money_off"
-        android:title="@string/money_off"
+        android:title="@string/btn_money_off"
         android:icon="@drawable/ic_directions_run_black_24dp"
         app:showAsAction="ifRoom|withText" />
 

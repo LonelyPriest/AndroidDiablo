@@ -1,15 +1,19 @@
 package com.diablo.dt.diablo.fragment;
 
-import static com.diablo.dt.diablo.utils.DiabloEnum.DEFAULT_PAGE;
-
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -20,6 +24,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.model.SaleUtils;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
@@ -38,6 +43,7 @@ import retrofit2.Response;
 public class SaleDetail extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
 
+    private final static DiabloUtils UTILS = DiabloUtils.instance();
     private String [] mTableHeads;
     private String[]  mSaleTypes;
 
@@ -64,6 +70,12 @@ public class SaleDetail extends Fragment {
         // Required empty public constructor
     }
 
+    public void init() {
+        mCurrentPage = DiabloEnum.DEFAULT_PAGE;
+        mTotalPage = 0;
+        mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -87,13 +99,12 @@ public class SaleDetail extends Fragment {
         mTableHeads = getResources().getStringArray(R.array.thead_sale_detail);
         mSaleTypes = getResources().getStringArray(R.array.sale_type);
 
-        mCurrentPage = DEFAULT_PAGE;
-        mTotalPage = 0;
         mRequest = new SaleDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
         mRequestCondition = mRequest.new Condition();
         mRequest.setCondtion(mRequestCondition);
-        mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
 
+        mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
+        init();
         // mRows = new TableRow[mRequest.getCount()];
     }
 
@@ -102,7 +113,12 @@ public class SaleDetail extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
 
-        ((MainActivity)getActivity()).selectMenuItem(2);
+        ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_DETAIL));
+
+        // support action bar
+        setHasOptionsMenu(true);
+        getActivity().supportInvalidateOptionsMenu();
+
 //        final DiabloTableSwipRefreshLayout tableSwipe = (DiabloTableSwipRefreshLayout)view.findViewById(R.id.t_sale_detail_swipe);
 //        tableSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 //            @Override
@@ -128,7 +144,7 @@ public class SaleDetail extends Fragment {
             @Override
             public void onRefresh(SwipyRefreshLayoutDirection direction) {
                 if (direction == SwipyRefreshLayoutDirection.TOP){
-                    if (!mCurrentPage.equals(DEFAULT_PAGE)){
+                    if (!mCurrentPage.equals(DiabloEnum.DEFAULT_PAGE)){
                         mCurrentPage--;
                         mRequest.setPage(mCurrentPage);
                         pageChanged();
@@ -267,10 +283,9 @@ public class SaleDetail extends Fragment {
                 List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
                 Integer orderId = mRequest.getPageStartIndex();
                 // mSaleDetailTable.removeAllViews();
-                TableRow row = null;
                 mSaleDetailTable.removeAllViews();
                 for (Integer i=0; i<details.size(); i++){
-                    row = new TableRow(getContext());
+                    TableRow row = new TableRow(getContext());
                     // TableRow row = new TableRow(mContext);
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
@@ -331,7 +346,15 @@ public class SaleDetail extends Fragment {
                             addCell(row, detail.getEpay(), lp);
                         }
                         else if (getResources().getString(R.string.acc_balance).equals(title)){
-                            addCell(row, detail.getBalance(), lp);
+                            TextView cell = addCell(
+                                row,
+                                detail.getBalance()
+                                    + detail.getShouldPay()
+                                    + detail.getEpay()
+                                    - detail.getHasPay()
+                                    - detail.getVerificate(),
+                                lp);
+                            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.blueLight));
                         }
                         else if (getResources().getString(R.string.cash).equals(title)){
                             addCell(row, detail.getCash(), lp);
@@ -413,13 +436,35 @@ public class SaleDetail extends Fragment {
 //                    mSaleDetailTable.refreshDrawableState();
                 }
 
-                if (null != row) {
-                    row.setBackgroundResource(R.drawable.table_row_last_bg);
-                }
-//                mSaleDetailTable.invalidate();
-//                mSaleDetailTable.refreshDrawableState();
-                // mSaleDetailTable.invalidate();
+                // statistic
+                TableRow row = new TableRow(getContext());
+                row.setBackgroundResource(R.drawable.table_row_last_bg);
 
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                Resources res = getResources();
+                String statistic =
+                    res.getString(R.string.amount) + res.getString(R.string.colon) + UTILS.toString(base.getAmount())
+                        + res.getString(R.string.space_4)
+                        + res.getString(R.string.should_pay) + res.getString(R.string.colon) + UTILS.toString(base.getSPay())
+                        + res.getString(R.string.space_4)
+                        + res.getString(R.string.has_pay) + res.getString(R.string.colon) + UTILS.toString(base.getHPay());
+
+                TextView cell = addCell(row, statistic, lp);
+                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                cell.setGravity(Gravity.CENTER);
+
+                // pagination
+                String page = getResources().getString(R.string.current_page) + mCurrentPage.toString()
+                    + getResources().getString(R.string.page)
+                    + getResources().getString(R.string.space_4)
+                    + getResources().getString(R.string.total_page) + mTotalPage.toString()
+                    + getResources().getString(R.string.page);
+
+                cell = addCell(row, page, lp);
+                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                cell.setGravity(Gravity.CENTER);
+
+                mSaleDetailTable.addView(row);
             }
 
             @Override
@@ -427,6 +472,36 @@ public class SaleDetail extends Fragment {
                 mSaleDetailTableSwipe.setRefreshing(false);
             }
         });
+    }
+
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.action_on_sale_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.sale_detail_to_sale_in:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
+                break;
+            case R.id.sale_detail_to_sale_out:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_OUT);
+                break;
+            case R.id.sale_detail_refresh:
+                init();
+                pageChanged();
+                break;
+            default:
+                // return super.onOptionsItemSelected(item);
+                break;
+
+        }
+
+        return true;
     }
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){

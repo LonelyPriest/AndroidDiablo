@@ -83,6 +83,7 @@ public class DiabloEnum {
     public static final Integer SALE_OUT = 1;
 
     public static final Integer SUCCESS = 0;
+    public static final Integer HTTP_OK = 200;
 
     /**
      * DB table

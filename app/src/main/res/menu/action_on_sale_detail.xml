@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <item android:id="@+id/sale_detail_to_sale_in"
+        android:title="@string/btn_sale_in"
+        android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
+  <item
+      android:id="@+id/sale_detail_to_sale_out"
+      android:icon="@drawable/ic_remove_shopping_cart_black_24dp"
+      android:title="@string/btn_sale_out"
+      app:showAsAction="ifRoom|withText"/>
+
+  <item
+      android:id="@+id/sale_detail_refresh"
+      android:icon="@drawable/ic_refresh_black_24dp"
+      android:title="@string/btn_refresh"
+      app:showAsAction="ifRoom|withText"/>
+
+</menu>

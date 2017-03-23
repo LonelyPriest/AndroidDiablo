@@ -25,16 +25,18 @@ public class SaleStock {
     private Integer sex;
     private Integer season;
     private Integer year;
+    private Integer alarmDy;
 
     private Integer stockExist;
 
+    private Float orgPrice;
     private Float tagPrice;
     private Float pkgPrice;
     private Float price3;
     private Float price4;
     private Float price5;
     private Float discount;
-    private Float   finalPrice;
+    private Float finalPrice;
 
     private String  path;
     private Integer second;
@@ -83,16 +85,17 @@ public class SaleStock {
 
 
     public SaleStock() {
+        this.orderId = 0;
         amounts = new ArrayList<>();
     }
 
     public SaleStock(MatchStock stock, Integer selectedPrice) {
+        this.orderId = 0;
         init(stock, selectedPrice);
         amounts = new ArrayList<>();
     }
 
     public void init(MatchStock stock, Integer selectPrice) {
-        this.orderId = 0;
         this.styleNumber = stock.getStyleNumber();
         this.brand = stock.getBrand();
         this.type = stock.getType();
@@ -104,7 +107,9 @@ public class SaleStock {
         this.sex = stock.getSex();
         this.season = stock.getSeason();
         this.year = stock.getYear();
+        this.alarmDy = stock.getAlarmDay();
 
+        this.orgPrice = stock.getOrgPrice();
         this.tagPrice = stock.getTagPrice();
         this.pkgPrice = stock.getPkgPrice();
         this.price3 = stock.getPrice3();
@@ -142,9 +147,9 @@ public class SaleStock {
         return brandId;
     }
 
-    public void setBrandId(Integer brandId){
-        this.brandId = brandId;
-    }
+//    public void setBrandId(Integer brandId){
+//        this.brandId = brandId;
+//    }
 
     public Integer getTypeId() {
         return typeId;
@@ -152,6 +157,10 @@ public class SaleStock {
 
     public Integer getSelectedPrice() {
         return selectedPrice;
+    }
+
+    public Float getOrgPrice() {
+        return orgPrice;
     }
 
     public Float getTagPrice() {
@@ -198,6 +207,10 @@ public class SaleStock {
         return year;
     }
 
+    public Integer getAlarmDy() {
+        return alarmDy;
+    }
+
     public Integer getFree() {
         return free;
     }
@@ -242,9 +255,9 @@ public class SaleStock {
         this.comment = comment;
     }
 
-    public void setSelectedPrice(Integer selectedPrice) {
-        this.selectedPrice = selectedPrice;
-    }
+//    public void setSelectedPrice(Integer selectedPrice) {
+//        this.selectedPrice = selectedPrice;
+//    }
 
     public Integer getState() {
         return state;

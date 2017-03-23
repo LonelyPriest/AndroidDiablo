@@ -168,6 +168,11 @@ public class DiabloSaleRowController {
         mSelectPriceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 
+    public void setOrderId(Integer orderId) {
+        mSaleStock.setOrderId(orderId);
+        mRowView.setCellText(R.string.order_id, orderId);
+    }
+
     /**
      * adapter model operation
      */

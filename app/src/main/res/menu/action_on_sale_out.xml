@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <item android:id="@+id/sale_out_back"
+        android:title="@string/btn_back"
+        android:icon="@drawable/ic_arrow_back_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
+  <item android:id="@+id/sale_out_back_to_sale_in"
+        android:title="@string/btn_sale_in"
+        android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
+  <item android:id="@+id/sale_out_save"
+        android:title="@string/btn_save"
+        android:icon="@drawable/ic_file_download_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
+  <!--<item android:id="@+id/sale_in_next"-->
+        <!--android:title="@string/btn_next"-->
+        <!--android:icon="@drawable/ic_add_circle_black_24dp"-->
+        <!--app:showAsAction="ifRoom|withText"/>-->
+
+  <!--<item android:id="@+id/sale_in_draft"-->
+        <!--android:title="@string/btn_draft"-->
+        <!--android:icon="@drawable/ic_drafts_black_24dp"-->
+        <!--app:showAsAction="ifRoom|withText" />-->
+
+  <!--<item android:id="@+id/sale_in_clear_draft"-->
+        <!--android:title="@string/btn_draft_clear"-->
+        <!--android:icon="@drawable/ic_clear_all_black_24dp"-->
+        <!--app:showAsAction="ifRoom|withText"/>-->
+
+</menu>

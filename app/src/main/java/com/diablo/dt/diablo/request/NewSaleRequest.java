@@ -59,6 +59,23 @@ public class NewSaleRequest {
         @SerializedName("year")
         private Integer year;
 
+        @SerializedName("org_price")
+        private Float orgPrice;
+        @SerializedName("tag_price")
+        private Float tagPrice;
+        @SerializedName("pkg_price")
+        private Float pkgPrice;
+        @SerializedName("price3")
+        private Float price3;
+        @SerializedName("price4")
+        private Float price4;
+        @SerializedName("price5")
+        private Float price5;
+        @SerializedName("discount")
+        private Float discount;
+        @SerializedName("alarm_day")
+        private Float alarmDay;
+
         @SerializedName("sell_total")
         private Integer saleTotal;
         @SerializedName("fdiscount")
@@ -180,6 +197,38 @@ public class NewSaleRequest {
         public void addAmount(DiabloSaleStockAmount amount) {
             this.amounts.add(amount);
         }
+
+        public void setOrgPrice(Float orgPrice) {
+            this.orgPrice = orgPrice;
+        }
+
+        public void setTagPrice(Float tagPrice) {
+            this.tagPrice = tagPrice;
+        }
+
+        public void setPkgPrice(Float pkgPrice) {
+            this.pkgPrice = pkgPrice;
+        }
+
+        public void setPrice3(Float price3) {
+            this.price3 = price3;
+        }
+
+        public void setPrice4(Float price4) {
+            this.price4 = price4;
+        }
+
+        public void setPrice5(Float price5) {
+            this.price5 = price5;
+        }
+
+        public void setDiscount(Float discount) {
+            this.discount = discount;
+        }
+
+        public void setAlarmDay(Float alarmDay) {
+            this.alarmDay = alarmDay;
+        }
     }
 
     public static class DiabloSaleStockAmount {
@@ -189,6 +238,10 @@ public class NewSaleRequest {
         private String  size;
         @SerializedName("sell_count")
         private Integer sellCount;
+        @SerializedName("reject_count")
+        private Integer rejectCount;
+        @SerializedName("direct")
+        private Integer direct;
 
         public DiabloSaleStockAmount() {
 
@@ -204,6 +257,14 @@ public class NewSaleRequest {
 
         public void setSellCount(Integer sellCount) {
             this.sellCount = sellCount;
+        }
+
+        public void setRejectCount(Integer rejectCount) {
+            this.rejectCount = rejectCount;
+        }
+
+        public void setDirect(Integer direct) {
+            this.direct = direct;
         }
     }
 
@@ -227,8 +288,14 @@ public class NewSaleRequest {
     }
 
     public static class DiabloSaleCalc {
+        /**
+         * retailer and retailerID are the same, caused by server
+         */
         @SerializedName("retailer")
         private Integer retailer;
+        @SerializedName("retailer_id")
+        private Integer retailerId;
+
         @SerializedName("shop")
         private Integer shop;
 
@@ -269,9 +336,12 @@ public class NewSaleRequest {
         private Integer sellTotal;
         @SerializedName("reject_total")
         private Integer rejectTotal;
+        @SerializedName("direct")
+        private Integer direct;
 
         public void setRetailer(Integer retailer) {
             this.retailer = retailer;
+            this.retailerId = retailer;
         }
 
         public void setShop(Integer shop) {
@@ -344,6 +414,10 @@ public class NewSaleRequest {
 
         public void setRejectTotal(Integer rejectTotal) {
             this.rejectTotal = rejectTotal;
+        }
+
+        public void setDirect(Integer direct) {
+            this.direct = direct;
         }
     }
 
