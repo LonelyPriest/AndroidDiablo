@@ -1,6 +1,4 @@
-package com.diablo.dt.diablo.model;
-
-import static com.diablo.dt.diablo.R.string.amount;
+package com.diablo.dt.diablo.model.sale;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -107,7 +105,7 @@ public class DiabloSaleRow {
                 ((EditText)cell).setGravity(Gravity.CENTER_VERTICAL);
                 ((EditText)cell).setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }
-            else if (res.getString(amount).equals(title)){
+            else if (res.getString(R.string.amount).equals(title)){
                 cell = new EditText(mContext);
                 ((EditText)cell).setTextSize(18);
                 ((EditText)cell).setTextColor(Color.RED);

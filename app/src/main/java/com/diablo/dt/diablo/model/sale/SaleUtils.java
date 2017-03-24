@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.model;
+package com.diablo.dt.diablo.model.sale;
 
 import static com.diablo.dt.diablo.R.string.amount;
 import static com.diablo.dt.diablo.R.string.stock;

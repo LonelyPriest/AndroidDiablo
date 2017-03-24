@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.model;
+package com.diablo.dt.diablo.model.sale;
 
 import com.google.gson.Gson;
 

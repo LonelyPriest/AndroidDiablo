@@ -29,7 +29,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.model.SaleUtils;
+import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;

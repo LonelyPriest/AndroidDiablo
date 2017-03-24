@@ -16,7 +16,7 @@ import com.diablo.dt.diablo.entity.AuthenShop;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
-import com.diablo.dt.diablo.model.SaleCalc;
+import com.diablo.dt.diablo.model.sale.SaleCalc;
 import com.diablo.dt.diablo.task.MatchRetailerTask;
 import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
