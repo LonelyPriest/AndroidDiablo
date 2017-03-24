@@ -544,9 +544,6 @@ public class SaleInUpdate extends Fragment {
                 break;
             case R.id.sale_in_update_save:
                 break;
-            case R.id.sale_out_save:
-                // startSale();
-                break;
             default:
                 // return super.onOptionsItemSelected(item);
                 break;

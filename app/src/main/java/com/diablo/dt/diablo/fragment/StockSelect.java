@@ -112,12 +112,13 @@ public class StockSelect extends Fragment {
             }
         }
         else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)) {
-            if (R.string.add == mActionFrom){
-                getStockFromServer();
-            }
-            else if (R.string.modify == mActionFrom) {
-                startModify();
-            }
+            getStockFromServer();
+//            if (R.string.add == mActionFrom){
+//                getStockFromServer();
+//            }
+//            else if (R.string.modify == mActionFrom) {
+//                startModify();
+//            }
         }
 
     }
