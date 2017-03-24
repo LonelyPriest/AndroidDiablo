@@ -113,11 +113,17 @@ public class DiabloSaleController {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Retailer selectRetailer = (Retailer) adapterView.getItemAtPosition(i);
                 setRetailer(selectRetailer);
-                mOnRetailerSelectedListener.onRetailerSelected(mSaleCalc);
+                if (null != mOnRetailerSelectedListener) {
+                    mOnRetailerSelectedListener.onRetailerSelected(mSaleCalc);
+                }
             }
         };
 
         r.setOnItemClickListener(mOnRetailerClickListener);
+    }
+
+    public void setRetailerListSelection(Integer position) {
+        ((AutoCompleteTextView) mSaleCalcView.getViewRetailer()).setListSelection(position);
     }
 
     public void setEmployeeWatcher() {
@@ -273,6 +279,15 @@ public class DiabloSaleController {
     public void setRetailer(Integer retailerId){
         Retailer r = Profile.instance().getRetailerById(retailerId);
         setRetailer(r);
+    }
+
+    public void setRetailer(Integer retailerId, final List<Retailer> retailers){
+        for (Retailer r: retailers) {
+            if (r.getId().equals(retailerId)) {
+                setRetailer(r);
+                break;
+            }
+        }
     }
 
     public void setSaleInfo(Integer total, Integer sell, Integer reject) {

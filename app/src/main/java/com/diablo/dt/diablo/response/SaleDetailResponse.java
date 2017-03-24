@@ -53,6 +53,8 @@ public class SaleDetailResponse extends Response{
         Float card;
         @SerializedName("cash")
         Float cash;
+        @SerializedName("e_pay_type")
+        Integer ePayType;
         @SerializedName("e_pay")
         Float epay;
         @SerializedName("has_pay")
@@ -75,10 +77,13 @@ public class SaleDetailResponse extends Response{
         Integer total;
         @SerializedName("type")
         Integer type;
+        // checked, unchecked
         @SerializedName("state")
         Integer state;
         @SerializedName("entry_date")
         String entryDate;
+        @SerializedName("comment")
+        String comment;
 
         SaleDetail(){
 
@@ -86,10 +91,6 @@ public class SaleDetailResponse extends Response{
 
         public Integer getId() {
             return this.id;
-        }
-
-        public Integer getOrderId() {
-            return this.orderId;
         }
 
         public void setOrderId (Integer orderId){
@@ -112,7 +113,11 @@ public class SaleDetailResponse extends Response{
             return this.cash;
         }
 
-        public Float getEpay() {
+        public Integer getEPayType() {
+            return ePayType;
+        }
+
+        public Float getEPay() {
             return this.epay;
         }
 
@@ -158,6 +163,10 @@ public class SaleDetailResponse extends Response{
 
         public String getEntryDate() {
             return this.entryDate;
+        }
+
+        public String getComment() {
+            return comment;
         }
     }
 

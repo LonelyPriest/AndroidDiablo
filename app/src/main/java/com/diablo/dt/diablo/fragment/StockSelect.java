@@ -25,6 +25,7 @@ import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Stock;
+import com.diablo.dt.diablo.model.DiabloSaleTable;
 import com.diablo.dt.diablo.model.SaleStock;
 import com.diablo.dt.diablo.model.SaleStockAmount;
 import com.diablo.dt.diablo.request.LastSaleRequest;
@@ -32,7 +33,6 @@ import com.diablo.dt.diablo.response.LastSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.task.MatchSingleStockTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
-import com.diablo.dt.diablo.utils.DiabloSaleTable;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
@@ -57,28 +57,13 @@ public class StockSelect extends Fragment {
 
     private TableLayout mViewTable;
 
-//    private List<String> mOrderedSizes = new ArrayList<>();
-//    private List<DiabloColor> mOrderColors = new ArrayList<>();
-    // private List<SaleStockAmount> mStockAmounts = new ArrayList<>();
-
     private List<Stock> mStocks;
     private List<LastSaleResponse> mLastStocks;
-
-    // private OnFragmentInteractionListener mListener;
 
     public StockSelect() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment StockSelect.
-     */
-    // TODO: Rename and change types and number of parameters
     public static StockSelect newInstance(String param1, String param2) {
         StockSelect fragment = new StockSelect();
         Bundle args = new Bundle();
@@ -114,18 +99,27 @@ public class StockSelect extends Fragment {
     }
 
     private void init(){
-//        mOrderColors.clear();
-//        mOrderedSizes.clear();
         mViewTable.removeAllViews();
 
-        // get stock
-        if (R.string.add == mActionFrom){
-            getStockFromServer();
-            getLastTransactionOfRetailer();
+        if (DiabloEnum.SALE_IN.equals(mComeFrom)
+            || DiabloEnum.SALE_OUT.equals(mComeFrom)) {
+            if (R.string.add == mActionFrom){
+                getStockFromServer();
+                getLastTransactionOfRetailer();
+            }
+            else if (R.string.modify == mActionFrom) {
+                startModify();
+            }
         }
-        else if (R.string.modify == mActionFrom) {
-            startModify();
+        else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)) {
+            if (R.string.add == mActionFrom){
+                getStockFromServer();
+            }
+            else if (R.string.modify == mActionFrom) {
+                startModify();
+            }
         }
+
     }
 
     private void getStockFromServer(){
@@ -232,10 +226,14 @@ public class StockSelect extends Fragment {
                 orderColors.add(color);
             }
 
-
-            SaleStockAmount amount = new SaleStockAmount(s.getColorId(), s.getSize());
-            amount.setStock(s.getExist());
-            mSaleStock.getAmounts().add(amount);
+            SaleStockAmount amount = mSaleStock.getAmount(s.getColorId(), s.getSize());
+            if (null != amount) {
+                amount.setStock(s.getExist());
+            } else {
+                amount = new SaleStockAmount(s.getColorId(), s.getSize());
+                amount.setStock(s.getExist());
+                mSaleStock.getAmounts().add(amount);
+            }
         }
 
         ArrayList<String> sizes = Profile.instance().genSortedSizeNamesByGroups(mSaleStock.getSizeGroup());
@@ -255,7 +253,6 @@ public class StockSelect extends Fragment {
 
         mSaleStock.setColors(orderColors);
         mSaleStock.setOrderSizes(orderedSizes);
-
         startSelect(orderColors, orderedSizes);
     }
 
@@ -317,26 +314,18 @@ public class StockSelect extends Fragment {
                 break;
         }
 
-        switchFragmentToSaleIn(mOperation);
+        switchFragmentToSaleIn();
         return true;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onStockSelectFragmentInteraction(uri);
-//        }
+
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
@@ -344,22 +333,6 @@ public class StockSelect extends Fragment {
         super.onDetach();
         // mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onStockSelectFragmentInteraction(Uri uri);
-//    }
-
 
     public SaleStockAmount findStock(Integer colorId, String size){
         for ( Integer i=0; i<mSaleStock.getAmounts().size(); i++){
@@ -439,7 +412,20 @@ public class StockSelect extends Fragment {
         return to;
     }
 
-    private void switchFragmentToSaleIn(final Integer action){
+    private Fragment getSaleInUpdateFragment() {
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_IN_UPDATE);
+        if (null != to ) {
+            ((SaleInUpdate)to).setNoFreeStockSelectListener(mNoFreeStockSelectListener);
+        } else {
+            to = new SaleInUpdate();
+        }
+
+        ((SaleInUpdate)to).setBackFrom(R.string.back_from_stock_select);
+
+        return to;
+    }
+
+    private void switchFragmentToSaleIn(){
         Fragment to = null;
         if (DiabloEnum.SALE_IN.equals(mComeFrom)) {
             to = getSaleInFragment();
@@ -449,12 +435,17 @@ public class StockSelect extends Fragment {
             to = getSaleOutFragment();
             ((MainActivity)getActivity()).selectMenuItem(1);
         }
+        else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)) {
+            to = getSaleInUpdateFragment();
+        }
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if (!to.isAdded()){
-            transaction.hide(StockSelect.this).add(R.id.frame_container, to).commit();
-        } else {
-            transaction.hide(StockSelect.this).show(to).commit();
+        if (null != to) {
+            if (!to.isAdded()){
+                transaction.hide(StockSelect.this).add(R.id.frame_container, to).commit();
+            } else {
+                transaction.hide(StockSelect.this).show(to).commit();
+            }
         }
     }
 

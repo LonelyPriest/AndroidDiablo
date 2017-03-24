@@ -52,14 +52,14 @@ public class DiabloRowView {
     public void setCellText(Integer cellId, String text) {
         DiabloCellView cell = mCells.get(cellId);
 
-        if (DiabloEnum.DIABLO_AUTOCOMPLETE.equals(cell.getCellTyep())) {
+        if (DiabloEnum.DIABLO_AUTOCOMPLETE.equals(cell.getCellType())) {
             ((AutoCompleteTextView)cell.getView()).setText(text);
         }
-        else if (DiabloEnum.DIABLO_EDIT.equals(cell.getCellTyep())) {
+        else if (DiabloEnum.DIABLO_EDIT.equals(cell.getCellType())) {
             ((EditText)cell.getView()).setText(text);
         }
 
-        else if (DiabloEnum.DIABLO_TEXT.equals(cell.getCellTyep())) {
+        else if (DiabloEnum.DIABLO_TEXT.equals(cell.getCellType())) {
             ((TextView)cell.getView()).setText(text);
         }
 

@@ -3,6 +3,7 @@ package com.diablo.dt.diablo.rest;
 import com.diablo.dt.diablo.request.LastSaleRequest;
 import com.diablo.dt.diablo.request.NewSaleRequest;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
+import com.diablo.dt.diablo.response.GetSaleNewResponse;
 import com.diablo.dt.diablo.response.LastSaleResponse;
 import com.diablo.dt.diablo.response.NewSaleResponse;
 import com.diablo.dt.diablo.response.PrintResponse;
@@ -12,8 +13,10 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by buxianhui on 17/2/21.
@@ -35,4 +38,7 @@ public interface WSaleInterface {
 
     @POST("print_w_sale")
     Call<PrintResponse> startPrint(@Header("cookie") String token, @Body NewSaleRequest.DiabloRSN rsn);
+
+    @GET("get_w_sale_new/{id}")
+    Call<GetSaleNewResponse> getSale(@Header("cookie") String token, @Path("id") String rsn);
 }

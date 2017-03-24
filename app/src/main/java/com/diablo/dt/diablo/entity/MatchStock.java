@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
  * Created by buxianhui on 17/3/7.
  */
 
+/**
+ * used at match
+ */
 public class MatchStock {
     @SerializedName("style_number")
     private String styleNumber;

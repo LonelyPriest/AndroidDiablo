@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.utils;
+package com.diablo.dt.diablo.model;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloColor;
-import com.diablo.dt.diablo.model.SaleStockAmount;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.List;
 

@@ -1,6 +1,5 @@
 package com.diablo.dt.diablo.fragment;
 
-import static com.diablo.dt.diablo.R.string.amount;
 import static com.diablo.dt.diablo.R.string.stock;
 
 import android.content.Context;
@@ -11,11 +10,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -114,99 +111,9 @@ public class SaleOut extends Fragment {
 
     private void initLabel() {
         mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
-
         mButtons = new SparseArray<>();
         mButtons.put(R.id.sale_out_save, new DiabloButton(getContext(), R.id.sale_out_save));
-
-
-        String [] heads = getResources().getStringArray(R.array.thead_sale);
-        // mSparseLabels = new SparseArray<>();
-        mLabels = new DiabloCellLabel[heads.length];
-
-        DiabloCellLabel label = null;
-        for (int i=0; i< heads.length; i++) {
-            String h = heads[i];
-            if (getResources().getString(R.string.order_id).equals(h)) {
-                label = new DiabloCellLabel(
-                    h,
-                    DiabloEnum.DIABLO_TEXT,
-                    R.color.colorPrimaryDark,
-                    18,
-                    0.8f);
-                label.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
-                label.setLabelId(R.string.order_id);
-            }
-            else if (getResources().getString(R.string.good).equals(h)) {
-                label = new DiabloCellLabel(
-                    h,
-                    DiabloEnum.DIABLO_AUTOCOMPLETE,
-                    R.color.black,
-                    18,
-                    InputType.TYPE_CLASS_NUMBER,
-                    2f);
-                label.setLabelId(R.string.good);
-            }
-            else if (getResources().getString(stock).equals(h)) {
-                label = new DiabloCellLabel(h, R.color.red, 18);
-                label.setLabelId(stock);
-            }
-            else if (getResources().getString(R.string.price_type).equals(h)) {
-                label = new DiabloCellLabel(
-                    h, DiabloEnum.DIABLO_SPINNER, R.color.black, 18, 1.5f);
-                label.setLabelId(R.string.price_type);
-            }
-            else if (getResources().getString(R.string.price).equals(h)) {
-                label = new DiabloCellLabel(h, R.color.black, 18);
-                label.setLabelId(R.string.price);
-            }
-            else if (getResources().getString(R.string.discount).equals(h)) {
-                label = new DiabloCellLabel(h, R.color.black, 18);
-                label.setLabelId(R.string.discount);
-            }
-            else if (getResources().getString(R.string.fprice).equals(h)) {
-                label = new DiabloCellLabel(
-                    h,
-                    DiabloEnum.DIABLO_EDIT,
-                    R.color.black,
-                    18,
-                    Gravity.CENTER_VERTICAL,
-                    InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL,
-                    false,
-                    1f);
-                label.setLabelId(R.string.fprice);
-            }
-            else if (getResources().getString(amount).equals(h)) {
-                label = new DiabloCellLabel(
-                    h,
-                    DiabloEnum.DIABLO_EDIT,
-                    R.color.red,
-                    18,
-                    Gravity.CENTER_VERTICAL,
-                    InputType.TYPE_CLASS_NUMBER,
-                    false,
-                    1f);
-                label.setLabelId(amount);
-            }
-            else if (getResources().getString(R.string.calculate).equals(h)) {
-                label = new DiabloCellLabel(h, R.color.black, 18);
-                label.setLabelId(R.string.calculate);
-            }
-            else if (getResources().getString(R.string.comment).equals(h)) {
-                label = new DiabloCellLabel(
-                    h,
-                    DiabloEnum.DIABLO_TEXT,
-                    R.color.black,
-                    16,
-                    InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS,
-                    1.5f);
-                label.setLabelId(R.string.comment);
-            }
-
-            if (null != label ){
-                mLabels[i] = label;
-                // mSparseLabels.put(label.getLabelId(), label);
-            }
-        }
+        mLabels = SaleUtils.createSaleLabelsFromTitle(getContext());
     }
 
     public void initCalc(View view) {
@@ -260,10 +167,9 @@ public class SaleOut extends Fragment {
 
         mBackFrom = R.string.back_from_unknown;
 
+        mLoginShop = Profile.instance().getLoginShop();
         mSelectPrice = UTILS.toInteger(
             Profile.instance().getConfig(mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
-
-        mLoginShop = Profile.instance().getLoginShop();
 
 
         mSaleCalcController = new DiabloSaleController(new SaleCalc(DiabloEnum.SALE_OUT), mSaleCalcView);
@@ -352,9 +258,10 @@ public class SaleOut extends Fragment {
             controller.addCell(cell);
         }
 
-        controller.setGoodWatcher(getContext(), mMatchStocks, mSelectPrice, mLabels, mOnActionAfterSelectGood);
         controller.setFinalPriceWatcher(mOnActionAfterSelectGood);
         controller.setAmountWatcher(mHandler, controller);
+
+        controller.setGoodWatcher(getContext(), mMatchStocks, mSelectPrice, mLabels, mOnActionAfterSelectGood);
         controller.setPriceTypeAdapter(getContext(), mPriceTypes);
 
         return controller;

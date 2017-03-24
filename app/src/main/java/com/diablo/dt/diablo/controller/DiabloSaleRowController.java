@@ -15,11 +15,11 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
+import com.diablo.dt.diablo.model.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.model.SaleStock;
 import com.diablo.dt.diablo.model.SaleStockAmount;
 import com.diablo.dt.diablo.task.MatchAllStockTask;
 import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
-import com.diablo.dt.diablo.utils.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
@@ -145,6 +145,11 @@ public class DiabloSaleRowController {
         ((AutoCompleteTextView)cell.getView()).setOnItemClickListener(mOnGoodClickListener);
     }
 
+    public void setRowWatcher() {
+        ((EditText)(mRowView.getCell(R.string.fprice).getView())).addTextChangedListener(mPriceListener);
+        ((EditText)(mRowView.getCell(R.string.amount).getView())).addTextChangedListener(mAmountListener);
+    }
+
     public void setFinalPriceWatcher(final OnActionAfterSelectGood listener) {
         mPriceListener = new DiabloTextWatcher() {
             @Override
@@ -166,6 +171,14 @@ public class DiabloSaleRowController {
             android.R.layout.simple_spinner_dropdown_item,
             priceTypes);
         mSelectPriceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    }
+
+    public void setPriceTypeAdapter(
+        Context context, Integer cellId, String [] priceTypes, Integer selectedPrice) {
+        setPriceTypeAdapter(context, priceTypes);
+        Spinner cell = (Spinner)mRowView.getCell(cellId).getView();
+        cell.setAdapter(mSelectPriceAdapter);
+        cell.setSelection(selectedPrice - 1);
     }
 
     public void setOrderId(Integer orderId) {
@@ -222,7 +235,9 @@ public class DiabloSaleRowController {
      */
 
     public void setCellText(Integer cellId, String text){
-        mRowView.setCellText(cellId, text);
+        if (null != text) {
+            mRowView.setCellText(cellId, text);
+        }
     }
 
     public interface OnActionAfterSelectGood {

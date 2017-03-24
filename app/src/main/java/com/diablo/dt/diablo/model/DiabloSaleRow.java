@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.utils;
+package com.diablo.dt.diablo.model;
 
 import static com.diablo.dt.diablo.R.string.amount;
 
@@ -15,7 +15,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.model.SaleStock;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 
 import java.util.HashMap;
 import java.util.Map;

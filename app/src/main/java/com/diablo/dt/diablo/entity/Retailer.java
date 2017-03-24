@@ -48,6 +48,20 @@ public class Retailer {
         this.mobile = phone;
     }
 
+    public Retailer(Retailer retailer) {
+        this.id = retailer.getId();
+        this.name = retailer.getName();
+        this.mobile = retailer.getMobile();
+        this.balance = retailer.getBalance();
+    }
+
+    public Retailer(Retailer retailer, Float balance) {
+        this.id = retailer.getId();
+        this.name = retailer.getName();
+        this.mobile = retailer.getMobile();
+        this.balance = balance;
+    }
+
     public Integer getId() {
         return this.id;
     }

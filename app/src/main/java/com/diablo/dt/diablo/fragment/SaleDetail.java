@@ -1,5 +1,8 @@
 package com.diablo.dt.diablo.fragment;
 
+import static com.diablo.dt.diablo.R.string.retailer;
+import static com.diablo.dt.diablo.R.string.shop;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -7,8 +10,10 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,6 +70,8 @@ public class SaleDetail extends Fragment {
     private android.widget.TableLayout mSaleDetailTable;
     private SwipyRefreshLayout mSaleDetailTableSwipe;
     // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
+
+    private TableRow mCurrentSelectedRow;
 
     private Integer mCurrentPage;
     private Integer mTotalPage;
@@ -282,7 +289,7 @@ public class SaleDetail extends Fragment {
 
                 mSaleDetailTableSwipe.setRefreshing(false);
                 SaleDetailResponse base = response.body();
-                if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)){
+                if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage) && 0 != base.getTotal()){
                     mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
 
                     Resources res = getResources();
@@ -328,7 +335,7 @@ public class SaleDetail extends Fragment {
                                 cell.setTextColor(getResources().getColor(R.color.red));
                             }
                         }
-                        else if(getResources().getString(R.string.shop).equals(title)){
+                        else if(getResources().getString(shop).equals(title)){
                             addCell(row,
                                 DiabloUtils.getInstance().getShop(Profile.instance().getSortShop(),
                                     detail.getShop()).getName(),
@@ -341,7 +348,7 @@ public class SaleDetail extends Fragment {
                                         detail.getEmployee()).getName(),
                                 lp);
                         }
-                        else if (getContext().getString(R.string.retailer).equals(title)){
+                        else if (getContext().getString(retailer).equals(title)){
                             addCell(row,
                                     DiabloUtils.getInstance().getRetailer(
                                         Profile.instance().getRetailers(),
@@ -364,14 +371,14 @@ public class SaleDetail extends Fragment {
                             addCell(row, detail.getVerificate(), lp);
                         }
                         else if (getResources().getString(R.string.epay).equals(title)){
-                            addCell(row, detail.getEpay(), lp);
+                            addCell(row, detail.getEPay(), lp);
                         }
                         else if (getResources().getString(R.string.acc_balance).equals(title)){
                             TextView cell = addCell(
                                 row,
                                 detail.getBalance()
                                     + detail.getShouldPay()
-                                    + detail.getEpay()
+                                    + detail.getEPay()
                                     - detail.getHasPay()
                                     - detail.getVerificate(),
                                 lp);
@@ -444,20 +451,24 @@ public class SaleDetail extends Fragment {
                         @Override
                         public boolean onLongClick(View view) {
                             SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
+                            view.showContextMenu();
                             return true;
                         }
                     });
+                    registerForContextMenu(row);
 
                     row.setBackgroundResource(R.drawable.table_row_bg);
                     row.setTag(detail);
                     mSaleDetailTable.addView(row);
                 }
 
-                TableRow row = new TableRow(getContext());
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-                addCell(row, mStatistic, lp);
-                addCell(row, mPagination, lp);
-                mSaleDetailTable.addView(row);
+                if (0 < mTotalPage ) {
+                    TableRow row = new TableRow(getContext());
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                    addCell(row, mStatistic, lp);
+                    addCell(row, mPagination, lp);
+                    mSaleDetailTable.addView(row);
+                }
             }
 
             @Override
@@ -539,5 +550,51 @@ public class SaleDetail extends Fragment {
         // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         row.addView(cell);
         return  cell;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        mCurrentSelectedRow = (TableRow) v;
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_on_sale_detail, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (getResources().getString(R.string.modify) == item.getTitle()){
+            SaleDetailResponse.SaleDetail detail = ((SaleDetailResponse.SaleDetail) mCurrentSelectedRow.getTag());
+            if (detail.getType().equals(DiabloEnum.SALE_IN)){
+                switchToSaleInUpdateFrame(detail.getRsn(), this);
+            }
+
+        }
+        else if (getResources().getString(R.string.print) == item.getTitle()){
+
+        }
+
+        return true;
+    }
+
+   public static void switchToSaleInUpdateFrame(String rsn, Fragment from) {
+
+        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
+        // find
+        SaleInUpdate to = (SaleInUpdate) from.getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_IN_UPDATE);
+
+        if (null == to){
+            Bundle args = new Bundle();
+            args.putString(DiabloEnum.BUNDLE_PARAM_RSN, rsn);
+            to = new SaleInUpdate();
+            to.setArguments(args);
+        } else {
+            to.setRSN(rsn);
+        }
+
+        if (!to.isAdded()){
+            transaction.hide(from).add(R.id.frame_container, to, DiabloEnum.TAG_SALE_IN_UPDATE).commit();
+        } else {
+            transaction.hide(from).show(to).commit();
+        }
     }
 }

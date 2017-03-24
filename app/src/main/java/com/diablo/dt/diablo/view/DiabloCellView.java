@@ -1,6 +1,9 @@
 package com.diablo.dt.diablo.view;
 
 import android.view.View;
+import android.widget.EditText;
+
+import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**
  * Created by buxianhui on 17/3/22.
@@ -24,7 +27,7 @@ public class DiabloCellView {
         return label.getLabelId();
     }
 
-    public Integer getCellTyep() {
+    public Integer getCellType() {
         return label.getType();
     }
 
@@ -35,5 +38,11 @@ public class DiabloCellView {
 
     public void requestFocus() {
         view.requestFocus();
+    }
+
+    public void setInputType(Integer inputType) {
+        if (DiabloEnum.DIABLO_EDIT.equals(label.getType())) {
+            ((EditText)view).setInputType(inputType);
+        }
     }
 }

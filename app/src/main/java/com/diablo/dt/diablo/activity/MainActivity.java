@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(1);
+            selectMenuItem(2);
             loadHomeFragment();
         }
     }

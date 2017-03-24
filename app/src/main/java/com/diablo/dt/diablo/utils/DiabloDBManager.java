@@ -200,8 +200,7 @@ public class DiabloDBManager {
     private SaleStock getSaleStocks(List<SaleStock> stocks, String styleNumber, Integer brandId){
         SaleStock stock = null;
         for (SaleStock s: stocks){
-            if (styleNumber.equals(s.getStyleNumber())
-                    && brandId.equals(s.getBrandId())){
+            if (styleNumber.equals(s.getStyleNumber()) && brandId.equals(s.getBrandId())){
                 stock = s;
                 break;
             }

@@ -59,8 +59,8 @@ import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
-import com.diablo.dt.diablo.utils.DiabloSaleAmountChangeWatcher;
-import com.diablo.dt.diablo.utils.DiabloSaleRow;
+import com.diablo.dt.diablo.model.DiabloSaleAmountChangeWatcher;
+import com.diablo.dt.diablo.model.DiabloSaleRow;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloSaleCalcView;
@@ -236,6 +236,7 @@ public class SaleIn extends Fragment{
                         public void afterAdd(Integer retailer) {
                             mSaleCalcController.setRetailer(retailer);
                             mSaleCalcController.setRetailerWatcher(getContext(), Profile.instance().getRetailers());
+                            mSaleCalcController.setRetailerListSelection(0);
                         }
                     });
                 }
@@ -257,7 +258,7 @@ public class SaleIn extends Fragment{
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().trim().length() < 2) {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
-                    utils.makeToast(getContext(), "名字必须不小于2个字符", Toast.LENGTH_SHORT);
+                    // utils.makeToast(getContext(), "名字必须不小于2个字符", Toast.LENGTH_SHORT);
                 } else {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
                 }

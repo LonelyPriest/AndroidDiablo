@@ -192,11 +192,11 @@
     <string name="current_page">当前第</string>
     <string name="page">页</string>
     <string name="total_page">共</string>
-    <string name="space_4">"    "</string>
+    <string name="space_4">" "</string>
     <string name="colon">：</string>
 
     <!-- retailer -->
-    <string name="input_retailer_name">请输入客户姓名</string>
+    <string name="input_retailer_name">请输入客户姓名，不小于二个字符</string>
     <string name="input_retailer_phone">请输入客户手机，默认为空</string>
     <string name="title_add_retailer">新增客户</string>
     <string name="success_to_add_retailer">新增客户成功</string>
@@ -212,6 +212,7 @@
     <string name="add">新增</string>
     <string name="delete">删除</string>
     <string name="modify">修改</string>
+    <string name="print">打印</string>
 
     <string name="btn_sale_in">开单</string>
     <string name="btn_sale_out">退货</string>
@@ -227,6 +228,7 @@
     <string name="btn_draft_clear">清除草稿</string>
 
     <string name="select_stock">请选择库存</string>
+    <string name="sale_in_update">交易单编辑（销售）</string>
 
     <string name="slide_sale_manager">销售管理</string>
     <string name="slide_stock_manager">采购管理</string>

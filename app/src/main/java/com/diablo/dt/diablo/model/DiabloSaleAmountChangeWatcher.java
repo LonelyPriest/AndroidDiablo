@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.utils;
+package com.diablo.dt.diablo.model;
 
 import android.os.Handler;
 import android.os.Message;
@@ -8,6 +8,7 @@ import android.widget.TableRow;
 
 import com.diablo.dt.diablo.controller.DiabloSaleRowController;
 import com.diablo.dt.diablo.fragment.SaleIn;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;

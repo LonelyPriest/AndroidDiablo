@@ -30,15 +30,43 @@ public class SaleCalc {
     private Integer sellTotal;
     private Integer rejectTotal;
 
-    private Integer SaleType;
+    private Integer saleType;
 
-    public SaleCalc(Integer saleType) {
-        this.SaleType = saleType;
+    public SaleCalc(){
+        saleType = DiabloEnum.SALE_IN;
         init();
     }
-    public SaleCalc(){
-        SaleType = DiabloEnum.SALE_IN;
+
+    public SaleCalc(Integer saleType) {
+        this.saleType = saleType;
         init();
+    }
+
+    public SaleCalc(SaleCalc calc) {
+        this.retailer = calc.getRetailer();
+        this.shop = calc.getShop();
+
+        this.datetime = calc.getDatetime();
+        this.employee = calc.getEmployee();
+        this.comment = calc.getComment();
+
+        this.balance = calc.getBalance();
+        this.cash = calc.getCash();
+        this.card = calc.getCard();
+        this.wire = calc.getWire();
+        this.verificate = calc.getVerificate();
+        this.shouldPay = calc.getShouldPay();
+        this.hasPay = calc.getHasPay();
+        this.accBalance = calc.getAccBalance();
+
+        this.extraCostType = calc.getExtraCostType();
+        this.extraCost = calc.getExtraCost();
+
+        this.total = calc.getTotal();
+        this.sellTotal = calc.getSellTotal();
+        this.rejectTotal = calc.getRejectTotal();
+
+        this.saleType = calc.getSaleType();
     }
 
     private void init() {
@@ -193,14 +221,18 @@ public class SaleCalc {
         this.rejectTotal = rejectTotal;
     }
 
+    public Integer getSaleType () {
+        return saleType;
+    };
+
     public void resetCash() {
         cash = 0f;
     }
 
     public Float calcAccBalance(){
-        if (DiabloEnum.SALE_IN.equals(SaleType)) {
+        if (DiabloEnum.SALE_IN.equals(saleType)) {
             accBalance = balance + shouldPay + extraCost - verificate - hasPay;
-        } else if (DiabloEnum.SALE_OUT.equals(SaleType)) {
+        } else if (DiabloEnum.SALE_OUT.equals(saleType)) {
             accBalance = balance - shouldPay - extraCost - verificate;
         }
 

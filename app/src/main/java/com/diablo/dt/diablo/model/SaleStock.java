@@ -1,5 +1,7 @@
 package com.diablo.dt.diablo.model;
 
+import com.google.gson.Gson;
+
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -56,7 +58,8 @@ public class SaleStock {
     private List<SaleStockAmount> amounts;
 
     synchronized public void addAmount(SaleStockAmount amount){
-        amounts.add(amount);
+        new Gson().toJson(amount);
+        amounts.add(new Gson().fromJson(new Gson().toJson(amount),  SaleStockAmount.class));
     }
 
     synchronized public void clearAmounts(){
@@ -74,6 +77,18 @@ public class SaleStock {
         return amounts;
     }
 
+    public SaleStockAmount getAmount(Integer color, String size) {
+        SaleStockAmount amount = null;
+        for (SaleStockAmount a: amounts) {
+            if (a.getColorId().equals(color) && a.getSize().equals(size)) {
+                amount = a;
+                break;
+            }
+        }
+
+        return amount;
+    }
+
     public Integer calcExistStock(){
         Integer total = 0;
         for (SaleStockAmount a: amounts){
@@ -87,6 +102,53 @@ public class SaleStock {
     public SaleStock() {
         this.orderId = 0;
         amounts = new ArrayList<>();
+    }
+
+    public SaleStock(SaleStock stock) {
+        this.orderId = stock.getOrderId();
+        this.styleNumber = stock.getStyleNumber();
+        this.brand = stock.getBrand();
+        this.type = stock.getType();
+
+        this.brandId = stock.getBrandId();
+        this.typeId = stock.getTypeId();
+        this.firmId = stock.getFirmId();
+
+        this.sex = stock.getSex();
+        this.season = stock.getSeason();
+        this.year = stock.getYear();
+        this.alarmDy = stock.getAlarmDy();
+
+        this.stockExist = stock.getStockExist();
+
+        this.orgPrice = stock.getOrgPrice();
+        this.tagPrice = stock.getTagPrice();
+        this.pkgPrice = stock.getPkgPrice();
+        this.price3 = stock.getPrice3();
+        this.price4 = stock.getPrice4();
+        this.price5 = stock.getPrice5();
+        this.discount = stock.getDiscount();
+        this.finalPrice = stock.getFinalPrice();
+
+        this.path = stock.getPath();
+        this.second = stock.getSecond();
+
+        this.orderSizes = null;
+        this.sizeGroup  = stock.getSizeGroup();
+        this.colors     = null;
+        this.free       = stock.getFree();
+        this.comment    = stock.getComment();
+
+        this.saleTotal  = stock.getSaleTotal();
+        this.selectedPrice = stock.getSelectedPrice();
+        this.state  = stock.getState();
+
+        this.amounts = new ArrayList<>();
+        for (SaleStockAmount a: stock.getAmounts()) {
+            SaleStockAmount amount = new SaleStockAmount(a.getColorId(), a.getSize());
+            amount.setSellCount(a.getSellCount());
+            amounts.add(amount);
+        }
     }
 
     public SaleStock(MatchStock stock, Integer selectedPrice) {
@@ -147,12 +209,20 @@ public class SaleStock {
         return brandId;
     }
 
-//    public void setBrandId(Integer brandId){
-//        this.brandId = brandId;
-//    }
+    public void setBrandId(Integer brandId){
+        this.brandId = brandId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
 
     public Integer getTypeId() {
         return typeId;
+    }
+
+    public void setSelectedPrice(Integer selectedPrice) {
+        this.selectedPrice = selectedPrice;
     }
 
     public Integer getSelectedPrice() {
@@ -194,6 +264,10 @@ public class SaleStock {
     public Integer getFirmId() {
         return firmId;
     }
+
+//    public void setSex(Integer sex) {
+//        this.sex = sex;
+//    }
 
     public Integer getSex() {
         return sex;

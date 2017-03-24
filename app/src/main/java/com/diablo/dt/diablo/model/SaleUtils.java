@@ -1,10 +1,20 @@
 package com.diablo.dt.diablo.model;
 
+import static com.diablo.dt.diablo.R.string.amount;
+import static com.diablo.dt.diablo.R.string.stock;
+
 import com.google.gson.Gson;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.text.InputType;
+import android.view.Gravity;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
@@ -13,6 +23,7 @@ import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.fragment.SaleOut;
 import com.diablo.dt.diablo.fragment.StockSelect;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.view.DiabloCellLabel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,5 +105,116 @@ public class SaleUtils {
         } else {
             transaction.hide(from).show(to).commit();
         }
+    }
+
+    public static DiabloCellLabel[] createSaleLabelsFromTitle(Context context) {
+        String [] heads = context.getResources().getStringArray(R.array.thead_sale);
+
+        DiabloCellLabel [] labels = new DiabloCellLabel[heads.length];
+
+        DiabloCellLabel label = null;
+        for (int i=0; i< heads.length; i++) {
+            String h = heads[i];
+            if (context.getResources().getString(R.string.order_id).equals(h)) {
+                label = new DiabloCellLabel(
+                    h,
+                    DiabloEnum.DIABLO_TEXT,
+                    R.color.colorPrimaryDark,
+                    18,
+                    0.8f);
+                label.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
+                label.setLabelId(R.string.order_id);
+            }
+            else if (context.getResources().getString(R.string.good).equals(h)) {
+                label = new DiabloCellLabel(
+                    h,
+                    DiabloEnum.DIABLO_AUTOCOMPLETE,
+                    R.color.black,
+                    18,
+                    InputType.TYPE_CLASS_NUMBER,
+                    2f);
+                label.setLabelId(R.string.good);
+            }
+            else if (context.getResources().getString(stock).equals(h)) {
+                label = new DiabloCellLabel(h, R.color.red, 18);
+                label.setLabelId(R.string.stock);
+            }
+            else if (context.getResources().getString(R.string.price_type).equals(h)) {
+                label = new DiabloCellLabel(
+                    h, DiabloEnum.DIABLO_SPINNER, R.color.black, 18, 1.5f);
+                label.setLabelId(R.string.price_type);
+            }
+            else if (context.getResources().getString(R.string.price).equals(h)) {
+                label = new DiabloCellLabel(h, R.color.black, 18);
+                label.setLabelId(R.string.price);
+            }
+            else if (context.getResources().getString(R.string.discount).equals(h)) {
+                label = new DiabloCellLabel(h, R.color.black, 18);
+                label.setLabelId(R.string.discount);
+            }
+            else if (context.getResources().getString(R.string.fprice).equals(h)) {
+                label = new DiabloCellLabel(
+                    h,
+                    DiabloEnum.DIABLO_EDIT,
+                    R.color.black,
+                    18,
+                    Gravity.CENTER_VERTICAL,
+                    InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL,
+                    false,
+                    1f);
+                label.setLabelId(R.string.fprice);
+            }
+            else if (context.getResources().getString(amount).equals(h)) {
+                label = new DiabloCellLabel(
+                    h,
+                    DiabloEnum.DIABLO_EDIT,
+                    R.color.red,
+                    18,
+                    Gravity.CENTER_VERTICAL,
+                    InputType.TYPE_CLASS_NUMBER,
+                    false,
+                    1f);
+                label.setLabelId(amount);
+            }
+            else if (context.getResources().getString(R.string.calculate).equals(h)) {
+                label = new DiabloCellLabel(h, R.color.black, 18);
+                label.setLabelId(R.string.calculate);
+            }
+            else if (context.getResources().getString(R.string.comment).equals(h)) {
+                label = new DiabloCellLabel(
+                    h,
+                    DiabloEnum.DIABLO_TEXT,
+                    R.color.black,
+                    16,
+                    InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS,
+                    1.5f);
+                label.setLabelId(R.string.comment);
+            }
+
+            if (null != label ){
+                labels[i] = label;
+                // mSparseLabels.put(label.getLabelId(), label);
+            }
+        }
+
+        return labels;
+    }
+
+    public static TableRow createTableHeadFromLabels(Context context, final DiabloCellLabel[] labels) {
+        TableRow row = new TableRow(context);
+
+        for (DiabloCellLabel label: labels) {
+            TextView cell = new TextView(context);
+            cell.setLayoutParams(label.getTableRowLayoutParams());
+            cell.setTypeface(null, Typeface.BOLD);
+            cell.setTextColor(ContextCompat.getColor(context, R.color.black));
+            cell.setTextSize(label.getSize());
+            cell.setText(label.getLabel());
+
+            row.addView(cell);
+        }
+
+        return row;
+
     }
 }

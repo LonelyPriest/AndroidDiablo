@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
  * Created by buxianhui on 17/3/14.
  */
 
+/**
+ * stock use at sale, when choose a good styleNumber, will query the stocks information from server
+ */
 public class Stock {
     @SerializedName("style_number")
     private String styleNumber;
