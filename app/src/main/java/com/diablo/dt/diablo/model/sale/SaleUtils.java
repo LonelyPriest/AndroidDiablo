@@ -26,6 +26,7 @@ import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -216,5 +217,28 @@ public class SaleUtils {
 
         return row;
 
+    }
+
+    public static SaleStock getSaleStocks(List<SaleStock> stocks, String styleNumber, Integer brandId){
+        SaleStock stock = null;
+        for (SaleStock s: stocks){
+            if (styleNumber.equals(s.getStyleNumber()) && brandId.equals(s.getBrandId())){
+                stock = s;
+                break;
+            }
+        }
+
+        return stock;
+    }
+
+    public static SaleStockAmount getSaleStockAmounts(final List<SaleStockAmount>amounts, Integer colorId, String size){
+        SaleStockAmount found = null;
+        for (SaleStockAmount amount: amounts) {
+            if (amount.getColorId().equals(colorId) && amount.getSize().equals(size)) {
+                found = amount;
+                break;
+            }
+        }
+        return found;
     }
 }

@@ -81,7 +81,7 @@ public class NewSaleRequest {
         @SerializedName("fdiscount")
         private Float fdiscount;
         @SerializedName("fprice")
-        private Float   fprice;
+        private Float fprice;
 
         @SerializedName("path")
         private String  path;
@@ -104,10 +104,27 @@ public class NewSaleRequest {
         @SerializedName("amounts")
         private List<DiabloSaleStockAmount> amounts;
 
+        /**
+         * used to update only, all update data calculated at front,
+         * compatible the web
+         */
+        @SerializedName("operation")
+        private String operation;
+        @SerializedName("amount")
+        private List<DiabloSaleStockAmount> amount;
+        @SerializedName("changed_amount")
+        private List<DiabloSaleStockAmount> changedAmounts;
+
         public DiabloSaleStock() {
             // orderSizes = new ArrayList<>();
             // colors = new ArrayList<>();
             amounts = new ArrayList<>();
+        }
+
+        public DiabloSaleStock(String operation) {
+            this.operation = operation;
+            this.amount = new ArrayList<>();
+            this.changedAmounts = new ArrayList<>();
         }
 
         public void setOrderId(Integer orderId) {
@@ -229,6 +246,26 @@ public class NewSaleRequest {
         public void setAlarmDay(Float alarmDay) {
             this.alarmDay = alarmDay;
         }
+
+        public void setAmounts(List<DiabloSaleStockAmount> amounts) {
+            this.amounts = amounts;
+        }
+
+        /**
+         * used to update only, all update data calculated at front,
+         * compatible the web
+         */
+        public void setOperation(String operation) {
+            this.operation = operation;
+        }
+
+        public void setAmount(List<DiabloSaleStockAmount> amount) {
+            this.amount = amount;
+        }
+
+        public void setChangedAmounts(List<DiabloSaleStockAmount> changedAmounts) {
+            this.changedAmounts = changedAmounts;
+        }
     }
 
     public static class DiabloSaleStockAmount {
@@ -242,6 +279,11 @@ public class NewSaleRequest {
         private Integer rejectCount;
         @SerializedName("direct")
         private Integer direct;
+        // used to update
+        @SerializedName("count")
+        private Integer count;
+        @SerializedName("operation")
+        private String operation;
 
         public DiabloSaleStockAmount() {
 
@@ -265,6 +307,14 @@ public class NewSaleRequest {
 
         public void setDirect(Integer direct) {
             this.direct = direct;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+
+        public void setOperation(String operation) {
+            this.operation = operation;
         }
     }
 
@@ -338,6 +388,26 @@ public class NewSaleRequest {
         private Integer rejectTotal;
         @SerializedName("direct")
         private Integer direct;
+
+        /**
+         * used only update
+         */
+        @SerializedName("rsn")
+        private String rsn;
+        @SerializedName("old_retailer")
+        private Integer oldRetailer;
+        @SerializedName("old_balance")
+        private Float oldBalance;
+        @SerializedName("old_verify_pay")
+        private Float oldVerifyPay;
+        @SerializedName("old_should_pay")
+        private Float oldShouldPay;
+        @SerializedName("old_has_pay")
+        private Float oldHasPay;
+        @SerializedName("old_datetime")
+        private String oldDatetime;
+        @SerializedName("mode")
+        private Integer mode;
 
         public void setRetailer(Integer retailer) {
             this.retailer = retailer;
@@ -418,6 +488,41 @@ public class NewSaleRequest {
 
         public void setDirect(Integer direct) {
             this.direct = direct;
+        }
+
+        /**
+         * only used update
+         */
+        public void setRsn(String rsn) {
+            this.rsn = rsn;
+        }
+
+        public void setOldRetailer(Integer oldRetailer) {
+            this.oldRetailer = oldRetailer;
+        }
+
+        public void setOldBalance(Float oldBalance) {
+            this.oldBalance = oldBalance;
+        }
+
+        public void setOldVerifyPay(Float oldVerifyPay) {
+            this.oldVerifyPay = oldVerifyPay;
+        }
+
+        public void setOldShouldPay(Float oldShouldPay) {
+            this.oldShouldPay = oldShouldPay;
+        }
+
+        public void setOldHasPay(Float oldHasPay) {
+            this.oldHasPay = oldHasPay;
+        }
+
+        public void setOldDatetime(String oldDatetime) {
+            this.oldDatetime = oldDatetime;
+        }
+
+        public void setMode(Integer mode) {
+            this.mode = mode;
         }
     }
 

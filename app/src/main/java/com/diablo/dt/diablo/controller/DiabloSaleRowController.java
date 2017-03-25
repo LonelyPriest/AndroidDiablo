@@ -245,4 +245,26 @@ public class DiabloSaleRowController {
         void onActionOfFPrice();
     }
 
+    public void replaceSaleStock(final SaleStock stock) {
+        mSaleStock.clearAmounts();
+        Integer saleTotal = 0;
+        Integer exist = 0;
+
+        for (SaleStockAmount a: stock.getAmounts()) {
+            mSaleStock.addAmount(a);
+            exist += a.getStock();
+            if (a.getSellCount() != 0){
+                saleTotal += a.getSellCount();
+            }
+        }
+
+        mSaleStock.setColors(stock.getColors());
+        mSaleStock.setOrderSizes(stock.getOrderSizes());
+        mSaleStock.setSaleTotal(saleTotal);
+        mSaleStock.setStockExist(exist);
+
+        mRowView.setCellText(R.string.amount, saleTotal);
+        mRowView.setCellText(R.string.stock, exist);
+    }
+
 }

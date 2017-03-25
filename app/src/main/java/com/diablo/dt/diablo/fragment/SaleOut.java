@@ -1,7 +1,5 @@
 package com.diablo.dt.diablo.fragment;
 
-import static com.diablo.dt.diablo.R.string.stock;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -349,19 +347,7 @@ public class SaleOut extends Fragment {
     }
 
     private void calcShouldPay() {
-        // calculate stock
-        Integer total     = 0;
-        Float   shouldPay = 0f;
-
-        for (int i=1; i<mSaleTableController.getControllers().size(); i++ ){
-            DiabloSaleRowController controller = mSaleTableController.getControllers().get(i);
-            total += controller.getSaleTotal();
-            shouldPay += controller.getSalePrice();
-        }
-
-        mSaleCalcController.setSaleInfo(total);
-        mSaleCalcController.setShouldPay(shouldPay);
-        mSaleCalcController.resetAccBalance();
+        mSaleTableController.calcSaleOutShouldPay(mSaleCalcController);
     }
 
     @Override
@@ -370,34 +356,10 @@ public class SaleOut extends Fragment {
         if (!hidden){
             if (mBackFrom.equals(R.string.back_from_stock_select)){
                 SaleStock s = mNoFreeStockListener.afterSelectStock();
-                List<SaleStockAmount> amounts = s.getAmounts();
 
                 switch (mNoFreeStockListener.getCurrentOperation()){
                     case R.string.action_save:
-                        List<DiabloSaleRowController> controllers = mSaleTableController.getControllers();
-                        for (DiabloSaleRowController c: controllers) {
-                            if (c.getOrderId().equals(s.getOrderId())) {
-                                c.clearAmount();
-                                Integer saleTotal = 0;
-                                Integer exist = 0;
-
-                                for (SaleStockAmount a: amounts) {
-                                    c.addAmount(a);
-                                    exist += a.getStock();
-                                    if (a.getSellCount() != 0){
-                                        saleTotal += a.getSellCount();
-                                    }
-                                }
-
-                                c.setColors(s.getColors());
-                                c.setOrderSizes(s.getOrderSizes());
-                                c.setSaleTotal(saleTotal);
-                                c.setStockExist(exist);
-
-                                c.getView().setCellText(R.string.amount, saleTotal);
-                                c.getView().setCellText(stock, exist);
-                            }
-                        }
+                        mSaleTableController.replaceRowController(s);
                         break;
                     case R.string.action_cancel:
                         if (s.getOrderId().equals(0)){

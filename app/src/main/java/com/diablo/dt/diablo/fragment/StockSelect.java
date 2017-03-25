@@ -28,6 +28,7 @@ import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.model.sale.DiabloSaleTable;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
+import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.LastSaleRequest;
 import com.diablo.dt.diablo.response.LastSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
@@ -113,12 +114,6 @@ public class StockSelect extends Fragment {
         }
         else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)) {
             getStockFromServer();
-//            if (R.string.add == mActionFrom){
-//                getStockFromServer();
-//            }
-//            else if (R.string.modify == mActionFrom) {
-//                startModify();
-//            }
         }
 
     }
@@ -336,14 +331,15 @@ public class StockSelect extends Fragment {
     }
 
     public SaleStockAmount findStock(Integer colorId, String size){
-        for ( Integer i=0; i<mSaleStock.getAmounts().size(); i++){
-            SaleStockAmount a = mSaleStock.getAmounts().get(i);
-            if (a.getColorId().equals(colorId) && a.getSize().equals(size)){
-                return a;
-            }
-        }
-
-        return null;
+        return SaleUtils.getSaleStockAmounts(mSaleStock.getAmounts(), colorId, size);
+//        for ( Integer i=0; i<mSaleStock.getAmounts().size(); i++){
+//            SaleStockAmount a = mSaleStock.getAmounts().get(i);
+//            if (a.getColorId().equals(colorId) && a.getSize().equals(size)){
+//                return a;
+//            }
+//        }
+//
+//        return null;
     }
 
     @Override

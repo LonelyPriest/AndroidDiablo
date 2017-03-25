@@ -11,6 +11,7 @@ import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleCalc;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
+import com.diablo.dt.diablo.model.sale.SaleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,17 +198,17 @@ public class DiabloDBManager {
         }
     }
 
-    private SaleStock getSaleStocks(List<SaleStock> stocks, String styleNumber, Integer brandId){
-        SaleStock stock = null;
-        for (SaleStock s: stocks){
-            if (styleNumber.equals(s.getStyleNumber()) && brandId.equals(s.getBrandId())){
-                stock = s;
-                break;
-            }
-        }
-
-        return stock;
-    }
+//    private SaleStock getSaleStocks(List<SaleStock> stocks, String styleNumber, Integer brandId){
+//        SaleStock stock = null;
+//        for (SaleStock s: stocks){
+//            if (styleNumber.equals(s.getStyleNumber()) && brandId.equals(s.getBrandId())){
+//                stock = s;
+//                break;
+//            }
+//        }
+//
+//        return stock;
+//    }
 
     public List<SaleStock> querySaleStock(SaleCalc calc){
         String sql0 = "select a.style_number, a.brand, a.sell_type, a.second, a.discount, a.price"
@@ -229,7 +230,7 @@ public class DiabloDBManager {
                 String styleNumber = c.getString(c.getColumnIndex("style_number"));
                 Integer brand = c.getInt(c.getColumnIndex("brand"));
 
-                SaleStock stock = getSaleStocks(saleStocks, styleNumber, brand);
+                SaleStock stock = SaleUtils.getSaleStocks(saleStocks, styleNumber, brand);
                 if (null == stock){
                     MatchStock matchStock = Profile.instance().getMatchStock(styleNumber, brand);
 

@@ -67,6 +67,12 @@ public class DiabloEnum {
     public static final Integer FINISHED_SALE = 1;
     public static final Integer UPDATING_SALE = 2;
 
+    // use to update operation
+    public static final String  ADD_THE_STOCK    = "a";
+    public static final String  DELETE_THE_STOCK = "d";
+    public static final String  UPDATE_THE_STOCK = "u";
+    public static final String  NONE_THE_STOCK   = "n";
+
     // frame tag
     public static final String TAG_SALE_IN = "saleIn";
     public static final String TAG_SALE_OUT = "saleOut";

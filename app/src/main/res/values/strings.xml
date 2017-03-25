@@ -175,6 +175,7 @@
     <string name="print_failed">打印消息发送失败！！</string>
     <string name="sale_success">开单成功，单号：</string>
     <string name="sale_start_print_or_not">，是否打印销售单？</string>
+    <string name="sale_in_update_success">销售单编辑成功，单号：</string>
 
     <!-- toast -->
     <string name="refresh_top">己到达第一页，无需刷新</string>

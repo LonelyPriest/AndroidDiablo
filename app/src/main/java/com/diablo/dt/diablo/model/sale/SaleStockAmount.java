@@ -14,6 +14,9 @@ public class SaleStockAmount {
     private Integer stock;
     private Integer sellCount;
 
+    // use to update, 'a', 'd', 'u', 'n'
+    private String  operation;
+
     public SaleStockAmount(Integer colorId, String colorName, String size){
         this.colorId = colorId;
         this.size = size;
@@ -42,12 +45,13 @@ public class SaleStockAmount {
         this.sellCount = 0;
     }
 
-    public SaleStockAmount(SaleStockAmount amount){
-        this.colorId = amount.getColorId();
-        this.size = amount.getSize();
+    public SaleStockAmount(SaleStockAmount amount, String operation){
+        this.colorId   = amount.getColorId();
+        this.size      = amount.getSize();
         this.colorName = amount.getColorName();
-        this.stock = amount.getStock();
+        this.stock     = amount.getStock();
         this.sellCount = amount.getSellCount();
+        this.operation = operation;
     }
 
     public Integer getColorId() {
@@ -76,5 +80,13 @@ public class SaleStockAmount {
 
     public void setSellCount(Integer sellCount) {
         this.sellCount = sellCount;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 }

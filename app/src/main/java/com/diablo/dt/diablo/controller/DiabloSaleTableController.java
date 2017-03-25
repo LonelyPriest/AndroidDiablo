@@ -2,6 +2,7 @@ package com.diablo.dt.diablo.controller;
 
 import android.widget.TableLayout;
 
+import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 import java.util.ArrayList;
@@ -83,6 +84,56 @@ public class DiabloSaleTableController {
         }
 
         return orderId;
+    }
+
+    public void replaceRowController(final SaleStock stock) {
+        for (DiabloSaleRowController c: mControllers) {
+            if (c.getOrderId().equals(stock.getOrderId())) {
+                c.replaceSaleStock(stock);
+            }
+        }
+    }
+
+    public void calcSaleInShouldPay(DiabloSaleController saleController){
+        // calculate stock
+        Integer total     = 0;
+        Integer sell      = 0;
+        Integer reject    = 0;
+        Float   shouldPay = 0f;
+
+        for (DiabloSaleRowController controller: mControllers) {
+            if (0 != controller.getOrderId()) {
+                Integer saleTotal = controller.getSaleTotal();
+
+                if (saleTotal > 0) {
+                    sell += saleTotal;
+                } else {
+                    reject += saleTotal;
+                }
+
+                total += saleTotal;
+                shouldPay += controller.getSalePrice();
+            }
+        }
+
+        saleController.setSaleInfo(total, sell, reject);
+        saleController.setShouldPay(shouldPay);
+        saleController.resetAccBalance();
+
+    }
+
+    public void calcSaleOutShouldPay(DiabloSaleController saleController){
+        Integer total     = 0;
+        Float   shouldPay = 0f;
+
+        for (DiabloSaleRowController controller: mControllers) {
+            total += controller.getSaleTotal();
+            shouldPay += controller.getSalePrice();
+        }
+
+        saleController.setSaleInfo(total);
+        saleController.setShouldPay(shouldPay);
+        saleController.resetAccBalance();
     }
 
     public Integer size() {

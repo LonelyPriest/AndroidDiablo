@@ -55,10 +55,11 @@ public class SaleStock {
 
     private Integer state;
 
+    private String operation;
+
     private List<SaleStockAmount> amounts;
 
     synchronized public void addAmount(SaleStockAmount amount){
-        new Gson().toJson(amount);
         amounts.add(new Gson().fromJson(new Gson().toJson(amount),  SaleStockAmount.class));
     }
 
@@ -67,9 +68,9 @@ public class SaleStock {
     }
 
     public void setAmounts(List<SaleStockAmount> amounts) {
-        amounts.clear();
+        this.amounts.clear();
         for (SaleStockAmount a: amounts){
-            amounts.add(a);
+            this.amounts.add(a);
         }
     }
 
@@ -372,6 +373,14 @@ public class SaleStock {
 
     public void setOrderSizes(List<String> sizes) {
         this.orderSizes = sizes;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
     public Float getValidPrice(){

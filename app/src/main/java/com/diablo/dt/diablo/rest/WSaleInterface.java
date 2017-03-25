@@ -36,6 +36,9 @@ public interface WSaleInterface {
     @POST("reject_w_sale")
     Call<NewSaleResponse> startReject(@Header("cookie") String token, @Body NewSaleRequest request);
 
+    @POST("update_w_sale")
+    Call<com.diablo.dt.diablo.response.Response> updateSale(@Header("cookie") String token, @Body NewSaleRequest request);
+
     @POST("print_w_sale")
     Call<PrintResponse> startPrint(@Header("cookie") String token, @Body NewSaleRequest.DiabloRSN rsn);
 
