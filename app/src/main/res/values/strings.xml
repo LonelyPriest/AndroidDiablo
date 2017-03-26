@@ -169,6 +169,8 @@
     <string name="rg_print_wrong_printer_conn">打印机连接设备不存在，请检查设备编号是否正确</string>
     <string name="rg_print_lack_size">打印格式缺少尺码，请在打印格式设置中选中尺码</string>
 
+    <string name="update_same">"修改前后信息一致，请重新编辑修改项"</string>
+
 
     <!-- message -->
     <string name="print_success">打印消息发送成功，请等待服务器打印！！</string>

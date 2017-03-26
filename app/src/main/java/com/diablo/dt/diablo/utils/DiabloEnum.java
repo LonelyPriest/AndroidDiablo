@@ -10,8 +10,6 @@ public class DiabloEnum {
     public static final String  SESSION_ID = "qzg_dyty_session";
     public static final String  SIZE_SEPARATOR = ",";
 
-    public static final Integer DIABLO_INVALID_NUM = 0x8fffffff;
-
     public static final Integer INVALID_INDEX = -1;
     public static final Integer DIABLO_FREE = 0;
     public static final Integer DIABLO_FALSE = 0;
@@ -19,6 +17,7 @@ public class DiabloEnum {
     public static final Integer DIABLO_FREE_COLOR = 0;
     public static final String  DIABLO_FREE_SIZE = "0";
     public static final String  DIABLO_STRING_ZERO = "0";
+    public static final String  DIABLO_INVALID_RSN = "INVALID_RSN";
 
     public static final String BUNDLE_PARAM_SALE_STOCK = "SALE_STOCK";
     public static final String BUNDLE_PARAM_SHOP       = "SHOP";

@@ -47,7 +47,7 @@ public class DiabloDBOpenHelper extends SQLiteOpenHelper {
             + ", second integer not null"
             + ", discount real not null"
             + ", price real not null"
-            + ", unique(retailer, shop, style_number, brand, type) ON CONFLICT REPLACE)";
+            + ", unique(retailer, shop, style_number, brand) ON CONFLICT REPLACE)";
 
         String WSaleStockAmount = "create table if not exists w_sale_detail_amount ("
             + "_id integer primary key autoincrement"

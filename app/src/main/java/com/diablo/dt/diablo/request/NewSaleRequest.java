@@ -414,6 +414,10 @@ public class NewSaleRequest {
             this.retailerId = retailer;
         }
 
+        public Integer getRetailer() {
+            return retailer;
+        }
+
         public void setShop(Integer shop) {
             this.shop = shop;
         }
@@ -438,16 +442,32 @@ public class NewSaleRequest {
             this.cash = cash;
         }
 
+        public Float getCash() {
+            return cash;
+        }
+
         public void setCard(Float card) {
             this.card = card;
+        }
+
+        public Float getCard() {
+            return card;
         }
 
         public void setWire(Float wire) {
             this.wire = wire;
         }
 
+        public Float getWire() {
+            return wire;
+        }
+
         public void setVerificate(Float verificate) {
             this.verificate = verificate;
+        }
+
+        public Float getVerificate() {
+            return verificate;
         }
 
         public void setShouldPay(Float shouldPay) {
@@ -488,6 +508,10 @@ public class NewSaleRequest {
 
         public void setDirect(Integer direct) {
             this.direct = direct;
+        }
+
+        public String getComment() {
+            return comment;
         }
 
         /**

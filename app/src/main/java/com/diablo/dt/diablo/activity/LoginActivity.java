@@ -103,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
+                            mBtnLogin.setClickable(true);
                             loginError(1199);
                         }
                     });
@@ -316,7 +317,7 @@ public class LoginActivity extends AppCompatActivity {
         private final WeakReference<LoginActivity> mActivity;
 
         private LoginHandler(LoginActivity activity) {
-            mActivity = new WeakReference<LoginActivity>(activity);
+            mActivity = new WeakReference<>(activity);
         }
 
         @Override

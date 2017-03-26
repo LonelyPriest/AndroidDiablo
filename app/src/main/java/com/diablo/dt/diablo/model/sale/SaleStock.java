@@ -183,6 +183,7 @@ public class SaleStock {
         this.free = stock.getFree();
         this.sizeGroup = stock.getSizeGroup();
         this.path = stock.getPath();
+        this.comment = "";
 
         this.second     = DiabloEnum.DIABLO_FALSE;
         this.stockExist = 0;
@@ -210,13 +211,13 @@ public class SaleStock {
         return brandId;
     }
 
-    public void setBrandId(Integer brandId){
-        this.brandId = brandId;
-    }
-
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
-    }
+//    public void setBrandId(Integer brandId){
+//        this.brandId = brandId;
+//    }
+//
+//    public void setTypeId(Integer typeId) {
+//        this.typeId = typeId;
+//    }
 
     public Integer getTypeId() {
         return typeId;

@@ -562,15 +562,15 @@ public class SaleDetail extends Fragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        SaleDetailResponse.SaleDetail detail = ((SaleDetailResponse.SaleDetail) mCurrentSelectedRow.getTag());
         if (getResources().getString(R.string.modify) == item.getTitle()){
-            SaleDetailResponse.SaleDetail detail = ((SaleDetailResponse.SaleDetail) mCurrentSelectedRow.getTag());
             if (detail.getType().equals(DiabloEnum.SALE_IN)){
                 switchToSaleInUpdateFrame(detail.getRsn(), this);
             }
 
         }
         else if (getResources().getString(R.string.print) == item.getTitle()){
-
+            UTILS.startPrint(getContext(), R.id.nav_sale_detail, detail.getRsn());
         }
 
         return true;

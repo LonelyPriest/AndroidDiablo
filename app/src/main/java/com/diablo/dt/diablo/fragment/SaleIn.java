@@ -1112,6 +1112,9 @@ public class SaleIn extends Fragment{
                             TableRow row = (TableRow) mSaleTable.getChildAt(0);
                             row.removeAllViews();
                             mSaleTable.removeView(row);
+                            // remove old row
+                            mSaleStocks.remove(0);
+                            // add new
                             addEmptyRowToTable();
                         }
                         break;

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.controller.DiabloSaleController;
 import com.diablo.dt.diablo.controller.DiabloSaleRowController;
 import com.diablo.dt.diablo.controller.DiabloSaleTableController;
+import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
@@ -67,9 +69,9 @@ public class SaleInUpdate extends Fragment {
     private DiabloCellLabel[] mLabels;
 
     private List<MatchStock> mMatchStocks;
-    private List<Retailer> mRetailers;
 
     private String [] mPriceTypes;
+    private SparseArray<DiabloButton> mButtons;
     private Integer   mSelectPrice;
     private Integer   mSysRetailer;
     private String    mRSN;
@@ -83,13 +85,8 @@ public class SaleInUpdate extends Fragment {
     private DiabloSaleTableController mSaleTableController;
 
     private StockSelect.OnNoFreeStockSelectListener mNoFreeStockListener;
-
     private Integer mBackFrom = R.string.back_from_unknown;
-
-    private Retailer mCurrentRetailer;
     private SaleCalc mOldSaleCalc;
-    private SaleCalc mNewSalCalc;
-
 
     private List<SaleStock> mOldSaleStocks;
 
@@ -111,6 +108,7 @@ public class SaleInUpdate extends Fragment {
         mLastRSN = mRSN;
         mMatchStocks = Profile.instance().getMatchStocks();
         mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
+        mButtons.get(R.id.sale_in_update_save).enable();
         if (null != mSaleTableController) {
             mSaleTableController.clear();
         }
@@ -155,6 +153,9 @@ public class SaleInUpdate extends Fragment {
         ((TableLayout)mFragment.findViewById(R.id.t_sale_head))
             .addView(SaleUtils.createTableHeadFromLabels(getContext(), mLabels));
 
+        mButtons = new SparseArray<>();
+        mButtons.put(R.id.sale_in_update_save, new DiabloButton(getContext(), R.id.sale_in_update_save));
+
         init();
 
         return mFragment;
@@ -192,21 +193,21 @@ public class SaleInUpdate extends Fragment {
             Profile.instance().getConfig(calc.getShop(), DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
 
         // copy the retailer
-        mRetailers = new ArrayList<>();
+        List<Retailer> retailers = new ArrayList<>();
         for (Retailer r: Profile.instance().getRetailers()) {
             if (r.getId().equals(calc.getRetailer())) {
-                mRetailers.add(new Retailer(r, calc.getBalance()));
+                retailers.add(new Retailer(r, calc.getBalance()));
             } else {
-                mRetailers.add(new Retailer(r));
+                retailers.add(new Retailer(r));
             }
         }
 
-        mSaleCalcController.setRetailer(calc.getRetailer(), mRetailers);
+        mSaleCalcController.setRetailer(calc.getRetailer(), retailers);
         mSaleCalcController.setShop(calc.getShop());
         mSaleCalcController.setDatetime(calc.getDatetime());
 
         // listener
-        mSaleCalcController.setRetailerWatcher(getContext(), mRetailers);
+        mSaleCalcController.setRetailerWatcher(getContext(), retailers);
         mSaleCalcController.setEmployeeWatcher();
         mSaleCalcController.setCommentWatcher();
 
@@ -534,7 +535,7 @@ public class SaleInUpdate extends Fragment {
                 break;
 
         }
-
+        
         return true;
     }
 
@@ -655,7 +656,7 @@ public class SaleInUpdate extends Fragment {
             SaleStock found = SaleUtils.getSaleStocks(newSaleStocks, oldStock.getStyleNumber(), oldStock.getBrandId());
             if (null == found) {
                 SaleStock delete = new SaleStock(oldStock);
-                oldStock.setOperation(DiabloEnum.DELETE_THE_STOCK);
+                delete.setOperation(DiabloEnum.DELETE_THE_STOCK);
                 updateSaleStocks.add(delete);
             }
         }
@@ -674,6 +675,7 @@ public class SaleInUpdate extends Fragment {
             d.setStyleNumber(u.getStyleNumber());
             d.setBrand(u.getBrand());
             d.setBrandId(u.getBrandId());
+            d.setTypeId(u.getTypeId());
 
             d.setFirmId(u.getFirmId());
             d.setSex(u.getSex());
@@ -702,7 +704,7 @@ public class SaleInUpdate extends Fragment {
                         NewSaleRequest.DiabloSaleStockAmount saleAmount = new NewSaleRequest.DiabloSaleStockAmount();
                         saleAmount.setColorId(a.getColorId());
                         saleAmount.setSize(a.getSize());
-                        saleAmount.setCount(a.getSellCount());
+                        saleAmount.setSellCount(a.getSellCount());
                         saleAmount.setOperation(a.getOperation());
                         uAmounts.add(saleAmount);
                     }
@@ -769,19 +771,26 @@ public class SaleInUpdate extends Fragment {
 
         saleRequest.setSaleCalc(dCalc);
 
-//        NewSaleRequest.DiabloPrintAttr printAttr = new NewSaleRequest.DiabloPrintAttr();
-//        printAttr.setImmediatelyPrint(0);
-//        printAttr.setRetailerId(calc.getRetailer());
-//        printAttr.setRetailerName(mSaleCalcController.getSelectRetailerName());
-//        printAttr.setShop(mSaleCalcController.getShopName());
-//        printAttr.setEmployee(calc.getEmployee());
-//
-//        saleRequest.setPrintAttr(printAttr);
+        if (0 == updateStocks.size()
+            && dCalc.getCash().equals(mOldSaleCalc.getCash())
+            && dCalc.getCard().equals(mOldSaleCalc.getCard())
+            && dCalc.getWire().equals(mOldSaleCalc.getWire())
+            && dCalc.getVerificate().equals(mOldSaleCalc.getVerificate())
+            && dCalc.getComment().equals(mOldSaleCalc.getComment())) {
 
-        startRequest(saleRequest);
+            new DiabloAlertDialog(
+                getContext(),
+                getResources().getString(R.string.sale_in_update),
+                DiabloError.getInstance().getError(2699)).create();
+
+        } else {
+            startRequest(saleRequest);
+        }
     }
 
     private void startRequest(NewSaleRequest request) {
+        mButtons.get(R.id.sale_in_update_save).disable();
+
         final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
         Call<com.diablo.dt.diablo.response.Response> call = face.updateSale(Profile.instance().getToken(), request);
 
@@ -794,9 +803,23 @@ public class SaleInUpdate extends Fragment {
                 final com.diablo.dt.diablo.response.Response res = response.body();
                 if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
                     // refresh balance
-//                    SaleCalc calc = mSaleCalcController.getSaleCalc();
-//                    Profile.instance().getRetailerById(calc.getRetailer()).setBalance(calc.getAccBalance());
+                    Retailer newRetailer = Profile.instance().getRetailerById(mSaleCalcController.getRetailer());
+                    Retailer oldRetailer = Profile.instance().getRetailerById(mOldSaleCalc.getRetailer());
 
+                    if (newRetailer.getId().equals(oldRetailer.getId())) {
+                        newRetailer.setBalance(
+                            newRetailer.getBalance()
+                                - mOldSaleCalc.getBalance()
+                                + mSaleCalcController.getSaleCalc().getBalance());
+                    } else {
+                        // back to old
+                        oldRetailer.setBalance(oldRetailer.getBalance() + mOldSaleCalc.getBalance());
+                        // reset new
+                        newRetailer.setBalance(newRetailer.getBalance() - mSaleCalcController.getSaleCalc().getBalance());
+                    }
+
+                    // reset the controller
+                    mSaleTableController.clear();
                     new DiabloAlertDialog(
                         getContext(),
                         false,
@@ -805,11 +828,14 @@ public class SaleInUpdate extends Fragment {
                         new DiabloAlertDialog.OnOkClickListener() {
                             @Override
                             public void onOk() {
+                                // reset again to make sure clear certainly
+                                mLastRSN = DiabloEnum.DIABLO_INVALID_RSN;
                                 SaleUtils.switchToSlideMenu(SaleInUpdate.this, DiabloEnum.TAG_SALE_DETAIL);
                             }
                         }
                     ).create();
                 } else {
+                    mButtons.get(R.id.sale_in_update_save).enable();
                     Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
                     String extraMessage = res == null ? "" : res.getError();
                     new DiabloAlertDialog(
@@ -821,6 +847,7 @@ public class SaleInUpdate extends Fragment {
 
             @Override
             public void onFailure(Call<com.diablo.dt.diablo.response.Response> call, Throwable t) {
+                mButtons.get(R.id.sale_in_update_save).enable();
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.sale_in_update),

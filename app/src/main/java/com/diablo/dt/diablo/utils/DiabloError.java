@@ -34,6 +34,7 @@ public class DiabloError {
         mErrors.put(1101, r.getString(R.string.invalid_name_password));
         mErrors.put(1199, r.getString(R.string.network_unreachable));
 
+        mErrors.put(2699, r.getString(R.string.update_same));
         mErrors.put(2703, r.getString(R.string.error_style_number));
 
         mErrors.put(2411, r.getString(R.string.print_wrong_printer_sn));
