@@ -22,6 +22,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.SaleDetail;
+import com.diablo.dt.diablo.fragment.SaleNote;
 import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.fragment.SaleOut;
 import com.diablo.dt.diablo.request.LogoutRequest;
@@ -223,7 +224,9 @@ public class MainActivity extends AppCompatActivity {
             else if (mCurrentNavTag.getTitleIndex().equals(2)){
                 f = new SaleDetail();
             }
-
+            else if (mCurrentNavTag.getTitleIndex().equals(3)){
+                f = new SaleNote();
+            }
             else {
                 f = new SaleDetail();
             }

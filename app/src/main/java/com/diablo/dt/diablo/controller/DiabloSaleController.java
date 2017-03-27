@@ -39,7 +39,7 @@ public class DiabloSaleController {
      * listener
      */
     // retailer
-    private AutoCompleteTextChangeListener.TextWatch mOnAutoCompletedRetailerListener;
+    private AutoCompleteTextChangeListener mOnAutoCompletedRetailerListener;
     private AdapterView.OnItemClickListener mOnRetailerClickListener;
 
     // employee
@@ -95,18 +95,18 @@ public class DiabloSaleController {
         return ((EditText) mSaleCalcView.getViewShop()).getText().toString().trim();
     }
 
-    public void setRetailerWatcher(final Context context, final List<Retailer> retailers) {
+    public void setRetailerWatcher(final Context context) {
         final AutoCompleteTextView r = (AutoCompleteTextView) mSaleCalcView.getViewRetailer();
-        mOnAutoCompletedRetailerListener = new AutoCompleteTextChangeListener.TextWatch() {
+        mOnAutoCompletedRetailerListener = new AutoCompleteTextChangeListener(r);
+
+        mOnAutoCompletedRetailerListener.addListen(new AutoCompleteTextChangeListener.TextWatch() {
             @Override
             public void afterTextChanged(String s) {
                 if (s.trim().length() > 0) {
-                    new MatchRetailerTask(context, r, retailers).execute(s);
+                    new MatchRetailerTask(context, r).execute(s);
                 }
             }
-        };
-
-        new AutoCompleteTextChangeListener(r).addListen(mOnAutoCompletedRetailerListener);
+        });
 
         mOnRetailerClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -120,6 +120,12 @@ public class DiabloSaleController {
         };
 
         r.setOnItemClickListener(mOnRetailerClickListener);
+    }
+
+    public void removeRetailerWatcher() {
+        if (null != mOnAutoCompletedRetailerListener) {
+            mOnAutoCompletedRetailerListener.removeListen();
+        }
     }
 
     public void setRetailerListSelection(Integer position) {
@@ -266,7 +272,7 @@ public class DiabloSaleController {
         mSaleCalcView.setShopValue(shop.getName());
     }
 
-    private void setRetailer(Retailer retailer){
+    public void setRetailer(Retailer retailer){
         mSaleCalc.setRetailer(retailer.getId());
         mSaleCalcView.setRetailerValue(retailer.getName());
 
@@ -276,19 +282,19 @@ public class DiabloSaleController {
         resetAccBalance();
     }
 
-    public void setRetailer(Integer retailerId){
-        Retailer r = Profile.instance().getRetailerById(retailerId);
-        setRetailer(r);
-    }
+//    public void setRetailer(Integer retailerId){
+//        Retailer r = Profile.instance().getRetailerById(retailerId);
+//        setRetailer(r);
+//    }
 
-    public void setRetailer(Integer retailerId, final List<Retailer> retailers){
-        for (Retailer r: retailers) {
-            if (r.getId().equals(retailerId)) {
-                setRetailer(r);
-                break;
-            }
-        }
-    }
+//    public void setRetailer(Integer retailerId, final List<Retailer> retailers){
+//        for (Retailer r: retailers) {
+//            if (r.getId().equals(retailerId)) {
+//                setRetailer(r);
+//                break;
+//            }
+//        }
+//    }
 
     public void setSaleInfo(Integer total, Integer sell, Integer reject) {
         mSaleCalc.setTotal(Math.abs(sell) + Math.abs(reject));

@@ -1,6 +1,5 @@
 package com.diablo.dt.diablo.fragment;
 
-
 import static com.diablo.dt.diablo.model.sale.SaleUtils.getSaleStocks;
 
 import android.os.Bundle;
@@ -57,12 +56,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SaleInUpdate#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SaleInUpdate extends Fragment {
+public class SaleOutUpdate extends Fragment {
     private final static String LOG_TAG = "SaleInUpdate:";
     private final static DiabloUtils UTILS = DiabloUtils.instance();
 
@@ -87,12 +81,11 @@ public class SaleInUpdate extends Fragment {
 
     private StockSelect.OnNoFreeStockSelectListener mNoFreeStockListener;
     private Integer mBackFrom = R.string.back_from_unknown;
-
-    // old
     private SaleCalc mOldSaleCalc;
+
     private List<SaleStock> mOldSaleStocks;
 
-    private final SaleInUpdateHandler mHandler = new SaleInUpdateHandler(this);
+    private final SaleOutUpdateHandler mHandler = new SaleOutUpdateHandler(this);
 
     public void setNoFreeStockSelectListener(StockSelect.OnNoFreeStockSelectListener listener){
         mNoFreeStockListener = listener;
@@ -102,8 +95,21 @@ public class SaleInUpdate extends Fragment {
         mBackFrom = form;
     }
 
-    public SaleInUpdate() {
+    public SaleOutUpdate() {
         // Required empty public constructor
+    }
+
+    public void init() {
+        mLastRSN = mRSN;
+        mMatchStocks = Profile.instance().getMatchStocks();
+        mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
+        mButtons.get(R.id.sale_out_update_save).enable();
+        if (null != mSaleTableController) {
+            mSaleTableController.clear();
+        }
+        mSaleTableController = new DiabloSaleTableController ((TableLayout)mFragment.findViewById(R.id.t_sale_out));
+        initCalcView(mFragment);
+        getSaleInfoFromServer();
     }
 
     private Retailer.OnRetailerChangeListener mOnRetailerChangeListener = new Retailer.OnRetailerChangeListener() {
@@ -125,19 +131,6 @@ public class SaleInUpdate extends Fragment {
             mSaleCalcController.setRetailerWatcher(getContext());
         }
     };
-
-    public void init() {
-        mLastRSN = mRSN;
-        mMatchStocks = Profile.instance().getMatchStocks();
-        mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
-        mButtons.get(R.id.sale_in_update_save).enable();
-        if (null != mSaleTableController) {
-            mSaleTableController.clear();
-        }
-        mSaleTableController = new DiabloSaleTableController ((TableLayout)mFragment.findViewById(R.id.t_sale));
-        initCalcView(mFragment);
-        getSaleInfoFromServer();
-    }
 
     public void setRSN(String rsn) {
         this.mRSN = rsn;
@@ -162,7 +155,7 @@ public class SaleInUpdate extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         initTitle();
         // Inflate the layout for this fragment
-        mFragment = inflater.inflate(R.layout.fragment_sale_in_update, container, false);
+        mFragment = inflater.inflate(R.layout.fragment_sale_out_update, container, false);
 
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
@@ -172,11 +165,11 @@ public class SaleInUpdate extends Fragment {
 
         // create head
         mLabels = SaleUtils.createSaleLabelsFromTitle(getContext());
-        ((TableLayout)mFragment.findViewById(R.id.t_sale_head))
+        ((TableLayout)mFragment.findViewById(R.id.t_sale_out_head))
             .addView(SaleUtils.createTableHeadFromLabels(getContext(), mLabels));
 
         mButtons = new SparseArray<>();
-        mButtons.put(R.id.sale_in_update_save, new DiabloButton(getContext(), R.id.sale_in_update_save));
+        mButtons.put(R.id.sale_out_update_save, new DiabloButton(getContext(), R.id.sale_out_update_save));
 
         init();
 
@@ -185,26 +178,21 @@ public class SaleInUpdate extends Fragment {
 
     private void initCalcView(View view) {
         mSaleCalcView = new DiabloSaleCalcView();
-        // retailer
-        mSaleCalcView.setViewBalance(view.findViewById(R.id.sale_balance));
-        mSaleCalcView.setViewAccBalance(view.findViewById(R.id.sale_accbalance));
-        mSaleCalcView.setViewRetailer(view.findViewById(R.id.sale_select_retailer));
-        mSaleCalcView.setViewShop(view.findViewById(R.id.sale_selected_shop));
 
-        mSaleCalcView.setViewDatetime(view.findViewById(R.id.sale_selected_date));
-        mSaleCalcView.setViewEmployee(view.findViewById(R.id.sale_select_employee));
-        mSaleCalcView.setViewExtraCostType(view.findViewById(R.id.sale_select_extra_cost));
-        mSaleCalcView.setViewExtraCost(view.findViewById(R.id.sale_extra_cost));
+        mSaleCalcView.setViewRetailer(view.findViewById(R.id.sale_out_select_retailer));
+        mSaleCalcView.setViewShop(view.findViewById(R.id.sale_out_selected_shop));
+        mSaleCalcView.setViewDatetime(view.findViewById(R.id.sale_out_selected_date));
+        mSaleCalcView.setViewEmployee(view.findViewById(R.id.sale_out_select_employee));
 
-        mSaleCalcView.setViewComment(view.findViewById(R.id.sale_comment));
-        mSaleCalcView.setViewHasPay(view.findViewById(R.id.sale_has_pay));
-        mSaleCalcView.setViewShouldPay(view.findViewById(R.id.sale_should_pay));
-        mSaleCalcView.setViewSaleTotal(view.findViewById(R.id.sale_total));
+        mSaleCalcView.setViewSaleTotal(view.findViewById(R.id.sale_out_total));
+        mSaleCalcView.setViewBalance(view.findViewById(R.id.sale_out_balance));
+        mSaleCalcView.setViewShouldPay(view.findViewById(R.id.sale_out_should_pay));
+        mSaleCalcView.setViewExtraCostType(view.findViewById(R.id.sale_out_select_extra_cost));
 
-        mSaleCalcView.setViewCash(view.findViewById(R.id.sale_cash));
-        mSaleCalcView.setViewCard(view.findViewById(R.id.sale_card));
-        mSaleCalcView.setViewWire(view.findViewById(R.id.sale_wire));
-        mSaleCalcView.setViewVerificate(view.findViewById(R.id.sale_verificate));
+        mSaleCalcView.setViewComment(view.findViewById(R.id.sale_out_comment));
+        mSaleCalcView.setViewAccBalance(view.findViewById(R.id.sale_out_accbalance));
+        mSaleCalcView.setViewVerificate(view.findViewById(R.id.sale_out_verificate));
+        mSaleCalcView.setViewExtraCost(view.findViewById(R.id.sale_out_extra_cost));
     }
 
     private void buildContent(SaleCalc calc, final List<SaleStock> stocks) {
@@ -213,18 +201,7 @@ public class SaleInUpdate extends Fragment {
 
         mSelectPrice = UTILS.toInteger(
             Profile.instance().getConfig(calc.getShop(), DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
-
-        // copy the retailer
-//        List<Retailer> retailers = new ArrayList<>();
-//        for (Retailer r: Profile.instance().getRetailers()) {
-//            if (r.getId().equals(calc.getRetailer())) {
-//                retailers.add(new Retailer(r, calc.getBalance()));
-//            } else {
-//                retailers.add(new Retailer(r));
-//            }
-//        }
-
-        // mSaleCalcController.setRetailer(calc.getRetailer(), retailers);
+        
         mSaleCalcController.setShop(calc.getShop());
         mSaleCalcController.setDatetime(calc.getDatetime());
 
@@ -234,11 +211,7 @@ public class SaleInUpdate extends Fragment {
         mSaleCalcController.setEmployeeWatcher();
         mSaleCalcController.setCommentWatcher();
 
-        mSaleCalcController.setCashWatcher();
-        mSaleCalcController.setCardWatcher();
-        mSaleCalcController.setWireWatcher();
         mSaleCalcController.setVerificateWatcher();
-
         mSaleCalcController.setExtraCostWatcher();
         mSaleCalcController.setExtraCostTypeWatcher();
 
@@ -343,7 +316,7 @@ public class SaleInUpdate extends Fragment {
                         // enable amount focus
                         cell.setCellFocusable(true);
                         cell.requestFocus();
-                        cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
+                        cell.setInputType(InputType.TYPE_CLASS_NUMBER);
                         row.getCell(R.string.good).setCellFocusable(false);
                     } else {
                         switchToStockSelectFrame(controller.getModel(), R.string.add);
@@ -360,13 +333,13 @@ public class SaleInUpdate extends Fragment {
     private void switchToStockSelectFrame(SaleStock stock, Integer action) {
         Integer shop = mSaleCalcController.getShop();
         Integer retailer = mSaleCalcController.getRetailer();
-        SaleUtils.switchToStockSelectFrame(stock, action, DiabloEnum.SALE_IN_UPDATE, retailer, shop, this);
+        SaleUtils.switchToStockSelectFrame(stock, action, DiabloEnum.SALE_OUT_UPDATE, retailer, shop, this);
     }
 
-    private static class SaleInUpdateHandler extends Handler {
+    private static class SaleOutUpdateHandler extends Handler {
         WeakReference<Fragment> mFragment;
 
-        SaleInUpdateHandler(Fragment fragment){
+        SaleOutUpdateHandler(Fragment fragment){
             mFragment = new WeakReference<>(fragment);
         }
 
@@ -397,7 +370,7 @@ public class SaleInUpdate extends Fragment {
                     }
                 }
 
-                final SaleInUpdate f = ((SaleInUpdate)mFragment.get());
+                final SaleOutUpdate f = ((SaleOutUpdate) mFragment.get());
 
                 if (DiabloEnum.STARTING_SALE.equals(stock.getState())) {
                     if (0 != stock.getSaleTotal()) {
@@ -418,11 +391,11 @@ public class SaleInUpdate extends Fragment {
     }
 
     public void calcShouldPay(){
-        mSaleTableController.calcSaleInShouldPay(mSaleCalcController);
+        mSaleTableController.calcSaleOutShouldPay(mSaleCalcController);
     }
 
     private void initTitle() {
-        String title = getResources().getString(R.string.sale_in_update);
+        String title = getResources().getString(R.string.sale_out_update);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
     }
 
@@ -458,7 +431,7 @@ public class SaleInUpdate extends Fragment {
         }
     }
 
-    private void getSaleInfoFromServer(){
+    private void getSaleInfoFromServer() {
         WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
         Call<GetSaleNewResponse> call = face.getSale(Profile.instance().getToken(), mRSN);
 
@@ -499,6 +472,8 @@ public class SaleInUpdate extends Fragment {
         mOldSaleCalc.setExtraCostType(detail.getEPayType());
         mOldSaleCalc.setExtraCost(detail.getEPay());
 
+        mOldSaleCalc.setTotal(Math.abs(detail.getTotal()));
+
         mOldSaleStocks  = new ArrayList<>();
         Integer orderId = 0;
         for (GetSaleNewResponse.SaleNote n: notes) {
@@ -519,15 +494,15 @@ public class SaleInUpdate extends Fragment {
                 s.setFinalPrice(n.getFinalPrice());
 
                 SaleStockAmount amount = new SaleStockAmount(n.getColor(), n.getSize());
-                amount.setSellCount(n.getSaleTotal());
-                s.setSaleTotal(n.getSaleTotal());
+                amount.setSellCount(Math.abs(n.getSaleTotal()));
+                s.setSaleTotal(Math.abs(n.getSaleTotal()));
 
                 s.addAmount(amount);
                 mOldSaleStocks.add(s);
             } else {
                 SaleStockAmount amount = new SaleStockAmount(n.getColor(), n.getSize());
                 amount.setSellCount(n.getSaleTotal());
-                stock.setSaleTotal(stock.getSaleTotal() + n.getSaleTotal());
+                stock.setSaleTotal(stock.getSaleTotal() + Math.abs(n.getSaleTotal()));
                 stock.addAmount(amount);
             }
         }
@@ -542,16 +517,16 @@ public class SaleInUpdate extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.action_on_sale_in_update, menu);
+        inflater.inflate(R.menu.action_on_sale_out_update, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.sale_in_update_back:
+            case R.id.sale_out_update_back:
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
                 break;
-            case R.id.sale_in_update_save:
+            case R.id.sale_out_update_save:
                 startUpdate();
                 break;
             default:
@@ -559,7 +534,7 @@ public class SaleInUpdate extends Fragment {
                 break;
 
         }
-        
+
         return true;
     }
 
@@ -677,7 +652,7 @@ public class SaleInUpdate extends Fragment {
 
         // get delete
         for (SaleStock oldStock: mOldSaleStocks) {
-            SaleStock found = SaleUtils.getSaleStocks(newSaleStocks, oldStock.getStyleNumber(), oldStock.getBrandId());
+            SaleStock found = getSaleStocks(newSaleStocks, oldStock.getStyleNumber(), oldStock.getBrandId());
             if (null == found) {
                 SaleStock delete = new SaleStock(oldStock);
                 delete.setOperation(DiabloEnum.DELETE_THE_STOCK);
@@ -712,7 +687,7 @@ public class SaleInUpdate extends Fragment {
                     NewSaleRequest.DiabloSaleStockAmount saleAmount = new NewSaleRequest.DiabloSaleStockAmount();
                     saleAmount.setColorId(a.getColorId());
                     saleAmount.setSize(a.getSize());
-                    saleAmount.setCount(a.getSellCount());
+                    saleAmount.setCount(-a.getSellCount());
                     saleAmount.setOperation(a.getOperation());
                     uAmounts.add(saleAmount);
                 }
@@ -728,7 +703,7 @@ public class SaleInUpdate extends Fragment {
                         NewSaleRequest.DiabloSaleStockAmount saleAmount = new NewSaleRequest.DiabloSaleStockAmount();
                         saleAmount.setColorId(a.getColorId());
                         saleAmount.setSize(a.getSize());
-                        saleAmount.setSellCount(a.getSellCount());
+                        saleAmount.setSellCount(-a.getSellCount());
                         saleAmount.setOperation(a.getOperation());
                         uAmounts.add(saleAmount);
                     }
@@ -736,7 +711,7 @@ public class SaleInUpdate extends Fragment {
                 d.setAmount(uAmounts);
             }
 
-            d.setSaleTotal(u.getSaleTotal());
+            d.setSaleTotal(-u.getSaleTotal());
             d.setFdiscount(u.getDiscount());
             d.setFprice(u.getFinalPrice());
             d.setPath(u.getPath());
@@ -766,7 +741,7 @@ public class SaleInUpdate extends Fragment {
         NewSaleRequest.DiabloSaleCalc dCalc = new NewSaleRequest.DiabloSaleCalc();
 
         SaleCalc calc = mSaleCalcController.getSaleCalc();
-        dCalc.setRsnId(mRSNId);
+        dCalc.setRsnId(mRSNId );
         dCalc.setRsn(mRSN);
         dCalc.setRetailer(calc.getRetailer());
         dCalc.setShop(calc.getShop());
@@ -779,20 +754,20 @@ public class SaleInUpdate extends Fragment {
         dCalc.setWire(calc.getWire());
         dCalc.setVerificate(calc.getVerificate());
         dCalc.setExtraCost(calc.getExtraCost());
-        dCalc.setShouldPay(calc.getShouldPay());
+        dCalc.setShouldPay(-calc.getShouldPay());
         dCalc.setHasPay(calc.getHasPay());
         dCalc.setComment(calc.getComment());
 
         dCalc.setOldRetailer(mOldSaleCalc.getRetailer());
         dCalc.setOldBalance(mOldSaleCalc.getBalance());
         dCalc.setOldVerifyPay(mOldSaleCalc.getVerificate());
-        dCalc.setOldShouldPay(mOldSaleCalc.getShouldPay());
+        dCalc.setOldShouldPay(-mOldSaleCalc.getShouldPay());
         dCalc.setOldHasPay(mOldSaleCalc.getHasPay());
         dCalc.setOldDatetime(mOldSaleCalc.getDatetime());
         dCalc.setMode(mOldSaleCalc.getSaleType());
         dCalc.setSysRetailer(calc.getRetailer().equals(mSysRetailer));
 
-        dCalc.setTotal(calc.getTotal());
+        dCalc.setTotal(-calc.getTotal());
 
         saleRequest.setSaleCalc(dCalc);
 
@@ -805,7 +780,7 @@ public class SaleInUpdate extends Fragment {
 
             new DiabloAlertDialog(
                 getContext(),
-                getResources().getString(R.string.sale_in_update),
+                getResources().getString(R.string.sale_out_update),
                 DiabloError.getInstance().getError(2699)).create();
 
         } else {
@@ -814,17 +789,14 @@ public class SaleInUpdate extends Fragment {
     }
 
     private void startRequest(NewSaleRequest request) {
-        mButtons.get(R.id.sale_in_update_save).disable();
+        mButtons.get(R.id.sale_out_update_save).disable();
 
         final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
         Call<com.diablo.dt.diablo.response.Response> call = face.updateSale(Profile.instance().getToken(), request);
-
         call.enqueue(new Callback<com.diablo.dt.diablo.response.Response>() {
             @Override
             public void onResponse(Call<com.diablo.dt.diablo.response.Response> call,
                                    Response<com.diablo.dt.diablo.response.Response> response) {
-                // mButtons.get(R.id.sale_out_save).enable();
-
                 final com.diablo.dt.diablo.response.Response res = response.body();
                 if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
                     // refresh balance
@@ -838,9 +810,9 @@ public class SaleInUpdate extends Fragment {
 //                                + mSaleCalcController.getSaleCalc().getBalance());
 //                    } else {
 //                        // back to old
-//                        oldRetailer.setBalance(oldRetailer.getBalance() + mOldSaleCalc.getBalance());
+//                        oldRetailer.setBalance(oldRetailer.getBalance() - mOldSaleCalc.getBalance());
 //                        // reset new
-//                        newRetailer.setBalance(newRetailer.getBalance() - mSaleCalcController.getSaleCalc().getBalance());
+//                        newRetailer.setBalance(newRetailer.getBalance() + mSaleCalcController.getSaleCalc().getBalance());
 //                    }
 
                     // reset the controller
@@ -848,19 +820,19 @@ public class SaleInUpdate extends Fragment {
                     new DiabloAlertDialog(
                         getContext(),
                         false,
-                        getResources().getString(R.string.sale_in_update),
-                        getContext().getString(R.string.sale_in_update_success) + mRSN,
+                        getResources().getString(R.string.sale_out_update),
+                        getContext().getString(R.string.sale_out_update_success) + mRSN,
                         new DiabloAlertDialog.OnOkClickListener() {
                             @Override
                             public void onOk() {
                                 // reset again to make sure clear certainly
                                 mLastRSN = DiabloEnum.DIABLO_INVALID_RSN;
-                                SaleUtils.switchToSlideMenu(SaleInUpdate.this, DiabloEnum.TAG_SALE_DETAIL);
+                                SaleUtils.switchToSlideMenu(SaleOutUpdate.this, DiabloEnum.TAG_SALE_DETAIL);
                             }
                         }
                     ).create();
                 } else {
-                    mButtons.get(R.id.sale_in_update_save).enable();
+                    mButtons.get(R.id.sale_out_update_save).enable();
                     Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
                     String extraMessage = res == null ? "" : res.getError();
                     new DiabloAlertDialog(
@@ -872,10 +844,10 @@ public class SaleInUpdate extends Fragment {
 
             @Override
             public void onFailure(Call<com.diablo.dt.diablo.response.Response> call, Throwable t) {
-                mButtons.get(R.id.sale_in_update_save).enable();
+                mButtons.get(R.id.sale_out_update_save).enable();
                 new DiabloAlertDialog(
                     getContext(),
-                    getResources().getString(R.string.sale_in_update),
+                    getResources().getString(R.string.sale_out_update),
                     DiabloError.getInstance().getError(99)).create();
             }
         });

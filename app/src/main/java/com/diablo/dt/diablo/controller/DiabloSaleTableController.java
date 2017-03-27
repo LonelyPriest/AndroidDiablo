@@ -127,8 +127,10 @@ public class DiabloSaleTableController {
         Float   shouldPay = 0f;
 
         for (DiabloSaleRowController controller: mControllers) {
-            total += controller.getSaleTotal();
-            shouldPay += controller.getSalePrice();
+            if (0 != controller.getOrderId()) {
+                total += controller.getSaleTotal();
+                shouldPay += controller.getSalePrice();
+            }
         }
 
         saleController.setSaleInfo(total);

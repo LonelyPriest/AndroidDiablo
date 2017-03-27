@@ -2,6 +2,7 @@ package com.diablo.dt.diablo.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,8 +17,9 @@ public class SpinnerStringAdapter extends ArrayAdapter<String>{
         super(context, resource, items);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         TextView view = (TextView) super.getView(position, convertView, parent);
         view.setTextSize(18);
         view.setTextColor(Color.BLACK);
@@ -26,7 +28,7 @@ public class SpinnerStringAdapter extends ArrayAdapter<String>{
 
     // Affects opened state of the spinner
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
         TextView view = (TextView) super.getDropDownView(position, convertView, parent);
         view.setTextSize(18);
         view.setTextColor(Color.BLACK);

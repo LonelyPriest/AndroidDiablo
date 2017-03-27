@@ -52,6 +52,24 @@
         <!--<item>备注</item>-->
     </string-array>
 
+    <string-array name="thead_sale_detail_note">
+        <item>序号</item>
+        <item>单号</item>
+        <item>客户</item>
+        <item>交易</item>
+        <item>款号</item>
+        <item>品名</item>
+        <item>类型</item>
+        <item>厂商</item>
+        <item>单价</item>
+        <item>折扣</item>
+        <item>数量</item>
+        <item>合计</item>
+        <item>日期</item>
+        <item>店铺</item>
+        <item>店员</item>
+    </string-array>
+
     <string-array name="thead_sale">
         <item>序号</item>
         <item>货号</item>
@@ -120,6 +138,10 @@
 
     <string name="free_color">均码</string>
 
+    <string name="style_number">款号</string>
+    <string name="good_type">类型</string>
+    <string name="firm">厂商</string>
+
     <string name="activity_title_about_us">About Us</string>
     <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="action_clear_all">Clear All</string>
@@ -154,6 +176,7 @@
     <string name="error_style_number">明细未知，请删除后重新添加</string>
     <string name="network_invalid">网络故障，请检查网络连接情况</string>
     <string name="internal_error">系统内部错误，请重试或联系服务人员</string>
+    <string name="authen_error">操作鉴权失败</string>
 
     <string name="print_wrong_printer_sn">"打印机编号错误"</string>
     <string name="print_failed_to_deliver_recode">"服务器处理订单失败"</string>
@@ -178,6 +201,7 @@
     <string name="sale_success">开单成功，单号：</string>
     <string name="sale_start_print_or_not">，是否打印销售单？</string>
     <string name="sale_in_update_success">销售单编辑成功，单号：</string>
+    <string name="sale_out_update_success">退货单编辑成功，单号：</string>
 
     <!-- toast -->
     <string name="refresh_top">己到达第一页，无需刷新</string>
@@ -203,6 +227,7 @@
     <string name="input_retailer_phone">请输入客户手机，默认为空</string>
     <string name="title_add_retailer">新增客户</string>
     <string name="success_to_add_retailer">新增客户成功</string>
+    <string name="title_get_retailer">查找客户</string>
 
     <!-- hint -->
     <string name="please_input_retailer">客户</string>
@@ -216,6 +241,7 @@
     <string name="delete">删除</string>
     <string name="modify">修改</string>
     <string name="print">打印</string>
+    <string name="note">详情</string>
 
     <string name="btn_sale_in">开单</string>
     <string name="btn_sale_out">退货</string>
@@ -232,6 +258,7 @@
 
     <string name="select_stock">请选择库存</string>
     <string name="sale_in_update">交易单编辑（销售）</string>
+    <string name="sale_out_update">交易单编辑（退货）</string>
 
     <string name="slide_sale_manager">销售管理</string>
     <string name="slide_stock_manager">采购管理</string>

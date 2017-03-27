@@ -280,7 +280,7 @@ public class SaleDetail extends Fragment {
         // mRequest.getCondition().setStartTime("2016-01-01");
         mRequest.getCondition().setEndTime(DiabloUtils.instance().nextDate());
 
-        Call<SaleDetailResponse> call = mSaleRest.filterWSaleNew(Profile.instance().getToken(), mRequest);
+        Call<SaleDetailResponse> call = mSaleRest.filterSaleNew(Profile.instance().getToken(), mRequest);
 
         call.enqueue(new Callback<SaleDetailResponse>() {
             @Override
@@ -450,7 +450,7 @@ public class SaleDetail extends Fragment {
                     row.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
-                            SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
+                            // SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
                             view.showContextMenu();
                             return true;
                         }
@@ -565,7 +565,10 @@ public class SaleDetail extends Fragment {
         SaleDetailResponse.SaleDetail detail = ((SaleDetailResponse.SaleDetail) mCurrentSelectedRow.getTag());
         if (getResources().getString(R.string.modify) == item.getTitle()){
             if (detail.getType().equals(DiabloEnum.SALE_IN)){
-                switchToSaleInUpdateFrame(detail.getRsn(), this);
+                switchToSaleUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_SALE_IN_UPDATE);
+            }
+            else if (detail.getType().equals(DiabloEnum.SALE_OUT)) {
+                switchToSaleUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_SALE_OUT_UPDATE);
             }
 
         }
@@ -576,25 +579,41 @@ public class SaleDetail extends Fragment {
         return true;
     }
 
-   public static void switchToSaleInUpdateFrame(String rsn, Fragment from) {
+   public static void switchToSaleUpdateFrame(String rsn, Fragment from, String tag) {
 
         FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
         // find
-        SaleInUpdate to = (SaleInUpdate) from.getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_IN_UPDATE);
+        Fragment to = from.getFragmentManager().findFragmentByTag(tag);
 
         if (null == to){
             Bundle args = new Bundle();
             args.putString(DiabloEnum.BUNDLE_PARAM_RSN, rsn);
-            to = new SaleInUpdate();
-            to.setArguments(args);
+            if (DiabloEnum.TAG_SALE_IN_UPDATE.equals(tag)) {
+                to = new SaleInUpdate();
+            }
+            else if (DiabloEnum.TAG_SALE_OUT_UPDATE.equals(tag)) {
+                to = new SaleOutUpdate();
+            }
+
+            if (null != to ) {
+                to.setArguments(args);
+            }
         } else {
-            to.setRSN(rsn);
+            if (DiabloEnum.TAG_SALE_IN_UPDATE.equals(tag)) {
+                ((SaleInUpdate)to).setRSN(rsn);
+            }
+            else if (DiabloEnum.TAG_SALE_OUT_UPDATE.equals(tag)) {
+                ((SaleOutUpdate)to).setRSN(rsn);
+            }
         }
 
-        if (!to.isAdded()){
-            transaction.hide(from).add(R.id.frame_container, to, DiabloEnum.TAG_SALE_IN_UPDATE).commit();
-        } else {
-            transaction.hide(from).show(to).commit();
+        if (null != to) {
+            if (!to.isAdded()){
+                transaction.hide(from).add(R.id.frame_container, to, tag).commit();
+            } else {
+                transaction.hide(from).show(to).commit();
+            }
         }
+
     }
 }

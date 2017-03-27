@@ -10,6 +10,7 @@ import android.widget.AutoCompleteTextView;
 
 public class AutoCompleteTextChangeListener {
     private AutoCompleteTextView view;
+    private android.text.TextWatcher  watcher;
 
     public AutoCompleteTextChangeListener(AutoCompleteTextView view) {
         this.view = view;
@@ -20,7 +21,7 @@ public class AutoCompleteTextChangeListener {
     }
 
     public void addListen(final TextWatch watch){
-        this.view.addTextChangedListener(new TextWatcher() {
+        watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -35,6 +36,14 @@ public class AutoCompleteTextChangeListener {
             public void afterTextChanged(Editable editable) {
                 watch.afterTextChanged(editable.toString().trim());
             }
-        });
+        };
+
+        this.view.addTextChangedListener(watcher);
+    }
+
+    public void removeListen() {
+        if (null != watcher) {
+            this.view.removeTextChangedListener(watcher);
+        }
     }
 }

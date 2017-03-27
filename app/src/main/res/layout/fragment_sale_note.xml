@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.diablo.dt.diablo.fragment.SaleNote">
+
+  <TableLayout
+      android:id="@+id/t_sale_note_head"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp">
+  </TableLayout>
+
+  <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+      android:id="@+id/t_sale_note_swipe"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <TableLayout
+          android:id="@+id/t_sale_note"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:stretchColumns="*">
+      </TableLayout>
+    </ScrollView>
+  </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+</LinearLayout>

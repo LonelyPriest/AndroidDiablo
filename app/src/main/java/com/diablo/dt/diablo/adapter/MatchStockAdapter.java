@@ -24,7 +24,7 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     private Integer resource;
     private Integer textViewResourceId;
     private TableRow mRow;
-    private List<MatchStock> originStocks;
+    // private List<MatchStock> originStocks;
     private List<MatchStock> filterStocks;
     private Filter filter;
     // private List<MatchStock> suggestions;

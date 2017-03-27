@@ -168,8 +168,8 @@ public class Retailer {
                         r.setProvince(DiabloEnum.INVALID_INDEX);
                     }
 
-                    Profile.instance().appendRetailer(Retailer.this);
-                    listener.afterAdd(r.id);
+                    // Profile.instance().appendRetailer(Retailer.this);
+                    listener.afterAdd(Retailer.this);
 
                 } else {
                     Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
@@ -191,7 +191,28 @@ public class Retailer {
         });
     }
 
+    public static void getRetailer(final Context context, Integer retailerId, final OnRetailerChangeListener listener) {
+        final RetailerInterface face = RetailerClient.getClient().create(RetailerInterface.class);
+        Call<Retailer> call = face.getRetailer(Profile.instance().getToken(), retailerId);
+
+        call.enqueue(new Callback<Retailer>() {
+            @Override
+            public void onResponse(Call<Retailer> call, Response<Retailer> response) {
+                listener.afterGet(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Retailer> call, Throwable t) {
+                new DiabloAlertDialog(
+                    context,
+                    context.getResources().getString(R.string.title_get_retailer),
+                    DiabloError.getInstance().getError(99)).create();
+            }
+        });
+    }
+
     public interface OnRetailerChangeListener {
-        void afterAdd(Integer retailer);
+        void afterAdd(Retailer retailer);
+        void afterGet(Retailer retailer);
     }
 }

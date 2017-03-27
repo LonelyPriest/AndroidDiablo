@@ -3,11 +3,13 @@ package com.diablo.dt.diablo.rest;
 import com.diablo.dt.diablo.request.LastSaleRequest;
 import com.diablo.dt.diablo.request.NewSaleRequest;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
+import com.diablo.dt.diablo.request.SaleNoteRequest;
 import com.diablo.dt.diablo.response.GetSaleNewResponse;
 import com.diablo.dt.diablo.response.LastSaleResponse;
 import com.diablo.dt.diablo.response.NewSaleResponse;
 import com.diablo.dt.diablo.response.PrintResponse;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
+import com.diablo.dt.diablo.response.SaleNoteResponse;
 
 import java.util.List;
 
@@ -24,8 +26,10 @@ import retrofit2.http.Path;
 
 public interface WSaleInterface {
     @POST("filter_w_sale_new")
-    Call<SaleDetailResponse> filterWSaleNew(
-            @Header("cookie") String token, @Body SaleDetailRequest request);
+    Call<SaleDetailResponse> filterSaleNew(@Header("cookie") String token, @Body SaleDetailRequest request);
+
+    @POST("filter_w_sale_rsn_group")
+    Call<SaleNoteResponse> filterSaleNote(@Header("cookie") String token, @Body SaleNoteRequest request);
 
     @POST("get_last_sale")
     Call<List<LastSaleResponse>> getLastSale(@Header("cookie") String token, @Body LastSaleRequest request);

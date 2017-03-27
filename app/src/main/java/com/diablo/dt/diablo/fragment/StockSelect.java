@@ -112,7 +112,8 @@ public class StockSelect extends Fragment {
                 startModify();
             }
         }
-        else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)) {
+        else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)
+            || DiabloEnum.SALE_OUT_UPDATE.equals(mComeFrom)) {
             getStockFromServer();
         }
 
@@ -422,6 +423,19 @@ public class StockSelect extends Fragment {
         return to;
     }
 
+    private Fragment getSaleOutUpdateFragment() {
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_OUT_UPDATE);
+        if (null != to ) {
+            ((SaleOutUpdate)to).setNoFreeStockSelectListener(mNoFreeStockSelectListener);
+        } else {
+            to = new SaleOutUpdate();
+        }
+
+        ((SaleOutUpdate)to).setBackFrom(R.string.back_from_stock_select);
+
+        return to;
+    }
+
     private void switchFragmentToSaleIn(){
         Fragment to = null;
         if (DiabloEnum.SALE_IN.equals(mComeFrom)) {
@@ -434,6 +448,9 @@ public class StockSelect extends Fragment {
         }
         else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)) {
             to = getSaleInUpdateFragment();
+        }
+        else if (DiabloEnum.SALE_OUT_UPDATE.equals(mComeFrom)) {
+            to = getSaleOutUpdateFragment();
         }
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();

@@ -31,6 +31,7 @@ public class DiabloError {
         mErrors = new SparseArray<>();
         mErrors.put(99, r.getString(R.string.network_invalid));
         mErrors.put(500, r.getString(R.string.internal_error));
+        mErrors.put(598, r.getString(R.string.authen_error));
         mErrors.put(1101, r.getString(R.string.invalid_name_password));
         mErrors.put(1199, r.getString(R.string.network_unreachable));
 

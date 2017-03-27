@@ -392,6 +392,8 @@ public class NewSaleRequest {
         /**
          * used only update
          */
+        @SerializedName("id")
+        private Integer rsnId;
         @SerializedName("rsn")
         private String rsn;
         @SerializedName("old_retailer")
@@ -517,6 +519,10 @@ public class NewSaleRequest {
         /**
          * only used update
          */
+        public void setRsnId(Integer rsnId) {
+            this.rsnId = rsnId;
+        }
+
         public void setRsn(String rsn) {
             this.rsn = rsn;
         }

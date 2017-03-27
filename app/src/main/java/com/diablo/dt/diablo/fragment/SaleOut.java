@@ -31,6 +31,7 @@ import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleCalc;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
@@ -145,8 +146,6 @@ public class SaleOut extends Fragment {
         // base setting
         mMatchStocks = Profile.instance().getMatchStocks();
 
-
-
         initLabel();
         ((TableLayout)view.findViewById(R.id.t_sale_out_head)).addView(addHead());
 
@@ -170,13 +169,15 @@ public class SaleOut extends Fragment {
             Profile.instance().getConfig(mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
 
 
+        Retailer.getRetailer(getContext(), retailerId, mOnRetailerChangeListener);
+
         mSaleCalcController = new DiabloSaleController(new SaleCalc(DiabloEnum.SALE_OUT), mSaleCalcView);
-        mSaleCalcController.setRetailer(retailerId);
+        // mSaleCalcController.setRetailer(retailerId);
         mSaleCalcController.setShop(mLoginShop);
         mSaleCalcController.setDatetime(DiabloUtils.getInstance().currentDatetime());
 
         // listener
-        mSaleCalcController.setRetailerWatcher(getContext(), Profile.instance().getRetailers());
+        // mSaleCalcController.setRetailerWatcher(getContext());
         mSaleCalcController.setEmployeeWatcher();
         mSaleCalcController.setCommentWatcher();
         mSaleCalcController.setVerificateWatcher();
@@ -193,6 +194,20 @@ public class SaleOut extends Fragment {
 
         mButtons.get(R.id.sale_out_save).disable();
     }
+
+    private Retailer.OnRetailerChangeListener mOnRetailerChangeListener = new Retailer.OnRetailerChangeListener() {
+        @Override
+        public void afterAdd(Retailer retailer) {
+
+        }
+
+        @Override
+        public void afterGet(Retailer retailer) {
+            mSaleCalcController.setRetailer(retailer);
+            mSaleCalcController.removeRetailerWatcher();
+            mSaleCalcController.setRetailerWatcher(getContext());
+        }
+    };
 
     private TableRow addHead(){
         TableRow row = new TableRow(getContext());

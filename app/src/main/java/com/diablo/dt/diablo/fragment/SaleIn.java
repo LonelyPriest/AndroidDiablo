@@ -217,6 +217,22 @@ public class SaleIn extends Fragment{
         return view;
     }
 
+    private Retailer.OnRetailerChangeListener mOnRetailerChangeListener = new Retailer.OnRetailerChangeListener() {
+        @Override
+        public void afterAdd(Retailer retailer) {
+            mSaleCalcController.removeRetailerWatcher();
+            mSaleCalcController.setRetailer(retailer);
+            mSaleCalcController.setRetailerWatcher(getContext());
+        }
+
+        @Override
+        public void afterGet(Retailer retailer) {
+            mSaleCalcController.setRetailer(retailer);
+            mSaleCalcController.removeRetailerWatcher();
+            mSaleCalcController.setRetailerWatcher(getContext());
+        }
+    };
+
     public void addRetailer(LayoutInflater inflater, View parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -230,15 +246,8 @@ public class SaleIn extends Fragment{
                     String name = ((EditText) view.findViewById(R.id.retailer_name)).getText().toString().trim();
                     String phone = ((EditText) view.findViewById(R.id.retailer_phone)).getText().toString().trim();
 
-                    Retailer addedRetailer = new Retailer(name, phone);
-                    addedRetailer.newRetailer(getContext(), new Retailer.OnRetailerChangeListener() {
-                        @Override
-                        public void afterAdd(Integer retailer) {
-                            mSaleCalcController.setRetailer(retailer);
-                            mSaleCalcController.setRetailerWatcher(getContext(), Profile.instance().getRetailers());
-                            mSaleCalcController.setRetailerListSelection(0);
-                        }
-                    });
+                    final Retailer addedRetailer = new Retailer(name, phone);
+                    addedRetailer.newRetailer(getContext(), mOnRetailerChangeListener);
                 }
             })
             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -286,7 +295,7 @@ public class SaleIn extends Fragment{
 
         mSaleCalcController = new DiabloSaleController(calc, mSaleCalcView);
 
-        mSaleCalcController.setRetailer(retailer);
+        Retailer.getRetailer(getContext(), retailer, mOnRetailerChangeListener);
         mSaleCalcController.setShop(shop);
         mSaleCalcController.setDatetime(DiabloUtils.getInstance().currentDatetime());
 
@@ -298,7 +307,7 @@ public class SaleIn extends Fragment{
         });
 
         // listener
-        mSaleCalcController.setRetailerWatcher(getContext(), Profile.instance().getRetailers());
+        // mSaleCalcController.setRetailerWatcher(getContext());
         mSaleCalcController.setEmployeeWatcher();
         mSaleCalcController.setCommentWatcher();
 
@@ -1268,8 +1277,8 @@ public class SaleIn extends Fragment{
                 final NewSaleResponse res = response.body();
                 if (DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
                     // refresh balance
-                    SaleCalc calc = mSaleCalcController.getSaleCalc();
-                    Profile.instance().getRetailerById(calc.getRetailer()).setBalance(calc.getAccBalance());
+//                    SaleCalc calc = mSaleCalcController.getSaleCalc();
+//                    Profile.instance().getRetailerById(calc.getRetailer()).setBalance(calc.getAccBalance());
                     // delete draft
                     dbInstance.clearRetailerSaleStock(mSaleCalcController.getSaleCalc());
                     init();
