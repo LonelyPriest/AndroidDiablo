@@ -1,7 +1,7 @@
 package com.diablo.dt.diablo.response;
 
-import com.diablo.dt.diablo.entity.AuthenRight;
-import com.diablo.dt.diablo.entity.AuthenShop;
+import com.diablo.dt.diablo.entity.DiabloRight;
+import com.diablo.dt.diablo.entity.DiabloShop;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -24,9 +24,9 @@ public class LoginUserInfoResponse extends Response{
     Integer loginType;
 
     @SerializedName("right")
-    List<AuthenRight> rights;
+    List<DiabloRight> rights;
     @SerializedName("shop")
-    List<AuthenShop> shops;
+    List<DiabloShop> shops;
 
     public LoginUserInfoResponse(){
         super();
@@ -73,11 +73,11 @@ public class LoginUserInfoResponse extends Response{
     }
 
 
-    public List<AuthenRight> getRights() {
+    public List<DiabloRight> getRights() {
         return this.rights;
     }
 
-    public List<AuthenShop> getShops(){
+    public List<DiabloShop> getShops(){
         return this.shops;
     }
 }

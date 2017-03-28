@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DiabloDBOpenHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "diablo";
-    private static final Integer DB_VERSION = 1;
+    private static final Integer DB_VERSION = 2;
 
     private static DiabloDBOpenHelper diabloDBHelper;
 
@@ -62,15 +62,32 @@ public class DiabloDBOpenHelper extends SQLiteOpenHelper {
             + ", total integer not null"
             + ", unique(retailer, shop, style_number, brand, color, size) ON CONFLICT REPLACE)";
 
+        String User = "create table if not exists user ("
+            + "_id integer primary key autoincrement"
+            + ", name text not null"
+            + ", password text not null"
+            + ", unique(name) ON CONFLICT REPLACE)";
+
         db.execSQL(WSaleCalc);
         db.execSQL(WSaleStock);
         db.execSQL(WSaleStockAmount);
+        db.execSQL(User);
 
 
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        String WSale = "drop table if exists w_sale";
+        String WSaleDetail = "drop table if exists w_sale_detail";
+        String WSaleDetailAmount = "drop table if exists  w_sale_detail_amount";
+        String User = "drop table if exists user";
 
+        db.execSQL(WSale);
+        db.execSQL(WSaleDetail);
+        db.execSQL(WSaleDetailAmount);
+        db.execSQL(User);
+
+        onCreate(db);
     }
 }

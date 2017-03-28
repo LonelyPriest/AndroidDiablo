@@ -22,8 +22,8 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.SaleDetail;
-import com.diablo.dt.diablo.fragment.SaleNote;
 import com.diablo.dt.diablo.fragment.SaleIn;
+import com.diablo.dt.diablo.fragment.SaleNote;
 import com.diablo.dt.diablo.fragment.SaleOut;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
@@ -31,8 +31,6 @@ import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -199,15 +197,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // transaction.hide(from);
-
-        // hide others
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (Integer i=0; null != fragments && i<fragments.size(); i++){
-            Fragment fragment = fragments.get(i);
-            if ( null != fragment && !fragment.getTag().equals(toTag) ){
-                transaction.hide(fragment);
+        Fragment fragment = null;
+        for (int i=0; i<mNavTagMap.size(); i++) {
+            NavigationTag navTag = mNavTagMap.get(i);
+            if (!navTag.getTag().equals(toTag)) {
+                fragment = getSupportFragmentManager().findFragmentByTag(navTag.getTag());
+                if (null != fragment) {
+                    transaction.hide(fragment);
+                }
             }
         }
+
+        // hide others
+        fragment = getSupportFragmentManager().findFragmentByTag(DiabloEnum.TAG_STOCK_SELECT);
+        if (null != fragment) {
+            transaction.hide(fragment);
+        }
+
+//        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+//        for (Integer i=0; null != fragments && i<fragments.size(); i++){
+//            Fragment fragment = fragments.get(i);
+//            if ( null != fragment && !fragment.getTag().equals(toTag) ){
+//                transaction.hide(fragment);
+//            }
+//        }
 
         transaction.commitAllowingStateLoss();
     }
@@ -268,11 +281,14 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_sale_note:
                         selectMenuItem(3);
                         break;
-                    case R.id.nav_stock_in:
-                        selectMenuItem(4);
-                        break;
+//                    case R.id.nav_stock_in:
+//                        selectMenuItem(4);
+//                        break;
                     case R.id.nav_logout:
                         logout();
+                        break;
+                    case R.id.nav_clear_login_user:
+                        DiabloDBManager.instance().clearUser();
                         break;
 //                    case R.id.nav_about_us:
 //                        // launch new intent instead of loading fragment
@@ -411,8 +427,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(LOG_TAG, "onDestroy called");
-        DiabloDBManager.instance().close();
-        Profile.instance().clear();
+//        DiabloDBManager.instance().close();
+//        Profile.instance().clear();
     }
 
 
@@ -425,6 +441,10 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<com.diablo.dt.diablo.response.Response> call,
                                    Response<com.diablo.dt.diablo.response.Response> response) {
                 Log.d(LOG_TAG, "success to destroy session");
+                // clear information
+                DiabloDBManager.instance().close();
+                Profile.instance().clear();
+
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -2,55 +2,68 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-    <item android:title="@string/slide_sale_manager">
-        <menu>
-            <item
-                android:id="@+id/nav_sale_in"
-                android:icon="@drawable/ic_add_shopping_cart_black_24dp"
-                android:title="@string/nav_sale_in" />
-            <item
-                android:id="@+id/nav_sale_out"
-                android:icon="@drawable/ic_remove_shopping_cart_black_24dp"
-                android:title="@string/nav_sale_out" />
-            <item
-                android:id="@+id/nav_sale_detail"
-                android:icon="@drawable/ic_whatshot_black_24dp"
-                android:title="@string/nav_sale_detail" />
+        <item android:title="@string/slide_sale_manager">
+            <menu>
+                <item
+                    android:id="@+id/nav_sale_in"
+                    android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+                    android:title="@string/nav_sale_in" />
+                <item
+                    android:id="@+id/nav_sale_out"
+                    android:icon="@drawable/ic_remove_shopping_cart_black_24dp"
+                    android:title="@string/nav_sale_out" />
+                <item
+                    android:id="@+id/nav_sale_detail"
+                    android:icon="@drawable/ic_whatshot_black_24dp"
+                    android:title="@string/nav_sale_detail" />
 
-            <item
-                android:id="@+id/nav_sale_note"
-                android:icon="@drawable/ic_room_black_24dp"
-                android:title="@string/nav_sale_note" />
-        </menu>
-    </item>
+                <item
+                    android:id="@+id/nav_sale_note"
+                    android:icon="@drawable/ic_room_black_24dp"
+                    android:title="@string/nav_sale_note" />
+            </menu>
+        </item>
 
-    <item android:title="@string/slide_stock_manager">
-        <menu>
-            <item
-                android:id="@+id/nav_stock_in"
-                android:icon="@drawable/ic_add_shopping_cart_black_24dp"
-                android:title="@string/nav_stock_in" />
-            <item
-                android:id="@+id/nav_stock_out"
-                android:icon="@drawable/ic_remove_shopping_cart_black_24dp"
-                android:title="@string/nav_stock_out" />
-            <item
-                android:id="@+id/nav_stock_detail"
-                android:icon="@drawable/ic_whatshot_black_24dp"
-                android:title="@string/nav_stock_detail" />
+        <item android:title="@string/slide_stock_manager">
+            <menu>
+                <item
+                    android:id="@+id/nav_stock_in"
+                    android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+                    android:title="@string/nav_stock_in" />
+                <item
+                    android:id="@+id/nav_stock_out"
+                    android:icon="@drawable/ic_remove_shopping_cart_black_24dp"
+                    android:title="@string/nav_stock_out" />
+                <item
+                    android:id="@+id/nav_stock_detail"
+                    android:icon="@drawable/ic_whatshot_black_24dp"
+                    android:title="@string/nav_stock_detail" />
 
-            <item
-                android:id="@+id/nav_stock_note"
-                android:icon="@drawable/ic_room_black_24dp"
-                android:title="@string/nav_stock_note" />
-        </menu>
-    </item>
+                <item
+                    android:id="@+id/nav_stock_note"
+                    android:icon="@drawable/ic_room_black_24dp"
+                    android:title="@string/nav_stock_note" />
+            </menu>
+        </item>
+
+
+        <item android:title="@string/slide_user_manager">
+            <menu>
+                <item
+                    android:id="@+id/nav_logout"
+                    android:icon="@drawable/ic_directions_bike_black_24dp"
+                    android:title="@string/logout"
+                />
+
+                <item
+                    android:id="@+id/nav_clear_login_user"
+                    android:icon="@drawable/ic_clear_all_black_24dp"
+                    android:title="@string/login_clear"
+                />
+            </menu>
+        </item>
     </group>
 
-    <item
-        android:id="@+id/nav_logout"
-        android:icon="@drawable/ic_directions_bike_black_24dp"
-        android:title="@string/logout"
-    />
+
 
 </menu>

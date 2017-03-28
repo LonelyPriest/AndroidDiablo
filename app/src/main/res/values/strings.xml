@@ -1,273 +1,275 @@
 <resources>
-    <string name="app_name">钱掌柜</string>
+  <string name="app_name">钱掌柜</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="openDrawer">open_drawer</string>
-    <string name="closeDrawer">close_drawer</string>
+  <string name="navigation_drawer_open">Open navigation drawer</string>
+  <string name="navigation_drawer_close">Close navigation drawer</string>
+  <string name="openDrawer">open_drawer</string>
+  <string name="closeDrawer">close_drawer</string>
 
-    <!-- Navigation Drawer menu labels -->
-    <string name="nav_sale_in">销售开单</string>
-    <string name="nav_sale_out">销售退货</string>
-    <string name="nav_sale_detail">交易记录</string>
-    <string name="nav_sale_note">交易明细</string>
+  <!-- Navigation Drawer menu labels -->
+  <string name="nav_sale_in">销售开单</string>
+  <string name="nav_sale_out">销售退货</string>
+  <string name="nav_sale_detail">交易记录</string>
+  <string name="nav_sale_note">交易明细</string>
 
-    <string name="nav_stock_in">采购入库</string>
-    <string name="nav_stock_out">采购退货</string>
-    <string name="nav_stock_detail">采购记录</string>
-    <string name="nav_stock_note">采购明细</string>
+  <string name="nav_stock_in">采购入库</string>
+  <string name="nav_stock_out">采购退货</string>
+  <string name="nav_stock_detail">采购记录</string>
+  <string name="nav_stock_note">采购明细</string>
 
-    <!-- Toolbar titles when navigation menu item is selected -->
-    <string-array name="nav_item_activity_titles">
-        <item>销售开单</item>
-        <item>销售退货</item>
-        <item>交易记录</item>
-        <item>交易明细</item>
+  <!-- Toolbar titles when navigation menu item is selected -->
+  <string-array name="nav_item_activity_titles">
+    <item>销售开单</item>
+    <item>销售退货</item>
+    <item>交易记录</item>
+    <item>交易明细</item>
 
-        <item>采购入库</item>
-        <item>采购退货</item>
-        <item>采购记录</item>
-        <item>采购明细</item>
+    <item>采购入库</item>
+    <item>采购退货</item>
+    <item>采购记录</item>
+    <item>采购明细</item>
 
-    </string-array>
+  </string-array>
 
-    <string-array name="thead_sale_detail">
-        <item>序号</item>
-        <item>单号</item>
-        <item>交易</item>
-        <item>客户</item>
-        <item>数量</item>
-        <item>上欠</item>
-        <item>应付</item>
-        <item>实付</item>
-        <item>核销</item>
-        <!--<item>费用</item>-->
-        <item>累欠</item>
-        <!--<item>现金</item>-->
-        <!--<item>刷卡</item>-->
-        <!--<item>汇款</item>-->
-        <item>日期</item>
-        <item>店铺</item>
-        <item>店员</item>
-        <!--<item>备注</item>-->
-    </string-array>
+  <string-array name="thead_sale_detail">
+    <item>序号</item>
+    <item>单号</item>
+    <item>交易</item>
+    <item>客户</item>
+    <item>数量</item>
+    <item>上欠</item>
+    <item>应付</item>
+    <item>实付</item>
+    <item>核销</item>
+    <!--<item>费用</item>-->
+    <item>累欠</item>
+    <!--<item>现金</item>-->
+    <!--<item>刷卡</item>-->
+    <!--<item>汇款</item>-->
+    <item>日期</item>
+    <item>店铺</item>
+    <item>店员</item>
+    <!--<item>备注</item>-->
+  </string-array>
 
-    <string-array name="thead_sale_detail_note">
-        <item>序号</item>
-        <item>单号</item>
-        <item>客户</item>
-        <item>交易</item>
-        <item>款号</item>
-        <item>品名</item>
-        <item>类型</item>
-        <item>厂商</item>
-        <item>单价</item>
-        <item>折扣</item>
-        <item>数量</item>
-        <item>合计</item>
-        <item>日期</item>
-        <item>店铺</item>
-        <item>店员</item>
-    </string-array>
+  <string-array name="thead_sale_detail_note">
+    <item>序号</item>
+    <item>单号</item>
+    <item>客户</item>
+    <item>交易</item>
+    <item>款号</item>
+    <item>品名</item>
+    <item>类型</item>
+    <item>厂商</item>
+    <item>单价</item>
+    <item>折扣</item>
+    <item>数量</item>
+    <item>合计</item>
+    <item>日期</item>
+    <item>店铺</item>
+    <item>店员</item>
+  </string-array>
 
-    <string-array name="thead_sale">
-        <item>序号</item>
-        <item>货号</item>
-        <item>库存</item>
-        <item>价类型</item>
-        <item>单价</item>
-        <item>折扣</item>
-        <item>折价</item>
-        <item>数量</item>
-        <item>合计</item>
-        <item>备注</item>
-        <!--<item>操作</item>-->
-    </string-array>
+  <string-array name="thead_sale">
+    <item>序号</item>
+    <item>货号</item>
+    <item>库存</item>
+    <item>价类型</item>
+    <item>单价</item>
+    <item>折扣</item>
+    <item>折价</item>
+    <item>数量</item>
+    <item>合计</item>
+    <item>备注</item>
+    <!--<item>操作</item>-->
+  </string-array>
 
-    <string-array name="price_type_on_sale">
-        <item>吊牌价</item>
-        <item>批发价</item>
-        <item>价3</item>
-        <item>价4</item>
-        <item>价5</item>
-    </string-array>
+  <string-array name="price_type_on_sale">
+    <item>吊牌价</item>
+    <item>批发价</item>
+    <item>价3</item>
+    <item>价4</item>
+    <item>价5</item>
+  </string-array>
 
-    <string-array name="sale_type">
-        <item>开单</item>
-        <item>退货</item>
-    </string-array>
+  <string-array name="sale_type">
+    <item>开单</item>
+    <item>退货</item>
+  </string-array>
 
-    <string-array name="extra_cost_on_sale">
-        <item>代付运费</item>
-    </string-array>
+  <string-array name="extra_cost_on_sale">
+    <item>代付运费</item>
+  </string-array>
 
-    <string name="order_id">序号</string>
-    <string name="rsn">单号</string>
-    <string name="trans">交易</string>
-    <string name="shop">店铺</string>
-    <string name="employee">店员</string>
-    <string name="retailer">客户</string>
-    <string name="amount">数量</string>
-    <string name="balance">上欠</string>
-    <string name="should_pay">应付</string>
-    <string name="has_pay">实付</string>
-    <string name="verificate">核销</string>
-    <string name="epay">费用</string>
-    <string name="acc_balance">累欠</string>
-    <string name="cash">现金</string>
-    <string name="card">刷卡</string>
-    <string name="wire">汇款</string>
-    <string name="date">日期</string>
-    <string name="comment">备注</string>
+  <string name="order_id">序号</string>
+  <string name="rsn">单号</string>
+  <string name="trans">交易</string>
+  <string name="shop">店铺</string>
+  <string name="employee">店员</string>
+  <string name="retailer">客户</string>
+  <string name="amount">数量</string>
+  <string name="balance">上欠</string>
+  <string name="should_pay">应付</string>
+  <string name="has_pay">实付</string>
+  <string name="verificate">核销</string>
+  <string name="epay">费用</string>
+  <string name="acc_balance">累欠</string>
+  <string name="cash">现金</string>
+  <string name="card">刷卡</string>
+  <string name="wire">汇款</string>
+  <string name="date">日期</string>
+  <string name="comment">备注</string>
 
-    <string name="good">货号</string>
-    <string name="brand">品名</string>
-    <string name="stock">库存</string>
-    <string name="price_type">价类型</string>
-    <string name="price">单价</string>
-    <string name="discount">折扣</string>
-    <string name="fprice">折价</string>
-    <string name="calculate">合计</string>
-    <string name="operate">操作</string>
+  <string name="good">货号</string>
+  <string name="brand">品名</string>
+  <string name="stock">库存</string>
+  <string name="price_type">价类型</string>
+  <string name="price">单价</string>
+  <string name="discount">折扣</string>
+  <string name="fprice">折价</string>
+  <string name="calculate">合计</string>
+  <string name="operate">操作</string>
 
-    <string name="tag_price">吊牌价</string>
-    <string name="pkg_price">批发价</string>
-    <string name="price3">价3</string>
-    <string name="price4">价4</string>
-    <string name="price5">价5</string>
+  <string name="tag_price">吊牌价</string>
+  <string name="pkg_price">批发价</string>
+  <string name="price3">价3</string>
+  <string name="price4">价4</string>
+  <string name="price5">价5</string>
 
-    <string name="free_color">均码</string>
+  <string name="free_color">均码</string>
 
-    <string name="style_number">款号</string>
-    <string name="good_type">类型</string>
-    <string name="firm">厂商</string>
+  <string name="style_number">款号</string>
+  <string name="good_type">类型</string>
+  <string name="firm">厂商</string>
 
-    <string name="activity_title_about_us">About Us</string>
-    <string name="activity_title_privacy_policy">Privacy Policy</string>
-    <string name="action_clear_all">Clear All</string>
-    <string name="action_logout">Logout</string>
-    <string name="action_mark_all_read">Mark All as Read</string>
-    <string name="privacy_policy">Privacy Policy</string>
+  <string name="activity_title_about_us">About Us</string>
+  <string name="activity_title_privacy_policy">Privacy Policy</string>
+  <string name="action_clear_all">Clear All</string>
+  <string name="action_logout">Logout</string>
+  <string name="action_mark_all_read">Mark All as Read</string>
+  <string name="privacy_policy">Privacy Policy</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="sale_in_fragment">Sale In fragment</string>
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="sale_in_fragment">Sale In fragment</string>
 
-    <string name="diablo_server">http://192.168.0.109:63551/</string>
+  <string name="diablo_server">http://192.168.0.109:63551/</string>
 
-    <!-- Login -->
-    <string name="login">登录</string>
-    <string name="user_login">用户登录</string>
-    <string name="login_name">请输入用户名</string>
-    <string name="login_password">请输入用户密码</string>
-    <string name="logout">注销</string>
+  <!-- Login -->
+  <string name="login">登录</string>
+  <string name="user_login">用户登录</string>
+  <string name="login_name">请输入用户名</string>
+  <string name="login_password">请输入用户密码</string>
+  <string name="logout">注销</string>
+  <string name="login_clear">清除登录信息</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <!-- dialog -->
-    <string name="login_ok">确认</string>
-    <string name="login_cancel">取消</string>
-    <string name="ok">确认</string>
-    <string name="cancel">取消</string>
+  <!-- dialog -->
+  <string name="login_ok">确认</string>
+  <string name="login_cancel">取消</string>
+  <string name="ok">确认</string>
+  <string name="cancel">取消</string>
 
-    <!-- error -->
-    <string name="invalid_name_password">用户名或密码错误</string>
-    <string name="network_unreachable">连接服务器失败，请确认该设备网络连接正常</string>
-    <string name="error_style_number">明细未知，请删除后重新添加</string>
-    <string name="network_invalid">网络故障，请检查网络连接情况</string>
-    <string name="internal_error">系统内部错误，请重试或联系服务人员</string>
-    <string name="authen_error">操作鉴权失败</string>
+  <!-- error -->
+  <string name="invalid_name_password">用户名或密码错误</string>
+  <string name="network_unreachable">连接服务器失败，请确认该设备网络连接正常</string>
+  <string name="error_style_number">明细未知，请删除后重新添加</string>
+  <string name="network_invalid">网络故障，请检查网络连接情况</string>
+  <string name="internal_error">系统内部错误，请重试或联系服务人员</string>
+  <string name="authen_error">操作鉴权失败</string>
 
-    <string name="print_wrong_printer_sn">"打印机编号错误"</string>
-    <string name="print_failed_to_deliver_recode">"服务器处理订单失败"</string>
-    <string name="print_long_content">打印内容太长"</string>
-    <string name="print_error_params">"打印请求参数错误"</string>
-    <string name="print_timeout">打印请求超时，请重试或联系服务人员</string>
-    <string name="print_unknown_error">"未知原因，请系统服务人员"</string>
+  <string name="print_wrong_printer_sn">"打印机编号错误"</string>
+  <string name="print_failed_to_deliver_recode">"服务器处理订单失败"</string>
+  <string name="print_long_content">打印内容太长"</string>
+  <string name="print_error_params">"打印请求参数错误"</string>
+  <string name="print_timeout">打印请求超时，请重试或联系服务人员</string>
+  <string name="print_unknown_error">"未知原因，请系统服务人员"</string>
 
-    <string name="rg_print_failed_and_connect_provider">打印机打印失败，请联系服务人员查找原因</string>
-    <string name="rg_print_not_connect">打印机未连接</string>
-    <string name="rg_print_no_paper">打印机缺纸</string>
-    <string name="rg_print_wrong_state">打印状态未知，请联系服务人员</string>
-    <string name="rg_print_wrong_printer_conn">打印机连接设备不存在，请检查设备编号是否正确</string>
-    <string name="rg_print_lack_size">打印格式缺少尺码，请在打印格式设置中选中尺码</string>
+  <string name="rg_print_failed_and_connect_provider">打印机打印失败，请联系服务人员查找原因</string>
+  <string name="rg_print_not_connect">打印机未连接</string>
+  <string name="rg_print_no_paper">打印机缺纸</string>
+  <string name="rg_print_wrong_state">打印状态未知，请联系服务人员</string>
+  <string name="rg_print_wrong_printer_conn">打印机连接设备不存在，请检查设备编号是否正确</string>
+  <string name="rg_print_lack_size">打印格式缺少尺码，请在打印格式设置中选中尺码</string>
 
-    <string name="update_same">"修改前后信息一致，请重新编辑修改项"</string>
+  <string name="update_same">"修改前后信息一致，请重新编辑修改项"</string>
 
 
-    <!-- message -->
-    <string name="print_success">打印消息发送成功，请等待服务器打印！！</string>
-    <string name="print_failed">打印消息发送失败！！</string>
-    <string name="sale_success">开单成功，单号：</string>
-    <string name="sale_start_print_or_not">，是否打印销售单？</string>
-    <string name="sale_in_update_success">销售单编辑成功，单号：</string>
-    <string name="sale_out_update_success">退货单编辑成功，单号：</string>
+  <!-- message -->
+  <string name="print_success">打印消息发送成功，请等待服务器打印！！</string>
+  <string name="print_failed">打印消息发送失败！！</string>
+  <string name="sale_success">开单成功，单号：</string>
+  <string name="sale_start_print_or_not">，是否打印销售单？</string>
+  <string name="sale_in_update_success">销售单编辑成功，单号：</string>
+  <string name="sale_out_update_success">退货单编辑成功，单号：</string>
 
-    <!-- toast -->
-    <string name="refresh_top">己到达第一页，无需刷新</string>
-    <string name="refresh_bottom">已到达最后一页，无需刷新</string>
-    <string name="draft_exist">该客户有草稿存在，请先行取出，继续操作将会覆盖原有草稿</string>
-    <string name="draft_select">请选择草稿</string>
-    <string name="draft_none">系统无草稿存在</string>
-    <string name="draft_other">系统存在其它用户的草稿，请清除草搞后再操作</string>
-    <string name="draft_clear_success">清除草稿成功</string>
-    <string name="sale_stock_exist">该款号已存在，请重新选择，序号：</string>
-    <string name="fail_to_destroy_token">清除用户Token失败，请人工强制退出系统</string>
-    <string name="title_logout">用户注销</string>
+  <!-- toast -->
+  <string name="refresh_top">己到达第一页，无需刷新</string>
+  <string name="refresh_bottom">已到达最后一页，无需刷新</string>
+  <string name="draft_exist">该客户有草稿存在，请先行取出，继续操作将会覆盖原有草稿</string>
+  <string name="draft_select">请选择草稿</string>
+  <string name="draft_none">系统无草稿存在</string>
+  <string name="draft_other">系统存在其它用户的草稿，请清除草搞后再操作</string>
+  <string name="draft_clear_success">清除草稿成功</string>
+  <string name="sale_stock_exist">该款号已存在，请重新选择，序号：</string>
+  <string name="fail_to_destroy_token">清除用户Token失败，请人工强制退出系统</string>
+  <string name="title_logout">用户注销</string>
 
-    <!-- pagination -->
-    <string name="current_page">当前第</string>
-    <string name="page">页</string>
-    <string name="total_page">共</string>
-    <string name="space_4">" "</string>
-    <string name="colon">：</string>
+  <!-- pagination -->
+  <string name="current_page">当前第</string>
+  <string name="page">页</string>
+  <string name="total_page">共</string>
+  <string name="space_4">" "</string>
+  <string name="colon">：</string>
 
-    <!-- retailer -->
-    <string name="input_retailer_name">请输入客户姓名，不小于二个字符</string>
-    <string name="input_retailer_phone">请输入客户手机，默认为空</string>
-    <string name="title_add_retailer">新增客户</string>
-    <string name="success_to_add_retailer">新增客户成功</string>
-    <string name="title_get_retailer">查找客户</string>
+  <!-- retailer -->
+  <string name="input_retailer_name">请输入客户姓名，不小于二个字符</string>
+  <string name="input_retailer_phone">请输入客户手机，默认为空</string>
+  <string name="title_add_retailer">新增客户</string>
+  <string name="success_to_add_retailer">新增客户成功</string>
+  <string name="title_get_retailer">查找客户</string>
 
-    <!-- hint -->
-    <string name="please_input_retailer">客户</string>
-    <string name="please_input_good">货号</string>
-    <string name="retailer_balance">上欠</string>
-    <string name="retailer_accBalance">累欠</string>
-    <string name="cost_on_sale">费用</string>
+  <!-- hint -->
+  <string name="please_input_retailer">客户</string>
+  <string name="please_input_good">货号</string>
+  <string name="retailer_balance">上欠</string>
+  <string name="retailer_accBalance">累欠</string>
+  <string name="cost_on_sale">费用</string>
 
-    <!-- button -->
-    <string name="add">新增</string>
-    <string name="delete">删除</string>
-    <string name="modify">修改</string>
-    <string name="print">打印</string>
-    <string name="note">详情</string>
+  <!-- button -->
+  <string name="add">新增</string>
+  <string name="delete">删除</string>
+  <string name="modify">修改</string>
+  <string name="print">打印</string>
+  <string name="note">详情</string>
 
-    <string name="btn_sale_in">开单</string>
-    <string name="btn_sale_out">退货</string>
-    <string name="btn_refresh">刷新</string>
-    <string name="btn_money_off">未付</string>
-    <string name="btn_delete">删除</string>
-    <string name="btn_modify">修改</string>
-    <string name="btn_save">保存</string>
-    <string name="btn_draft">草稿</string>
-    <string name="btn_next">下一单</string>
-    <string name="btn_back">返回</string>
-    <string name="btn_cancel">取消</string>
-    <string name="btn_draft_clear">清除草稿</string>
+  <string name="btn_sale_in">开单</string>
+  <string name="btn_sale_out">退货</string>
+  <string name="btn_refresh">刷新</string>
+  <string name="btn_money_off">未付</string>
+  <string name="btn_delete">删除</string>
+  <string name="btn_modify">修改</string>
+  <string name="btn_save">保存</string>
+  <string name="btn_draft">草稿</string>
+  <string name="btn_next">下一单</string>
+  <string name="btn_back">返回</string>
+  <string name="btn_cancel">取消</string>
+  <string name="btn_draft_clear">清除草稿</string>
 
-    <string name="select_stock">请选择库存</string>
-    <string name="sale_in_update">交易单编辑（销售）</string>
-    <string name="sale_out_update">交易单编辑（退货）</string>
+  <string name="select_stock">请选择库存</string>
+  <string name="sale_in_update">交易单编辑（销售）</string>
+  <string name="sale_out_update">交易单编辑（退货）</string>
 
-    <string name="slide_sale_manager">销售管理</string>
-    <string name="slide_stock_manager">采购管理</string>
+  <string name="slide_sale_manager">销售管理</string>
+  <string name="slide_stock_manager">采购管理</string>
+  <string name="slide_user_manager">用户管理</string>
 
-    <string name="action_save">保存</string>
-    <string name="action_cancel">取消</string>
-    <string name="action_unknown">未知</string>
+  <string name="action_save">保存</string>
+  <string name="action_cancel">取消</string>
+  <string name="action_unknown">未知</string>
 
-    <string name="back_from_stock_select">从库存选择返回</string>
-    <string name="back_from_unknown">从未知返回</string>
+  <string name="back_from_stock_select">从库存选择返回</string>
+  <string name="back_from_unknown">从未知返回</string>
 
 </resources>

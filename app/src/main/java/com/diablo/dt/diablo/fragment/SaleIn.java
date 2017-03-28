@@ -113,6 +113,8 @@ public class SaleIn extends Fragment{
     private SparseArray<DiabloButton> mButtons;
     private Integer mRowSize;
 
+    private boolean mIsRecoverFromDraft;
+
     public SaleIn() {
         // Required empty public constructor
     }
@@ -156,6 +158,8 @@ public class SaleIn extends Fragment{
 
         mTitles = getResources().getStringArray(R.array.thead_sale);
         mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
+
+        mIsRecoverFromDraft = false;
 
         mButtons= new SparseArray<>();
         mButtons.put(R.id.sale_in_back, new DiabloButton(getContext(), R.id.sale_in_back));
@@ -230,6 +234,12 @@ public class SaleIn extends Fragment{
             mSaleCalcController.setRetailer(retailer);
             mSaleCalcController.removeRetailerWatcher();
             mSaleCalcController.setRetailerWatcher(getContext());
+
+            if (mIsRecoverFromDraft) {
+                calcShouldPay();
+                addEmptyRowToTable();
+                mIsRecoverFromDraft = false;
+            }
         }
     };
 
@@ -838,6 +848,7 @@ public class SaleIn extends Fragment{
     }
 
     public void resetWith(SaleCalc calc, List<SaleStock> stocks){
+        mIsRecoverFromDraft = true;
         init(calc.getRetailer(), calc.getShop(), calc, stocks);
 
         // restore table
@@ -860,10 +871,10 @@ public class SaleIn extends Fragment{
             mButtons.get(R.id.sale_in_next).enable();
         }
 
-        addEmptyRowToTable();
+        // addEmptyRowToTable();
         // mSaleTable.addView(addEmptyRow(), 0);
 
-        calcShouldPay();
+        // calcShouldPay();
     }
 
     @Override

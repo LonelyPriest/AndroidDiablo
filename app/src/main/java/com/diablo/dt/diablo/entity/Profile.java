@@ -66,8 +66,8 @@ public class Profile {
     private Integer mLoginEmployee = DiabloEnum.INVALID_INDEX;
     private Integer mLoginRetailer = DiabloEnum.INVALID_INDEX;
     private Integer mLoginType = DiabloEnum.INVALID_INDEX;
-    private List<AuthenRight> mLoginRights;
-    private List<AuthenShop> mLoginShops;
+    private List<DiabloRight> mLoginRights;
+    private List<DiabloShop> mLoginShops;
 
 
     private List<Integer> mAvailableShopIds = new ArrayList<>();
@@ -75,10 +75,10 @@ public class Profile {
     private List<Integer> mBadRepoIds = new ArrayList<>();
     private List<Integer> mRepoIds = new ArrayList<>();
 
-    private List<AuthenShop> mSortAvailableShop = new ArrayList<>();
-    private List<AuthenShop> mSortShop = new ArrayList<>();
-    private List<AuthenShop> mSortBadRepo = new ArrayList<>();
-    private List<AuthenShop> mSortRepo = new ArrayList<>();
+    private List<DiabloShop> mSortAvailableShop = new ArrayList<>();
+    private List<DiabloShop> mSortShop = new ArrayList<>();
+    private List<DiabloShop> mSortBadRepo = new ArrayList<>();
+    private List<DiabloShop> mSortRepo = new ArrayList<>();
 
     // employee
     private List<Employee> mEmployees = new ArrayList<>();
@@ -97,6 +97,12 @@ public class Profile {
 
     // matched stocks
     private List<MatchStock> matchStocks = new ArrayList<>();
+
+    // brand
+    private List<DiabloBrand> mBrands;
+
+    // type
+    private List<DiabloType> mDiabloTypes;
 
     public void clear(){
         Log.d(LOG_TAG, "clear called");
@@ -135,6 +141,16 @@ public class Profile {
 
         // matched stocks
         matchStocks.clear();
+
+        // brands
+        if (null != mBrands) {
+            mBrands.clear();
+        }
+
+        // types
+        if (null != mDiabloTypes) {
+            mDiabloTypes.clear();
+        }
     }
 
     /*
@@ -183,15 +199,15 @@ public class Profile {
         this.mLoginType = loginType;
     }
 
-    public List<AuthenRight> getLoginRights(){
+    public List<DiabloRight> getLoginRights(){
         return mLoginRights;
     }
 
-    public void setLoginRights(List<AuthenRight> loginRights) {
+    public void setLoginRights(List<DiabloRight> loginRights) {
         this.mLoginRights = loginRights;
     }
 
-    public void setLoginShops(List<AuthenShop> loginShops) {
+    public void setLoginShops(List<DiabloShop> loginShops) {
         this.mLoginShops = loginShops;
     }
 
@@ -211,19 +227,19 @@ public class Profile {
         return mRepoIds;
     }
 
-    public List<AuthenShop> getSortShop() {
+    public List<DiabloShop> getSortShop() {
         return mSortShop;
     }
 
-    public List<AuthenShop> getSortRepo() {
+    public List<DiabloShop> getSortRepo() {
         return mSortRepo;
     }
 
-    public List<AuthenShop> getSortBadRepo() {
+    public List<DiabloShop> getSortBadRepo() {
         return mSortBadRepo;
     }
 
-    public List<AuthenShop> getSortAvailableShop() {
+    public List<DiabloShop> getSortAvailableShop() {
         return mSortAvailableShop;
     }
 
@@ -236,7 +252,7 @@ public class Profile {
 
     // shop without any repo bind and repo only
     private void setAllAvailableShop(){
-        for (AuthenShop shop: this.mLoginShops){
+        for (DiabloShop shop: this.mLoginShops){
             if ( ((shop.getType().equals(DiabloEnum.SHOP_ONLY)
                     && shop.getRepo().equals(DiabloEnum.BIND_NONE))
                     || shop.getType().equals(DiabloEnum.REPO_ONLY)) ){
@@ -261,7 +277,7 @@ public class Profile {
 
     // shop or shop that bind to repo
     private void setAllShop(){
-        for (AuthenShop shop: this.mLoginShops){
+        for (DiabloShop shop: this.mLoginShops){
             if ( shop.getType().equals(DiabloEnum.SHOP_ONLY) ){
                 if (!this.mShopIds.contains(shop.getShop())){
                     if (shop.getShop().equals(this.mLoginShop)){
@@ -284,7 +300,7 @@ public class Profile {
 
     // repo only
     private void setAllRepo(){
-        for (AuthenShop shop: this.mLoginShops){
+        for (DiabloShop shop: this.mLoginShops){
             if ( shop.getType().equals(DiabloEnum.REPO_ONLY ) ){
                 if (!this.mRepoIds.contains(shop.getShop())){
                     this.mRepoIds.add(shop.getShop());
@@ -299,7 +315,7 @@ public class Profile {
 
     // bad repo only
     private void setAllBadRepo(){
-        for (AuthenShop shop: this.mLoginShops){
+        for (DiabloShop shop: this.mLoginShops){
             if ( shop.getType().equals(DiabloEnum.REPO_BAD) ){
                 if (!this.mBadRepoIds.contains(shop.getShop())){
                     this.mBadRepoIds.add(shop.getShop());
@@ -373,9 +389,9 @@ public class Profile {
     * Base setting
     * */
 
-    public List<BaseSetting> getBaseSettings() {
-        return this.mBaseSettings;
-    }
+//    public List<BaseSetting> getBaseSettings() {
+//        return this.mBaseSettings;
+//    }
 
     public void setBaseSettings(List<BaseSetting> baseSettings) {
         this.mBaseSettings = baseSettings;
@@ -466,6 +482,9 @@ public class Profile {
         return sizes;
     }
 
+    /**
+     * match stock
+     */
     public List<MatchStock> getMatchStocks() {
         return matchStocks;
     }
@@ -485,5 +504,43 @@ public class Profile {
         }
 
         return stock;
+    }
+
+    /**
+     * brands
+     */
+    public void  setBrands(List<DiabloBrand> brands) {
+        this.mBrands = new ArrayList<>(brands);
+    }
+
+    public DiabloBrand getBrand(Integer brandId) {
+        DiabloBrand brand = null;
+        for (DiabloBrand b: mBrands) {
+            if (b.getId().equals(brandId)) {
+                brand = b;
+                break;
+            }
+        }
+
+        return brand;
+    }
+
+    /**
+     * types
+     */
+    public void setDiabloTypes(List<DiabloType> types) {
+        this.mDiabloTypes = new ArrayList<>(types);
+    }
+
+    public DiabloType getDiabloType(Integer typeId) {
+        DiabloType type = null;
+        for (DiabloType t: mDiabloTypes) {
+            if (t.getId().equals(typeId)) {
+                type = t;
+                break;
+            }
+        }
+
+        return type;
     }
 }

@@ -496,6 +496,10 @@ public class NewSaleRequest {
             this.extraCost = extraCost;
         }
 
+        public Float getExtraCost() {
+            return extraCost;
+        }
+
         public void setTotal(Integer total) {
             this.total = total;
         }

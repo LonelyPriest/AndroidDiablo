@@ -186,6 +186,56 @@ public class DiabloSaleCalcView {
         }
     }
 
+    public void setCashValue(Float v) {
+        if (null != mViewCash) {
+            if (null == v) {
+                resetCashValue();
+            } else {
+                ((EditText)mViewCash).setText(DiabloUtils.instance().toString(v));
+            }
+        }
+    }
+
+    public void setCardValue(Float v) {
+        if (null != mViewCard) {
+            if (null == v) {
+                resetCardValue();
+            } else {
+                ((EditText)mViewCard).setText(DiabloUtils.instance().toString(v));
+            }
+        }
+    }
+
+    public void setWireValue(Float v) {
+        if (null != mViewWire) {
+            if (null == v) {
+                resetWireValue();
+            } else {
+                ((EditText)mViewWire).setText(DiabloUtils.instance().toString(v));
+            }
+        }
+    }
+
+    public void setVerificateValue(Float v) {
+        if ( null != mViewVerificate) {
+            if (null == v) {
+                resetVerificateValue();
+            } else {
+                ((EditText)mViewVerificate).setText(DiabloUtils.instance().toString(v));
+            }
+        }
+    }
+
+    public void setExtraCostValue(Float v) {
+        if (null != mViewExtraCost) {
+            if (null == v) {
+                resetExtraCostValue();
+            } else {
+                ((EditText)mViewExtraCost).setText(DiabloUtils.instance().toString(v));
+            }
+        }
+    }
+
     public void resetCashValue() {
         if (null != mViewCash) {
             ((EditText)mViewCash).setText(DiabloEnum.EMPTY_STRING);

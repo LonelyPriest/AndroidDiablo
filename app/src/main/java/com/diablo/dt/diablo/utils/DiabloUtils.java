@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WSaleClient;
-import com.diablo.dt.diablo.entity.AuthenShop;
+import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
@@ -64,8 +64,8 @@ public class DiabloUtils {
 
     }
 
-    public AuthenShop getShop(List<AuthenShop> shops, Integer index){
-        AuthenShop shop = null;
+    public DiabloShop getShop(List<DiabloShop> shops, Integer index){
+        DiabloShop shop = null;
         for ( Integer i = 0; i < shops.size(); i++){
             if (index.equals(shops.get(i).getShop())){
                 shop = shops.get(i);
@@ -122,18 +122,18 @@ public class DiabloUtils {
         Double angle = Math.toDegrees(Math.atan2(y1 - y2, x2 - x1));
         if (angle > 45 && angle <= 135)
             // top
-            return DiabloEnum.SWIP_TOP;
+            return DiabloEnum.SWIPE_TOP;
         if (angle >= 135 && angle < 180 || angle < -135 && angle > -180)
             // left
-            return DiabloEnum.SWIP_LEFT;
+            return DiabloEnum.SWIPE_LEFT;
         if (angle < -45 && angle>= -135)
             // down
-            return DiabloEnum.SWIP_DOWN;
+            return DiabloEnum.SWIPE_DOWN;
         if (angle > -45 && angle <= 45)
             // right
-            return DiabloEnum.SWIP_RIGHT;
+            return DiabloEnum.SWIPE_RIGHT;
 
-        return DiabloEnum.SWIP_NONE;
+        return DiabloEnum.SWIPE_NONE;
     }
 
     public void debugDialog(Context context, String title, String message){

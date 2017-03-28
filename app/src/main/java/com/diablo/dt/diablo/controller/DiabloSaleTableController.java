@@ -119,7 +119,6 @@ public class DiabloSaleTableController {
         saleController.setSaleInfo(total, sell, reject);
         saleController.setShouldPay(shouldPay);
         saleController.resetAccBalance();
-
     }
 
     public void calcSaleOutShouldPay(DiabloSaleController saleController){

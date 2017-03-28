@@ -288,6 +288,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/cost_on_sale"
         android:inputType="numberSigned|numberDecimal"
+        android:focusable="false"
         android:layout_weight="0.8"/>
   </LinearLayout>
 

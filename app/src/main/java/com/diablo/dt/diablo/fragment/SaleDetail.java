@@ -29,6 +29,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.SaleDetailRequest;
 import com.diablo.dt.diablo.response.SaleDetailResponse;
@@ -192,17 +193,17 @@ public class SaleDetail extends Fragment {
 //            @Override
 //            public boolean actionOfOnFlint(View view, Integer direction) {
 //                // DiabloUtils u = DiabloUtils.instance();
-//                if (direction.equals(DiabloEnum.SWIP_LEFT)){
+//                if (direction.equals(DiabloEnum.SWIPE_LEFT)){
 //                    return false;
-//                } else if (direction.equals(DiabloEnum.SWIP_RIGHT)){
+//                } else if (direction.equals(DiabloEnum.SWIPE_RIGHT)){
 //                    return false;
-//                } else if (direction.equals(DiabloEnum.SWIP_TOP)){
+//                } else if (direction.equals(DiabloEnum.SWIPE_TOP)){
 //                    // u.debugDialog(mContext, "滑动", "方向->top");
 //                    mCurrentPage++;
 //                    mRequest.setPage(mCurrentPage);
 //                    pageChanged();
 //                    return true;
-//                } else if (direction.equals(DiabloEnum.SWIP_DOWN)){
+//                } else if (direction.equals(DiabloEnum.SWIPE_DOWN)){
 //                    // u.debugDialog(mContext, "滑动", "方向->down");
 //                    mCurrentPage--;
 //                    if (!mCurrentPage.equals(0)){
@@ -349,11 +350,15 @@ public class SaleDetail extends Fragment {
                                 lp);
                         }
                         else if (getContext().getString(retailer).equals(title)){
-                            addCell(row,
-                                    DiabloUtils.getInstance().getRetailer(
-                                        Profile.instance().getRetailers(),
-                                        detail.getRetailer()).getName(),
-                                lp);
+                            Retailer r = DiabloUtils.getInstance().getRetailer(
+                                Profile.instance().getRetailers(), detail.getRetailer());
+
+                            if (null != r) {
+                                addCell(row, r.getName(), lp);
+                            }
+                            else {
+                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                            }
                         }
                         else if (getResources().getString(R.string.amount).equals(title)){
                             addCell(row, detail.getTotal(), lp);

@@ -168,7 +168,7 @@ public class Retailer {
                         r.setProvince(DiabloEnum.INVALID_INDEX);
                     }
 
-                    // Profile.instance().appendRetailer(Retailer.this);
+                    Profile.instance().appendRetailer(Retailer.this);
                     listener.afterAdd(Retailer.this);
 
                 } else {

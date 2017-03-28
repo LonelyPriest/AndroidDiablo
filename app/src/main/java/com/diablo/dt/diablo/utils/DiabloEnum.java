@@ -35,11 +35,11 @@ public class DiabloEnum {
     public static final String  EMPTY_STRING = "";
 
     // fling
-    public static final Integer SWIP_NONE = 0;
-    public static final Integer SWIP_TOP  = 1;
-    public static final Integer SWIP_LEFT = 2;
-    public static final Integer SWIP_DOWN = 3;
-    public static final Integer SWIP_RIGHT = 4;
+    public static final Integer SWIPE_NONE = 0;
+    public static final Integer SWIPE_TOP = 1;
+    public static final Integer SWIPE_LEFT = 2;
+    public static final Integer SWIPE_DOWN = 3;
+    public static final Integer SWIPE_RIGHT = 4;
 
     public static final Integer SWIPE_MIN_DISTANCE = 500;
     public static final Integer SWIPE_THRESHOLD_VELOCITY = 500;
@@ -101,6 +101,7 @@ public class DiabloEnum {
     public static final String W_SALE = "w_sale";
     public static final String W_SALE_DETAIL = "w_sale_detail";
     public static final String W_SALE_DETAIL_AMOUNT = "w_sale_detail_amount";
+    public static final String W_USER = "user";
 
 
     /**

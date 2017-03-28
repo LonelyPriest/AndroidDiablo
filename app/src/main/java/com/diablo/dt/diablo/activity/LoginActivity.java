@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.client.EmployeeClient;
 import com.diablo.dt.diablo.client.RetailerClient;
@@ -19,10 +20,12 @@ import com.diablo.dt.diablo.client.RightClient;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.client.WLoginClient;
 import com.diablo.dt.diablo.client.WgoodClient;
-import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.BaseSetting;
+import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
+import com.diablo.dt.diablo.entity.DiabloType;
+import com.diablo.dt.diablo.entity.DiabloUser;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
@@ -37,6 +40,7 @@ import com.diablo.dt.diablo.rest.RightInterface;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.rest.WLoginInterface;
+import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -63,11 +67,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_main);
 
+        // init db
+        DiabloDBManager.instance().init(this);
+
         mContext = this;
         Profile.instance().setContext(this.getApplicationContext());
 
         mLoginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
         mPasswordWrap = (TextInputLayout) findViewById(R.id.login_password_holder);
+
+        final DiabloUser user = DiabloDBManager.instance().getFirstLoginUser();
+        if (null != user) {
+            mLoginWrap.getEditText().setText(user.getName());
+            mPasswordWrap.getEditText().setText(user.getPassword());
+        }
 
         // InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         //
@@ -75,8 +88,8 @@ public class LoginActivity extends AppCompatActivity {
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = mLoginWrap.getEditText().getText().toString();
-                String password = mPasswordWrap.getEditText().getText().toString();
+                final String name = mLoginWrap.getEditText().getText().toString();
+                final String password = mPasswordWrap.getEditText().getText().toString();
                 if (name.trim().equals(""))
                     mLoginWrap.getEditText().setError("请输入用户名");
                 else if (password.trim().equals(""))
@@ -97,6 +110,19 @@ public class LoginActivity extends AppCompatActivity {
                                 loginError(response.body().getCode());
                             } else {
                                 Profile.instance().setToken(response.body().getToken());
+                                if (null == user) {
+                                    DiabloDBManager.instance().addUser(name, password);
+                                }
+                                else {
+                                    if(!user.getName().equals(name)){
+                                        DiabloDBManager.instance().addUser(name, password);
+                                    } else {
+                                        if (!user.getPassword().equals(password)) {
+                                            DiabloDBManager.instance().updateUser(name, password);
+                                        }
+                                    }
+                                }
+
                                 getLoginUserInfo();
                             }
                         }
@@ -113,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void gotoMain(){
+        DiabloDBManager.instance().close();
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -166,10 +193,6 @@ public class LoginActivity extends AppCompatActivity {
                 message.sendToTarget();
             }
         });
-    }
-
-    private void getBrand(){
-
     }
 
     private void getRetailer(){
@@ -312,6 +335,50 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void getBrand(){
+        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        Call<List<DiabloBrand>> call = face.listBrand(Profile.instance().getToken());
+        call.enqueue(new Callback<List<DiabloBrand>>() {
+            @Override
+            public void onResponse(Call<List<DiabloBrand>> call, Response<List<DiabloBrand>> response) {
+                Log.d(LOG_TAG, "success to get color");
+                Profile.instance().setBrands(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 80;
+                message.sendToTarget();
+            }
+
+            @Override
+            public void onFailure(Call<List<DiabloBrand>> call, Throwable t) {
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 81;
+                message.sendToTarget();
+            }
+        });
+    }
+
+    private void getType(){
+        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        Call<List<DiabloType>> call = face.listType(Profile.instance().getToken());
+        call.enqueue(new Callback<List<DiabloType>>() {
+            @Override
+            public void onResponse(Call<List<DiabloType>> call, Response<List<DiabloType>> response) {
+                Log.d(LOG_TAG, "success to get color");
+                Profile.instance().setDiabloTypes(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 90;
+                message.sendToTarget();
+            }
+
+            @Override
+            public void onFailure(Call<List<DiabloType>> call, Throwable t) {
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 91;
+                message.sendToTarget();
+            }
+        });
+    }
+
 
     private static class LoginHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
@@ -362,16 +429,33 @@ public class LoginActivity extends AppCompatActivity {
                         activity.loginError(1199);
                         break;
                     case 70:
-                        activity.gotoMain();
+                        activity.getBrand();
                         break;
                     case 71:
                         activity.loginError(1199);
                         break;
-
+                    case 80:
+                        activity.getType();
+                        break;
+                    case 81:
+                        activity.loginError(1199);
+                        break;
+                    case 90:
+                        activity.gotoMain();
+                        break;
+                    case 91:
+                        activity.loginError(1199);
+                        break;
                     default:
                         break;
                 }
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // DiabloDBManager.instance().close();
     }
 }

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by buxianhui on 17/2/24.
  */
 
-public class AuthenShop {
+public class DiabloShop {
     @SerializedName("func_id")
     private Integer funcId;
     @SerializedName("name")
@@ -18,7 +18,7 @@ public class AuthenShop {
     @SerializedName("type")
     private Integer type;
 
-    public AuthenShop(){
+    public DiabloShop(){
 
     }
 

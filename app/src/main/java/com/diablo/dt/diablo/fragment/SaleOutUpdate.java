@@ -112,25 +112,25 @@ public class SaleOutUpdate extends Fragment {
         getSaleInfoFromServer();
     }
 
-    private Retailer.OnRetailerChangeListener mOnRetailerChangeListener = new Retailer.OnRetailerChangeListener() {
-        @Override
-        public void afterAdd(Retailer retailer) {
-
-        }
-
-        @Override
-        public void afterGet(Retailer retailer) {
-            // copy the retailer
-            if (retailer.getId().equals(mOldSaleCalc.getRetailer())) {
-                mSaleCalcController.setRetailer(new Retailer(retailer, mOldSaleCalc.getBalance()));
-            }
-            else {
-                mSaleCalcController.setRetailer(retailer);
-            }
-            mSaleCalcController.removeRetailerWatcher();
-            mSaleCalcController.setRetailerWatcher(getContext());
-        }
-    };
+//    private Retailer.OnRetailerChangeListener mOnRetailerChangeListener = new Retailer.OnRetailerChangeListener() {
+//        @Override
+//        public void afterAdd(Retailer retailer) {
+//
+//        }
+//
+//        @Override
+//        public void afterGet(Retailer retailer) {
+//            // copy the retailer
+//            if (retailer.getId().equals(mOldSaleCalc.getRetailer())) {
+//                mSaleCalcController.setRetailer(new Retailer(retailer, mOldSaleCalc.getBalance()));
+//            }
+//            else {
+//                mSaleCalcController.setRetailer(retailer);
+//            }
+//            mSaleCalcController.removeRetailerWatcher();
+//            mSaleCalcController.setRetailerWatcher(getContext());
+//        }
+//    };
 
     public void setRSN(String rsn) {
         this.mRSN = rsn;
@@ -195,38 +195,64 @@ public class SaleOutUpdate extends Fragment {
         mSaleCalcView.setViewExtraCost(view.findViewById(R.id.sale_out_extra_cost));
     }
 
-    private void buildContent(SaleCalc calc, final List<SaleStock> stocks) {
-        // calc
-        mSaleCalcController = new DiabloSaleController(new SaleCalc(calc), mSaleCalcView);
+    private void buildContent(final SaleCalc calc, final List<SaleStock> stocks) {
+        Retailer.getRetailer(getContext(), calc.getRetailer(), new Retailer.OnRetailerChangeListener() {
+            @Override
+            public void afterAdd(Retailer retailer) {
 
-        mSelectPrice = UTILS.toInteger(
-            Profile.instance().getConfig(calc.getShop(), DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
-        
-        mSaleCalcController.setShop(calc.getShop());
-        mSaleCalcController.setDatetime(calc.getDatetime());
+            }
 
-        // listener
-        // mSaleCalcController.setRetailerWatcher(getContext());
-        Retailer.getRetailer(getContext(), calc.getRetailer(), mOnRetailerChangeListener);
-        mSaleCalcController.setEmployeeWatcher();
-        mSaleCalcController.setCommentWatcher();
+            @Override
+            public void afterGet(Retailer retailer) {
+                mSaleCalcController = new DiabloSaleController(new SaleCalc(calc), mSaleCalcView);
 
-        mSaleCalcController.setVerificateWatcher();
-        mSaleCalcController.setExtraCostWatcher();
-        mSaleCalcController.setExtraCostTypeWatcher();
+                // copy the retailer
+                if (retailer.getId().equals(mOldSaleCalc.getRetailer())) {
+                    mSaleCalcController.setRetailer(new Retailer(retailer, mOldSaleCalc.getBalance()));
+                }
+                else {
+                    mSaleCalcController.setRetailer(retailer);
+                }
+                mSaleCalcController.removeRetailerWatcher();
+                mSaleCalcController.setRetailerWatcher(getContext());
 
-        // adapter
-        mSaleCalcController.setEmployeeAdapter(getContext());
-        mSaleCalcController.setExtraCostTypeAdapter(getContext());
+                mSaleCalcView.setCashValue(calc.getCash());
+                mSaleCalcView.setCardValue(calc.getCard());
+                mSaleCalcView.setWireValue(calc.getWire());
+                mSaleCalcView.setVerificateValue(calc.getVerificate());
+                mSaleCalcView.setExtraCostValue(calc.getExtraCost());
+                mSaleCalcController.setSaleCalcView(mSaleCalcView);
+                mSaleCalcController.calcHasPay();
 
-        // stock
-        for (SaleStock s: stocks) {
-            DiabloSaleRowController controller = createRowWithStock(s);
-            mSaleTableController.addRowControllerAtTop(controller);
-        }
+                mSelectPrice = UTILS.toInteger(
+                    Profile.instance().getConfig(calc.getShop(), DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
 
-        mSaleTableController.addRowControllerAtTop(createEmptyRow());
-        calcShouldPay();
+                mSaleCalcController.setShop(calc.getShop());
+                mSaleCalcController.setDatetime(calc.getDatetime());
+
+                // listener
+                // mSaleCalcController.setRetailerWatcher(getContext());
+                mSaleCalcController.setEmployeeWatcher();
+                mSaleCalcController.setCommentWatcher();
+
+                mSaleCalcController.setVerificateWatcher();
+                mSaleCalcController.setExtraCostWatcher();
+                mSaleCalcController.setExtraCostTypeWatcher();
+
+                // adapter
+                mSaleCalcController.setEmployeeAdapter(getContext());
+                mSaleCalcController.setExtraCostTypeAdapter(getContext());
+
+                // stock
+                for (SaleStock s: stocks) {
+                    DiabloSaleRowController controller = createRowWithStock(s);
+                    mSaleTableController.addRowControllerAtTop(controller);
+                }
+
+                mSaleTableController.addRowControllerAtTop(createEmptyRow());
+                calcShouldPay();
+            }
+        });
     }
 
     private DiabloSaleRowController createRowWithStock(SaleStock stock) {
@@ -394,7 +420,7 @@ public class SaleOutUpdate extends Fragment {
         mSaleTableController.calcSaleOutShouldPay(mSaleCalcController);
     }
 
-    private void initTitle() {
+    public void initTitle() {
         String title = getResources().getString(R.string.sale_out_update);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
     }
@@ -463,14 +489,17 @@ public class SaleOutUpdate extends Fragment {
         mOldSaleCalc.setComment(detail.getComment());
 
         mOldSaleCalc.setBalance(detail.getBalance());
-        mOldSaleCalc.setCash(detail.getCash());
-        mOldSaleCalc.setCard(detail.getCard());
-        mOldSaleCalc.setWire(detail.getWire());
+//        mOldSaleCalc.setCash(detail.getCash());
+//        mOldSaleCalc.setCard(detail.getCard());
+//        mOldSaleCalc.setWire(detail.getWire());
         mOldSaleCalc.setVerificate(detail.getVerificate());
-        mOldSaleCalc.setShouldPay(detail.getShouldPay());
+        mOldSaleCalc.setShouldPay(Math.abs(detail.getShouldPay()));
 
         mOldSaleCalc.setExtraCostType(detail.getEPayType());
         mOldSaleCalc.setExtraCost(detail.getEPay());
+
+        mOldSaleCalc.calcHasPay();
+        mOldSaleCalc.calcAccBalance();
 
         mOldSaleCalc.setTotal(Math.abs(detail.getTotal()));
 
@@ -501,7 +530,7 @@ public class SaleOutUpdate extends Fragment {
                 mOldSaleStocks.add(s);
             } else {
                 SaleStockAmount amount = new SaleStockAmount(n.getColor(), n.getSize());
-                amount.setSellCount(n.getSaleTotal());
+                amount.setSellCount(Math.abs(n.getSaleTotal()));
                 stock.setSaleTotal(stock.getSaleTotal() + Math.abs(n.getSaleTotal()));
                 stock.addAmount(amount);
             }
@@ -629,7 +658,7 @@ public class SaleOutUpdate extends Fragment {
                 List<SaleStockAmount> updateSaleStockAmounts = getUpdateSaleStockAmounts(
                     stock.getAmounts(), found.getAmounts());
                 if (0 != updateSaleStockAmounts.size()) {
-                    SaleStock update = new SaleStock(found);
+                    SaleStock update = new SaleStock(stock);
                     update.setOperation(DiabloEnum.UPDATE_THE_STOCK);
                     update.setAmounts(updateSaleStockAmounts);
                     update.setColors(found.getColors());
@@ -640,7 +669,9 @@ public class SaleOutUpdate extends Fragment {
                     if (!stock.getFinalPrice().equals(found.getFinalPrice())
                         || !stock.getDiscount().equals(found.getDiscount())
                         || !stock.getComment().equals(found.getComment())) {
-                        SaleStock update = new SaleStock(found);
+                        SaleStock update = new SaleStock(stock);
+                        // only change price, discount or comment, so the amount should be clear
+                        update.clearAmounts();
                         update.setOperation(DiabloEnum.UPDATE_THE_STOCK);
                         updateSaleStocks.add(update);
                         update.setColors(found.getColors());
@@ -749,9 +780,9 @@ public class SaleOutUpdate extends Fragment {
         dCalc.setEmployee(calc.getEmployee());
         dCalc.setBalance(calc.getBalance());
 
-        dCalc.setCash(calc.getCash());
-        dCalc.setCard(calc.getCard());
-        dCalc.setWire(calc.getWire());
+//        dCalc.setCash(calc.getCash());
+//        dCalc.setCard(calc.getCard());
+//        dCalc.setWire(calc.getWire());
         dCalc.setVerificate(calc.getVerificate());
         dCalc.setExtraCost(calc.getExtraCost());
         dCalc.setShouldPay(-calc.getShouldPay());
@@ -772,11 +803,9 @@ public class SaleOutUpdate extends Fragment {
         saleRequest.setSaleCalc(dCalc);
 
         if (0 == updateStocks.size()
-            && dCalc.getCash().equals(mOldSaleCalc.getCash())
-            && dCalc.getCard().equals(mOldSaleCalc.getCard())
-            && dCalc.getWire().equals(mOldSaleCalc.getWire())
             && dCalc.getVerificate().equals(mOldSaleCalc.getVerificate())
-            && dCalc.getComment().equals(mOldSaleCalc.getComment())) {
+            && dCalc.getComment().equals(mOldSaleCalc.getComment())
+            && dCalc.getExtraCost().equals(mOldSaleCalc.getExtraCost())) {
 
             new DiabloAlertDialog(
                 getContext(),

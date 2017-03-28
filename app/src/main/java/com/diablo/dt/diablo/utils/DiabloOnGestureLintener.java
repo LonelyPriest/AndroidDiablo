@@ -38,21 +38,21 @@ public abstract class DiabloOnGestureLintener extends GestureDetector.SimpleOnGe
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         DiabloUtils u = DiabloUtils.getInstance();
         Integer direction = u.getSlope(e1.getX(), e1.getY(), e2.getX(), e2.getY());
-        if (direction.equals(DiabloEnum.SWIP_TOP)){
+        if (direction.equals(DiabloEnum.SWIPE_TOP)){
             if(e1.getY() - e2.getY() > DiabloEnum.SWIPE_MIN_DISTANCE
                     && Math.abs(velocityY) > DiabloEnum.SWIPE_THRESHOLD_VELOCITY) {
                 // bottom to top
-                return actionOfOnFlint(this.mView, DiabloEnum.SWIP_TOP);
+                return actionOfOnFlint(this.mView, DiabloEnum.SWIPE_TOP);
             }
 
-        } else if (direction.equals(DiabloEnum.SWIP_DOWN)){
+        } else if (direction.equals(DiabloEnum.SWIPE_DOWN)){
             if (e2.getY() - e1.getY() > DiabloEnum.SWIPE_MIN_DISTANCE &&
                     Math.abs(velocityY) > DiabloEnum.SWIPE_THRESHOLD_VELOCITY) {
                 //top to bottom
-                return actionOfOnFlint(this.mView, DiabloEnum.SWIP_DOWN);
+                return actionOfOnFlint(this.mView, DiabloEnum.SWIPE_DOWN);
             }
         } else {
-            return actionOfOnFlint(this.mView, DiabloEnum.SWIP_NONE);
+            return actionOfOnFlint(this.mView, DiabloEnum.SWIPE_NONE);
         }
 
         return false;

@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.fragment;
 
 
+import static com.diablo.dt.diablo.R.string.brand;
 import static com.diablo.dt.diablo.R.string.shop;
 
 import android.content.res.Resources;
@@ -8,9 +9,11 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +26,10 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
+import com.diablo.dt.diablo.entity.DiabloBrand;
+import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.SaleNoteRequest;
 import com.diablo.dt.diablo.response.SaleNoteResponse;
@@ -99,6 +105,10 @@ public class SaleNote extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_sale_note, container, false);
         ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_NOTE));
+
+        // support action bar
+        setHasOptionsMenu(true);
+        getActivity().supportInvalidateOptionsMenu();
 
         mSaleNoteTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_note_swipe);
         // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
@@ -237,24 +247,41 @@ public class SaleNote extends Fragment {
                         else if(getResources().getString(R.string.trans).equals(title)){
                             TextView cell = addCell(row, mSaleTypes[note.getSellType()], lp);
                             if (note.getSellType().equals(DiabloEnum.SALE_OUT)){
-                                cell.setTextColor(getResources().getColor(R.color.red));
+                                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                             }
                         }
                         else if (getContext().getString(R.string.retailer).equals(title)){
-                            addCell(row,
-                                DiabloUtils.getInstance().getRetailer(
-                                    Profile.instance().getRetailers(),
-                                    note.getRetailerId()).getName(),
-                                lp);
+                            Retailer r = DiabloUtils.getInstance().getRetailer(
+                                Profile.instance().getRetailers(), note.getRetailerId());
+
+                            if (null != r) {
+                                addCell(row, r.getName(), lp);
+                            }
+                            else {
+                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                            }
                         }
                         else if (getContext().getString(R.string.style_number).equals(title)){
                             addCell(row, note.getStyleNumber(), lp);
                         }
-                        else if (getContext().getString(R.string.brand).equals(title)){
-                            addCell(row, note.getBrandId(), lp);
+                        else if (getContext().getString(brand).equals(title)){
+                            DiabloBrand brand = Profile.instance().getBrand(note.getBrandId());
+                            if (null != brand) {
+                                addCell(row, brand.getName(), lp);
+                            }
+                            else {
+                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                            }
+
                         }
                         else if (getContext().getString(R.string.good_type).equals(title)){
-                            addCell(row, note.getTypeId(), lp);
+                            DiabloType type = Profile.instance().getDiabloType(note.getTypeId());
+                            if (null != type) {
+                                addCell(row, type.getName(), lp);
+                            }
+                            else {
+                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                            }
                         }
                         else if (getContext().getString(R.string.firm).equals(title)){
                             addCell(row, note.getFirmId(), lp);
@@ -320,6 +347,28 @@ public class SaleNote extends Fragment {
                 mSaleNoteTableSwipe.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.action_on_sale_note, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.sale_note_refresh:
+                init();
+                pageChanged();
+                break;
+            default:
+                // return super.onOptionsItemSelected(item);
+                break;
+
+        }
+
+        return true;
     }
 
     @Override

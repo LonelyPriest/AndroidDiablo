@@ -12,7 +12,7 @@ import android.widget.Spinner;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
-import com.diablo.dt.diablo.entity.AuthenShop;
+import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
@@ -22,8 +22,6 @@ import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloSaleCalcView;
-
-import java.util.List;
 
 /**
  * Created by buxianhui on 17/3/19.
@@ -65,6 +63,24 @@ public class DiabloSaleController {
         void onRetailerSelected(SaleCalc calc);
     }
 
+    public DiabloSaleController(SaleCalc calc) {
+        this.mSaleCalc = calc;
+        this.mSaleCalcView = null;
+
+        mExtraCostWatcher = null;
+        mCommentWatcher = null;
+        mCashWatcher = null;
+        mCardWatcher = null;
+        mWireWatcher = null;
+        mVerificateWatcher = null;
+
+        mOnAutoCompletedRetailerListener = null;
+        mOnRetailerClickListener = null;
+        mOnEmployeeSelectedListener = null;
+        mOnExtraCostTypeSelectedListener = null;
+    }
+
+
     public DiabloSaleController(SaleCalc calc, DiabloSaleCalcView view) {
         this.mSaleCalc = calc;
         this.mSaleCalcView = view;
@@ -85,6 +101,10 @@ public class DiabloSaleController {
 
     public SaleCalc getSaleCalc() {
         return mSaleCalc;
+    }
+
+    public void setSaleCalcView(final DiabloSaleCalcView view) {
+        this.mSaleCalcView = view;
     }
 
     public String getSelectRetailerName() {
@@ -128,9 +148,9 @@ public class DiabloSaleController {
         }
     }
 
-    public void setRetailerListSelection(Integer position) {
-        ((AutoCompleteTextView) mSaleCalcView.getViewRetailer()).setListSelection(position);
-    }
+//    public void setRetailerListSelection(Integer position) {
+//        ((AutoCompleteTextView) mSaleCalcView.getViewRetailer()).setListSelection(position);
+//    }
 
     public void setEmployeeWatcher() {
         mOnEmployeeSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -267,7 +287,7 @@ public class DiabloSaleController {
     }
 
     public void setShop(Integer shopId){
-        AuthenShop shop = DiabloUtils.getInstance().getShop(Profile.instance().getSortAvailableShop(), shopId);
+        DiabloShop shop = DiabloUtils.getInstance().getShop(Profile.instance().getSortAvailableShop(), shopId);
         mSaleCalc.setShop(shop.getShop());
         mSaleCalcView.setShopValue(shop.getName());
     }
@@ -297,11 +317,11 @@ public class DiabloSaleController {
 //    }
 
     public void setSaleInfo(Integer total, Integer sell, Integer reject) {
-        mSaleCalc.setTotal(Math.abs(sell) + Math.abs(reject));
+        mSaleCalc.setTotal(total);
         mSaleCalc.setSellTotal(sell);
         mSaleCalc.setRejectTotal(reject);
 
-        mSaleCalcView.setSaleTotalValue(total);
+        mSaleCalcView.setSaleTotalValue(Math.abs(sell) + Math.abs(reject));
     }
 
     public void setSaleInfo(Integer total) {
@@ -327,7 +347,7 @@ public class DiabloSaleController {
         mSaleCalcView.resetCashValue();
     }
 
-    private void calcHasPay(){
+    public void calcHasPay(){
         mSaleCalc.calcHasPay();
         mSaleCalcView.setHasPayValue(mSaleCalc.getHasPay());
     }
@@ -336,5 +356,4 @@ public class DiabloSaleController {
         mSaleCalc.calcAccBalance();
         mSaleCalcView.setAccBalanceValue(mSaleCalc.getAccBalance());
     }
-
 }

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by buxianhui on 17/2/24.
  */
 
-public class AuthenRight {
+public class DiabloRight {
     @SerializedName("action")
     private String action;
     @SerializedName("id")
@@ -16,7 +16,7 @@ public class AuthenRight {
     @SerializedName("parent")
     private String parent;
 
-    public AuthenRight(){
+    public DiabloRight(){
 
     }
 
