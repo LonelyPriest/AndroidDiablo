@@ -30,6 +30,7 @@ import com.diablo.dt.diablo.rest.WSaleInterface;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,6 +44,12 @@ import retrofit2.Response;
 
 public class DiabloUtils {
     private static DiabloUtils mInstance;
+
+    public final static DateFormat mDatetimeFormat
+        = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
+
+    public final static DateFormat mDateFormat
+        = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
 
     public static DiabloUtils getInstance() {
         if (null == mInstance){
@@ -148,21 +155,26 @@ public class DiabloUtils {
 
     public String currentDate(){
         Calendar calendar = Calendar.getInstance();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-        return format.format(calendar.getTime());
+        // DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        return mDateFormat.format(calendar.getTime());
     }
 
     public String nextDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-        return format.format(calendar.getTime()).trim();
+        // DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        return mDateFormat.format(calendar.getTime()).trim();
     }
 
     public String currentDatetime(){
         Calendar calendar = Calendar.getInstance();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
-        return format.format(calendar.getTime()).trim();
+        // DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
+        return mDatetimeFormat.format(calendar.getTime()).trim();
+    }
+
+    public String formatDate(Integer year, Integer month, Integer day) {
+        // DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        return mDateFormat.format(new Date(year, month, day).getTime()).trim();
     }
 
     public String toString(Float value){

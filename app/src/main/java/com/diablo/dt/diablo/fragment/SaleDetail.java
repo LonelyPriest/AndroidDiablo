@@ -1,8 +1,5 @@
 package com.diablo.dt.diablo.fragment;
 
-import static com.diablo.dt.diablo.R.string.retailer;
-import static com.diablo.dt.diablo.R.string.shop;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -20,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -54,7 +52,7 @@ public class SaleDetail extends Fragment {
     private String[]  mSaleTypes;
 
     private String mStatistic;
-    private String mPagination;
+    // private String mPagination;
 
     /*
     * rest request
@@ -122,7 +120,40 @@ public class SaleDetail extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
+        final View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
+
+        String currentDate = UTILS.currentDate();
+        ((EditText)view.findViewById(R.id.text_start_date)).setText(currentDate);
+        mRequest.getCondition().setStartTime(currentDate);
+
+        ((EditText)view.findViewById(R.id.text_end_date)).setText(currentDate);
+        mRequest.getCondition().setEndTime(UTILS.nextDate());
+
+        (view.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SaleUtils.DiabloDatePicker.build(SaleDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(String date, String nextDate) {
+                        ((EditText) view.findViewById(R.id.text_start_date)).setText(date);
+                        mRequest.getCondition().setStartTime(date);
+                    }
+                });
+            }
+        });
+
+        view.findViewById(R.id.btn_end_date).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SaleUtils.DiabloDatePicker.build(SaleDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(String date, String nextDate) {
+                        ((EditText)view.findViewById(R.id.text_end_date)).setText(date);
+                        mRequest.getCondition().setEndTime(nextDate);
+                    }
+                });
+            }
+        });
 
         ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_DETAIL));
 
@@ -277,9 +308,9 @@ public class SaleDetail extends Fragment {
         // hidden keyboard
         // DiabloUtils.instance().hiddenKeyboard(getContext());
         // get data from from web server
-        mRequest.getCondition().setStartTime(DiabloUtils.instance().currentDate());
+        // mRequest.getCondition().setStartTime(DiabloUtils.instance().currentDate());
         // mRequest.getCondition().setStartTime("2016-01-01");
-        mRequest.getCondition().setEndTime(DiabloUtils.instance().nextDate());
+        // mRequest.getCondition().setEndTime(DiabloUtils.instance().nextDate());
 
         Call<SaleDetailResponse> call = mSaleRest.filterSaleNew(Profile.instance().getToken(), mRequest);
 
@@ -290,23 +321,17 @@ public class SaleDetail extends Fragment {
 
                 mSaleDetailTableSwipe.setRefreshing(false);
                 SaleDetailResponse base = response.body();
-                if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage) && 0 != base.getTotal()){
-                    mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
-
-                    Resources res = getResources();
-                    mStatistic =
-                        res.getString(R.string.amount) + res.getString(R.string.colon) + UTILS.toString(base.getAmount())
-                            + res.getString(R.string.space_4)
-                            + res.getString(R.string.should_pay) + res.getString(R.string.colon) + UTILS.toString(base.getSPay())
-                            + res.getString(R.string.space_4)
-                            + res.getString(R.string.has_pay) + res.getString(R.string.colon) + UTILS.toString(base.getHPay());
-
-                    // pagination
-                    mPagination = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-                        + getResources().getString(R.string.page)
-                        + getResources().getString(R.string.space_4)
-                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
-                        + getResources().getString(R.string.page);
+                if (0 != base.getTotal()) {
+                    if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
+                        mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
+                        Resources res = getResources();
+                        mStatistic =
+                            res.getString(R.string.amount) + res.getString(R.string.colon) + UTILS.toString(base.getAmount())
+                                + res.getString(R.string.space_4)
+                                + res.getString(R.string.should_pay) + res.getString(R.string.colon) + UTILS.toString(base.getSPay())
+                                + res.getString(R.string.space_4)
+                                + res.getString(R.string.has_pay) + res.getString(R.string.colon) + UTILS.toString(base.getHPay());
+                    }
                 }
 
                 List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
@@ -336,7 +361,7 @@ public class SaleDetail extends Fragment {
                                 cell.setTextColor(getResources().getColor(R.color.red));
                             }
                         }
-                        else if(getResources().getString(shop).equals(title)){
+                        else if(getResources().getString(R.string.shop).equals(title)){
                             addCell(row,
                                 DiabloUtils.getInstance().getShop(Profile.instance().getSortShop(),
                                     detail.getShop()).getName(),
@@ -349,7 +374,7 @@ public class SaleDetail extends Fragment {
                                         detail.getEmployee()).getName(),
                                 lp);
                         }
-                        else if (getContext().getString(retailer).equals(title)){
+                        else if (getContext().getString(R.string.retailer).equals(title)){
                             Retailer r = DiabloUtils.getInstance().getRetailer(
                                 Profile.instance().getRetailers(), detail.getRetailer());
 
@@ -471,7 +496,14 @@ public class SaleDetail extends Fragment {
                     TableRow row = new TableRow(getContext());
                     TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
                     addCell(row, mStatistic, lp);
-                    addCell(row, mPagination, lp);
+
+                    String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
+                        + getResources().getString(R.string.page)
+                        + getResources().getString(R.string.space_4)
+                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
+                        + getResources().getString(R.string.page);
+
+                    addCell(row, pageInfo, lp);
                     mSaleDetailTable.addView(row);
                 }
             }
@@ -619,6 +651,10 @@ public class SaleDetail extends Fragment {
                 transaction.hide(from).show(to).commit();
             }
         }
+
+    }
+
+    public void setStartDate() {
 
     }
 }

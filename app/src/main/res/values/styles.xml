@@ -30,4 +30,31 @@
         <!--<item name="android:listPreferredItemHeight">40dp</item>-->
     </style>
 
+    <!--<style name="DatePicker" parent="@android:style/Theme.Holo.Light">-->
+
+        <!--&lt;!&ndash;<item name="colorPrimary">@color/colorPrimary</item>&ndash;&gt;-->
+        <!--&lt;!&ndash;<item name="colorPrimaryDark">@color/colorPrimaryDark</item>&ndash;&gt;-->
+        <!--&lt;!&ndash;<item name="colorAccent">@color/colorPrimary</item>&ndash;&gt;-->
+        <!--<item name="android:datePickerStyle">@style/DatePicker</item>-->
+
+    <!--</style>-->
+
+    <style name="DiabloBetterPickersDialogs" parent="BetterPickersRadialTimePickerDialog.PrimaryColor">
+        <item name="bpPreHeaderBackgroundColor">@color/colorPrimary</item>
+        <item name="bpHeaderBackgroundColor">@color/red</item>
+        <item name="bpHeaderSelectedTextColor">@color/orangeDark</item>
+        <item name="bpHeaderUnselectedTextColor">@android:color/white</item>
+
+        <item name="bpBodyBackgroundColor">@color/blueDark</item>
+        <item name="bpBodySelectedTextColor">@color/orangeDark</item>
+        <item name="bpBodyUnselectedTextColor">@android:color/white</item>
+
+        <item name="bpRadialBackgroundColor">@color/orangeDark</item>
+        <item name="bpRadialTextColor">@color/colorPrimary</item>
+        <item name="bpRadialPointerColor">@android:color/black</item>
+
+        <item name="bpButtonsBackgroundColor">@color/greenDark</item>
+        <item name="bpButtonsTextColor">@color/orangeDark</item>
+    </style>
+
 </resources>

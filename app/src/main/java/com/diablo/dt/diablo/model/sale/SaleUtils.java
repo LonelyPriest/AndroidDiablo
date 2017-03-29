@@ -1,8 +1,5 @@
 package com.diablo.dt.diablo.model.sale;
 
-import static com.diablo.dt.diablo.R.string.amount;
-import static com.diablo.dt.diablo.R.string.stock;
-
 import com.google.gson.Gson;
 
 import android.content.Context;
@@ -16,6 +13,7 @@ import android.view.Gravity;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.fragment.SaleDetail;
@@ -23,8 +21,10 @@ import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.fragment.SaleOut;
 import com.diablo.dt.diablo.fragment.StockSelect;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +136,7 @@ public class SaleUtils {
                     2f);
                 label.setLabelId(R.string.good);
             }
-            else if (context.getResources().getString(stock).equals(h)) {
+            else if (context.getResources().getString(R.string.stock).equals(h)) {
                 label = new DiabloCellLabel(h, R.color.red, 18);
                 label.setLabelId(R.string.stock);
             }
@@ -165,7 +165,7 @@ public class SaleUtils {
                     1f);
                 label.setLabelId(R.string.fprice);
             }
-            else if (context.getResources().getString(amount).equals(h)) {
+            else if (context.getResources().getString(R.string.amount).equals(h)) {
                 label = new DiabloCellLabel(
                     h,
                     DiabloEnum.DIABLO_EDIT,
@@ -175,7 +175,7 @@ public class SaleUtils {
                     InputType.TYPE_CLASS_NUMBER,
                     false,
                     1f);
-                label.setLabelId(amount);
+                label.setLabelId(R.string.amount);
             }
             else if (context.getResources().getString(R.string.calculate).equals(h)) {
                 label = new DiabloCellLabel(h, R.color.black, 18);
@@ -240,5 +240,34 @@ public class SaleUtils {
             }
         }
         return found;
+    }
+
+    public static class DiabloDatePicker {
+        public static void build(final Fragment fragment, final OnDateSetListener listener) {
+            CalendarDatePickerDialogFragment dpd = new CalendarDatePickerDialogFragment();
+            // dpd.setThemeCustom(R.style.DiabloBetterPickersDialogs);
+            dpd.setThemeDark();
+            dpd.show(fragment.getFragmentManager(), "datePicker");
+            dpd.setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
+                @Override
+                public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(year, monthOfYear, dayOfMonth);
+                    String selectDate = DiabloUtils.mDateFormat.format(cal.getTime());
+
+                    cal.add(Calendar.DATE, 1);
+                    String nextDate = DiabloUtils.mDateFormat.format(cal.getTime());
+
+                    // cal.clear();
+                    listener.onDateSet(selectDate, nextDate);
+                    // ((EditText)mViewStartDate).setText(UTILS.formatDate(year, monthOfYear, dayOfMonth));
+                }
+            });
+        }
+
+
+        public interface OnDateSetListener {
+            public void onDateSet(String date, String nextDate);
+        }
     }
 }
