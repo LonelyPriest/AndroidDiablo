@@ -5,6 +5,59 @@
               android:orientation="vertical"
               tools:context="com.diablo.dt.diablo.fragment.SaleDetail">
 
+  <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+    <ImageButton
+        android:id="@+id/btn_start_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:src="@drawable/ic_date_range_black_24dp"
+        android:contentDescription="@string/date"/>
+    <EditText
+        android:id="@+id/text_start_date"
+        android:focusable="false"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/date"
+        android:inputType="datetime"
+        android:layout_weight="0.8"/>
+
+    <ImageButton
+        android:id="@+id/btn_end_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:src="@drawable/ic_date_range_black_24dp"
+        android:contentDescription="@string/date"/>
+    <EditText
+        android:id="@+id/text_end_date"
+        android:focusable="false"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/date"
+        android:inputType="datetime"
+        android:layout_weight="0.8"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:src="@drawable/ic_person_black_24dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/retailer"/>
+    <AutoCompleteTextView
+        android:id="@+id/select_retailer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/please_input_retailer"
+        android:completionThreshold="1"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.8" />
+
+  </LinearLayout>
+
+
   <TableLayout
       android:id="@+id/t_sale_detail_head"
       android:layout_width="match_parent"

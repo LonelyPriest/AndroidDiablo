@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-            android:src="@drawable/ic_add_black_24dp"
+            android:src="@drawable/ic_person_add_black_24dp"
             android:contentDescription="@string/add"/>
         <AutoCompleteTextView
             android:id="@+id/sale_select_retailer"

@@ -47,8 +47,8 @@
     <!--<item>刷卡</item>-->
     <!--<item>汇款</item>-->
     <item>日期</item>
-    <item>店铺</item>
-    <item>店员</item>
+    <!--<item>店铺</item>-->
+    <!--<item>店员</item>-->
     <!--<item>备注</item>-->
   </string-array>
 

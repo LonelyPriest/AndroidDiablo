@@ -45,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
     // index to identify current nav menu item
     private static SparseArray<NavigationTag> mNavTagMap = new SparseArray<>();
+    private static String [] mAssistFragmentTag = {
+        DiabloEnum.TAG_STOCK_SELECT,
+        DiabloEnum.TAG_SALE_IN_UPDATE,
+        DiabloEnum.TAG_SALE_OUT_UPDATE};
+
     private NavigationTag mCurrentNavTag;
 
     // toolbar titles respected to selected nav menu item
@@ -197,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // transaction.hide(from);
-        Fragment fragment = null;
+        Fragment fragment;
         for (int i=0; i<mNavTagMap.size(); i++) {
             NavigationTag navTag = mNavTagMap.get(i);
             if (!navTag.getTag().equals(toTag)) {
@@ -208,12 +213,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // hide others
-        fragment = getSupportFragmentManager().findFragmentByTag(DiabloEnum.TAG_STOCK_SELECT);
-        if (null != fragment) {
-            transaction.hide(fragment);
+        // hide assist fragment
+        for (String tag: mAssistFragmentTag ) {
+            fragment = getSupportFragmentManager().findFragmentByTag(tag);
+            if (null != fragment) {
+                transaction.hide(fragment);
+            }
         }
-
 //        List<Fragment> fragments = getSupportFragmentManager().getFragments();
 //        for (Integer i=0; null != fragments && i<fragments.size(); i++){
 //            Fragment fragment = fragments.get(i);

@@ -285,7 +285,9 @@ public class SaleOutUpdate extends Fragment {
             }
             else if (R.string.amount == cell.getCellId()) {
                 controller.setCellText(cell.getCellId(), UTILS.toString(stock.getSaleTotal()));
-                controller.getView().getCell(R.string.amount).setCellFocusable(true);
+                if (DiabloEnum.DIABLO_FREE.equals(stock.getFree())) {
+                    controller.getView().getCell(R.string.amount).setCellFocusable(true);
+                }
             }
             else if (R.string.calculate == cell.getCellId()) {
                 controller.setCellText(cell.getCellId(), UTILS.toString(stock.getSalePrice()));
@@ -523,15 +525,15 @@ public class SaleOutUpdate extends Fragment {
                 s.setFinalPrice(n.getFinalPrice());
 
                 SaleStockAmount amount = new SaleStockAmount(n.getColor(), n.getSize());
-                amount.setSellCount(Math.abs(n.getSaleTotal()));
+                amount.setSellCount(Math.abs(n.getAmount()));
                 s.setSaleTotal(Math.abs(n.getSaleTotal()));
 
                 s.addAmount(amount);
                 mOldSaleStocks.add(s);
             } else {
                 SaleStockAmount amount = new SaleStockAmount(n.getColor(), n.getSize());
-                amount.setSellCount(Math.abs(n.getSaleTotal()));
-                stock.setSaleTotal(stock.getSaleTotal() + Math.abs(n.getSaleTotal()));
+                amount.setSellCount(Math.abs(n.getAmount()));
+                // stock.setSaleTotal(stock.getSaleTotal() + Math.abs(n.getSaleTotal()));
                 stock.addAmount(amount);
             }
         }
