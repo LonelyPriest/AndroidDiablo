@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.client.EmployeeClient;
+import com.diablo.dt.diablo.client.FirmClient;
 import com.diablo.dt.diablo.client.RetailerClient;
 import com.diablo.dt.diablo.client.RightClient;
 import com.diablo.dt.diablo.client.StockClient;
@@ -27,14 +28,18 @@ import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.DiabloUser;
 import com.diablo.dt.diablo.entity.Employee;
+import com.diablo.dt.diablo.entity.Firm;
+import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.request.MatchGoodRequest;
 import com.diablo.dt.diablo.request.MatchStockRequest;
 import com.diablo.dt.diablo.response.LoginResponse;
 import com.diablo.dt.diablo.response.LoginUserInfoResponse;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
 import com.diablo.dt.diablo.rest.EmployeeInterface;
+import com.diablo.dt.diablo.rest.FirmInterface;
 import com.diablo.dt.diablo.rest.RetailerInterface;
 import com.diablo.dt.diablo.rest.RightInterface;
 import com.diablo.dt.diablo.rest.StockInterface;
@@ -78,8 +83,10 @@ public class LoginActivity extends AppCompatActivity {
 
         final DiabloUser user = DiabloDBManager.instance().getFirstLoginUser();
         if (null != user) {
-            mLoginWrap.getEditText().setText(user.getName());
-            mPasswordWrap.getEditText().setText(user.getPassword());
+            if (null != mLoginWrap.getEditText())
+                mLoginWrap.getEditText().setText(user.getName());
+            if (null != mPasswordWrap.getEditText())
+                mPasswordWrap.getEditText().setText(user.getPassword());
         }
 
         // InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -379,6 +386,54 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void getFirm() {
+        FirmInterface face = FirmClient.getClient().create(FirmInterface.class);
+        Call<List<Firm>> call = face.listFirm(Profile.instance().getToken());
+        call.enqueue(new Callback<List<Firm>>() {
+            @Override
+            public void onResponse(Call<List<Firm>> call, Response<List<Firm>> response) {
+                Log.d(LOG_TAG, "success to get color");
+                Profile.instance().setFirms(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 100;
+                message.sendToTarget();
+            }
+
+            @Override
+            public void onFailure(Call<List<Firm>> call, Throwable t) {
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 101;
+                message.sendToTarget();
+            }
+        });
+    }
+
+    private void getAllMatchGood(){
+        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        Call<List<MatchGood>> call = face.matchAllGood(
+            Profile.instance().getToken(),
+            new MatchGoodRequest(
+                Profile.instance().getConfig(DiabloEnum.START_TIME, DiabloUtils.getInstance().currentDate())));
+
+        call.enqueue(new Callback<List<MatchGood>>() {
+            @Override
+            public void onResponse(Call<List<MatchGood>> call, Response<List<MatchGood>> response) {
+                Log.d(LOG_TAG, "success to get match stock");
+                Profile.instance().setMatchGoods(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 110;
+                message.sendToTarget();
+            }
+
+            @Override
+            public void onFailure(Call<List<MatchGood>> call, Throwable t) {
+                Log.d(LOG_TAG, "failed to get match stock");
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 111;
+                message.sendToTarget();
+            }
+        });
+    }
 
     private static class LoginHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
@@ -441,9 +496,21 @@ public class LoginActivity extends AppCompatActivity {
                         activity.loginError(1199);
                         break;
                     case 90:
-                        activity.gotoMain();
+                        activity.getFirm();
                         break;
                     case 91:
+                        activity.loginError(1199);
+                        break;
+                    case 100:
+                        activity.getAllMatchGood();
+                        break;
+                    case 101:
+                        activity.loginError(1199);
+                        break;
+                    case 110:
+                        activity.gotoMain();
+                        break;
+                    case 111:
                         activity.loginError(1199);
                         break;
                     default:

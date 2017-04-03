@@ -96,6 +96,11 @@ public class DiabloEnum {
     public static final Integer SUCCESS = 0;
     public static final Integer HTTP_OK = 200;
 
+    public static final Integer STOCK_IN = 0;
+    public static final Integer STOCK_OUT = 1;
+    public static final Integer STOCK_IN_UPDATE = 2;
+    public static final Integer STOCK_OUT_UPDATE = 3;
+
     /**
      * DB table
      */

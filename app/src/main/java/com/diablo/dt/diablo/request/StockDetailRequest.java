@@ -5,22 +5,22 @@ import com.google.gson.annotations.SerializedName;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**
- * Created by buxianhui on 17/2/23.
+ * Created by buxianhui on 17/4/3.
  */
 
-public class SaleDetailRequest extends PageRequest {
+public class StockDetailRequest extends PageRequest {
     @SerializedName("fields")
     private Condition mCondition;
 
-    public SaleDetailRequest(){
+    public StockDetailRequest(){
         super();
     }
 
-    public SaleDetailRequest(Integer currentPage){
+    public StockDetailRequest(Integer currentPage){
         super(currentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
     }
 
-    public SaleDetailRequest(Integer currentPage, Integer itemsPerPage){
+    public StockDetailRequest(Integer currentPage, Integer itemsPerPage){
         super(currentPage, itemsPerPage);
     }
 

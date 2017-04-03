@@ -3,7 +3,9 @@ package com.diablo.dt.diablo.rest;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.request.MatchStockRequest;
+import com.diablo.dt.diablo.request.StockDetailRequest;
 import com.diablo.dt.diablo.request.StockRequest;
+import com.diablo.dt.diablo.response.StockDetailResponse;
 
 import java.util.List;
 
@@ -23,4 +25,7 @@ public interface StockInterface {
 
     @POST("list_w_inventory")
     Call <List<Stock>> getStock(@Header("cookie") String token, @Body StockRequest request);
+
+    @POST("filter_w_inventory_new")
+    Call<StockDetailResponse> filterStockNew(@Header("cookie") String token, @Body StockDetailRequest request);
 }

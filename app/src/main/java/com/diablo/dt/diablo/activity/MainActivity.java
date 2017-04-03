@@ -25,6 +25,8 @@ import com.diablo.dt.diablo.fragment.SaleDetail;
 import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.fragment.SaleNote;
 import com.diablo.dt.diablo.fragment.SaleOut;
+import com.diablo.dt.diablo.fragment.StockDetail;
+import com.diablo.dt.diablo.fragment.StockIn;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
@@ -134,15 +136,17 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(2);
+            selectMenuItem(4);
             loadHomeFragment();
         }
     }
 
     public void selectMenuItem(Integer menuItemIndex){
         mCurrentNavTag = mNavTagMap.get(menuItemIndex);
-        getSupportActionBar().setTitle(mCurrentNavTag.getTitleName());
-        uncheckAllMenuItems();
+        if (null != getSupportActionBar()) {
+            getSupportActionBar().setTitle(mCurrentNavTag.getTitleName());
+        }
+        unCheckAllMenuItems();
         mCurrentNavTag.getMenuItem().setChecked(true);
     }
 
@@ -220,13 +224,6 @@ public class MainActivity extends AppCompatActivity {
                 transaction.hide(fragment);
             }
         }
-//        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-//        for (Integer i=0; null != fragments && i<fragments.size(); i++){
-//            Fragment fragment = fragments.get(i);
-//            if ( null != fragment && !fragment.getTag().equals(toTag) ){
-//                transaction.hide(fragment);
-//            }
-//        }
 
         transaction.commitAllowingStateLoss();
     }
@@ -245,6 +242,13 @@ public class MainActivity extends AppCompatActivity {
             }
             else if (mCurrentNavTag.getTitleIndex().equals(3)){
                 f = new SaleNote();
+            }
+            else if (mCurrentNavTag.getTitleIndex().equals(4)) {
+                f = new StockIn();
+            }
+
+            else if (mCurrentNavTag.getTitleIndex().equals(6)) {
+                f = new StockDetail();
             }
             else {
                 f = new SaleDetail();
@@ -287,9 +291,12 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_sale_note:
                         selectMenuItem(3);
                         break;
-//                    case R.id.nav_stock_in:
-//                        selectMenuItem(4);
-//                        break;
+                    case R.id.nav_stock_in:
+                        selectMenuItem(4);
+                        break;
+                    case R.id.nav_stock_detail:
+                        selectMenuItem(6);
+                        break;
                     case R.id.nav_logout:
                         logout();
                         break;
@@ -339,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
-    private void uncheckAllMenuItems() {
+    private void unCheckAllMenuItems() {
         final Menu menu = mNavigationView.getMenu();
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);

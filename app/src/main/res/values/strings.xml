@@ -84,6 +84,16 @@
     <!--<item>操作</item>-->
   </string-array>
 
+  <string-array name="thead_stock">
+    <item>序号</item>
+    <item>货号</item>
+    <item>年度</item>
+    <item>季节</item>
+    <item>进价</item>
+    <item>数量</item>
+    <item>合计</item>
+  </string-array>
+
   <string-array name="price_type_on_sale">
     <item>吊牌价</item>
     <item>批发价</item>
@@ -97,8 +107,34 @@
     <item>退货</item>
   </string-array>
 
+  <string-array name="stock_type">
+    <item>采购</item>
+    <item>退货</item>
+  </string-array>
+
   <string-array name="extra_cost_on_sale">
     <item>代付运费</item>
+  </string-array>
+
+  <string-array name="thead_stock_detail">
+    <item>序号</item>
+    <item>单号</item>
+    <item>交易</item>
+    <item>厂商</item>
+    <item>数量</item>
+    <item>上欠</item>
+    <item>应付</item>
+    <item>实付</item>
+    <item>核销</item>
+    <!--<item>费用</item>-->
+    <item>累欠</item>
+    <!--<item>现金</item>-->
+    <!--<item>刷卡</item>-->
+    <!--<item>汇款</item>-->
+    <item>日期</item>
+    <!--<item>店铺</item>-->
+    <!--<item>店员</item>-->
+    <!--<item>备注</item>-->
   </string-array>
 
   <string name="order_id">序号</string>
@@ -138,9 +174,16 @@
 
   <string name="free_color">均码</string>
 
+  <string name="year">年度</string>
+  <string name="season">季节</string>
+  <string name="org_price">进价</string>
   <string name="style_number">款号</string>
   <string name="good_type">类型</string>
   <string name="firm">厂商</string>
+
+  <string name="sale_in_fragment">Sale In fragment</string>
+
+  <string name="diablo_server">http://192.168.0.109:63551/</string>
 
   <string name="activity_title_about_us">About Us</string>
   <string name="activity_title_privacy_policy">Privacy Policy</string>
@@ -148,11 +191,6 @@
   <string name="action_logout">Logout</string>
   <string name="action_mark_all_read">Mark All as Read</string>
   <string name="privacy_policy">Privacy Policy</string>
-
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="sale_in_fragment">Sale In fragment</string>
-
-  <string name="diablo_server">http://192.168.0.109:63551/</string>
 
   <!-- Login -->
   <string name="login">登录</string>
@@ -232,10 +270,15 @@
 
   <!-- hint -->
   <string name="please_input_retailer">客户</string>
+  <string name="please_input_firm">厂商</string>
   <string name="please_input_good">货号</string>
   <string name="retailer_balance">上欠</string>
   <string name="retailer_accBalance">累欠</string>
   <string name="cost_on_sale">费用</string>
+
+  <string name="firm_balance">上欠</string>
+  <string name="firm_accBalance">累欠</string>
+  <string name="cost_on_stock">费用</string>
 
   <!-- button -->
   <string name="add">新增</string>

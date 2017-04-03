@@ -96,13 +96,19 @@ public class Profile {
     private List<DiabloSizeGroup> mSizeGroups = new ArrayList<>();
 
     // matched stocks
-    private List<MatchStock> matchStocks = new ArrayList<>();
+    private List<MatchStock> mMatchStocks;
 
     // brand
     private List<DiabloBrand> mBrands;
 
     // type
     private List<DiabloType> mDiabloTypes;
+
+    // firm
+    private List<Firm> mFirms;
+
+    // matched goods
+    private List<MatchGood> mMatchGoods;
 
     public void clear(){
         Log.d(LOG_TAG, "clear called");
@@ -140,7 +146,9 @@ public class Profile {
         mSizeGroups.clear();
 
         // matched stocks
-        matchStocks.clear();
+        if (null != mMatchStocks) {
+            mMatchStocks.clear();
+        }
 
         // brands
         if (null != mBrands) {
@@ -151,6 +159,14 @@ public class Profile {
         if (null != mDiabloTypes) {
             mDiabloTypes.clear();
         }
+
+        // firms
+        if (null != mFirms) {
+            mFirms.clear();
+        }
+
+        // matched goods
+        mMatchGoods.clear();
     }
 
     /*
@@ -486,16 +502,16 @@ public class Profile {
      * match stock
      */
     public List<MatchStock> getMatchStocks() {
-        return matchStocks;
+        return mMatchStocks;
     }
 
-    public void setMatchStocks(List<MatchStock> matchStocks) {
-        this.matchStocks = new ArrayList<>(matchStocks);
+    public void setMatchStocks(List<MatchStock> mMatchStocks) {
+        this.mMatchStocks = new ArrayList<>(mMatchStocks);
     }
 
     public MatchStock getMatchStock(String styleNumber, Integer brandId){
         MatchStock stock = null;
-        for (MatchStock m: matchStocks){
+        for (MatchStock m: mMatchStocks){
             if (styleNumber.equals(m.getStyleNumber())
                     && brandId.equals(m.getBrandId())){
                 stock = m;
@@ -543,4 +559,31 @@ public class Profile {
 
         return type;
     }
+
+    /**
+     * firms
+     */
+    public void setFirms(List<Firm> firms) {
+        this.mFirms = new ArrayList<>(firms);
+    }
+
+    public Firm getFirm(Integer firmId) {
+        Firm firm = null;
+        for (Firm f: mFirms) {
+            if (f.getId().equals(firmId)) {
+                firm = f;
+                break;
+            }
+        }
+
+        return firm;
+    }
+
+    /**
+     * match good
+     */
+    public void setMatchGoods(List<MatchGood> goods) {
+        this.mMatchGoods = new ArrayList<>(goods);
+    }
+
 }
