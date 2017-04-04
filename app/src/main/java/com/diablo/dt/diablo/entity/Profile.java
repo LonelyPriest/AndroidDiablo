@@ -16,19 +16,19 @@ import java.util.List;
 
 public class Profile {
     private static final String LOG_TAG = "Profile:";
-    private static Profile mPofile;
+    private static Profile mProfile;
     private static final String mSessionId = DiabloEnum.SESSION_ID;
     private static Integer mTableRows = DiabloEnum.ROW_SIZE;
 
-    private static final String[] SIZE_TITLES = {"si", "sii", "siii", "siv", "sv", "svi"};
+    // private static final String[] SIZE_TITLES = {"si", "sii", "siii", "siv", "sv", "svi"};
 
     private Profile() {}
 
     public static Profile instance() {
-        if ( null == mPofile ){
-            mPofile = new Profile();
+        if ( null == mProfile){
+            mProfile = new Profile();
         }
-        return mPofile;
+        return mProfile;
     }
 
     public static Integer getTableRows(){
@@ -57,7 +57,7 @@ public class Profile {
     }
 
     public String getServer(){
-        return this.mContext.getResources().getString(R.string.diablo_server);
+        return mContext.getResources().getString(R.string.diablo_server);
     }
 
     // login information
@@ -567,6 +567,10 @@ public class Profile {
         this.mFirms = new ArrayList<>(firms);
     }
 
+    public List<Firm> getFirms() {
+        return mFirms;
+    }
+
     public Firm getFirm(Integer firmId) {
         Firm firm = null;
         for (Firm f: mFirms) {
@@ -584,6 +588,10 @@ public class Profile {
      */
     public void setMatchGoods(List<MatchGood> goods) {
         this.mMatchGoods = new ArrayList<>(goods);
+    }
+
+    public List<MatchGood> getMatchGoods() {
+        return mMatchGoods;
     }
 
 }

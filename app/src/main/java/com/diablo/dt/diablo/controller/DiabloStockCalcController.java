@@ -14,20 +14,22 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
 import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Employee;
+import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.stock.StockCalc;
-import com.diablo.dt.diablo.task.MatchRetailerTask;
+import com.diablo.dt.diablo.task.MatchFirmTask;
 import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloStockCalcView;
 
+import java.util.List;
+
 /**
  * Created by buxianhui on 17/4/3.
  */
 
-public class DiabloStockController {
+public class DiabloStockCalcController {
     private static DiabloUtils UTILS = DiabloUtils.instance();
     private StockCalc mStockCalc;
     private DiabloStockCalcView mStockCalcView;
@@ -63,7 +65,7 @@ public class DiabloStockController {
         void onFirmSelected(StockCalc calc);
     }
 
-    public DiabloStockController(StockCalc calc) {
+    public DiabloStockCalcController(StockCalc calc) {
         this.mStockCalc = calc;
         this.mStockCalcView = null;
 
@@ -81,7 +83,7 @@ public class DiabloStockController {
     }
 
 
-    public DiabloStockController(StockCalc calc, DiabloStockCalcView view) {
+    public DiabloStockCalcController(StockCalc calc, DiabloStockCalcView view) {
         this.mStockCalc = calc;
         this.mStockCalcView = view;
         this.mStockCalcView.resetValue();
@@ -107,15 +109,15 @@ public class DiabloStockController {
         this.mStockCalcView = view;
     }
 
-    public void setFirmWatcher(final Context context) {
-        final AutoCompleteTextView f = (AutoCompleteTextView) mStockCalcView.getmViewFirm();
+    public void setFirmWatcher(final Context context, final List<Firm> firms) {
+        final AutoCompleteTextView f = (AutoCompleteTextView) mStockCalcView.getViewFirm();
         mOnAutoCompletedFirmListener = new AutoCompleteTextChangeListener(f);
 
         mOnAutoCompletedFirmListener.addListen(new AutoCompleteTextChangeListener.TextWatch() {
             @Override
             public void afterTextChanged(String s) {
                 if (s.trim().length() > 0) {
-                    new MatchRetailerTask(context, f).execute(s);
+                    new MatchFirmTask(context, f, firms).execute(s);
                 }
             }
         });
@@ -123,8 +125,8 @@ public class DiabloStockController {
         mOnFirmClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Retailer selectRetailer = (Retailer) adapterView.getItemAtPosition(i);
-                setRetailer(selectRetailer);
+                Firm selectFirm = (Firm) adapterView.getItemAtPosition(i);
+                setFirm(selectFirm);
                 if (null != mOnFirmSelectedListener) {
                     mOnFirmSelectedListener.onFirmSelected(mStockCalc);
                 }
@@ -269,7 +271,7 @@ public class DiabloStockController {
         ((Spinner)mStockCalcView.getViewExtraCostType()).setAdapter(adapter);
     }
 
-    public void setDiabloOnRetailerSelected(OnDiabloFirmSelectedListener listener) {
+    public void setDiabloOnFirmSelected(OnDiabloFirmSelectedListener listener) {
         mOnFirmSelectedListener = listener;
     }
 
@@ -284,12 +286,12 @@ public class DiabloStockController {
         mStockCalcView.setShopValue(shop.getName());
     }
 
-    public void setRetailer(Retailer retailer){
-        mStockCalc.setRetailer(retailer.getId());
-        mStockCalcView.setFirmValue(retailer.getName());
+    public void setFirm(Firm firm){
+        mStockCalc.setFirm(firm.getId());
+        mStockCalcView.setFirmValue(firm.getName());
 
-        mStockCalc.setBalance(retailer.getBalance());
-        mStockCalcView.setBalanceValue(retailer.getBalance());
+        mStockCalc.setBalance(firm.getBalance());
+        mStockCalcView.setBalanceValue(firm.getBalance());
 
         resetAccBalance();
     }

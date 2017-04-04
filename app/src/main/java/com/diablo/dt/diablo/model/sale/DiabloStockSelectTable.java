@@ -21,7 +21,7 @@ import java.util.List;
  * Created by buxianhui on 17/3/15.
  */
 
-public class DiabloSaleTable {
+public class DiabloStockSelectTable {
     private TableLayout mTableLayout;
     private List<DiabloColor> mOrderedColors;
     private List<String> mOrderedSizes;
@@ -43,7 +43,7 @@ public class DiabloSaleTable {
 //        return mStockAmounts;
 //    }
 
-    public DiabloSaleTable (Context context, TableLayout table, List<DiabloColor> colors, List<String> sizes){
+    public DiabloStockSelectTable(Context context, TableLayout table, List<DiabloColor> colors, List<String> sizes){
         this.mContext = context;
         this.mTableLayout = table;
         this.mOrderedColors = colors;

@@ -50,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
     private static String [] mAssistFragmentTag = {
         DiabloEnum.TAG_STOCK_SELECT,
         DiabloEnum.TAG_SALE_IN_UPDATE,
-        DiabloEnum.TAG_SALE_OUT_UPDATE};
+        DiabloEnum.TAG_SALE_OUT_UPDATE,
+
+        DiabloEnum.TAG_GOOD_SELECT,
+        DiabloEnum.TAG_STOCK_IN_UPDATE,
+        DiabloEnum.TAG_STOCK_OUT_UPDATE
+    };
 
     private NavigationTag mCurrentNavTag;
 

@@ -81,7 +81,7 @@ public class StockCalc {
         return firm;
     }
 
-    public void setRetailer(Integer firm) {
+    public void setFirm(Integer firm) {
         this.firm = firm;
     }
 

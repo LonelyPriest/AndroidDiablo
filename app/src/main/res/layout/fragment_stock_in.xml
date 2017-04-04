@@ -25,6 +25,7 @@
         android:completionThreshold="1"
         android:gravity="center_horizontal"
         android:selectAllOnFocus="true"
+        android:singleLine="true"
         android:layout_weight="0.8" />
 
     <TextView

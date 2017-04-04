@@ -116,6 +116,13 @@
     <item>代付运费</item>
   </string-array>
 
+  <string-array name="seasons">
+    <item>春</item>
+    <item>夏</item>
+    <item>秋</item>
+    <item>冬</item>
+  </string-array>
+
   <string-array name="thead_stock_detail">
     <item>序号</item>
     <item>单号</item>
@@ -232,6 +239,7 @@
   <string name="rg_print_lack_size">打印格式缺少尺码，请在打印格式设置中选中尺码</string>
 
   <string name="update_same">"修改前后信息一致，请重新编辑修改项"</string>
+  <string name="different_good">"货品厂商不一致，请重新选择货品"</string>
 
 
   <!-- message -->

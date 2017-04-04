@@ -36,11 +36,11 @@ public class DiabloStockCalcView {
 
     }
 
-    public View getmViewFirm() {
+    public View getViewFirm() {
         return mViewFirm;
     }
 
-    public void setmViewFirm(View firm) {
+    public void setViewFirm(View firm) {
         this.mViewFirm = firm;
     }
 

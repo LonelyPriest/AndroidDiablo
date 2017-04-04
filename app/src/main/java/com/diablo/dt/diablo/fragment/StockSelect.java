@@ -25,7 +25,7 @@ import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Stock;
-import com.diablo.dt.diablo.model.sale.DiabloSaleTable;
+import com.diablo.dt.diablo.model.sale.DiabloStockSelectTable;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
@@ -254,8 +254,8 @@ public class StockSelect extends Fragment {
     }
 
     private void startSelect(List<DiabloColor> colors, List<String> orderedSizes) {
-        DiabloSaleTable saleTable = new DiabloSaleTable(getContext(), mViewTable, colors, orderedSizes);
-        saleTable.setStockListener(new DiabloSaleTable.OnStockListener() {
+        DiabloStockSelectTable saleTable = new DiabloStockSelectTable(getContext(), mViewTable, colors, orderedSizes);
+        saleTable.setStockListener(new DiabloStockSelectTable.OnStockListener() {
             @Override
             public SaleStockAmount getStockByColorAndSize(Integer colorId, String size) {
                     return findStock(colorId, size);

@@ -21,7 +21,7 @@ public class MatchAllStockTask extends AsyncTask<String, Void, Void> {
     private AutoCompleteTextView mCompleteView;
     private TableRow mRow;
     private List<MatchStock> mMatchStocks;
-    private List<MatchStock> mMatchedStocks= new ArrayList<MatchStock>();
+    private List<MatchStock> mMatchedStocks= new ArrayList<>();
 
     public MatchAllStockTask(Context context, AutoCompleteTextView view, TableRow row, List<MatchStock> stocks){
         this.mContext = context;

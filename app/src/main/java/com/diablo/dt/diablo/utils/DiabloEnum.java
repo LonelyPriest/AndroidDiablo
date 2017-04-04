@@ -88,6 +88,10 @@ public class DiabloEnum {
     public static final String TAG_SALE_IN_UPDATE = "stockInUpdate";
     public static final String TAG_SALE_OUT_UPDATE = "stockOutUpdate";
 
+    public static final String TAG_GOOD_SELECT = "goodSelect";
+    public static final String TAG_STOCK_IN_UPDATE = "stockInUpdate";
+    public static final String TAG_STOCK_OUT_UPDATE = "stockOutUpdate";
+
     public static final Integer SALE_IN = 0;
     public static final Integer SALE_OUT = 1;
     public static final Integer SALE_IN_UPDATE = 2;

@@ -1,9 +1,6 @@
 package com.diablo.dt.diablo.fragment;
 
 
-import static com.diablo.dt.diablo.R.string.brand;
-import static com.diablo.dt.diablo.R.string.shop;
-
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -264,7 +261,7 @@ public class SaleNote extends Fragment {
                         else if (getContext().getString(R.string.style_number).equals(title)){
                             addCell(row, note.getStyleNumber(), lp);
                         }
-                        else if (getContext().getString(brand).equals(title)){
+                        else if (getContext().getString(R.string.brand).equals(title)){
                             DiabloBrand brand = Profile.instance().getBrand(note.getBrandId());
                             if (null != brand) {
                                 addCell(row, brand.getName(), lp);
@@ -303,7 +300,7 @@ public class SaleNote extends Fragment {
                                 5, note.getDatetime().length() - 3).trim();
                             addCell(row, shortDate, lp);
                         }
-                        else if(getResources().getString(shop).equals(title)){
+                        else if(getResources().getString(R.string.shop).equals(title)){
                             addCell(row,
                                 DiabloUtils.getInstance().getShop(Profile.instance().getSortShop(),
                                     note.getShopId()).getName(),

@@ -57,6 +57,10 @@ public class MatchGood {
     @SerializedName("entry_date")
     private String datetime;
 
+    public MatchGood() {
+
+    }
+    
     public Integer getId() {
         return id;
     }
@@ -245,7 +249,7 @@ public class MatchGood {
         return datetime;
     }
 
-    public MatchGood() {
-
+    public String getName() {
+        return this.styleNumber + "/" + this.brand + "/" + this.type;
     }
 }
