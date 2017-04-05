@@ -19,6 +19,8 @@ import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.fragment.SaleDetail;
 import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.fragment.SaleOut;
+import com.diablo.dt.diablo.fragment.StockDetail;
+import com.diablo.dt.diablo.fragment.StockIn;
 import com.diablo.dt.diablo.fragment.StockSelect;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -60,6 +62,16 @@ public class SaleUtils {
                     break;
                 case DiabloEnum.TAG_SALE_OUT:
                     f = new SaleOut();
+                    break;
+                case DiabloEnum.TAG_STOCK_IN:
+                    f = new StockIn();
+                    break;
+                case DiabloEnum.TAG_STOCK_OUT:
+                    break;
+                case DiabloEnum.TAG_STOCK_DETAIL:
+                    f = new StockDetail();
+                    break;
+                case DiabloEnum.TAG_STOCK_NOTE:
                     break;
                 default:
                     break;

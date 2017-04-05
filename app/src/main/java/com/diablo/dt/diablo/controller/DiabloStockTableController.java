@@ -2,7 +2,7 @@ package com.diablo.dt.diablo.controller;
 
 import android.widget.TableLayout;
 
-import com.diablo.dt.diablo.model.sale.SaleStock;
+import com.diablo.dt.diablo.model.stock.EntryStock;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 import java.util.ArrayList;
@@ -86,10 +86,10 @@ public class DiabloStockTableController {
         return orderId;
     }
 
-    public void replaceRowController(final SaleStock stock) {
+    public void replaceRowController(final EntryStock stock) {
         for (DiabloStockRowController c: mControllers) {
             if (c.getOrderId().equals(stock.getOrderId())) {
-                // c.replaceSaleStock(stock);
+                c.replaceEntryStock(stock);
             }
         }
     }

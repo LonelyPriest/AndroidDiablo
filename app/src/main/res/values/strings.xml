@@ -249,6 +249,7 @@
   <string name="sale_start_print_or_not">，是否打印销售单？</string>
   <string name="sale_in_update_success">销售单编辑成功，单号：</string>
   <string name="sale_out_update_success">退货单编辑成功，单号：</string>
+  <string name="stock_in_success">入库成功，单号：</string>
 
   <!-- toast -->
   <string name="refresh_top">己到达第一页，无需刷新</string>
@@ -308,6 +309,9 @@
   <string name="btn_cancel">取消</string>
   <string name="btn_draft_clear">清除草稿</string>
 
+  <string name="btn_stock_in">入库</string>
+  <string name="btn_stock_out">退货</string>
+
   <string name="select_stock">请选择库存</string>
   <string name="sale_in_update">交易单编辑（销售）</string>
   <string name="sale_out_update">交易单编辑（退货）</string>
@@ -322,5 +326,7 @@
 
   <string name="back_from_stock_select">从库存选择返回</string>
   <string name="back_from_unknown">从未知返回</string>
+
+  <string name="back_from_good_select">从货品选择返回</string>
 
 </resources>

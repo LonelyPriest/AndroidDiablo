@@ -391,6 +391,12 @@ public class StockDetail extends Fragment {
 //            case R.id.sale_detail_to_sale_out:
 //                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_OUT);
 //                break;
+            case R.id.stock_detail_to_stock_in:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_IN);
+                break;
+            case R.id.stock_detail_to_stock_out:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_OUT);
+                break;
             case R.id.stock_detail_refresh:
                 init();
                 pageChanged();

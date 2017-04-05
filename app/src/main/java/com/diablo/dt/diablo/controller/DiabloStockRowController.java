@@ -11,8 +11,11 @@ import android.widget.EditText;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.MatchGood;
+import com.diablo.dt.diablo.model.sale.SaleStock;
+import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.model.stock.DiabloStockAmountChangeWatcher;
 import com.diablo.dt.diablo.model.stock.EntryStock;
+import com.diablo.dt.diablo.model.stock.EntryStockAmount;
 import com.diablo.dt.diablo.model.stock.StockCalc;
 import com.diablo.dt.diablo.task.MatchAllGoodTask;
 import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
@@ -146,6 +149,20 @@ public class DiabloStockRowController {
     public boolean isSameModel(DiabloStockRowController controller) {
         return mEntryStock.isSame(controller.getModel());
 
+    }
+
+    public void replaceEntryStock(final EntryStock stock) {
+        mEntryStock.clearAmounts();
+        Integer total = 0;
+
+        for (EntryStockAmount a: stock.getAmounts()) {
+            mEntryStock.addAmount(a);
+            total += a.getCount();
+        }
+
+        mEntryStock.setTotal(total);
+
+        mRowView.setCellText(R.string.amount, total);
     }
 
     /**

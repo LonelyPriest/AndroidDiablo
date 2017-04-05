@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class EntryStock {
+    private Integer goodId;
     private Integer orderId;
 
     private String styleNumber;
@@ -62,29 +63,30 @@ public class EntryStock {
     }
 
     public void init(MatchGood good) {
+        goodId      = good.getId();
         styleNumber = good.getStyleNumber();
-        brand = good.getBrand();
-        type = good.getType();
+        brand       = good.getBrand();
+        type        = good.getType();
 
         brandId = good.getBrandId();
-        firmId = good.getFirmId();
-        typeId = good.getFirmId();
+        firmId  = good.getFirmId();
+        typeId  = good.getFirmId();
 
-        sex = good.getSex();
-        year = good.getYear();
+        sex    = good.getSex();
+        year   = good.getYear();
         season = good.getSeason();
-        free = good.getFree();
+        free   = good.getFree();
 
         orgPrice = good.getOrgPrice();
         tagPrice = good.getTagPrice();
         pkgPrice = good.getPkgPrice();
-        price3 = good.getPrice3();
-        price4 = good.getPrice4();
-        price5 = good.getPrice5();
+        price3   = good.getPrice3();
+        price4   = good.getPrice4();
+        price5   = good.getPrice5();
         discount = good.getDiscount();
 
-        sGroup = good.getSgroup();
-        path = good.getPath();
+        sGroup   = good.getsGroup();
+        path     = good.getPath();
         alarmDay = good.getAlarmDay();
 
         colors = new ArrayList<>();
@@ -94,6 +96,10 @@ public class EntryStock {
         orderSizes = Profile.instance().genSortedSizeNamesByGroups(sGroup);
 
         this.state = StockUtils.STARTING_STOCK;
+    }
+
+    public Integer getGoodId() {
+        return goodId;
     }
 
     public Integer getOrderId() {

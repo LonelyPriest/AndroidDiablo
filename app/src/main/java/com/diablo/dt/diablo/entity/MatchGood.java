@@ -32,13 +32,13 @@ public class MatchGood {
     @SerializedName("size")
     private String size;
     @SerializedName("s_group")
-    private String sgroup;
+    private String sGroup;
     @SerializedName("free")
     private Integer free;
 
     @SerializedName("org_price")
     private Float orgPrice;
-    @SerializedName("tag_prce")
+    @SerializedName("tag_price")
     private Float tagPrice;
     @SerializedName("pkg_price")
     private Float pkgPrice;
@@ -60,7 +60,7 @@ public class MatchGood {
     public MatchGood() {
 
     }
-    
+
     public Integer getId() {
         return id;
     }
@@ -157,12 +157,12 @@ public class MatchGood {
         this.size = size;
     }
 
-    public String getSgroup() {
-        return sgroup;
+    public String getsGroup() {
+        return sGroup;
     }
 
-    public void setSgroup(String sgroup) {
-        this.sgroup = sgroup;
+    public void setsGroup(String sGroup) {
+        this.sGroup = sGroup;
     }
 
     public Integer getFree() {
