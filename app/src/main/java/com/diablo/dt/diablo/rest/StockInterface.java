@@ -33,4 +33,7 @@ public interface StockInterface {
 
     @POST("new_w_inventory")
     Call<NewStockResponse> addStock(@Header("cookie") String token, @Body NewStockRequest request);
+
+    @POST("reject_w_inventory")
+    Call<NewStockResponse> rejectStock(@Header("cookie") String token, @Body NewStockRequest request);
 }

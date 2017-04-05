@@ -2,6 +2,7 @@ package com.diablo.dt.diablo.model.stock;
 
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchGood;
+import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -95,6 +96,38 @@ public class EntryStock {
         }
         orderSizes = Profile.instance().genSortedSizeNamesByGroups(sGroup);
 
+        this.state = StockUtils.STARTING_STOCK;
+    }
+
+    public void init(MatchStock stock) {
+        goodId      = DiabloEnum.INVALID_INDEX;
+        styleNumber = stock.getStyleNumber();
+        brand       = stock.getBrand();
+        type        = stock.getType();
+
+        brandId = stock.getBrandId();
+        firmId  = stock.getFirmId();
+        typeId  = stock.getFirmId();
+
+        sex    = stock.getSex();
+        year   = stock.getYear();
+        season = stock.getSeason();
+        free   = stock.getFree();
+
+        orgPrice = stock.getOrgPrice();
+        tagPrice = stock.getTagPrice();
+        pkgPrice = stock.getPkgPrice();
+        price3   = stock.getPrice3();
+        price4   = stock.getPrice4();
+        price5   = stock.getPrice5();
+        discount = stock.getDiscount();
+
+        sGroup   = stock.getsGroup();
+        path     = stock.getPath();
+        alarmDay = stock.getAlarmDay();
+
+        colors = new ArrayList<>();
+        orderSizes = Profile.instance().genSortedSizeNamesByGroups(sGroup);
         this.state = StockUtils.STARTING_STOCK;
     }
 
@@ -320,8 +353,16 @@ public class EntryStock {
         return colors;
     }
 
+    public void setColors(List<DiabloColor> colors) {
+        this.colors = colors;
+    }
+
     public List<String> getOrderSizes() {
         return orderSizes;
+    }
+
+    public void setOrderSizes(List<String> sizes) {
+        this.orderSizes = sizes;
     }
 
     public Float calcStockPrice() {

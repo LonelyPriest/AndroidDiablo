@@ -106,6 +106,7 @@ public class StockUtils {
     }
 
     public static void switchToStockSelectFrame(
+        Integer shop,
         EntryStock stock,
         Integer operation,
         Integer comeFrom,
@@ -117,14 +118,16 @@ public class StockUtils {
 
         if (null == to){
             Bundle args = new Bundle();
+            args.putInt(DiabloEnum.BUNDLE_PARAM_SHOP, shop);
             args.putInt(DiabloEnum.BUNDLE_PARAM_ACTION, operation);
             args.putInt(DiabloEnum.BUNDLE_PARAM_COME_FORM, comeFrom);
             args.putString(DiabloEnum.BUNDLE_PARAM_SALE_STOCK, new Gson().toJson(stock));
             to = new GoodSelect();
             to.setArguments(args);
         } else {
-            to.setComeFrom(comeFrom);
+            to.setShop(shop);
             to.setSelectAction(operation);
+            to.setComeFrom(comeFrom);
             to.setEntryStock(new Gson().toJson(stock));
         }
 

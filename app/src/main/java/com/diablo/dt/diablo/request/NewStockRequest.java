@@ -25,6 +25,10 @@ public class NewStockRequest {
         }
     }
 
+    public List<DiabloEntryStock> getEntryStocks() {
+        return entryStocks;
+    }
+
     public void setStockCalc(DiabloStockCalc stockCalc) {
         this.stockCalc = stockCalc;
     }
@@ -76,6 +80,90 @@ public class NewStockRequest {
 
         @SerializedName("amount")
         private List<DiabloEntryStockAmount> entryStockAmounts;
+
+        // used to reject
+        @SerializedName("fdiscount")
+        private Float fdiscount;
+        @SerializedName("fprice")
+        private Float fprice;
+        @SerializedName("amounts")
+        private List<DiabloEntryStockAmount> entryStockRejectAmounts;
+
+        public String getStyleNumber() {
+            return styleNumber;
+        }
+
+        public Integer getBrandId() {
+            return brandId;
+        }
+
+        public Integer getFirmId() {
+            return firmId;
+        }
+
+        public Integer getTypeId() {
+            return typeId;
+        }
+
+        public Integer getSex() {
+            return sex;
+        }
+
+        public Integer getYear() {
+            return year;
+        }
+
+        public Integer getSeason() {
+            return season;
+        }
+
+        public String getsGroup() {
+            return sGroup;
+        }
+
+        public Integer getFree() {
+            return free;
+        }
+
+        public Float getOrgPrice() {
+            return orgPrice;
+        }
+
+        public Float getTagPrice() {
+            return tagPrice;
+        }
+
+        public Float getPkgPrice() {
+            return pkgPrice;
+        }
+
+        public Float getPrice3() {
+            return price3;
+        }
+
+        public Float getPrice4() {
+            return price4;
+        }
+
+        public Float getPrice5() {
+            return price5;
+        }
+
+        public Float getDiscount() {
+            return discount;
+        }
+
+        public Integer getAlarmDay() {
+            return alarmDay;
+        }
+
+        public Integer getTotal() {
+            return total;
+        }
+
+        public String getPath() {
+            return path;
+        }
 
         public void setGoodId(Integer goodId) {
             this.goodId = goodId;
@@ -160,6 +248,21 @@ public class NewStockRequest {
         public void setEntryStockAmounts(List<DiabloEntryStockAmount> entryStockAmounts) {
             this.entryStockAmounts = entryStockAmounts;
         }
+
+        /**
+         * use to reject only
+         */
+        public void setFdiscount(Float fdiscount) {
+            this.fdiscount = fdiscount;
+        }
+
+        public void setFprice(Float fprice) {
+            this.fprice = fprice;
+        }
+
+        public void setEntryStockRejectAmounts(List<DiabloEntryStockAmount> entryStockRejectAmounts) {
+            this.entryStockRejectAmounts = entryStockRejectAmounts;
+        }
     }
 
     public static class DiabloEntryStockAmount {
@@ -169,6 +272,12 @@ public class NewStockRequest {
         private String size;
         @SerializedName("count")
         private Integer count;
+        @SerializedName("reject_count")
+        private Integer rejectCount;
+
+        public DiabloEntryStockAmount() {
+
+        }
 
         public void setColorId(Integer colorId) {
             this.colorId = colorId;
@@ -180,6 +289,10 @@ public class NewStockRequest {
 
         public void setCount(Integer count) {
             this.count = count;
+        }
+
+        public void setRejectCount(Integer rejectCount) {
+            this.rejectCount = rejectCount;
         }
     }
 
@@ -218,6 +331,10 @@ public class NewStockRequest {
         private Integer extraCostType;
         @SerializedName("e_pay")
         private Float extraCost;
+
+        public DiabloStockCalc() {
+
+        }
 
         public void setFirmId(Integer firmId) {
             this.firmId = firmId;

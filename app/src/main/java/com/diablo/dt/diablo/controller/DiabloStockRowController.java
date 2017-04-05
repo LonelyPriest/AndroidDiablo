@@ -11,13 +11,13 @@ import android.widget.EditText;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.MatchGood;
-import com.diablo.dt.diablo.model.sale.SaleStock;
-import com.diablo.dt.diablo.model.sale.SaleStockAmount;
+import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.model.stock.DiabloStockAmountChangeWatcher;
 import com.diablo.dt.diablo.model.stock.EntryStock;
 import com.diablo.dt.diablo.model.stock.EntryStockAmount;
 import com.diablo.dt.diablo.model.stock.StockCalc;
 import com.diablo.dt.diablo.task.MatchAllGoodTask;
+import com.diablo.dt.diablo.task.MatchAllStockOfFirmTask;
 import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
@@ -132,6 +132,70 @@ public class DiabloStockRowController {
         ((AutoCompleteTextView)cell.getView()).setOnItemClickListener(mOnGoodClickListener);
     }
 
+    public void setStockWatcher(
+        final Context context,
+        final StockCalc calc,
+        final List<MatchStock> stocks,
+        final DiabloCellLabel[] labels,
+        final OnActionAfterSelectGood listener) {
+
+        final DiabloCellView cell = mRowView.getCell(R.string.good);
+        cell.setCellFocusable(true);
+        cell.requestFocus();
+
+        ((AutoCompleteTextView)cell.getView()).setRawInputType(InputType.TYPE_CLASS_NUMBER);
+        ((AutoCompleteTextView)cell.getView()).setDropDownWidth(500);
+        ((AutoCompleteTextView)cell.getView()).setThreshold(1);
+
+        // final AutoCompleteTextView cell = (AutoCompleteTextView) mRowView.getCell(R.string.good).getView();
+        mOnAutoCompletedGoodListener = new AutoCompleteTextChangeListener.TextWatch() {
+            @Override
+            public void afterTextChanged(String s) {
+                if (s.trim().length() > 0) {
+                    new MatchAllStockOfFirmTask(
+                        context,
+                        calc,
+                        (AutoCompleteTextView) cell.getView(),
+                        stocks).execute(s);
+                }
+            }
+        };
+
+        new AutoCompleteTextChangeListener((AutoCompleteTextView)cell.getView()).addListen(mOnAutoCompletedGoodListener);
+
+        mOnGoodClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                MatchStock matchedStock = (MatchStock) adapterView.getItemAtPosition(pos);
+                mEntryStock.init(matchedStock);
+
+                String [] seasons = context.getResources().getStringArray(R.array.seasons);
+                for (DiabloCellLabel label: labels){
+                    Integer key = label.getLabelId();
+                    View v = mRowView.getCell(key).getView();
+                    if (key.equals(R.string.good)) {
+                        mRowView.setCellText(R.string.good, matchedStock.getName());
+                    }
+                    else if (key.equals(R.string.year)) {
+                        mRowView.setCellText(R.string.year, matchedStock.getYear());
+                    }
+                    else if (key.equals(R.string.season)) {
+                        mRowView.setCellText(R.string.season, seasons[matchedStock.getSeason()]);
+                    }
+                    else if (key.equals(R.string.org_price)){
+                        mRowView.setCellText(R.string.org_price, matchedStock.getOrgPrice());
+                    }
+                    else if (key.equals(R.string.amount)) {
+                        listener.onActionOfAmount(DiabloStockRowController.this, mRowView.getCell(key));
+                        ((EditText)v).addTextChangedListener(mAmountListener);
+                    }
+                }
+            }
+        };
+
+        ((AutoCompleteTextView)cell.getView()).setOnItemClickListener(mOnGoodClickListener);
+    }
+
 //    public void setRowWatcher() {
 //        ((EditText)(mRowView.getCell(R.string.amount).getView())).addTextChangedListener(mAmountListener);
 //    }
@@ -161,6 +225,8 @@ public class DiabloStockRowController {
         }
 
         mEntryStock.setTotal(total);
+        mEntryStock.setColors(stock.getColors());
+        mEntryStock.setOrderSizes(stock.getOrderSizes());
 
         mRowView.setCellText(R.string.amount, total);
     }

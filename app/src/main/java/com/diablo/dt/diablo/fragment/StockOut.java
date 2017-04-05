@@ -28,7 +28,6 @@ import com.diablo.dt.diablo.controller.DiabloStockRowController;
 import com.diablo.dt.diablo.controller.DiabloStockTableController;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.Firm;
-import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
@@ -55,7 +54,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class StockIn extends Fragment {
+public class StockOut extends Fragment {
     private final static DiabloUtils UTILS = DiabloUtils.instance();
     private final static String LOG_TAG = "StockIn:";
 
@@ -67,10 +66,10 @@ public class StockIn extends Fragment {
 
     private DiabloStockTableController mStockTableController;
 
-    private List<MatchGood> mMatchGoods;
+    private List<MatchStock> mMatchStocks;
     private TableRow mCurrentSelectedRow;
 
-    private StockInHandler mHandler = new StockInHandler(this);
+    private StockOutHandler mHandler = new StockOutHandler(this);
 
     private GoodSelect.OnNoFreeGoodSelectListener mOnNoFreeGoodSelectListener;
 
@@ -84,17 +83,21 @@ public class StockIn extends Fragment {
         mBackFrom = form;
     }
 
-    public StockIn() {
+    public StockOut() {
         // Required empty public constructor
     }
 
-    public static StockIn newInstance(String param1, String param2) {
-        return new StockIn();
+    // TODO: Rename and change types and number of parameters
+    public static StockOut newInstance(String param1, String param2) {
+        StockOut fragment = new StockOut();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     private void initLabel() {
         mButtons = new SparseArray<>();
-        mButtons.put(R.id.stock_in_save, new DiabloButton(getContext(), R.id.stock_in_save));
+        mButtons.put(R.id.stock_out_save, new DiabloButton(getContext(), R.id.stock_out_save));
         mLabels = StockUtils.createStockLabelsFromTitle(getContext());
     }
 
@@ -108,32 +111,32 @@ public class StockIn extends Fragment {
 
         mStockCalcView.setViewStockTotal(view.findViewById(R.id.stock_total));
         mStockCalcView.setViewShouldPay(view.findViewById(R.id.stock_should_pay));
-        mStockCalcView.setViewCash(view.findViewById(R.id.stock_cash));
+        // mStockCalcView.setViewCash(view.findViewById(R.id.stock_cash));
         mStockCalcView.setViewComment(view.findViewById(R.id.stock_comment));
 
         mStockCalcView.setViewBalance(view.findViewById(R.id.firm_balance));
-        mStockCalcView.setViewHasPay(view.findViewById(R.id.stock_has_pay));
-        mStockCalcView.setViewCard(view.findViewById(R.id.stock_card));
+        // mStockCalcView.setViewHasPay(view.findViewById(R.id.firm_has_pay));
+        // mStockCalcView.setViewCard(view.findViewById(R.id.stock_card));
         mStockCalcView.setViewExtraCostType(view.findViewById(R.id.stock_select_extra_cost));
 
         mStockCalcView.setViewAccBalance(view.findViewById(R.id.firm_accBalance));
         mStockCalcView.setViewVerificate(view.findViewById(R.id.stock_verificate));
-        mStockCalcView.setViewWire(view.findViewById(R.id.stock_wire));
+        // mStockCalcView.setViewWire(view.findViewById(R.id.stock_wire));
         mStockCalcView.setViewExtraCost(view.findViewById(R.id.stock_extra_cost));
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_stock_in, container, false);
-
-        mMatchGoods = Profile.instance().getMatchGoods();
+        View view = inflater.inflate(R.layout.fragment_stock_out, container, false);
+        mMatchStocks = Profile.instance().getMatchStocks();
 
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
@@ -147,6 +150,7 @@ public class StockIn extends Fragment {
         Integer firmId = Profile.instance().getFirms().get(0).getId();
 
         init(firmId);
+
         return view;
     }
 
@@ -171,7 +175,7 @@ public class StockIn extends Fragment {
         // Integer firmId = Profile.instance().getFirms().get(0).getId();
         Integer shop = Profile.instance().getLoginShop();
 
-        mStockCalcController = new DiabloStockCalcController(new StockCalc(), mStockCalcView);
+        mStockCalcController = new DiabloStockCalcController(new StockCalc(DiabloEnum.STOCK_OUT), mStockCalcView);
 
         mStockCalcController.setShop(shop);
         mStockCalcController.setDatetime(UTILS.currentDatetime());
@@ -184,9 +188,9 @@ public class StockIn extends Fragment {
         mStockCalcController.setEmployeeWatcher();
         mStockCalcController.setCommentWatcher();
 
-        mStockCalcController.setCashWatcher();
-        mStockCalcController.setCardWatcher();
-        mStockCalcController.setWireWatcher();
+//        mStockCalcController.setCashWatcher();
+//        mStockCalcController.setCardWatcher();
+//        mStockCalcController.setWireWatcher();
         mStockCalcController.setVerificateWatcher();
 
         mStockCalcController.setExtraCostWatcher();
@@ -200,9 +204,8 @@ public class StockIn extends Fragment {
         mStockTableController.clear();
         mStockTableController.addRowControllerAtTop(addEmptyRow());
 
-        mButtons.get(R.id.stock_in_save).disable();
+        mButtons.get(R.id.stock_out_save).disable();
     }
-
 
     private DiabloStockRowController addEmptyRow() {
         TableRow row = new TableRow(getContext());
@@ -216,15 +219,16 @@ public class StockIn extends Fragment {
         }
 
         controller.setAmountWatcher(mHandler, controller);
-        controller.setGoodWatcher(
+        controller.setStockWatcher(
             getContext(),
             mStockCalcController.getStockCalc(),
-            mMatchGoods,
+            mMatchStocks,
             mLabels,
             mOnActionAfterSelectGood);
 
         return controller;
     }
+
 
     private DiabloStockRowController.OnActionAfterSelectGood mOnActionAfterSelectGood =
         new DiabloStockRowController.OnActionAfterSelectGood(){
@@ -254,100 +258,17 @@ public class StockIn extends Fragment {
                             cell.requestFocus();
                             row.getCell(R.string.good).setCellFocusable(false);
                         } else {
-                             switchToStockSelectFrame(controller.getModel(), R.string.add);
+                            switchToStockSelectFrame(controller.getModel(), R.string.add);
                         }
                     }
                 }
             }
         };
 
-    private void switchToStockSelectFrame(EntryStock stock, Integer operation) {
-        StockUtils.switchToStockSelectFrame(mStockCalcController.getShop(), stock, operation, DiabloEnum.STOCK_IN, this);
-    }
-
-    private void calcShouldPay() {
-        mStockTableController.calcStockShouldPay(mStockCalcController);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        mCurrentSelectedRow = (TableRow) v;
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_on_stock, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        EntryStock stock = (EntryStock)mCurrentSelectedRow.getTag();
-        Integer orderId = stock.getOrderId();
-        // DiabloSaleRowController controller = mSaleTableController.getControllerByOrderId(orderId);
-
-        if (getResources().getString(R.string.delete) == item.getTitle()){
-            // delete
-            mStockTableController.removeByOrderId(orderId);
-            // reorder
-            mStockTableController.reorder();
-
-            if (1 == mStockTableController.size()){
-                mButtons.get(R.id.stock_in_save).disable();
-            }
-
-            calcShouldPay();
-        }
-
-        else if (getResources().getString(R.string.modify) == item.getTitle()){
-            if (!DiabloEnum.DIABLO_FREE.equals(stock.getFree())){
-                switchToStockSelectFrame(stock, R.string.modify);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * option menu
-     */
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        for (Integer i=0; i<mButtons.size(); i++){
-            Integer key = mButtons.keyAt(i);
-            DiabloButton button = mButtons.get(key);
-            menu.findItem(button.getResId()).setEnabled(button.isEnabled());
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.action_on_stock_in, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.stock_in_back:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_DETAIL);
-                break;
-            case R.id.stock_in_save:
-                startStock();
-                break;
-            case R.id.stock_in_next:
-                init(mStockCalcController.getFirm());
-                break;
-            default:
-                // return super.onOptionsItemSelected(item);
-                break;
-
-        }
-
-        return true;
-    }
-
-    private static class StockInHandler extends Handler {
+    private static class StockOutHandler extends Handler {
         WeakReference<Fragment> mFragment;
 
-        StockInHandler(Fragment fragment){
+        StockOutHandler(Fragment fragment){
             mFragment = new WeakReference<>(fragment);
         }
 
@@ -377,7 +298,7 @@ public class StockIn extends Fragment {
                     }
                 }
 
-                final StockIn f = ((StockIn)mFragment.get());
+                final StockOut f = ((StockOut)mFragment.get());
 
                 if (StockUtils.STARTING_STOCK.equals(stock.getState())) {
                     if (0 != stock.getTotal()) {
@@ -387,7 +308,7 @@ public class StockIn extends Fragment {
                         row.setOnLongClickListener(f);
 
                         if (1 == f.mStockTableController.size()){
-                            f.mButtons.get(R.id.stock_in_save).enable();
+                            f.mButtons.get(R.id.stock_out_save).enable();
                         }
 
                         f.mStockTableController.addRowControllerAtTop(f.addEmptyRow());
@@ -399,6 +320,90 @@ public class StockIn extends Fragment {
             }
 
         }
+    }
+
+    private void calcShouldPay() {
+        mStockTableController.calcStockShouldPay(mStockCalcController);
+    }
+
+    private void switchToStockSelectFrame(EntryStock stock, Integer operation) {
+        StockUtils.switchToStockSelectFrame(
+            mStockCalcController.getShop(), stock, operation, DiabloEnum.STOCK_OUT, this);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        mCurrentSelectedRow = (TableRow) v;
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_on_stock, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        EntryStock stock = (EntryStock)mCurrentSelectedRow.getTag();
+        Integer orderId = stock.getOrderId();
+        // DiabloSaleRowController controller = mSaleTableController.getControllerByOrderId(orderId);
+
+        if (getResources().getString(R.string.delete) == item.getTitle()){
+            // delete
+            mStockTableController.removeByOrderId(orderId);
+            // reorder
+            mStockTableController.reorder();
+
+            if (1 == mStockTableController.size()){
+                mButtons.get(R.id.stock_out_save).disable();
+            }
+
+            calcShouldPay();
+        }
+
+        else if (getResources().getString(R.string.modify) == item.getTitle()){
+            if (!DiabloEnum.DIABLO_FREE.equals(stock.getFree())){
+                switchToStockSelectFrame(stock, R.string.modify);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * option menu
+     */
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        for (Integer i=0; i<mButtons.size(); i++){
+            Integer key = mButtons.keyAt(i);
+            DiabloButton button = mButtons.get(key);
+            menu.findItem(button.getResId()).setEnabled(button.isEnabled());
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.action_on_stock_out, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.stock_out_back:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_DETAIL);
+                break;
+            case R.id.stock_out_save:
+                startReject();
+                break;
+            case R.id.stock_out_next:
+                init(mStockCalcController.getFirm());
+                break;
+            default:
+                // return super.onOptionsItemSelected(item);
+                break;
+
+        }
+
+        return true;
     }
 
     @Override
@@ -426,7 +431,7 @@ public class StockIn extends Fragment {
         }
     }
 
-    private void startStock() {
+    private void startReject() {
         NewStockRequest stockRequest = new NewStockRequest();
 
         for (DiabloStockRowController controller: mStockTableController.getControllers()) {
@@ -436,14 +441,12 @@ public class StockIn extends Fragment {
 
             EntryStock s = controller.getModel();
             NewStockRequest.DiabloEntryStock d = new NewStockRequest.DiabloEntryStock();
-            d.setGoodId(s.getGoodId());
             d.setStyleNumber(s.getStyleNumber());
             d.setBrandId(s.getBrandId());
-            d.setFirmId(s.getFirmId());
             d.setTypeId(s.getTypeId());
             d.setSex(s.getSex());
-            d.setYear(s.getYear());
             d.setSeason(s.getSeason());
+
             d.setsGroup(s.getsGroup());
             d.setFree(s.getFree());
 
@@ -453,9 +456,10 @@ public class StockIn extends Fragment {
             d.setPrice3(s.getPrice3());
             d.setPrice4(s.getPrice4());
             d.setPrice5(s.getPrice5());
-            d.setDiscount(s.getDiscount());
 
-            d.setAlarmDay(s.getAlarmDay());
+            d.setFdiscount(s.getDiscount());
+            d.setFprice(s.getOrgPrice());
+
             d.setTotal(s.getTotal());
             d.setPath(s.getPath());
 
@@ -465,11 +469,11 @@ public class StockIn extends Fragment {
                     NewStockRequest.DiabloEntryStockAmount amount = new NewStockRequest.DiabloEntryStockAmount();
                     amount.setColorId(a.getColorId());
                     amount.setSize(a.getSize());
-                    amount.setCount(a.getCount());
+                    amount.setRejectCount(a.getCount());
                     amounts.add(amount);
                 }
             }
-            d.setEntryStockAmounts(amounts);
+            d.setEntryStockRejectAmounts(amounts);
 
             stockRequest.addEntryStock(d);
         }
@@ -478,18 +482,14 @@ public class StockIn extends Fragment {
         StockCalc calc = mStockCalcController.getStockCalc();
         dCalc.setFirmId(calc.getFirm());
         dCalc.setShopId(calc.getShop());
-        dCalc.setDate(calc.getDatetime().substring(0, 10));
         dCalc.setDatetime(calc.getDatetime());
         dCalc.setEmployeeId(calc.getEmployee());
         dCalc.setComment(calc.getComment());
 
-        dCalc.setTotal(calc.getTotal());
         dCalc.setBalance(calc.getBalance());
-        dCalc.setCash(calc.getCash());
-        dCalc.setCard(calc.getCard());
-        dCalc.setWire(calc.getWire());
-        dCalc.setVerificate(calc.getVerificate());
         dCalc.setShouldPay(calc.getShouldPay());
+        dCalc.setTotal(calc.getTotal());
+
         dCalc.setHasPay(calc.getHasPay());
         dCalc.setExtraCostType(calc.getExtraCostType());
         dCalc.setExtraCost(calc.getExtraCost());
@@ -500,15 +500,15 @@ public class StockIn extends Fragment {
     }
 
     private void startRequest(final NewStockRequest request) {
-        mButtons.get(R.id.stock_in_save).disable();
+        mButtons.get(R.id.stock_out_save).disable();
 
         final StockInterface face = StockClient.getClient().create(StockInterface.class);
-        Call<NewStockResponse> call = face.addStock(Profile.instance().getToken(), request);
+        Call<NewStockResponse> call = face.rejectStock(Profile.instance().getToken(), request);
 
         call.enqueue(new Callback<NewStockResponse>() {
             @Override
             public void onResponse(Call<NewStockResponse> call, retrofit2.Response<NewStockResponse> response) {
-                mButtons.get(R.id.stock_in_save).enable();
+                mButtons.get(R.id.stock_out_save).enable();
 
                 final NewStockResponse res = response.body();
                 if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
@@ -519,63 +519,29 @@ public class StockIn extends Fragment {
                     // reset the controller
                     init(mStockCalcController.getFirm());
 
-                    // add stock to match
-                    for (DiabloStockRowController controller: mStockTableController.getControllers()) {
-                        if (0 == controller.getOrderId()) {
-                            continue;
-                        }
-                        EntryStock s = controller.getModel();
-                        MatchStock matchStock = new MatchStock();
-                        matchStock.setStyleNumber(s.getStyleNumber());
-                        matchStock.setBrandId(s.getBrandId());
-                        matchStock.setBrand(s.getBrand());
-                        matchStock.setTypeId(s.getTypeId());
-                        matchStock.setType(s.getType());
-
-                        matchStock.setSex(s.getSex());
-                        matchStock.setSeason(s.getSeason());
-                        matchStock.setFirmId(s.getFirmId());
-                        matchStock.setsGroup(s.getsGroup());
-                        matchStock.setFree(s.getFree());
-                        matchStock.setYear(s.getYear());
-
-                        matchStock.setOrgPrice(s.getOrgPrice());
-                        matchStock.setTagPrice(s.getTagPrice());
-                        matchStock.setPkgPrice(s.getPkgPrice());
-                        matchStock.setPrice3(s.getPrice3());
-                        matchStock.setPrice4(s.getPrice4());
-                        matchStock.setPrice5(s.getPrice5());
-                        matchStock.setDiscount(s.getDiscount());
-
-                        matchStock.setPath(s.getPath());
-                        matchStock.setAlarmDay(s.getAlarmDay());
-
-                        Profile.instance().addMatchStock(matchStock);
-                    }
-
                     new DiabloAlertDialog(
                         getContext(),
                         false,
-                        getResources().getString(R.string.nav_stock_in),
-                        getContext().getString(R.string.stock_in_success) + res.getRsn()).create();
+                        getResources().getString(R.string.nav_stock_out),
+                        getContext().getString(R.string.stock_out_success) + res.getRsn()).create();
                 }
                 else {
-                    mButtons.get(R.id.stock_in_save).enable();
+                    mButtons.get(R.id.stock_out_save).enable();
                     Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
                     String extraMessage = res == null ? "" : res.getError();
                     new DiabloAlertDialog(
                         getContext(),
-                        getResources().getString(R.string.nav_stock_in),
+                        getResources().getString(R.string.nav_stock_out),
                         DiabloError.getInstance().getError(errorCode) + extraMessage).create();
                 }
             }
 
             @Override
             public void onFailure(Call<NewStockResponse> call, Throwable t) {
-                mButtons.get(R.id.sale_in_update_save).enable();
+                mButtons.get(R.id.stock_out_save).enable();
                 new DiabloAlertDialog(
                     getContext(),
-                    getResources().getString(R.string.sale_in_update),
+                    getResources().getString(R.string.nav_stock_out),
                     DiabloError.getInstance().getError(99)).create();
             }
         });

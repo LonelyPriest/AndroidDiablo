@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,17 +21,27 @@ import android.widget.TableLayout;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.model.stock.DiabloGoodSelectTable;
 import com.diablo.dt.diablo.model.stock.EntryStock;
 import com.diablo.dt.diablo.model.stock.EntryStockAmount;
+import com.diablo.dt.diablo.task.MatchSingleStockTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GoodSelect extends Fragment {
+    private final static String LOG_TAG = "GoodSelect:";
     private TableLayout mViewTable;
+
+    /**
+     * params from
+     */
+    private Integer mShop;
     private EntryStock mEntryStock;
     // come from stock-in, stock-out, stock-in-update, stock-out-update
     private Integer mComeFrom;
@@ -39,6 +50,8 @@ public class GoodSelect extends Fragment {
 
     // save, cancel
     private Integer mOperation;
+
+    private List<Stock> mStocks;
 
     public GoodSelect() {
         // Required empty public constructor
@@ -56,6 +69,7 @@ public class GoodSelect extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mShop       = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_SHOP);
             mComeFrom   = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_COME_FORM);
             mActionFrom = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_ACTION);
             mEntryStock = new Gson().fromJson(getArguments().getString(
@@ -73,8 +87,7 @@ public class GoodSelect extends Fragment {
         View view = inflater.inflate(R.layout.fragment_good_select, container, false);
         mViewTable = (TableLayout) view.findViewById(R.id.good_select);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar()
-            .setTitle(getResources().getString(R.string.select_stock));
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.select_stock));
 
         init();
 
@@ -84,15 +97,20 @@ public class GoodSelect extends Fragment {
     private void init(){
         mViewTable.removeAllViews();
 
-        if (DiabloEnum.STOCK_IN.equals(mComeFrom)
-            || DiabloEnum.STOCK_OUT.equals(mComeFrom)) {
-            if (R.string.add == mActionFrom){
+        if (DiabloEnum.STOCK_IN.equals(mComeFrom)) {
+            if (R.string.add == mActionFrom || R.string.modify == mActionFrom){
                 startAdd();
 
+            }
+        }
+        else if (DiabloEnum.STOCK_OUT.equals(mComeFrom)) {
+            if (R.string.add == mActionFrom){
+                getStockFromServer();
             }
             else if (R.string.modify == mActionFrom) {
                 startAdd();
             }
+
         }
         else if (DiabloEnum.STOCK_IN_UPDATE.equals(mComeFrom)
             || DiabloEnum.STOCK_OUT_UPDATE.equals(mComeFrom)) {
@@ -112,6 +130,48 @@ public class GoodSelect extends Fragment {
         }
 
         startSelect(mEntryStock.getColors(), mEntryStock.getOrderSizes());
+    }
+
+    private void startReject() {
+        List<String> usedSizes   = new ArrayList<>();
+        List<String> orderedSizes     = new ArrayList<>();
+        List<DiabloColor> orderColors = new ArrayList<>();
+
+        for(Stock s: mStocks){
+            if (!usedSizes.contains(s.getSize())){
+                usedSizes.add(s.getSize());
+            }
+
+            DiabloColor color = Profile.instance().getColor(s.getColorId());
+            if (!color.includeIn(orderColors)){
+                orderColors.add(color);
+            }
+
+            EntryStockAmount amount = mEntryStock.getAmount(s.getColorId(), s.getSize());
+            if (null == amount) {
+                amount = new EntryStockAmount(s.getColorId(), s.getSize());
+                mEntryStock.addAmount(amount);
+            }
+        }
+
+        List<String> sizes = Profile.instance().genSortedSizeNamesByGroups(mEntryStock.getsGroup());
+        for (String s: sizes){
+            if (usedSizes.contains(s)){
+                orderedSizes.add(s);
+            }
+        }
+
+        if (orderedSizes.size() != usedSizes.size()){
+            for (String s: usedSizes){
+                if (!orderedSizes.contains(s)){
+                    orderedSizes.add(0, s);
+                }
+            }
+        }
+
+        mEntryStock.setColors(orderColors);
+        mEntryStock.setOrderSizes(orderedSizes);
+        startSelect(orderColors, orderedSizes);
     }
 
     private void startSelect(List<DiabloColor> colors, List<String> orderedSizes) {
@@ -144,6 +204,29 @@ public class GoodSelect extends Fragment {
 
         goodTable.genHead();
         goodTable.genContent();
+    }
+
+    private void getStockFromServer(){
+        MatchSingleStockTask task = new MatchSingleStockTask(
+            mEntryStock.getStyleNumber(),
+            mEntryStock.getBrandId(),
+            mShop);
+
+        task.setMatchSingleStockTaskListener(new MatchSingleStockTask.OnMatchSingleStockTaskListener() {
+            @Override
+            public void onMatchSuccess(List<Stock> stocks) {
+                Log.d(LOG_TAG, "success to get stock");
+                mStocks = stocks;
+                startReject();
+            }
+
+            @Override
+            public void onMatchFailed(Throwable t) {
+                Log.d(LOG_TAG, "failed to get stock");
+            }
+        });
+
+        task.getStock();
     }
 
     @Override
@@ -187,16 +270,28 @@ public class GoodSelect extends Fragment {
         return to;
     }
 
+    private Fragment getStockOutFragment() {
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_STOCK_OUT);
+        if (null != to ) {
+            ((StockOut)to).setNoFreeGoodSelectListener(mNoFreeGoodSelectListener);
+        } else {
+            to = new StockOut();
+        }
+
+        ((StockOut)to).setBackFrom(R.string.back_from_good_select);
+        return to;
+    }
+
     private void switchFragment(){
         Fragment to = null;
         if (DiabloEnum.STOCK_IN.equals(mComeFrom)) {
             to = getStockInFragment();
             ((MainActivity)getActivity()).selectMenuItem(4);
         }
-//        else if (DiabloEnum.SALE_OUT.equals(mComeFrom)) {
-//            to = getSaleOutFragment();
-//            ((MainActivity)getActivity()).selectMenuItem(1);
-//        }
+        else if (DiabloEnum.STOCK_OUT.equals(mComeFrom)) {
+            to = getStockOutFragment();
+            ((MainActivity)getActivity()).selectMenuItem(5);
+        }
 //        else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)) {
 //            to = getSaleInUpdateFragment();
 //        }
@@ -212,6 +307,10 @@ public class GoodSelect extends Fragment {
                 transaction.hide(GoodSelect.this).show(to).commit();
             }
         }
+    }
+
+    public void setShop(Integer shop) {
+        this.mShop = shop;
     }
 
     public void setComeFrom(Integer comeFrom) {

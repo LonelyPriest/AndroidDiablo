@@ -27,6 +27,7 @@ import com.diablo.dt.diablo.fragment.SaleNote;
 import com.diablo.dt.diablo.fragment.SaleOut;
 import com.diablo.dt.diablo.fragment.StockDetail;
 import com.diablo.dt.diablo.fragment.StockIn;
+import com.diablo.dt.diablo.fragment.StockOut;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(4);
+            selectMenuItem(5);
             loadHomeFragment();
         }
     }
@@ -251,7 +252,9 @@ public class MainActivity extends AppCompatActivity {
             else if (mCurrentNavTag.getTitleIndex().equals(4)) {
                 f = new StockIn();
             }
-
+            else if (mCurrentNavTag.getTitleIndex().equals(5)) {
+                f = new StockOut();
+            }
             else if (mCurrentNavTag.getTitleIndex().equals(6)) {
                 f = new StockDetail();
             }
@@ -298,6 +301,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_stock_in:
                         selectMenuItem(4);
+                        break;
+                    case R.id.nav_stock_out:
+                        selectMenuItem(5);
                         break;
                     case R.id.nav_stock_detail:
                         selectMenuItem(6);

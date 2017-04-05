@@ -21,6 +21,7 @@ import com.diablo.dt.diablo.fragment.SaleIn;
 import com.diablo.dt.diablo.fragment.SaleOut;
 import com.diablo.dt.diablo.fragment.StockDetail;
 import com.diablo.dt.diablo.fragment.StockIn;
+import com.diablo.dt.diablo.fragment.StockOut;
 import com.diablo.dt.diablo.fragment.StockSelect;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -44,10 +45,10 @@ public class SaleUtils {
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_SALE_DETAIL, 2);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_SALE_NOTE, 3);
 
-        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_IN, 0);
-        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_OUT, 1);
-        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_DETAIL, 2);
-        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_NOTE, 3);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_IN, 4);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_OUT, 5);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_DETAIL, 6);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_NOTE, 7);
     }
 
     public static void switchToSlideMenu(Fragment from, String toTag) {
@@ -67,6 +68,7 @@ public class SaleUtils {
                     f = new StockIn();
                     break;
                 case DiabloEnum.TAG_STOCK_OUT:
+                    f = new StockOut();
                     break;
                 case DiabloEnum.TAG_STOCK_DETAIL:
                     f = new StockDetail();

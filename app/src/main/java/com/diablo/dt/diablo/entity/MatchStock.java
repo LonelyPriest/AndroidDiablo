@@ -51,6 +51,94 @@ public class MatchStock {
     @SerializedName("alarm_day")
     private Integer alarmDay;
 
+    public MatchStock() {
+
+    }
+
+    public void setStyleNumber(String styleNumber) {
+        this.styleNumber = styleNumber;
+    }
+
+    public void setBrandId(Integer brandId) {
+        this.brandId = brandId;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
+
+    public void setSeason(Integer season) {
+        this.season = season;
+    }
+
+    public void setFirmId(Integer firmId) {
+        this.firmId = firmId;
+    }
+
+    public String getsGroup() {
+        return sGroup;
+    }
+
+    public void setsGroup(String sGroup) {
+        this.sGroup = sGroup;
+    }
+
+    public void setFree(Integer free) {
+        this.free = free;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public void setOrgPrice(Float orgPrice) {
+        this.orgPrice = orgPrice;
+    }
+
+    public void setTagPrice(Float tagPrice) {
+        this.tagPrice = tagPrice;
+    }
+
+    public void setPkgPrice(Float pkgPrice) {
+        this.pkgPrice = pkgPrice;
+    }
+
+    public void setPrice3(Float price3) {
+        this.price3 = price3;
+    }
+
+    public void setPrice4(Float price4) {
+        this.price4 = price4;
+    }
+
+    public void setPrice5(Float price5) {
+        this.price5 = price5;
+    }
+
+    public void setDiscount(Float discount) {
+        this.discount = discount;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setAlarmDay(Integer alarmDay) {
+        this.alarmDay = alarmDay;
+    }
+
     public String getStyleNumber() {
         return styleNumber;
     }

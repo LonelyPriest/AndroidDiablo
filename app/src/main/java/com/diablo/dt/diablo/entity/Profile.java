@@ -522,6 +522,12 @@ public class Profile {
         return stock;
     }
 
+    public void addMatchStock(MatchStock stock) {
+        if ( null != getMatchStock(stock.getStyleNumber(), stock.getBrandId()) ) {
+            mMatchStocks.add(stock);
+        }
+    }
+
     /**
      * brands
      */

@@ -94,7 +94,7 @@ public class DiabloStockTableController {
         }
     }
 
-    public void calcStockInShouldPay(DiabloStockCalcController stockController){
+    public void calcStockShouldPay(DiabloStockCalcController stockController){
         // calculate stock
         Integer total     = 0;
         Float shouldPay   = 0f;
@@ -112,21 +112,21 @@ public class DiabloStockTableController {
         stockController.resetAccBalance();
     }
 
-    public void calcStockOutShouldPay(DiabloStockCalcController saleController){
-        Integer total     = 0;
-        Float   shouldPay = 0f;
-
-        for (DiabloStockRowController controller: mControllers) {
-            if (0 != controller.getOrderId()) {
-                total += controller.getEntryTotal();
-                // shouldPay += controller.getSalePrice();
-            }
-        }
-
-//        saleController.setSaleInfo(total);
+//    public void calcStockOutShouldPay(DiabloStockCalcController saleController){
+//        Integer total     = 0;
+//        Float   shouldPay = 0f;
+//
+//        for (DiabloStockRowController controller: mControllers) {
+//            if (0 != controller.getOrderId()) {
+//                total += controller.getEntryTotal();
+//                shouldPay += controller.calcStockPrice();
+//            }
+//        }
+//
+//        saleController.setStockTotal(total);
 //        saleController.setShouldPay(shouldPay);
 //        saleController.resetAccBalance();
-    }
+//    }
 
     public boolean checkSameFirm(Integer firm) {
         boolean same = true;
