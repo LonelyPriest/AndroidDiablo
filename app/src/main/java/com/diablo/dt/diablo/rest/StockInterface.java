@@ -5,10 +5,12 @@ import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.request.MatchStockRequest;
 import com.diablo.dt.diablo.request.NewStockRequest;
 import com.diablo.dt.diablo.request.StockDetailRequest;
+import com.diablo.dt.diablo.request.StockNoteRequest;
 import com.diablo.dt.diablo.request.StockRequest;
 import com.diablo.dt.diablo.response.GetStockNewResponse;
 import com.diablo.dt.diablo.response.NewStockResponse;
 import com.diablo.dt.diablo.response.StockDetailResponse;
+import com.diablo.dt.diablo.response.StockNoteResponse;
 
 import java.util.List;
 
@@ -33,6 +35,9 @@ public interface StockInterface {
 
     @POST("filter_w_inventory_new")
     Call<StockDetailResponse> filterStockNew(@Header("cookie") String token, @Body StockDetailRequest request);
+
+    @POST("filter_w_inventory_new_rsn_group")
+    Call<StockNoteResponse> filterStockNote(@Header("cookie") String token, @Body StockNoteRequest request);
 
     @POST("new_w_inventory")
     Call<NewStockResponse> addStock(@Header("cookie") String token, @Body NewStockRequest request);

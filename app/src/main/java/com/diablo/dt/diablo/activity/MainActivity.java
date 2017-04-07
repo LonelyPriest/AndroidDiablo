@@ -27,6 +27,7 @@ import com.diablo.dt.diablo.fragment.sale.SaleNote;
 import com.diablo.dt.diablo.fragment.sale.SaleOut;
 import com.diablo.dt.diablo.fragment.stock.StockDetail;
 import com.diablo.dt.diablo.fragment.stock.StockIn;
+import com.diablo.dt.diablo.fragment.stock.StockNote;
 import com.diablo.dt.diablo.fragment.stock.StockOut;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
@@ -258,6 +259,9 @@ public class MainActivity extends AppCompatActivity {
             else if (mCurrentNavTag.getTitleIndex().equals(6)) {
                 f = new StockDetail();
             }
+            else if (mCurrentNavTag.getTitleIndex().equals(7)) {
+                f = new StockNote();
+            }
             else {
                 f = new SaleDetail();
             }
@@ -307,6 +311,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_stock_detail:
                         selectMenuItem(6);
+                        break;
+                    case R.id.nav_stock_note:
+                        selectMenuItem(7);
                         break;
                     case R.id.nav_logout:
                         logout();

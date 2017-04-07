@@ -144,6 +144,22 @@
     <!--<item>备注</item>-->
   </string-array>
 
+  <string-array name="thead_stock_detail_note">
+    <item>序号</item>
+    <item>单号</item>
+    <item>交易</item>
+    <item>厂商</item>
+    <item>款号</item>
+    <item>品名</item>
+    <item>类型</item>
+    <!--<item>进/退价</item>-->
+    <item>年度</item>
+    <item>折扣</item>
+    <item>数量</item>
+    <!--<item>合计</item>-->
+    <item>日期</item>
+  </string-array>
+
   <string name="order_id">序号</string>
   <string name="rsn">单号</string>
   <string name="trans">交易</string>

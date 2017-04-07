@@ -405,6 +405,10 @@ public class NewStockRequest {
             this.datetime = datetime;
         }
 
+        public String getDatetime() {
+            return datetime;
+        }
+
         public void setEmployeeId(String employeeId) {
             this.employeeId = employeeId;
         }

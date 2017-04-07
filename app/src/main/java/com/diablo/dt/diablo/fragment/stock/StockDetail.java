@@ -200,6 +200,15 @@ public class StockDetail extends Fragment {
             cell.setTypeface(null, Typeface.BOLD);
             cell.setTextColor(Color.BLACK);
 
+            if (getResources().getString(R.string.order_id).equals(title)) {
+                lp.weight = 0.8f;
+            }
+            else if (getResources().getString(R.string.balance).equals(title)) {
+                lp.weight = 1.5f;
+            }
+            else if (getResources().getString(R.string.acc_balance).equals(title)) {
+                lp.weight = 1.5f;
+            }
             cell.setLayoutParams(lp);
             cell.setText(title);
             cell.setTextSize(20);
@@ -260,6 +269,7 @@ public class StockDetail extends Fragment {
                         TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
                         if (getResources().getString(R.string.order_id).equals(title)) {
                             detail.setOrderId(orderId);
+                            lp.weight = 0.8f;
                             addCell(row, orderId++, lp);
                         }
                         else if (getResources().getString(R.string.rsn).equals(title)){
@@ -298,8 +308,9 @@ public class StockDetail extends Fragment {
                             addCell(row, detail.getTotal(), lp);
                         }
                         else if (getResources().getString(R.string.balance).equals(title)){
+                            lp.weight = 1.5f;
                             TextView cell = addCell(row, detail.getBalance(), lp);
-                            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
+                            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpBlue));
                         }
                         else if (getResources().getString(R.string.should_pay).equals(title)){
                             addCell(row, detail.getShouldPay(), lp);
@@ -314,6 +325,7 @@ public class StockDetail extends Fragment {
                             addCell(row, detail.getEPay(), lp);
                         }
                         else if (getResources().getString(R.string.acc_balance).equals(title)){
+                            lp.weight = 1.5f;
                             TextView cell = addCell(
                                 row,
                                 detail.getBalance()
@@ -465,7 +477,7 @@ public class StockDetail extends Fragment {
                 to = new StockInUpdate();
             }
             else if (DiabloEnum.TAG_STOCK_OUT_UPDATE.equals(tag)) {
-                 // to = new StockOutUpdate();
+                 to = new StockOutUpdate();
             }
 
             if (null != to ) {
@@ -476,7 +488,7 @@ public class StockDetail extends Fragment {
                 ((StockInUpdate)to).setRSN(rsn);
             }
             else if (DiabloEnum.TAG_STOCK_OUT_UPDATE.equals(tag)) {
-                //((StockOutUpdate)to).setRSN(rsn);
+                ((StockOutUpdate)to).setRSN(rsn);
             }
         }
 

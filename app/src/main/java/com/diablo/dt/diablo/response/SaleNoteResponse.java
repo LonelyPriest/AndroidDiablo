@@ -19,7 +19,7 @@ public class SaleNoteResponse extends Response {
     @SerializedName("data")
     List<SaleNote> saleNotes;
 
-    public class SaleNote {
+    public static class SaleNote {
         @SerializedName("id")
         private Integer id;
         @SerializedName("order_id")

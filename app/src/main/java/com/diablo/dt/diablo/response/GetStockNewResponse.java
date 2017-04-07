@@ -44,7 +44,7 @@ public class GetStockNewResponse extends Response {
         @SerializedName("firm_id")
         private Integer firmId;
         @SerializedName("s_group")
-        private Integer sGroup;
+        private String sGroup;
         @SerializedName("free")
         private Integer free;
         @SerializedName("year")
@@ -104,7 +104,7 @@ public class GetStockNewResponse extends Response {
             return firmId;
         }
 
-        public Integer getsGroup() {
+        public String getsGroup() {
             return sGroup;
         }
 
