@@ -1,5 +1,4 @@
-package com.diablo.dt.diablo.fragment;
-
+package com.diablo.dt.diablo.fragment.sale;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,8 +7,10 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,13 +25,13 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
-import com.diablo.dt.diablo.client.StockClient;
-import com.diablo.dt.diablo.entity.Firm;
+import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
-import com.diablo.dt.diablo.request.StockDetailRequest;
-import com.diablo.dt.diablo.response.StockDetailResponse;
-import com.diablo.dt.diablo.rest.StockInterface;
+import com.diablo.dt.diablo.request.SaleDetailRequest;
+import com.diablo.dt.diablo.response.SaleDetailResponse;
+import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
@@ -42,31 +43,30 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link StockDetail#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class StockDetail extends Fragment {
+
+public class SaleDetail extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+
     private final static DiabloUtils UTILS = DiabloUtils.instance();
     private String [] mTableHeads;
-    private String[]  mStockTypes;
+    private String[]  mSaleTypes;
 
     private String mStatistic;
+    // private String mPagination;
 
     /*
     * rest request
     * */
-    private StockDetailRequest mRequest;
-    private StockDetailRequest.Condition mRequestCondition;
-    private StockInterface mStockRest;
+    private SaleDetailRequest mRequest;
+    private SaleDetailRequest.Condition mRequestCondition;
+    private WSaleInterface mSaleRest;
 
     /*
     * row of table
     * */
     // TableRow[] mRows;
 
-    private TableLayout mStockDetailTable;
+    private android.widget.TableLayout mSaleDetailTable;
     private SwipyRefreshLayout mSaleDetailTableSwipe;
     // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
 
@@ -75,14 +75,8 @@ public class StockDetail extends Fragment {
     private Integer mCurrentPage;
     private Integer mTotalPage;
 
-    public StockDetail() {
+    public SaleDetail() {
         // Required empty public constructor
-    }
-
-
-    // TODO: Rename and change types and number of parameters
-    public static StockDetail newInstance(String param1, String param2) {
-        return new StockDetail();
     }
 
     public void init() {
@@ -91,27 +85,43 @@ public class StockDetail extends Fragment {
         mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment SaleDetail.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static SaleDetail newInstance(String param1, String param2) {
+        SaleDetail fragment = new SaleDetail();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mTableHeads = getResources().getStringArray(R.array.thead_stock_detail);
-        mStockTypes  = getResources().getStringArray(R.array.stock_type);
+        mTableHeads = getResources().getStringArray(R.array.thead_sale_detail);
+        mSaleTypes = getResources().getStringArray(R.array.sale_type);
 
-        mRequest     = new StockDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-        mRequestCondition = new StockDetailRequest.Condition();
+        mRequest = new SaleDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
+        mRequestCondition = new SaleDetailRequest.Condition();
         mRequest.setCondition(mRequestCondition);
 
-        mStockRest = StockClient.getClient().create(StockInterface.class);
+        mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
         init();
-
+        // mRows = new TableRow[mRequest.getCount()];
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view =  inflater.inflate(R.layout.fragment_stock_detail, container, false);
+        final View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
+
         String currentDate = UTILS.currentDate();
         ((EditText)view.findViewById(R.id.text_start_date)).setText(currentDate);
         mRequest.getCondition().setStartTime(currentDate);
@@ -122,7 +132,7 @@ public class StockDetail extends Fragment {
         (view.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(StockDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                SaleUtils.DiabloDatePicker.build(SaleDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         ((EditText) view.findViewById(R.id.text_start_date)).setText(date);
@@ -135,7 +145,7 @@ public class StockDetail extends Fragment {
         view.findViewById(R.id.btn_end_date).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(StockDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                SaleUtils.DiabloDatePicker.build(SaleDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         ((EditText)view.findViewById(R.id.text_end_date)).setText(date);
@@ -145,13 +155,30 @@ public class StockDetail extends Fragment {
             }
         });
 
-        ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_STOCK_DETAIL));
+        ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_DETAIL));
 
         // support action bar
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
-        mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_stock_detail_swipe);
+//        final DiabloTableSwipRefreshLayout tableSwipe = (DiabloTableSwipRefreshLayout)view.findViewById(R.id.t_sale_detail_swipe);
+//        tableSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                DiabloUtils.instance().makeToast(getContext(), "refresh");
+//                tableSwipe.setRefreshing(false);
+//            }
+//        });
+//
+//        tableSwipe.setOnLoadListener(new DiabloTableSwipRefreshLayout.OnLoadListener() {
+//            @Override
+//            public void onLoad() {
+//                DiabloUtils.instance().makeToast(getContext(), "onLoad");
+//                tableSwipe.setLoading(false);
+//            }
+//        });
+
+        mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mSaleDetailTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
@@ -188,16 +215,53 @@ public class StockDetail extends Fragment {
             }
         });
 
+
+        // mSaleDetailTable.setClickable(false);
+
+//        DiabloHorizontalScroll hScrollView = (DiabloHorizontalScroll)view.findViewById(R.id.t_sale_detail_hscroll);
+//
+//        GestureDetectorCompat gesture = new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(hScrollView) {
+//            @Override
+//            public boolean actionOfOnFlint(View view, Integer direction) {
+//                // DiabloUtils u = DiabloUtils.instance();
+//                if (direction.equals(DiabloEnum.SWIPE_LEFT)){
+//                    return false;
+//                } else if (direction.equals(DiabloEnum.SWIPE_RIGHT)){
+//                    return false;
+//                } else if (direction.equals(DiabloEnum.SWIPE_TOP)){
+//                    // u.debugDialog(mContext, "滑动", "方向->top");
+//                    mCurrentPage++;
+//                    mRequest.setPage(mCurrentPage);
+//                    pageChanged();
+//                    return true;
+//                } else if (direction.equals(DiabloEnum.SWIPE_DOWN)){
+//                    // u.debugDialog(mContext, "滑动", "方向->down");
+//                    mCurrentPage--;
+//                    if (!mCurrentPage.equals(0)){
+//                        mRequest.setPage(mCurrentPage);
+//                        view.postInvalidateOnAnimation();
+//                        pageChanged();
+//                    }
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+//            }
+//        });
+
+//        hScrollView.setGestureDetect(gesture);
+
+
         TableRow row = new TableRow(this.getContext());
         for (String title: mTableHeads){
             TableRow.LayoutParams lp = new TableRow.LayoutParams(
                 0,
-                TableRow.LayoutParams.WRAP_CONTENT,
-                1.0f);
+                TableRow.LayoutParams.WRAP_CONTENT, 1.0f);
             TextView cell = new TextView(this.getContext());
             cell.setTypeface(null, Typeface.BOLD);
             cell.setTextColor(Color.BLACK);
 
+            // right-margin
             cell.setLayoutParams(lp);
             cell.setText(title);
             cell.setTextSize(20);
@@ -209,27 +273,54 @@ public class StockDetail extends Fragment {
 
         // TableLayout head = ((TableLayout)view.findViewById(R.id.t_sale_detail_head));
         // head.addView(row);
-        TableLayout head = (TableLayout) view.findViewById(R.id.t_stock_detail_head);
+        TableLayout head = (TableLayout) view.findViewById(R.id.t_sale_detail_head);
         head.addView(row);
 
-        mStockDetailTable = (TableLayout) view.findViewById(R.id.t_stock_detail);
+        mSaleDetailTable = (TableLayout) view.findViewById(R.id.t_sale_detail);
+
+//        for (Integer i = 0; i<mRows.length; i++){
+//            mRows[i] = new TableRow(this.getContext());
+//            mSaleDetailTable.addView(mRows[i]);
+//            mRows[i].setBackgroundResource(R.drawable.table_row_bg);
+//        }
 
         pageChanged();
 
         return view;
     }
 
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
     private void pageChanged(){
+        // hidden keyboard
+        // DiabloUtils.instance().hiddenKeyboard(getContext());
+        // get data from from web server
+        // mRequest.getCondition().setStartTime(DiabloUtils.instance().currentDate());
+        // mRequest.getCondition().setStartTime("2016-01-01");
+        // mRequest.getCondition().setEndTime(DiabloUtils.instance().nextDate());
 
-        Call<StockDetailResponse> call = mStockRest.filterStockNew(Profile.instance().getToken(), mRequest);
+        Call<SaleDetailResponse> call = mSaleRest.filterSaleNew(Profile.instance().getToken(), mRequest);
 
-        call.enqueue(new Callback<StockDetailResponse>() {
+        call.enqueue(new Callback<SaleDetailResponse>() {
             @Override
-            public void onResponse(Call<StockDetailResponse> call, Response<StockDetailResponse> response) {
+            public void onResponse(Call<SaleDetailResponse> call, Response<SaleDetailResponse> response) {
                 Log.d("SALE_DETAIL %s", response.toString());
 
                 mSaleDetailTableSwipe.setRefreshing(false);
-                StockDetailResponse base = response.body();
+                SaleDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
                         mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
@@ -243,16 +334,16 @@ public class StockDetail extends Fragment {
                     }
                 }
 
-                List<StockDetailResponse.StockDetail> details = base.getSaleDetail();
+                List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
                 Integer orderId = mRequest.getPageStartIndex();
                 // mSaleDetailTable.removeAllViews();
-                mStockDetailTable.removeAllViews();
+                mSaleDetailTable.removeAllViews();
                 for (Integer i=0; i<details.size(); i++){
                     TableRow row = new TableRow(getContext());
                     // TableRow row = new TableRow(mContext);
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
-                    StockDetailResponse.StockDetail detail = details.get(i);
+                    SaleDetailResponse.SaleDetail detail = details.get(i);
 
                     for (String title: mTableHeads){
                         TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
@@ -265,7 +356,7 @@ public class StockDetail extends Fragment {
                             addCell(row, fs[fs.length - 1], lp);
                         }
                         else if(getResources().getString(R.string.trans).equals(title)){
-                            TextView cell = addCell(row, mStockTypes[detail.getType()], lp);
+                            TextView cell = addCell(row, mSaleTypes[detail.getType()], lp);
                             if (detail.getType().equals(DiabloEnum.SALE_OUT)){
                                 cell.setTextColor(getResources().getColor(R.color.red));
                             }
@@ -278,15 +369,17 @@ public class StockDetail extends Fragment {
                         }
                         else if (getResources().getString(R.string.employee).equals(title)){
                             addCell(row,
-                                DiabloUtils.getInstance().getEmployeeByNumber(
-                                    Profile.instance().getEmployees(),
-                                    detail.getEmployee()).getName(),
+                                    DiabloUtils.getInstance().getEmployeeByNumber(
+                                        Profile.instance().getEmployees(),
+                                        detail.getEmployee()).getName(),
                                 lp);
                         }
-                        else if (getContext().getString(R.string.firm).equals(title)){
-                            Firm f = Profile.instance().getFirm(detail.getFirm());
-                            if (null != f) {
-                                addCell(row, f.getName(), lp);
+                        else if (getContext().getString(R.string.retailer).equals(title)){
+                            Retailer r = DiabloUtils.getInstance().getRetailer(
+                                Profile.instance().getRetailers(), detail.getRetailer());
+
+                            if (null != r) {
+                                addCell(row, r.getName(), lp);
                             }
                             else {
                                 addCell(row, DiabloEnum.EMPTY_STRING, lp);
@@ -296,8 +389,7 @@ public class StockDetail extends Fragment {
                             addCell(row, detail.getTotal(), lp);
                         }
                         else if (getResources().getString(R.string.balance).equals(title)){
-                            TextView cell = addCell(row, detail.getBalance(), lp);
-                            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
+                            addCell(row, detail.getBalance(), lp);
                         }
                         else if (getResources().getString(R.string.should_pay).equals(title)){
                             addCell(row, detail.getShouldPay(), lp);
@@ -337,6 +429,53 @@ public class StockDetail extends Fragment {
                             addCell(row, shortDate, lp);
                         }
                     }
+//                    final GestureDetectorCompat gesture =
+//                            new GestureDetectorCompat(mContext, new DiabloOnGestureLintener(row){
+//                                @Override
+//                                public void actionOfOnLongpress(View view) {
+//                                    DiabloUtils u = DiabloUtils.instance();
+//                                    u.debugDialog(mContext, "方向", "长按");
+//                                }
+//
+//                                @Override
+//                                public boolean actionOfOnDown(View view) {
+//                                    for(Integer i=0; i<mSaleDetailTable.getChildCount(); i++){
+//                                        View child = mSaleDetailTable.getChildAt(i);
+//                                        if (child instanceof TableRow){
+//                                            child.setBackgroundResource(R.drawable.table_row_bg);
+//                                        }
+//                                    }
+//                                    view.setBackgroundColor(getResources().getColor(R.color.bluelight));
+//                                    SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
+//                                    return true;
+//                                }
+//                            });
+//
+//                    row.setOnTouchListener(new View.OnTouchListener(){
+//                        @Override
+//                        public boolean onTouch(View view, MotionEvent motionEvent) {
+//                            gesture.onTouchEvent(motionEvent);
+//                            return true;
+//                        }
+//
+//
+//                    });
+
+//                    row.setOnTouchListener(new View.OnTouchListener() {
+//                        @Override
+//                        public boolean onTouch(View view, MotionEvent event) {
+//                            for(Integer i=0; i<mSaleDetailTable.getChildCount(); i++){
+//                                View child = mSaleDetailTable.getChildAt(i);
+//                                if (child instanceof TableRow){
+//                                    child.setBackgroundResource(R.drawable.table_row_bg);
+//                                }
+//                            }
+//                            view.setBackgroundColor(getResources().getColor(R.color.bluelight));
+//                            SaleDetailResponse.SaleDetail d = (SaleDetailResponse.SaleDetail)view.getTag();
+//                            DiabloUtils.instance().makeToast(mContext, d.getOrderId());
+//                            return true;
+//                        }
+//                    });
 
                     row.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
@@ -350,7 +489,7 @@ public class StockDetail extends Fragment {
 
                     row.setBackgroundResource(R.drawable.table_row_bg);
                     row.setTag(detail);
-                    mStockDetailTable.addView(row);
+                    mSaleDetailTable.addView(row);
                 }
 
                 if (0 < mTotalPage ) {
@@ -365,39 +504,35 @@ public class StockDetail extends Fragment {
                         + getResources().getString(R.string.page);
 
                     addCell(row, pageInfo, lp);
-                    mStockDetailTable.addView(row);
+                    mSaleDetailTable.addView(row);
                 }
             }
 
             @Override
-            public void onFailure(Call<StockDetailResponse> call, Throwable t) {
+            public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
                 mSaleDetailTableSwipe.setRefreshing(false);
             }
         });
     }
 
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.action_on_stock_detail, menu);
+        inflater.inflate(R.menu.action_on_sale_detail, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-//            case R.id.sale_detail_to_sale_in:
-//                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
-//                break;
-//            case R.id.sale_detail_to_sale_out:
-//                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_OUT);
-//                break;
-            case R.id.stock_detail_to_stock_in:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_IN);
+            case R.id.sale_detail_to_sale_in:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
                 break;
-            case R.id.stock_detail_to_stock_out:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_OUT);
+            case R.id.sale_detail_to_sale_out:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_OUT);
                 break;
-            case R.id.stock_detail_refresh:
+            case R.id.sale_detail_refresh:
                 init();
                 pageChanged();
                 break;
@@ -409,23 +544,6 @@ public class StockDetail extends Fragment {
 
         return true;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
         // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
@@ -471,4 +589,72 @@ public class StockDetail extends Fragment {
         return  cell;
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        mCurrentSelectedRow = (TableRow) v;
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_on_sale_detail, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        SaleDetailResponse.SaleDetail detail = ((SaleDetailResponse.SaleDetail) mCurrentSelectedRow.getTag());
+        if (getResources().getString(R.string.modify) == item.getTitle()){
+            if (detail.getType().equals(DiabloEnum.SALE_IN)){
+                switchToSaleUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_SALE_IN_UPDATE);
+            }
+            else if (detail.getType().equals(DiabloEnum.SALE_OUT)) {
+                switchToSaleUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_SALE_OUT_UPDATE);
+            }
+
+        }
+        else if (getResources().getString(R.string.print) == item.getTitle()){
+            UTILS.startPrint(getContext(), R.id.nav_sale_detail, detail.getRsn());
+        }
+
+        return true;
+    }
+
+   public static void switchToSaleUpdateFrame(String rsn, Fragment from, String tag) {
+
+        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
+        // find
+        Fragment to = from.getFragmentManager().findFragmentByTag(tag);
+
+        if (null == to){
+            Bundle args = new Bundle();
+            args.putString(DiabloEnum.BUNDLE_PARAM_RSN, rsn);
+            if (DiabloEnum.TAG_SALE_IN_UPDATE.equals(tag)) {
+                to = new SaleInUpdate();
+            }
+            else if (DiabloEnum.TAG_SALE_OUT_UPDATE.equals(tag)) {
+                to = new SaleOutUpdate();
+            }
+
+            if (null != to ) {
+                to.setArguments(args);
+            }
+        } else {
+            if (DiabloEnum.TAG_SALE_IN_UPDATE.equals(tag)) {
+                ((SaleInUpdate)to).setRSN(rsn);
+            }
+            else if (DiabloEnum.TAG_SALE_OUT_UPDATE.equals(tag)) {
+                ((SaleOutUpdate)to).setRSN(rsn);
+            }
+        }
+
+        if (null != to) {
+            if (!to.isAdded()){
+                transaction.hide(from).add(R.id.frame_container, to, tag).commit();
+            } else {
+                transaction.hide(from).show(to).commit();
+            }
+        }
+
+    }
+
+    public void setStartDate() {
+
+    }
 }

@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.fragment;
+package com.diablo.dt.diablo.fragment.sale;
 
 import static com.diablo.dt.diablo.R.string.amount;
 

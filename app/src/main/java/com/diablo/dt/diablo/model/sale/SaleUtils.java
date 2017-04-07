@@ -16,13 +16,13 @@ import android.widget.TextView;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
-import com.diablo.dt.diablo.fragment.SaleDetail;
-import com.diablo.dt.diablo.fragment.SaleIn;
-import com.diablo.dt.diablo.fragment.SaleOut;
-import com.diablo.dt.diablo.fragment.StockDetail;
-import com.diablo.dt.diablo.fragment.StockIn;
-import com.diablo.dt.diablo.fragment.StockOut;
-import com.diablo.dt.diablo.fragment.StockSelect;
+import com.diablo.dt.diablo.fragment.sale.SaleDetail;
+import com.diablo.dt.diablo.fragment.sale.SaleIn;
+import com.diablo.dt.diablo.fragment.sale.SaleOut;
+import com.diablo.dt.diablo.fragment.stock.StockDetail;
+import com.diablo.dt.diablo.fragment.stock.StockIn;
+import com.diablo.dt.diablo.fragment.stock.StockOut;
+import com.diablo.dt.diablo.fragment.sale.StockSelect;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
@@ -233,7 +233,7 @@ public class SaleUtils {
 
     }
 
-    public static SaleStock getSaleStocks(List<SaleStock> stocks, String styleNumber, Integer brandId){
+    public static SaleStock getSaleStock(List<SaleStock> stocks, String styleNumber, Integer brandId){
         SaleStock stock = null;
         for (SaleStock s: stocks){
             if (styleNumber.equals(s.getStyleNumber()) && brandId.equals(s.getBrandId())){

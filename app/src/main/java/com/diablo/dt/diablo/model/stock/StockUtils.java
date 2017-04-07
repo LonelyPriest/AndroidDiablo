@@ -10,9 +10,12 @@ import android.text.InputType;
 import android.view.Gravity;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.fragment.GoodSelect;
+import com.diablo.dt.diablo.fragment.stock.GoodSelect;
+import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
+
+import java.util.List;
 
 /**
  * Created by buxianhui on 17/3/25.
@@ -136,5 +139,29 @@ public class StockUtils {
         } else {
             transaction.hide(from).show(to).commit();
         }
+    }
+
+    public static EntryStock getEntryStock(List<EntryStock> stocks, String styleNumber, Integer brandId){
+        EntryStock stock = null;
+        for (EntryStock s: stocks){
+            if (styleNumber.equals(s.getStyleNumber()) && brandId.equals(s.getBrandId())){
+                stock = s;
+                break;
+            }
+        }
+
+        return stock;
+    }
+
+    public static EntryStockAmount getEntryStockAmounts(
+        final List<EntryStockAmount>amounts, Integer colorId, String size){
+        EntryStockAmount found = null;
+        for (EntryStockAmount amount: amounts) {
+            if (amount.getColorId().equals(colorId) && amount.getSize().equals(size)) {
+                found = amount;
+                break;
+            }
+        }
+        return found;
     }
 }

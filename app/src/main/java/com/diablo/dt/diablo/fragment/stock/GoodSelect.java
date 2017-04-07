@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.fragment;
+package com.diablo.dt.diablo.fragment.stock;
 
 
 import com.google.gson.Gson;
@@ -100,7 +100,6 @@ public class GoodSelect extends Fragment {
         if (DiabloEnum.STOCK_IN.equals(mComeFrom)) {
             if (R.string.add == mActionFrom || R.string.modify == mActionFrom){
                 startAdd();
-
             }
         }
         else if (DiabloEnum.STOCK_OUT.equals(mComeFrom)) {
@@ -110,11 +109,12 @@ public class GoodSelect extends Fragment {
             else if (R.string.modify == mActionFrom) {
                 startAdd();
             }
-
         }
-        else if (DiabloEnum.STOCK_IN_UPDATE.equals(mComeFrom)
-            || DiabloEnum.STOCK_OUT_UPDATE.equals(mComeFrom)) {
-            // getStockFromServer();
+        else if (DiabloEnum.STOCK_IN_UPDATE.equals(mComeFrom)) {
+            startAdd();
+        }
+        else if (DiabloEnum.STOCK_OUT_UPDATE.equals(mComeFrom)) {
+
         }
 
     }
@@ -282,6 +282,18 @@ public class GoodSelect extends Fragment {
         return to;
     }
 
+    private Fragment getStockInUpdateFragment() {
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_STOCK_IN_UPDATE);
+        if (null != to ) {
+            ((StockInUpdate)to).setNoFreeGoodSelectListener(mNoFreeGoodSelectListener);
+        } else {
+            to = new StockInUpdate();
+        }
+
+        ((StockInUpdate)to).setBackFrom(R.string.back_from_good_select);
+        return to;
+    }
+
     private void switchFragment(){
         Fragment to = null;
         if (DiabloEnum.STOCK_IN.equals(mComeFrom)) {
@@ -292,9 +304,9 @@ public class GoodSelect extends Fragment {
             to = getStockOutFragment();
             ((MainActivity)getActivity()).selectMenuItem(5);
         }
-//        else if (DiabloEnum.SALE_IN_UPDATE.equals(mComeFrom)) {
-//            to = getSaleInUpdateFragment();
-//        }
+        else if (DiabloEnum.STOCK_IN_UPDATE.equals(mComeFrom)) {
+            to = getStockInUpdateFragment();
+        }
 //        else if (DiabloEnum.SALE_OUT_UPDATE.equals(mComeFrom)) {
 //            to = getSaleOutUpdateFragment();
 //        }

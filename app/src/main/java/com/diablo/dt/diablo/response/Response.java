@@ -17,7 +17,7 @@ public class Response {
     };
 
     public Integer getCode() {
-        return this.code;
+        return code;
     }
 
     public String getError() {

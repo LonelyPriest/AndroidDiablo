@@ -21,13 +21,13 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.fragment.SaleDetail;
-import com.diablo.dt.diablo.fragment.SaleIn;
-import com.diablo.dt.diablo.fragment.SaleNote;
-import com.diablo.dt.diablo.fragment.SaleOut;
-import com.diablo.dt.diablo.fragment.StockDetail;
-import com.diablo.dt.diablo.fragment.StockIn;
-import com.diablo.dt.diablo.fragment.StockOut;
+import com.diablo.dt.diablo.fragment.sale.SaleDetail;
+import com.diablo.dt.diablo.fragment.sale.SaleIn;
+import com.diablo.dt.diablo.fragment.sale.SaleNote;
+import com.diablo.dt.diablo.fragment.sale.SaleOut;
+import com.diablo.dt.diablo.fragment.stock.StockDetail;
+import com.diablo.dt.diablo.fragment.stock.StockIn;
+import com.diablo.dt.diablo.fragment.stock.StockOut;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(5);
+            selectMenuItem(6);
             loadHomeFragment();
         }
     }

@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.fragment;
+package com.diablo.dt.diablo.fragment.sale;
 
 import android.content.Context;
 import android.graphics.Typeface;

@@ -14,6 +14,9 @@ public class EntryStockAmount {
     private String  size;
     private Integer count;
 
+    // use to update 'a', 'd', 'u'
+    private String operation;
+
     private EntryStockAmount() {
 
     }
@@ -34,6 +37,14 @@ public class EntryStockAmount {
             this.colorName = color.getName();
         }
         this.count = 0;
+    }
+
+    public EntryStockAmount(EntryStockAmount amount, String operation){
+        this.colorId   = amount.getColorId();
+        this.size      = amount.getSize();
+        this.colorName = amount.getColorName();
+        this.count     = amount.getCount();
+        this.operation = operation;
     }
 
 
@@ -67,5 +78,9 @@ public class EntryStockAmount {
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public String getOperation() {
+        return operation;
     }
 }

@@ -199,7 +199,7 @@ public class DiabloDBManager {
         }
     }
 
-//    private SaleStock getSaleStocks(List<SaleStock> stocks, String styleNumber, Integer brandId){
+//    private SaleStock getSaleStock(List<SaleStock> stocks, String styleNumber, Integer brandId){
 //        SaleStock stock = null;
 //        for (SaleStock s: stocks){
 //            if (styleNumber.equals(s.getStyleNumber()) && brandId.equals(s.getBrandId())){
@@ -231,7 +231,7 @@ public class DiabloDBManager {
                 String styleNumber = c.getString(c.getColumnIndex("style_number"));
                 Integer brand = c.getInt(c.getColumnIndex("brand"));
 
-                SaleStock stock = SaleUtils.getSaleStocks(saleStocks, styleNumber, brand);
+                SaleStock stock = SaleUtils.getSaleStock(saleStocks, styleNumber, brand);
                 if (null == stock){
                     MatchStock matchStock = Profile.instance().getMatchStock(styleNumber, brand);
 

@@ -16,6 +16,10 @@ public class GetSaleNewResponse extends Response {
 //    @SerializedName("inv")
 //    private List<Stock> stocks;
 
+    public GetSaleNewResponse() {
+        saleNotes = null;
+    }
+
     public SaleDetailResponse.SaleDetail getSaleCalc() {
         return saleCalc;
     }

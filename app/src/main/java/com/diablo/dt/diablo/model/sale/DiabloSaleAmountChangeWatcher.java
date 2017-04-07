@@ -7,7 +7,7 @@ import android.text.TextWatcher;
 import android.widget.TableRow;
 
 import com.diablo.dt.diablo.controller.DiabloSaleRowController;
-import com.diablo.dt.diablo.fragment.SaleIn;
+import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.Timer;

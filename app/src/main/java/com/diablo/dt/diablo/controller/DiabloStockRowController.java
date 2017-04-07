@@ -204,6 +204,10 @@ public class DiabloStockRowController {
         mAmountListener = new DiabloStockAmountChangeWatcher(handler, controller);
     }
 
+    public void addListenerOfAmountChange() {
+        ((EditText)(mRowView.getCell(R.string.amount).getView())).addTextChangedListener(mAmountListener);
+    }
+
 
     public void setOrderId(Integer orderId) {
         mEntryStock.setOrderId(orderId);

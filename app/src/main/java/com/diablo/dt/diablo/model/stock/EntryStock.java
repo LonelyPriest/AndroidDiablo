@@ -50,18 +50,72 @@ public class EntryStock {
     private List<String> orderSizes;
     private List<EntryStockAmount> amounts;
 
+    // use to update only
+    private String operation;
+
     public EntryStock() {
         orderId = 0;
         total = 0;
         amounts = new ArrayList<>();
     }
 
-    public EntryStock(MatchGood good) {
-        init(good);
+    public EntryStock(EntryStock stock) {
+        goodId = stock.getGoodId();
+        orderId = stock.getOrderId();
+
+        styleNumber = stock.getStyleNumber();
+        brand       = stock.getBrand();
+        type        = stock.getType();
+
+        brandId = stock.getBrandId();
+        firmId  = stock.getFirmId();
+        typeId  = stock.getTypeId();
+        sex     = stock.getSex();
+        year    = stock.getYear();
+        season  = stock.getSeason();
+        free    = stock.getFree();
+
+        orgPrice = stock.getOrgPrice();
+        tagPrice = stock.getTagPrice();
+        pkgPrice = stock.getPkgPrice();
+        price3   = stock.getPrice3();
+        price4   = stock.getPrice4();
+        price5   = stock.getPrice5();
+        discount = stock.getDiscount();
+
+        sGroup   = stock.getsGroup();
+        path     = stock.getPath();
+        alarmDay = stock.getAlarmDay();
+
+        total    = stock.getTotal();
+        state    = stock.getState();
+
+        colors   = new ArrayList<>();
+        for (DiabloColor color: stock.getColors()) {
+            colors.add(color);
+        }
+
+        orderSizes = new ArrayList<>();
+        for (String size: stock.getOrderSizes()) {
+            orderSizes.add(size);
+        }
+
+        // colors   = stock.getColors();
+        // orderSizes = stock.getOrderSizes();
         amounts = new ArrayList<>();
-        orderId = 0;
-        total = 0;
+        for (EntryStockAmount a: stock.getAmounts()) {
+            EntryStockAmount amount = new EntryStockAmount(a.getColorId(), a.getSize());
+            amount.setCount(a.getCount());
+            amounts.add(amount);
+        }
     }
+
+//    public EntryStock(MatchGood good) {
+//        init(good);
+//        amounts = new ArrayList<>();
+//        orderId = 0;
+//        total = 0;
+//    }
 
     public void init(MatchGood good) {
         goodId      = good.getId();
@@ -71,7 +125,7 @@ public class EntryStock {
 
         brandId = good.getBrandId();
         firmId  = good.getFirmId();
-        typeId  = good.getFirmId();
+        typeId  = good.getTypeId();
 
         sex    = good.getSex();
         year   = good.getYear();
@@ -363,6 +417,14 @@ public class EntryStock {
 
     public void setOrderSizes(List<String> sizes) {
         this.orderSizes = sizes;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public String getOperation() {
+        return operation;
     }
 
     public Float calcStockPrice() {

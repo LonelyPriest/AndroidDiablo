@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.diablo.dt.diablo.fragment.sale.SaleOutUpdate">
+              tools:context="com.diablo.dt.diablo.fragment.stock.StockInUpdate">
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -15,16 +15,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
-        android:drawableStart="@drawable/ic_person_black_24dp"
-        android:text="@string/retailer"/>
+        android:drawableStart="@drawable/ic_landscape_black_24dp"
+        android:text="@string/firm"/>
     <AutoCompleteTextView
-        android:id="@+id/sale_out_select_retailer"
+        android:id="@+id/stock_select_firm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/please_input_retailer"
+        android:hint="@string/please_input_firm"
         android:completionThreshold="1"
         android:gravity="center_horizontal"
         android:selectAllOnFocus="true"
+        android:singleLine="true"
         android:layout_weight="0.8" />
 
     <TextView
@@ -34,7 +35,7 @@
         android:layout_weight="0.2"
         android:text="@string/shop"/>
     <EditText
-        android:id="@+id/sale_out_selected_shop"
+        android:id="@+id/stock_select_shop"
         android:focusable="false"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -44,14 +45,14 @@
 
 
     <ImageButton
-        android:id="@+id/sale_select_date"
+        android:id="@+id/stock_select_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:src="@drawable/ic_date_range_black_24dp"
         android:contentDescription="@string/date"/>
     <EditText
-        android:id="@+id/sale_out_selected_date"
+        android:id="@+id/stock_selected_date"
         android:focusable="false"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -66,7 +67,7 @@
         android:src="@drawable/ic_person_black_24dp"
         android:contentDescription="@string/employee"/>
     <Spinner
-        android:id="@+id/sale_out_select_employee"
+        android:id="@+id/stock_select_employee"
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -88,9 +89,8 @@
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_local_airport_black_24dp"
         android:text="@string/amount" />
-
     <EditText
-        android:id="@+id/sale_out_total"
+        android:id="@+id/stock_total"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:focusable="false"
@@ -99,23 +99,6 @@
         android:gravity="center_horizontal"
         android:layout_weight="0.8"/>
 
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.2"
-        android:drawableStart="@drawable/ic_attach_money_black_24dp"
-        android:text="@string/retailer_balance" />
-    <EditText
-        android:id="@+id/sale_out_balance"
-        android:focusable="false"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/retailer_balance"
-        android:gravity="center_horizontal"
-        android:layout_weight="0.8" />
-
-
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -123,7 +106,7 @@
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
         android:text="@string/should_pay" />
     <EditText
-        android:id="@+id/sale_out_should_pay"
+        android:id="@+id/stock_should_pay"
         android:focusable="false"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -132,19 +115,107 @@
         android:gravity="center_horizontal"
         android:layout_weight="0.8" />
 
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:text="@string/cash" />
+    <EditText
+        android:id="@+id/stock_cash"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/cash"
+        android:textColor="@color/red"
+        android:selectAllOnFocus="true"
+        android:inputType="numberSigned|numberDecimal"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.8"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:src="@drawable/ic_insert_comment_black_24dp"
+        android:contentDescription="@string/comment" />
+    <EditText
+        android:id="@+id/stock_comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/comment"
+        android:layout_weight="0.8"/>
+
+  </LinearLayout>
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:text="@string/firm_balance" />
+    <EditText
+        android:id="@+id/firm_balance"
+        android:focusable="false"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/firm_balance"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.8" />
+
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:text="@string/has_pay" />
+    <EditText
+        android:id="@+id/stock_has_pay"
+        android:focusable="false"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/has_pay"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.8" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:drawableStart="@drawable/ic_credit_card_black_24dp"
+        android:text="@string/card" />
+    <EditText
+        android:id="@+id/stock_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/card"
+        android:textColor="@color/red"
+        android:inputType="numberSigned|numberDecimal"
+        android:selectAllOnFocus="true"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.8" />
 
     <ImageView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:src="@drawable/ic_directions_subway_black_24dp"
-        android:contentDescription="@string/cost_on_sale"/>
+        android:contentDescription="@string/cost_on_stock"/>
     <Spinner
-        android:id="@+id/sale_out_select_extra_cost"
+        android:id="@+id/stock_select_extra_cost"
         android:layout_width="0dp"
         style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:focusable="false"
         android:spinnerMode="dropdown"
         android:layout_weight="0.8"/>
 
@@ -157,35 +228,20 @@
       android:gravity="center_vertical"
       android:orientation="horizontal">
 
-    <ImageView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.2"
-        android:src="@drawable/ic_insert_comment_black_24dp"
-        android:contentDescription="@string/comment" />
-    <EditText
-        android:id="@+id/sale_out_comment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/comment"
-        android:layout_weight="0.8"/>
-
-
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
-        android:text="@string/retailer_accBalance" />
+        android:text="@string/firm_accBalance" />
     <EditText
-        android:id="@+id/sale_out_accbalance"
+        android:id="@+id/firm_accBalance"
         android:focusable="false"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/retailer_accBalance"
+        android:hint="@string/firm_accBalance"
         android:gravity="center_horizontal"
         android:layout_weight="0.8" />
-
 
     <TextView
         android:layout_width="0dp"
@@ -194,7 +250,7 @@
         android:drawableStart="@drawable/ic_remove_circle_outline_black_24dp"
         android:text="@string/verificate"/>
     <EditText
-        android:id="@+id/sale_out_verificate"
+        android:id="@+id/stock_verificate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/verificate"
@@ -204,38 +260,53 @@
         android:textColor="@color/red"
         android:layout_weight="0.8"/>
 
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:drawableStart="@drawable/ic_network_wifi_black_24dp"
+        android:text="@string/wire" />
+    <EditText
+        android:id="@+id/stock_wire"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/wire"
+        android:textColor="@color/red"
+        android:inputType="numberSigned|numberDecimal"
+        android:selectAllOnFocus="true"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.8" />
+
     <ImageView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:src="@drawable/ic_attach_money_black_24dp"
-        android:contentDescription="@string/cost_on_sale"/>
+        android:contentDescription="@string/cost_on_stock"/>
     <EditText
-        android:id="@+id/sale_out_extra_cost"
+        android:id="@+id/stock_extra_cost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/cost_on_sale"
-        android:inputType="numberSigned|numberDecimal"
         android:focusable="false"
+        android:hint="@string/cost_on_stock"
+        android:inputType="numberSigned|numberDecimal"
         android:layout_weight="0.8"/>
-
   </LinearLayout>
 
-
   <TableLayout
-      android:id="@+id/t_sale_out_head"
+      android:id="@+id/t_stock_head"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="10dp">
   </TableLayout>
 
   <ScrollView
-      android:id="@+id/t_sale_out_scroll"
+      android:id="@+id/t_stock_scroll"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="10dp">
     <TableLayout
-        android:id="@+id/t_sale_out"
+        android:id="@+id/t_stock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

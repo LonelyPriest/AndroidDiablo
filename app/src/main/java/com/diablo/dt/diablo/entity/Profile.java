@@ -600,4 +600,17 @@ public class Profile {
         return mMatchGoods;
     }
 
+    public MatchGood getMatchGood(String styleNumber, Integer brandId){
+        MatchGood good = null;
+        for (MatchGood g: mMatchGoods){
+            if (styleNumber.equals(g.getStyleNumber())
+                && brandId.equals(g.getBrandId())){
+                good = g;
+                break;
+            }
+        }
+
+        return good;
+    }
+
 }

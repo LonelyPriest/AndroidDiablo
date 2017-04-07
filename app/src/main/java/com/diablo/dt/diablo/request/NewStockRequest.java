@@ -81,13 +81,19 @@ public class NewStockRequest {
         @SerializedName("amount")
         private List<DiabloEntryStockAmount> entryStockAmounts;
 
-        // used to reject
+        // use to reject
         @SerializedName("fdiscount")
         private Float fdiscount;
         @SerializedName("fprice")
         private Float fprice;
         @SerializedName("amounts")
         private List<DiabloEntryStockAmount> entryStockRejectAmounts;
+
+        // use to update
+        @SerializedName("operation")
+        private String operation;
+        @SerializedName("changed_amount")
+        private List<DiabloEntryStockAmount> changedAmounts;
 
         public String getStyleNumber() {
             return styleNumber;
@@ -263,6 +269,17 @@ public class NewStockRequest {
         public void setEntryStockRejectAmounts(List<DiabloEntryStockAmount> entryStockRejectAmounts) {
             this.entryStockRejectAmounts = entryStockRejectAmounts;
         }
+
+        /**
+         * use to update only
+         */
+        public void setOperation(String operation) {
+            this.operation = operation;
+        }
+
+        public void setChangedAmounts(List<DiabloEntryStockAmount> changedAmounts) {
+            this.changedAmounts = changedAmounts;
+        }
     }
 
     public static class DiabloEntryStockAmount {
@@ -272,8 +289,14 @@ public class NewStockRequest {
         private String size;
         @SerializedName("count")
         private Integer count;
+
+        // use to reject only
         @SerializedName("reject_count")
         private Integer rejectCount;
+
+        // use to update only
+        @SerializedName("operation")
+        private String operation;
 
         public DiabloEntryStockAmount() {
 
@@ -293,6 +316,10 @@ public class NewStockRequest {
 
         public void setRejectCount(Integer rejectCount) {
             this.rejectCount = rejectCount;
+        }
+
+        public void setOperation(String operation) {
+            this.operation = operation;
         }
     }
 
@@ -332,6 +359,24 @@ public class NewStockRequest {
         @SerializedName("e_pay")
         private Float extraCost;
 
+        // use to update only
+        @SerializedName("id")
+        private Integer RsnId;
+        @SerializedName("rsn")
+        private String rsn;
+        @SerializedName("old_firm")
+        private Integer oldFirm;
+        @SerializedName("old_balance")
+        private Float oldBalance;
+        @SerializedName("old_verify_pay")
+        private Float oldVerificate;
+        @SerializedName("old_should_pay")
+        private Float oldShouldPay;
+        @SerializedName("old_has_pay")
+        private Float oldHasPay;
+        @SerializedName("old_datetime")
+        private String oldDatetime;
+
         public DiabloStockCalc() {
 
         }
@@ -340,8 +385,16 @@ public class NewStockRequest {
             this.firmId = firmId;
         }
 
+        public Integer getFirmId() {
+            return firmId;
+        }
+
         public void setShopId(Integer shopId) {
             this.shopId = shopId;
+        }
+
+        public Integer getShopId() {
+            return shopId;
         }
 
         public void setDate(String date) {
@@ -356,8 +409,16 @@ public class NewStockRequest {
             this.employeeId = employeeId;
         }
 
+        public String getEmployeeId() {
+            return employeeId;
+        }
+
         public void setComment(String comment) {
             this.comment = comment;
+        }
+
+        public String getComment() {
+            return comment;
         }
 
         public void setTotal(Integer total) {
@@ -372,16 +433,32 @@ public class NewStockRequest {
             this.cash = cash;
         }
 
+        public Float getCash() {
+            return cash;
+        }
+
         public void setCard(Float card) {
             this.card = card;
+        }
+
+        public Float getCard() {
+            return card;
         }
 
         public void setWire(Float wire) {
             this.wire = wire;
         }
 
+        public Float getWire() {
+            return wire;
+        }
+
         public void setVerificate(Float verificate) {
             this.verificate = verificate;
+        }
+
+        public Float getVerificate() {
+            return verificate;
         }
 
         public void setShouldPay(Float shouldPay) {
@@ -398,6 +475,38 @@ public class NewStockRequest {
 
         public void setExtraCost(Float extraCost) {
             this.extraCost = extraCost;
+        }
+
+        public void setRsnId(Integer RsnId) {
+            this.RsnId = RsnId;
+        }
+
+        public void setRsn(String rsn) {
+            this.rsn = rsn;
+        }
+
+        public void setOldFirm(Integer oldFirm) {
+            this.oldFirm = oldFirm;
+        }
+
+        public void setOldBalance(Float oldBalance) {
+            this.oldBalance = oldBalance;
+        }
+
+        public void setOldVerificate(Float oldVerificate) {
+            this.oldVerificate = oldVerificate;
+        }
+
+        public void setOldShouldPay(Float oldShouldPay) {
+            this.oldShouldPay = oldShouldPay;
+        }
+
+        public void setOldHasPay(Float oldHasPay) {
+            this.oldHasPay = oldHasPay;
+        }
+
+        public void setOldDatetime(String oldDatetime) {
+            this.oldDatetime = oldDatetime;
         }
     }
 }

@@ -1,7 +1,7 @@
-package com.diablo.dt.diablo.fragment;
+package com.diablo.dt.diablo.fragment.sale;
 
 
-import static com.diablo.dt.diablo.model.sale.SaleUtils.getSaleStocks;
+import static com.diablo.dt.diablo.model.sale.SaleUtils.getSaleStock;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -531,7 +531,7 @@ public class SaleInUpdate extends Fragment {
             String styleNumber = n.getStyleNumber();
             Integer brandId = n.getBrandId();
 
-            SaleStock stock = SaleUtils.getSaleStocks(mOldSaleStocks, styleNumber, brandId);
+            SaleStock stock = SaleUtils.getSaleStock(mOldSaleStocks, styleNumber, brandId);
             if (null == stock) {
                 MatchStock matchStock = Profile.instance().getMatchStock(styleNumber, brandId);
                 SaleStock s = new SaleStock(matchStock, n.getSelectedPrice());
@@ -666,7 +666,7 @@ public class SaleInUpdate extends Fragment {
         }
 
         for (SaleStock stock: newSaleStocks) {
-            SaleStock found = getSaleStocks(mOldSaleStocks, stock.getStyleNumber(), stock.getBrandId());
+            SaleStock found = getSaleStock(mOldSaleStocks, stock.getStyleNumber(), stock.getBrandId());
             // new
             if (null == found) {
                 SaleStock add = new SaleStock(stock);
@@ -705,7 +705,7 @@ public class SaleInUpdate extends Fragment {
 
         // get delete
         for (SaleStock oldStock: mOldSaleStocks) {
-            SaleStock found = SaleUtils.getSaleStocks(newSaleStocks, oldStock.getStyleNumber(), oldStock.getBrandId());
+            SaleStock found = SaleUtils.getSaleStock(newSaleStocks, oldStock.getStyleNumber(), oldStock.getBrandId());
             if (null == found) {
                 SaleStock delete = new SaleStock(oldStock);
                 delete.setOperation(DiabloEnum.DELETE_THE_STOCK);
