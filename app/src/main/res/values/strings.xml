@@ -18,6 +18,7 @@
   <string name="nav_stock_note">采购明细</string>
 
   <string name="nav_inventory_detail">库存详情</string>
+  <string name="nav_good_new">新增货品</string>
 
   <!-- Toolbar titles when navigation menu item is selected -->
   <string-array name="nav_item_activity_titles">
@@ -32,6 +33,7 @@
     <item>采购明细</item>
 
     <item>库存详情</item>
+    <item>新增货品</item>
 
   </string-array>
 

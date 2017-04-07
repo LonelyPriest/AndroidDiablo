@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.fragment.inventory.GoodNew;
 import com.diablo.dt.diablo.fragment.inventory.InventoryDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
@@ -141,12 +142,13 @@ public class MainActivity extends AppCompatActivity {
         mNavTagMap.put(7, new NavigationTag(7, DiabloEnum.TAG_STOCK_NOTE, R.id.nav_stock_note));
 
         mNavTagMap.put(8, new NavigationTag(8, DiabloEnum.TAG_INVENTORY_DETAIL, R.id.nav_inventory_detail));
+        mNavTagMap.put(9, new NavigationTag(9, DiabloEnum.TAG_GOOD_NEW, R.id.nav_good_new));
 
         // initializing navigation menu
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(8);
+            selectMenuItem(9);
             loadHomeFragment();
         }
     }
@@ -268,6 +270,9 @@ public class MainActivity extends AppCompatActivity {
             else if (mCurrentNavTag.getTitleIndex().equals(8)) {
                 f = new InventoryDetail();
             }
+            else if (mCurrentNavTag.getTitleIndex().equals(9)) {
+                f = new GoodNew();
+            }
             else {
                 f = new SaleDetail();
             }
@@ -323,6 +328,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_inventory_detail:
                         selectMenuItem(8);
+                        break;
+                    case R.id.nav_good_new:
+                        selectMenuItem(9);
                         break;
                     case R.id.nav_logout:
                         logout();

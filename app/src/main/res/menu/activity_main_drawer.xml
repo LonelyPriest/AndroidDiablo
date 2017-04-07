@@ -52,7 +52,13 @@
                     android:id="@+id/nav_inventory_detail"
                     android:icon="@drawable/ic_account_balance_black_24dp"
                     android:title="@string/nav_inventory_detail" />
+
+                <item
+                    android:id="@+id/nav_good_new"
+                    android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+                    android:title="@string/nav_good_new" />
             </menu>
+
         </item>
 
         <item android:title="@string/slide_user_manager">
