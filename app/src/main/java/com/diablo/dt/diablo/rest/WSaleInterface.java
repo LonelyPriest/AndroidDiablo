@@ -1,15 +1,15 @@
 package com.diablo.dt.diablo.rest;
 
-import com.diablo.dt.diablo.request.LastSaleRequest;
-import com.diablo.dt.diablo.request.NewSaleRequest;
-import com.diablo.dt.diablo.request.SaleDetailRequest;
-import com.diablo.dt.diablo.request.SaleNoteRequest;
-import com.diablo.dt.diablo.response.GetSaleNewResponse;
-import com.diablo.dt.diablo.response.LastSaleResponse;
-import com.diablo.dt.diablo.response.NewSaleResponse;
+import com.diablo.dt.diablo.request.sale.LastSaleRequest;
+import com.diablo.dt.diablo.request.sale.NewSaleRequest;
+import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
+import com.diablo.dt.diablo.request.sale.SaleNoteRequest;
+import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
+import com.diablo.dt.diablo.response.sale.LastSaleResponse;
+import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.response.PrintResponse;
-import com.diablo.dt.diablo.response.SaleDetailResponse;
-import com.diablo.dt.diablo.response.SaleNoteResponse;
+import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
+import com.diablo.dt.diablo.response.sale.SaleNoteResponse;
 
 import java.util.List;
 

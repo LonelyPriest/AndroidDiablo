@@ -5,7 +5,7 @@ import android.util.Log;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Stock;
-import com.diablo.dt.diablo.request.StockRequest;
+import com.diablo.dt.diablo.request.sale.StockRequest;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 

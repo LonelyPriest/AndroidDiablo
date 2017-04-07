@@ -22,8 +22,8 @@ import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
-import com.diablo.dt.diablo.request.NewSaleRequest;
-import com.diablo.dt.diablo.response.NewSaleResponse;
+import com.diablo.dt.diablo.request.sale.NewSaleRequest;
+import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.response.PrintResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 

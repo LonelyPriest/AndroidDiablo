@@ -1,26 +1,27 @@
-package com.diablo.dt.diablo.request;
+package com.diablo.dt.diablo.request.stock;
 
 import com.google.gson.annotations.SerializedName;
 
+import com.diablo.dt.diablo.request.PageRequest;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**
- * Created by buxianhui on 17/4/3.
+ * Created by buxianhui on 17/4/7.
  */
 
-public class StockDetailRequest extends PageRequest {
+public class StockNoteRequest extends PageRequest {
     @SerializedName("fields")
     private Condition mCondition;
 
-    public StockDetailRequest(){
+    public StockNoteRequest(){
         super();
     }
 
-    public StockDetailRequest(Integer currentPage){
+    public StockNoteRequest(Integer currentPage){
         super(currentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
     }
 
-    public StockDetailRequest(Integer currentPage, Integer itemsPerPage){
+    public StockNoteRequest(Integer currentPage, Integer itemsPerPage){
         super(currentPage, itemsPerPage);
     }
 

@@ -1,26 +1,27 @@
-package com.diablo.dt.diablo.request;
+package com.diablo.dt.diablo.request.sale;
 
 import com.google.gson.annotations.SerializedName;
 
+import com.diablo.dt.diablo.request.PageRequest;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**
- * Created by buxianhui on 17/4/7.
+ * Created by buxianhui on 17/3/28.
  */
 
-public class StockNoteRequest extends PageRequest {
+public class SaleNoteRequest extends PageRequest {
     @SerializedName("fields")
     private Condition mCondition;
 
-    public StockNoteRequest(){
+    public SaleNoteRequest(){
         super();
     }
 
-    public StockNoteRequest(Integer currentPage){
+    public SaleNoteRequest(Integer currentPage){
         super(currentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
     }
 
-    public StockNoteRequest(Integer currentPage, Integer itemsPerPage){
+    public SaleNoteRequest(Integer currentPage, Integer itemsPerPage){
         super(currentPage, itemsPerPage);
     }
 
@@ -28,11 +29,11 @@ public class StockNoteRequest extends PageRequest {
         return mCondition;
     }
 
-    public void setCondition(Condition condition) {
+    public void setCondtion(Condition condition) {
         this.mCondition = condition;
     }
 
-    public static class Condition{
+    public class Condition{
         @SerializedName("start_time")
         String mStartTime;
         @SerializedName("end_time")

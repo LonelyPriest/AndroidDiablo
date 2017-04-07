@@ -348,7 +348,7 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<DiabloBrand>>() {
             @Override
             public void onResponse(Call<List<DiabloBrand>> call, Response<List<DiabloBrand>> response) {
-                Log.d(LOG_TAG, "success to get color");
+                Log.d(LOG_TAG, "success to get brand");
                 Profile.instance().setBrands(response.body());
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 80;
@@ -370,7 +370,7 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<DiabloType>>() {
             @Override
             public void onResponse(Call<List<DiabloType>> call, Response<List<DiabloType>> response) {
-                Log.d(LOG_TAG, "success to get color");
+                Log.d(LOG_TAG, "success to get type");
                 Profile.instance().setDiabloTypes(response.body());
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 90;
@@ -392,7 +392,7 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Firm>>() {
             @Override
             public void onResponse(Call<List<Firm>> call, Response<List<Firm>> response) {
-                Log.d(LOG_TAG, "success to get color");
+                Log.d(LOG_TAG, "success to get firm");
                 Profile.instance().setFirms(response.body());
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 100;

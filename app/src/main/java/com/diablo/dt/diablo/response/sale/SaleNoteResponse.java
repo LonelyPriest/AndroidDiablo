@@ -1,6 +1,8 @@
-package com.diablo.dt.diablo.response;
+package com.diablo.dt.diablo.response.sale;
 
 import com.google.gson.annotations.SerializedName;
+
+import com.diablo.dt.diablo.response.Response;
 
 import java.util.List;
 

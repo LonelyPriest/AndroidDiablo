@@ -17,6 +17,8 @@
   <string name="nav_stock_detail">采购记录</string>
   <string name="nav_stock_note">采购明细</string>
 
+  <string name="nav_inventory_detail">库存详情</string>
+
   <!-- Toolbar titles when navigation menu item is selected -->
   <string-array name="nav_item_activity_titles">
     <item>销售开单</item>
@@ -28,6 +30,8 @@
     <item>采购退货</item>
     <item>采购记录</item>
     <item>采购明细</item>
+
+    <item>库存详情</item>
 
   </string-array>
 
@@ -59,7 +63,7 @@
     <item>交易</item>
     <item>款号</item>
     <item>品名</item>
-    <item>类型</item>
+    <item>类别</item>
     <item>厂商</item>
     <item>单价</item>
     <item>折扣</item>
@@ -151,13 +155,28 @@
     <item>厂商</item>
     <item>款号</item>
     <item>品名</item>
-    <item>类型</item>
+    <item>类别</item>
     <!--<item>进/退价</item>-->
     <item>年度</item>
     <item>折扣</item>
     <item>数量</item>
     <!--<item>合计</item>-->
     <item>日期</item>
+  </string-array>
+
+  <string-array name="thead_inventory_detail">
+    <item>序号</item>
+    <item>款号</item>
+    <item>品名</item>
+    <item>类别</item>
+    <item>厂商</item>
+    <item>季节</item>
+    <item>年度</item>
+    <item>吊牌价</item>
+    <item>批发价</item>
+    <item>库存</item>
+    <item>已售</item>
+    <item>上架日期</item>
   </string-array>
 
   <string name="order_id">序号</string>
@@ -196,12 +215,15 @@
   <string name="price5">价5</string>
 
   <string name="free_color">均码</string>
+  <string name="sell">已售</string>
+  <string name="inventory">库存</string>
+  <string name="shelfDate">上架日期</string>
 
   <string name="year">年度</string>
   <string name="season">季节</string>
   <string name="org_price">进价</string>
   <string name="style_number">款号</string>
-  <string name="good_type">类型</string>
+  <string name="good_type">类别</string>
   <string name="firm">厂商</string>
 
   <string name="sale_in_fragment">Sale In fragment</string>
@@ -339,6 +361,7 @@
 
   <string name="slide_sale_manager">销售管理</string>
   <string name="slide_stock_manager">采购管理</string>
+  <string name="slide_inventory_manager">库存管理</string>
   <string name="slide_user_manager">用户管理</string>
 
   <string name="action_save">保存</string>

@@ -16,11 +16,14 @@ import android.widget.TextView;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
+import com.diablo.dt.diablo.fragment.inventory.InventoryDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
+import com.diablo.dt.diablo.fragment.sale.SaleNote;
 import com.diablo.dt.diablo.fragment.sale.SaleOut;
 import com.diablo.dt.diablo.fragment.stock.StockDetail;
 import com.diablo.dt.diablo.fragment.stock.StockIn;
+import com.diablo.dt.diablo.fragment.stock.StockNote;
 import com.diablo.dt.diablo.fragment.stock.StockOut;
 import com.diablo.dt.diablo.fragment.sale.StockSelect;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -64,6 +67,9 @@ public class SaleUtils {
                 case DiabloEnum.TAG_SALE_OUT:
                     f = new SaleOut();
                     break;
+                case DiabloEnum.TAG_SALE_NOTE:
+                    f = new SaleNote();
+                    break;
                 case DiabloEnum.TAG_STOCK_IN:
                     f = new StockIn();
                     break;
@@ -74,6 +80,10 @@ public class SaleUtils {
                     f = new StockDetail();
                     break;
                 case DiabloEnum.TAG_STOCK_NOTE:
+                    f = new StockNote();
+                    break;
+                case DiabloEnum.TAG_INVENTORY_DETAIL:
+                    f = new InventoryDetail();
                     break;
                 default:
                     break;

@@ -1,7 +1,10 @@
-package com.diablo.dt.diablo.response;
+package com.diablo.dt.diablo.response.stock;
 
 import com.google.gson.annotations.SerializedName;
 
+import com.diablo.dt.diablo.response.Response;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +48,8 @@ public class StockDetailResponse extends Response {
         mSPay = 0f;
         mVerificate = 0f;
         mWire = 0f;
+
+        mStockDetails = new ArrayList<>();
     }
 
     public static class StockDetail{

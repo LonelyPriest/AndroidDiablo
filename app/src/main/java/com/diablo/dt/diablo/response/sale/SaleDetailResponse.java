@@ -1,6 +1,8 @@
-package com.diablo.dt.diablo.response;
+package com.diablo.dt.diablo.response.sale;
 
 import com.google.gson.annotations.SerializedName;
+
+import com.diablo.dt.diablo.response.Response;
 
 import java.util.List;
 
@@ -8,7 +10,7 @@ import java.util.List;
  * Created by buxianhui on 17/2/23.
  */
 
-public class SaleDetailResponse extends Response{
+public class SaleDetailResponse extends Response {
     @SerializedName("total")
     private Integer mTotal;
 

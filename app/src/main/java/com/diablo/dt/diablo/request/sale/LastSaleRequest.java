@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.request;
+package com.diablo.dt.diablo.request.sale;
 
 import com.google.gson.annotations.SerializedName;
 

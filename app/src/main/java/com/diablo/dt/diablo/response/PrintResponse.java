@@ -2,6 +2,8 @@ package com.diablo.dt.diablo.response;
 
 import com.google.gson.annotations.SerializedName;
 
+import com.diablo.dt.diablo.response.sale.NewSaleResponse;
+
 import java.util.List;
 
 /**

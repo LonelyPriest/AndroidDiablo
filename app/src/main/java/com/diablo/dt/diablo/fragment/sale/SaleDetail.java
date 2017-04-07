@@ -29,8 +29,8 @@ import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
-import com.diablo.dt.diablo.request.SaleDetailRequest;
-import com.diablo.dt.diablo.response.SaleDetailResponse;
+import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
+import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -651,10 +651,6 @@ public class SaleDetail extends Fragment {
                 transaction.hide(from).show(to).commit();
             }
         }
-
-    }
-
-    public void setStartDate() {
 
     }
 }

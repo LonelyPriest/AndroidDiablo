@@ -10,18 +10,18 @@ import com.diablo.dt.diablo.utils.DiabloEnum;
 
 public class PageRequest {
     @SerializedName("math")
-    public String mMatch = "and";
+    private String mMatch = "and";
     @SerializedName("page")
-    public Integer mPage;
+    private Integer mPage;
     @SerializedName("count")
-    public Integer mCount;
+    private Integer mCount;
 
-    PageRequest(){
+    public PageRequest(){
         mPage = DiabloEnum.DEFAULT_PAGE;
         mCount = DiabloEnum.DEFAULT_ITEMS_PER_PAGE;
     }
 
-    PageRequest(Integer page, Integer count){
+    public PageRequest(Integer page, Integer count){
         this.mPage = page;
         this.mCount = count;
     }

@@ -3,14 +3,16 @@ package com.diablo.dt.diablo.rest;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.request.MatchStockRequest;
-import com.diablo.dt.diablo.request.NewStockRequest;
-import com.diablo.dt.diablo.request.StockDetailRequest;
-import com.diablo.dt.diablo.request.StockNoteRequest;
-import com.diablo.dt.diablo.request.StockRequest;
-import com.diablo.dt.diablo.response.GetStockNewResponse;
-import com.diablo.dt.diablo.response.NewStockResponse;
-import com.diablo.dt.diablo.response.StockDetailResponse;
-import com.diablo.dt.diablo.response.StockNoteResponse;
+import com.diablo.dt.diablo.request.inventory.InventoryDetailRequest;
+import com.diablo.dt.diablo.request.stock.NewStockRequest;
+import com.diablo.dt.diablo.request.stock.StockDetailRequest;
+import com.diablo.dt.diablo.request.stock.StockNoteRequest;
+import com.diablo.dt.diablo.request.sale.StockRequest;
+import com.diablo.dt.diablo.response.inventory.InventoryDetailResponse;
+import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
+import com.diablo.dt.diablo.response.stock.NewStockResponse;
+import com.diablo.dt.diablo.response.stock.StockDetailResponse;
+import com.diablo.dt.diablo.response.stock.StockNoteResponse;
 
 import java.util.List;
 
@@ -38,6 +40,11 @@ public interface StockInterface {
 
     @POST("filter_w_inventory_new_rsn_group")
     Call<StockNoteResponse> filterStockNote(@Header("cookie") String token, @Body StockNoteRequest request);
+
+    // inventory
+    @POST("filter_w_inventory_group")
+    Call<InventoryDetailResponse> filterInventory(@Header("cookie") String token,
+                                                  @Body InventoryDetailRequest request);
 
     @POST("new_w_inventory")
     Call<NewStockResponse> addStock(@Header("cookie") String token, @Body NewStockRequest request);

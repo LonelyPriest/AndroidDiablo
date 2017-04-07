@@ -30,8 +30,8 @@ import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
-import com.diablo.dt.diablo.request.StockDetailRequest;
-import com.diablo.dt.diablo.response.StockDetailResponse;
+import com.diablo.dt.diablo.request.stock.StockDetailRequest;
+import com.diablo.dt.diablo.response.stock.StockDetailResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -66,11 +66,8 @@ public class StockDetail extends Fragment {
     /*
     * row of table
     * */
-    // TableRow[] mRows;
-
     private TableLayout mStockDetailTable;
-    private SwipyRefreshLayout mSaleDetailTableSwipe;
-    // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
+    private SwipyRefreshLayout mStockDetailTableSwipe;
 
     private TableRow mCurrentSelectedRow;
 
@@ -153,11 +150,11 @@ public class StockDetail extends Fragment {
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
-        mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_stock_detail_swipe);
-        // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
-        mSaleDetailTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
+        mStockDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_stock_detail_swipe);
+        // mStockDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
+        mStockDetailTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
-        mSaleDetailTableSwipe.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+        mStockDetailTableSwipe.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh(SwipyRefreshLayoutDirection direction) {
                 if (direction == SwipyRefreshLayoutDirection.TOP){
@@ -170,7 +167,7 @@ public class StockDetail extends Fragment {
                             getContext(),
                             getContext().getResources().getString(R.string.refresh_top),
                             Toast.LENGTH_SHORT);
-                        mSaleDetailTableSwipe.setRefreshing(false);
+                        mStockDetailTableSwipe.setRefreshing(false);
                     }
 
                 } else if (direction == SwipyRefreshLayoutDirection.BOTTOM){
@@ -179,7 +176,7 @@ public class StockDetail extends Fragment {
                             getContext(),
                             getContext().getResources().getString(R.string.refresh_bottom),
                             Toast.LENGTH_SHORT);
-                        mSaleDetailTableSwipe.setRefreshing(false);
+                        mStockDetailTableSwipe.setRefreshing(false);
                     } else {
                         mCurrentPage++;
                         mRequest.setPage(mCurrentPage);
@@ -239,7 +236,7 @@ public class StockDetail extends Fragment {
             public void onResponse(Call<StockDetailResponse> call, Response<StockDetailResponse> response) {
                 Log.d("SALE_DETAIL %s", response.toString());
 
-                mSaleDetailTableSwipe.setRefreshing(false);
+                mStockDetailTableSwipe.setRefreshing(false);
                 StockDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
@@ -385,7 +382,7 @@ public class StockDetail extends Fragment {
 
             @Override
             public void onFailure(Call<StockDetailResponse> call, Throwable t) {
-                mSaleDetailTableSwipe.setRefreshing(false);
+                mStockDetailTableSwipe.setRefreshing(false);
             }
         });
     }
