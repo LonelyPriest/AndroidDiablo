@@ -2,6 +2,8 @@ package com.diablo.dt.diablo.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import com.diablo.dt.diablo.utils.DiabloEnum;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,12 +67,23 @@ public class DiabloSizeGroup {
     }
 
     public void genSortedSizeNames(){
-        mSortedSizeNames.add(getSI());
-        mSortedSizeNames.add(getSII());
-        mSortedSizeNames.add(getSIII());
-        mSortedSizeNames.add(getSIV());
-        mSortedSizeNames.add(getSV());
-        mSortedSizeNames.add(getSVI());
+        if (!getSI().equals(DiabloEnum.EMPTY_STRING))
+            mSortedSizeNames.add(getSI());
+
+        if (!getSII().equals(DiabloEnum.EMPTY_STRING))
+            mSortedSizeNames.add(getSII());
+
+        if (!getSIII().equals(DiabloEnum.EMPTY_STRING))
+            mSortedSizeNames.add(getSIII());
+
+        if (!getSIV().equals(DiabloEnum.EMPTY_STRING))
+            mSortedSizeNames.add(getSIV());
+
+        if (!getSV().equals(DiabloEnum.EMPTY_STRING))
+            mSortedSizeNames.add(getSV());
+
+        if (!getSVI().equals(DiabloEnum.EMPTY_STRING))
+            mSortedSizeNames.add(getSVI());
     }
 
     public List<String> getSortedSizeNames(){

@@ -181,6 +181,32 @@
     <item>上架日期</item>
   </string-array>
 
+  <string-array name="sexes">
+    <item>女</item>
+    <item>男</item>
+  </string-array>
+
+  <string-array name="years">
+    <item>2013</item>
+    <item>2014</item>
+    <item>2015</item>
+    <item>2016</item>
+    <item>2017</item>
+    <item>2018</item>
+    <item>2019</item>
+    <item>2020</item>
+    <item>2021</item>
+    <item>2022</item>
+    <item>2023</item>
+    <item>2024</item>
+    <item>2025</item>
+    <item>2026</item>
+    <item>2027</item>
+    <item>2028</item>
+    <item>2029</item>
+    <item>2030</item>
+  </string-array>
+
   <string name="order_id">序号</string>
   <string name="rsn">单号</string>
   <string name="trans">交易</string>
@@ -227,6 +253,10 @@
   <string name="style_number">款号</string>
   <string name="good_type">类别</string>
   <string name="firm">厂商</string>
+  <string name="sex">性别</string>
+  <string name="color">颜色</string>
+  <string name="size">尺码</string>
+  <string name="star">*</string>
 
   <string name="sale_in_fragment">Sale In fragment</string>
 
@@ -281,6 +311,11 @@
   <string name="update_same">"修改前后信息一致，请重新编辑修改项"</string>
   <string name="different_good">"货品厂商不一致，请重新选择货品"</string>
 
+  <string name="invalid_style_number">款号只能是字母，数字或横杠，不能以横杠开头或结尾，不超过16个字符</string>
+  <string name="invalid_brand">品名只能是中文或字母，不超过10个字符</string>
+  <string name="invalid_good_type">类型只能是中文或字字母，不超过15个字符</string>
+  <string name="invalid_price">价格输入错误（dd.dd）</string>
+
 
   <!-- message -->
   <string name="print_success">打印消息发送成功，请等待服务器打印！！</string>
@@ -293,6 +328,9 @@
   <string name="stock_out_success">退货成功，单号：</string>
   <string name="stock_in_update_success">入库单编辑成功，单号：</string>
   <string name="stock_out_update_success">退货单编辑成功，单号：</string>
+  <string name="add_good_success">新增货品成功</string>
+  <string name="add_good_failed">新增货品失败</string>
+  <string name="same_good">该货品对应的款号与品牌已存在，请重新输入</string>
 
   <!-- toast -->
   <string name="refresh_top">己到达第一页，无需刷新</string>
@@ -331,6 +369,16 @@
   <string name="firm_balance">上欠</string>
   <string name="firm_accBalance">累欠</string>
   <string name="cost_on_stock">费用</string>
+
+  <string name="please_input_style_number">请输入2－15位款号</string>
+  <string name="please_input_brand">请输入品名</string>
+  <string name="please_input_type">请输入类别</string>
+  <string name="please_select_firm">请选择厂商</string>
+  <string name="please_input_orgPrice">请输入原价，默认为0</string>
+  <string name="please_input_pkgPrice">请输入批发价，默认为0</string>
+  <string name="please_input_tagPrice">请输入吊牌价，默认为0</string>
+  <string name="no_color_no_select">没有颜色不需要选择</string>
+  <string name="no_size_no_select">没有尺码不需要选择</string>
 
   <!-- button -->
   <string name="add">新增</string>

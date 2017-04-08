@@ -480,6 +480,17 @@ public class Profile {
         }
     }
 
+    public final DiabloSizeGroup getSizeGroup(Integer groupId) {
+        DiabloSizeGroup find = null;
+        for (DiabloSizeGroup group: mSizeGroups) {
+            if (group.getGroupId().equals(groupId)) {
+                find = group;
+            }
+        }
+
+        return find;
+    }
+
     public ArrayList<String> genSortedSizeNamesByGroups(String sizeGroups){
         ArrayList<String> sizes = new ArrayList<>();
         String [] groups = sizeGroups.split(DiabloEnum.SIZE_SEPARATOR);
@@ -523,7 +534,7 @@ public class Profile {
     }
 
     public void addMatchStock(MatchStock stock) {
-        if ( null != getMatchStock(stock.getStyleNumber(), stock.getBrandId()) ) {
+        if ( null == getMatchStock(stock.getStyleNumber(), stock.getBrandId()) ) {
             mMatchStocks.add(stock);
         }
     }
@@ -533,6 +544,10 @@ public class Profile {
      */
     public void  setBrands(List<DiabloBrand> brands) {
         this.mBrands = new ArrayList<>(brands);
+    }
+
+    public List<DiabloBrand> getBrands() {
+        return mBrands;
     }
 
     public DiabloBrand getBrand(Integer brandId) {
@@ -552,6 +567,10 @@ public class Profile {
      */
     public void setDiabloTypes(List<DiabloType> types) {
         this.mDiabloTypes = new ArrayList<>(types);
+    }
+
+    public List<DiabloType> getDiabloTypes() {
+        return mDiabloTypes;
     }
 
     public DiabloType getDiabloType(Integer typeId) {
@@ -594,6 +613,12 @@ public class Profile {
      */
     public void setMatchGoods(List<MatchGood> goods) {
         this.mMatchGoods = new ArrayList<>(goods);
+    }
+
+    public void addMatchGood(MatchGood good) {
+        if (null == getMatchGood(good.getStyleNumber(), good.getBrandId())) {
+            mMatchGoods.add(good);
+        }
     }
 
     public List<MatchGood> getMatchGoods() {

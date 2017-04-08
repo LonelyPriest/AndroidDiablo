@@ -23,8 +23,8 @@ import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.request.sale.NewSaleRequest;
-import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.response.PrintResponse;
+import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 
 import java.text.DateFormat;
@@ -164,6 +164,71 @@ public class DiabloUtils {
         calendar.add(Calendar.DATE, 1);
         // DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
         return mDateFormat.format(calendar.getTime()).trim();
+    }
+
+    public Integer currentYear() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.YEAR);
+    }
+
+    public Integer currentMonth() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.MONTH);
+    }
+
+    /**
+     *
+     * @param month 0 based
+     * @return 0 based
+     */
+    public Integer getSeasonByMonth(Integer month) {
+        Integer season = DiabloEnum.INVALID_INDEX;
+        switch (month) {
+            case 0:
+                season = 0;
+                break;
+            case 1:
+                season = 0;
+                break;
+            case 2:
+                season = 0;
+                break;
+
+            case 3:
+                season = 1;
+                break;
+            case 4:
+                season = 1;
+                break;
+            case 5:
+                season = 1;
+                break;
+
+            case 6:
+                season = 2;
+                break;
+            case 7:
+                season = 2;
+                break;
+            case 8:
+                season = 2;
+                break;
+
+            case 9:
+                season = 3;
+                break;
+            case 10:
+                season = 3;
+                break;
+            case 11:
+                season = 3;
+                break;
+
+            default:
+                break;
+        }
+
+        return season;
     }
 
     public String currentDatetime(){

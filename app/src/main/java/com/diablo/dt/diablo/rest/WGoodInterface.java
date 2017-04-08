@@ -6,6 +6,8 @@ import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.request.MatchGoodRequest;
+import com.diablo.dt.diablo.request.inventory.InventoryNewRequest;
+import com.diablo.dt.diablo.response.inventory.InventoryNewResponse;
 
 import java.util.List;
 
@@ -34,4 +36,7 @@ public interface WGoodInterface {
 
     @POST("match_all_w_good")
     Call<List<MatchGood>> matchAllGood(@Header("cookie") String token, @Body MatchGoodRequest request);
+
+    @POST("new_w_good")
+    Call<InventoryNewResponse> addGood(@Header("cookie") String token, @Body InventoryNewRequest request);
 }

@@ -5,34 +5,34 @@ import android.os.AsyncTask;
 import android.widget.AutoCompleteTextView;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.FirmAdapter;
-import com.diablo.dt.diablo.entity.Firm;
+import com.diablo.dt.diablo.adapter.MatchGoodTypeAdapter;
+import com.diablo.dt.diablo.entity.DiabloType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by buxianhui on 17/4/4.
+ * Created by buxianhui on 17/4/8.
  */
 
-public class MatchFirmTask extends AsyncTask<String, Void, Void> {
+public class MatchGoodTypeTask extends AsyncTask<String, Void, Void> {
     private Context mContext;
     private AutoCompleteTextView mCompleteView;
-    private List<Firm> mOriginFirms;
-    private List<Firm> mMatchedFirms = new ArrayList<>();
+    private List<DiabloType> mOriginGoodTypes;
+    private List<DiabloType> mMatchedGoodTypes = new ArrayList<>();
 
-    public MatchFirmTask(Context context, AutoCompleteTextView view, List<Firm> firms){
+    public MatchGoodTypeTask(Context context, AutoCompleteTextView view, List<DiabloType> types){
         this.mContext = context;
         this.mCompleteView = view;
-        this.mOriginFirms = firms;
+        this.mOriginGoodTypes = types;
     }
 
     @Override
     protected Void doInBackground(String... params) {
-        mMatchedFirms.clear();
-        for (Firm firm : mOriginFirms){
-            if (firm.getName().contains(params[0])) {
-                mMatchedFirms.add(firm);
+        mMatchedGoodTypes.clear();
+        for (DiabloType type : mOriginGoodTypes){
+            if (type.getName().contains(params[0])) {
+                mMatchedGoodTypes.add(type);
             }
         }
         return null;
@@ -41,21 +41,20 @@ public class MatchFirmTask extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        FirmAdapter adapter = new FirmAdapter(
+        MatchGoodTypeAdapter adapter = new MatchGoodTypeAdapter(
             mContext,
             R.layout.typeahead_firm,
             R.id.typeahead_select_firm,
-            mMatchedFirms);
+            mMatchedGoodTypes);
 
         mCompleteView.setAdapter(adapter);
         mCompleteView.setThreshold(1);
 
-        if (null != mMatchedFirms && mMatchedFirms.size() > 0) {
+        if (null != mMatchedGoodTypes && mMatchedGoodTypes.size() > 0) {
             mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
             mCompleteView.setDropDownVerticalOffset(-90);
         }
 
         adapter.notifyDataSetChanged();
     }
-
 }
