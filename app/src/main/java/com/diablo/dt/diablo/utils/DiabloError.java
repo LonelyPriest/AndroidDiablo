@@ -34,6 +34,7 @@ public class DiabloError {
         mErrors.put(598, r.getString(R.string.authen_error));
         mErrors.put(1101, r.getString(R.string.invalid_name_password));
         mErrors.put(1199, r.getString(R.string.network_unreachable));
+        mErrors.put(9001, r.getString(R.string.database_error));
 
         mErrors.put(2699, r.getString(R.string.update_same));
         mErrors.put(2703, r.getString(R.string.error_style_number));
@@ -50,6 +51,12 @@ public class DiabloError {
         mErrors.put(2421, r.getString(R.string.rg_print_wrong_state));
         mErrors.put(2422, r.getString(R.string.rg_print_wrong_printer_conn));
         mErrors.put(2423, r.getString(R.string.rg_print_lack_size));
+
+        /**
+         * firm
+         */
+        mErrors.put(1601, r.getString(R.string.firm_exist));
+
 
     }
 

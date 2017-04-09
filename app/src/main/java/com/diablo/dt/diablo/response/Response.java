@@ -14,7 +14,7 @@ public class Response {
 
     public Response(){
 
-    };
+    }
 
     public Integer getCode() {
         return code;

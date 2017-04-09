@@ -337,9 +337,10 @@ public class SaleDetail extends Fragment {
                 List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
                 Integer orderId = mRequest.getPageStartIndex();
                 // mSaleDetailTable.removeAllViews();
+                TableRow row = null;
                 mSaleDetailTable.removeAllViews();
                 for (Integer i=0; i<details.size(); i++){
-                    TableRow row = new TableRow(getContext());
+                    row = new TableRow(getContext());
                     // TableRow row = new TableRow(mContext);
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
@@ -492,10 +493,14 @@ public class SaleDetail extends Fragment {
                     mSaleDetailTable.addView(row);
                 }
 
+                if (null != row) {
+                    row.setBackgroundResource(R.drawable.table_row_last_bg);
+                }
+
                 if (0 < mTotalPage ) {
-                    TableRow row = new TableRow(getContext());
+                    row = new TableRow(getContext());
                     TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-                    addCell(row, mStatistic, lp);
+                    UTILS.formatTableStatistic(addCell(row, mStatistic, lp));
 
                     String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
                         + getResources().getString(R.string.page)
@@ -503,7 +508,7 @@ public class SaleDetail extends Fragment {
                         + getResources().getString(R.string.total_page) + mTotalPage.toString()
                         + getResources().getString(R.string.page);
 
-                    addCell(row, pageInfo, lp);
+                    UTILS.formatPageInfo(addCell(row, pageInfo, lp));
                     mSaleDetailTable.addView(row);
                 }
             }

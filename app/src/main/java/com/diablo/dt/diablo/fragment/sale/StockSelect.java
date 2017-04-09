@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.util.Log;
@@ -93,8 +94,11 @@ public class StockSelect extends Fragment {
         View view = inflater.inflate(R.layout.fragment_stock_select, container, false);
         mViewTable = (TableLayout) view.findViewById(R.id.stock_select);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.select_stock));
-
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(getResources().getString(R.string.select_stock));
+        }
+        
         init();
         return view;
     }

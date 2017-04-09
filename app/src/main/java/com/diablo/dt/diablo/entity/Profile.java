@@ -397,7 +397,7 @@ public class Profile {
         return retailer;
     }
 
-    public void appendRetailer(Retailer retailer) {
+    public void addRetailer(Retailer retailer) {
         mRetailers.add(0, retailer);
     }
 
@@ -535,7 +535,7 @@ public class Profile {
 
     public void addMatchStock(MatchStock stock) {
         if ( null == getMatchStock(stock.getStyleNumber(), stock.getBrandId()) ) {
-            mMatchStocks.add(stock);
+            mMatchStocks.add(0, stock);
         }
     }
 
@@ -544,6 +544,12 @@ public class Profile {
      */
     public void  setBrands(List<DiabloBrand> brands) {
         this.mBrands = new ArrayList<>(brands);
+    }
+
+    public void addBrand(DiabloBrand brand) {
+        if (null == getBrand(brand.getId())) {
+            this.mBrands.add(0, brand);
+        }
     }
 
     public List<DiabloBrand> getBrands() {
@@ -569,6 +575,12 @@ public class Profile {
         this.mDiabloTypes = new ArrayList<>(types);
     }
 
+    public void addDiabloType(DiabloType type) {
+        if (null == getDiabloType(type.getId())) {
+            this.mDiabloTypes.add(0, type);
+        }
+    }
+
     public List<DiabloType> getDiabloTypes() {
         return mDiabloTypes;
     }
@@ -590,6 +602,12 @@ public class Profile {
      */
     public void setFirms(List<Firm> firms) {
         this.mFirms = new ArrayList<>(firms);
+    }
+
+    public void addFirm(Firm firm) {
+        if (null == getFirm(firm.getId())){
+            this.mFirms.add(0, firm);
+        }
     }
 
     public List<Firm> getFirms() {
@@ -617,7 +635,7 @@ public class Profile {
 
     public void addMatchGood(MatchGood good) {
         if (null == getMatchGood(good.getStyleNumber(), good.getBrandId())) {
-            mMatchGoods.add(good);
+            mMatchGoods.add(0, good);
         }
     }
 

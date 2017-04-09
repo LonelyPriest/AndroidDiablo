@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
+import com.diablo.dt.diablo.fragment.inventory.GoodDetail;
 import com.diablo.dt.diablo.fragment.inventory.GoodNew;
 import com.diablo.dt.diablo.fragment.inventory.InventoryDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
@@ -85,6 +86,9 @@ public class SaleUtils {
                     break;
                 case DiabloEnum.TAG_INVENTORY_DETAIL:
                     f = new InventoryDetail();
+                    break;
+                case DiabloEnum.TAG_GOOD_DETAIL:
+                    f = new GoodDetail();
                     break;
                 case DiabloEnum.TAG_GOOD_NEW:
                     f = new GoodNew();

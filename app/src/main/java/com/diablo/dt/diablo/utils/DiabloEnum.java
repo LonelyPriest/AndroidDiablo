@@ -90,6 +90,7 @@ public class DiabloEnum {
 
     public static final String TAG_INVENTORY_DETAIL = "inventoryDetail";
     public static final String TAG_GOOD_NEW = "goodNew";
+    public static final String TAG_GOOD_DETAIL = "goodDetail";
 
     public static final String TAG_GOOD_SELECT = "goodSelect";
     public static final String TAG_STOCK_IN_UPDATE = "stockInUpdate";

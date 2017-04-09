@@ -219,8 +219,9 @@ public class StockNote extends Fragment {
                 Integer orderId = mRequest.getPageStartIndex();
                 // mSaleDetailTable.removeAllViews();
                 mSaleNoteTable.removeAllViews();
+                TableRow row = null;
                 for (Integer i=0; i<notes.size(); i++){
-                    TableRow row = new TableRow(getContext());
+                    row = new TableRow(getContext());
                     // TableRow row = new TableRow(mContext);
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
@@ -298,11 +299,15 @@ public class StockNote extends Fragment {
                     mSaleNoteTable.addView(row);
                 }
 
+                if (null != row) {
+                    row.setBackgroundResource(R.drawable.table_row_last_bg);
+                }
+
                 if (0 < mTotalPage ) {
-                    TableRow row = new TableRow(getContext());
+                    row = new TableRow(getContext());
                     TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-                    addCell(row, mStatistic, lp);
-                    addCell(row, mPagination, lp);
+                    UTILS.formatTableStatistic(addCell(row, mStatistic, lp));
+                    UTILS.formatPageInfo(addCell(row, mPagination, lp));
                     mSaleNoteTable.addView(row);
                 }
             }

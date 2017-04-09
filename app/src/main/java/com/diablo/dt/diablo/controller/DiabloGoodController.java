@@ -40,6 +40,9 @@ public class DiabloGoodController {
     private AdapterView.OnItemSelectedListener mOnYearSelectedListener;
     private AdapterView.OnItemSelectedListener mOnSeasonSelectedListener;
 
+    // style number
+    private DiabloTextWatcher mOnStyleNumberWatcher;
+
     // firm
     private AutoCompleteTextChangeListener  mOnAutoCompletedFirmListener;
     private AdapterView.OnItemClickListener mOnFirmClickListener;
@@ -93,9 +96,33 @@ public class DiabloGoodController {
         return mGoodCalc;
     }
 
-    public void requestFocusOfStyleNumber() {
+    private void requestFocusOfStyleNumber() {
         mGoodCalcView.getStyleNumber().requestFocus();
         // mGoodCalcView.getStyleNumber().setSelected(true);
+    }
+
+    public void clearFocusOfFirm() {
+        mGoodCalcView.getFirm().clearFocus();
+    }
+
+    public void requestFocusOfFirm() {
+        mGoodCalcView.getFirm().requestFocus();
+    }
+
+    public void clearFocusOfBrand() {
+        mGoodCalcView.getBrand().clearFocus();
+    }
+
+    public void requestFocusOfBrand() {
+        mGoodCalcView.getBrand().requestFocus();
+    }
+
+    public void clearFocusOfType() {
+        mGoodCalcView.getGoodType().clearFocus();
+    }
+
+    public void requestFocusOfType() {
+        mGoodCalcView.getGoodType().requestFocus();
     }
 
     public void reset() {
@@ -114,25 +141,13 @@ public class DiabloGoodController {
             ((Spinner)mGoodCalcView.getSeason()).setOnItemSelectedListener(null);
         }
 
-        if (null != mOnAutoCompletedFirmListener) {
-            mOnAutoCompletedFirmListener.removeListen();
-            if (null != mOnFirmClickListener) {
-                ((AutoCompleteTextView) mGoodCalcView.getFirm()).setOnItemClickListener(null);
-            }
-        }
+        removeFirmWatcher();
+        removeBrandWatcher();
+        removeGoodTypeWatcher();
 
-        if (null != mOnAutoCompletedBrandListener) {
-            mOnAutoCompletedBrandListener.removeListen();
-            if (null != mOnBrandClickListener) {
-                ((AutoCompleteTextView) mGoodCalcView.getBrand()).setOnItemClickListener(null);
-            }
-        }
 
-        if (null != mOnAutoCompletedGoodTypeListener) {
-            mOnAutoCompletedGoodTypeListener.removeListen();
-            if (null != mOnGoodTypeClickListener) {
-                ((AutoCompleteTextView) mGoodCalcView.getGoodType()).setOnItemClickListener(null);
-            }
+        if (null != mOnStyleNumberWatcher) {
+            ((EditText)mGoodCalcView.getStyleNumber()).removeTextChangedListener(mOnStyleNumberWatcher);
         }
 
         /**
@@ -141,6 +156,33 @@ public class DiabloGoodController {
         mGoodCalcView.reset();
     }
 
+
+    public void removeFirmWatcher() {
+        if (null != mOnAutoCompletedFirmListener) {
+            mOnAutoCompletedFirmListener.removeListen();
+            if (null != mOnFirmClickListener) {
+                ((AutoCompleteTextView) mGoodCalcView.getFirm()).setOnItemClickListener(null);
+            }
+        }
+    }
+
+    public void removeBrandWatcher() {
+        if (null != mOnAutoCompletedBrandListener) {
+            mOnAutoCompletedBrandListener.removeListen();
+            if (null != mOnBrandClickListener) {
+                ((AutoCompleteTextView) mGoodCalcView.getBrand()).setOnItemClickListener(null);
+            }
+        }
+    }
+
+    public void removeGoodTypeWatcher() {
+        if (null != mOnAutoCompletedGoodTypeListener) {
+            mOnAutoCompletedGoodTypeListener.removeListen();
+            if (null != mOnGoodTypeClickListener) {
+                ((AutoCompleteTextView) mGoodCalcView.getGoodType()).setOnItemClickListener(null);
+            }
+        }
+    }
 
     public void setFirmWatcher(final Context context, final List<Firm> firms, final Firm selectFirm) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getFirm();
@@ -180,7 +222,9 @@ public class DiabloGoodController {
         f.setOnItemClickListener(mOnFirmClickListener);
     }
 
-    public void setBrandWatcher(final Context context, final List<DiabloBrand> brands, final  DiabloBrand selectBrand) {
+    public void setBrandWatcher(final Context context,
+                                final List<DiabloBrand> brands,
+                                final  DiabloBrand selectBrand) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getBrand();
 
         if (null != selectBrand) {
@@ -233,10 +277,20 @@ public class DiabloGoodController {
         f.setOnItemClickListener(mOnBrandClickListener);
     }
 
-    public void setGoodTypeWatcher(final Context context, final List<DiabloType> goodTypes) {
+    public void setGoodTypeWatcher(final Context context,
+                                   final List<DiabloType> goodTypes,
+                                   final  DiabloType selectGoodType) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getGoodType();
-        mOnAutoCompletedGoodTypeListener = new AutoCompleteTextChangeListener(f);
 
+        if (null != selectGoodType) {
+            f.setText(selectGoodType.getName());
+            mGoodCalc.setGoodType(selectGoodType);
+
+            mIsValidGoodType = true;
+            checkValidAction();
+        }
+
+        mOnAutoCompletedGoodTypeListener = new AutoCompleteTextChangeListener(f);
         mOnAutoCompletedGoodTypeListener.addListen(new AutoCompleteTextChangeListener.TextWatch() {
             @Override
             public void afterTextChanged(String s) {
@@ -386,7 +440,7 @@ public class DiabloGoodController {
             requestFocusOfStyleNumber();
         }
 
-        view.addTextChangedListener(new DiabloTextWatcher() {
+        mOnStyleNumberWatcher = new DiabloTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 String styleNumber = editable.toString().trim();
@@ -420,7 +474,9 @@ public class DiabloGoodController {
                     }
                 }
             }
-        });
+        };
+
+        view.addTextChangedListener(mOnStyleNumberWatcher);
     }
 
     public void setValidateWatcherOfPrice(final Context context, final View view) {

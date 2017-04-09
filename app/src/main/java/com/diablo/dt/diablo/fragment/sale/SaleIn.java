@@ -61,6 +61,7 @@ import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.model.sale.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.model.sale.DiabloSaleRow;
+import com.diablo.dt.diablo.utils.DiabloPattern;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloSaleCalcView;
@@ -77,13 +78,6 @@ public class SaleIn extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String LOG_TAG = "SaleIn:";
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-
     private StockSelect.OnNoFreeStockSelectListener mNoFreeStockListener;
 
     private Integer mBackFrom;
@@ -131,8 +125,6 @@ public class SaleIn extends Fragment{
     public static SaleIn newInstance(String param1, String param2) {
         SaleIn fragment = new SaleIn();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -272,13 +264,15 @@ public class SaleIn extends Fragment{
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
 
         // (EditText) addRetailerDialog.findViewById(R.id.retailer_phone);
-        ((EditText) view.findViewById(R.id.retailer_name)).addTextChangedListener(new DiabloTextWatcher() {
+        final EditText editTextName = ((EditText) view.findViewById(R.id.retailer_name));
+        editTextName.addTextChangedListener(new DiabloTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().trim().length() < 2) {
+                if (!DiabloPattern.isValidRetailer(editable.toString().trim())) {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
-                    // utils.makeToast(getContext(), "名字必须不小于2个字符", Toast.LENGTH_SHORT);
-                } else {
+                    editTextName.setError(getString(R.string.invalid_retailer));
+                }
+                else {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
                 }
             }

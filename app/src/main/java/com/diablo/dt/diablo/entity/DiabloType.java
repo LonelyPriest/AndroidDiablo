@@ -2,6 +2,22 @@ package com.diablo.dt.diablo.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.client.WGoodClient;
+import com.diablo.dt.diablo.response.inventory.AddFirmResponse;
+import com.diablo.dt.diablo.rest.WGoodInterface;
+import com.diablo.dt.diablo.utils.DiabloAlertDialog;
+import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
+import com.diablo.dt.diablo.utils.DiabloUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by buxianhui on 17/3/29.
  */
@@ -13,7 +29,13 @@ public class DiabloType {
     private String name;
 
     public DiabloType() {
+        id = DiabloEnum.INVALID_INDEX;
+        name = DiabloEnum.EMPTY_STRING;
+    }
 
+    public DiabloType(String name) {
+        id = DiabloEnum.INVALID_INDEX;
+        this.name = name;
     }
 
     public Integer getId() {
@@ -30,5 +52,51 @@ public class DiabloType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void addGoodType(final Context context, final OnGoodTypeAddListener listener) {
+        final WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
+        Call<AddFirmResponse> call = face.addGoodType(Profile.instance().getToken(), this);
+
+        call.enqueue(new Callback<AddFirmResponse>() {
+            @Override
+            public void onResponse(Call<AddFirmResponse> call, Response<AddFirmResponse> response) {
+                // mButtons.get(R.id.sale_out_save).enable();
+
+                final AddFirmResponse res = response.body();
+                if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
+                    DiabloUtils.instance().makeToast(
+                        context,
+                        context.getResources().getString(R.string.success_to_add_good_type),
+                        Toast.LENGTH_LONG);
+
+                    DiabloType goodType = DiabloType.this;
+                    goodType.id = res.getInsertId();
+
+                    Profile.instance().addDiabloType(goodType);
+                    listener.afterAdd(goodType);
+
+                } else {
+                    Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
+                    String extraMessage = res == null ? "" : res.getError();
+                    new DiabloAlertDialog(
+                        context,
+                        context.getResources().getString(R.string.title_add_firm),
+                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddFirmResponse> call, Throwable t) {
+                new DiabloAlertDialog(
+                    context,
+                    context.getResources().getString(R.string.title_add_firm),
+                    DiabloError.getInstance().getError(99)).create();
+            }
+        });
+    }
+
+    public interface OnGoodTypeAddListener {
+        void afterAdd(DiabloType addedType);
     }
 }

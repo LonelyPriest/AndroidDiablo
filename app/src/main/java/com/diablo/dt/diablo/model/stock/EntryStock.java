@@ -161,7 +161,7 @@ public class EntryStock {
 
         brandId = stock.getBrandId();
         firmId  = stock.getFirmId();
-        typeId  = stock.getFirmId();
+        typeId  = stock.getTypeId();
 
         sex    = stock.getSex();
         year   = stock.getYear();

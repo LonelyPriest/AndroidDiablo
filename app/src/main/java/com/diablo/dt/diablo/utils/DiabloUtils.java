@@ -4,11 +4,14 @@ import static java.lang.String.format;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -324,6 +327,27 @@ public class DiabloUtils {
     public void makeToast(Context context, Float value, int lengthLong) {
         Toast toast = Toast.makeText(context, toString(value), lengthLong);
         toast.show();
+    }
+
+    public void setErrorInfo(Context context, Integer titleId, Integer errorCode) {
+        new DiabloAlertDialog(
+            context,
+            context.getResources().getString(titleId),
+            DiabloError.getInstance().getError(errorCode)).create();
+    }
+
+    public void formatPageInfo(final TextView cell) {
+        cell.setGravity(Gravity.END);
+        cell.setTextColor(Color.BLACK);
+        cell.setTypeface(null, Typeface.BOLD);
+        cell.setTextSize(20);
+    }
+
+    public void formatTableStatistic(final TextView cell) {
+        cell.setGravity(Gravity.START);
+        cell.setTextColor(Color.BLACK);
+        cell.setTypeface(null, Typeface.BOLD);
+        cell.setTextSize(20);
     }
 
     public interface Payment{

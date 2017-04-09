@@ -79,11 +79,13 @@
                 android:textColor="@color/bpblack"
                 android:textStyle="bold"/>
 
-      <ImageButton android:layout_width="0dp"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="0.1"
-                   android:src="@drawable/ic_add_black_24dp"
-                   android:contentDescription="@string/brand"/>
+      <ImageButton
+          android:id="@+id/btn_add_brand"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.1"
+          android:src="@drawable/ic_add_black_24dp"
+          android:contentDescription="@string/brand"/>
 
       <TextView android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -117,16 +119,18 @@
                 android:layout_height="wrap_content"
                 android:inputType="textNoSuggestions"
                 android:hint="@string/please_input_type"
-                android:layout_weight="0.7"
+                android:layout_weight="0.6"
                 android:textSize="@dimen/ampm_label_size"
                 android:textColor="@color/bpblack"
                 android:textStyle="bold"/>
 
-      <ImageButton android:layout_width="0dp"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="0.1"
-                   android:src="@drawable/ic_add_black_24dp"
-                   android:contentDescription="@string/good_type"/>
+      <ImageButton
+          android:id="@+id/btn_add_good_type"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.1"
+          android:src="@drawable/ic_add_black_24dp"
+          android:contentDescription="@string/good_type"/>
       <TextView android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"/>
@@ -164,11 +168,13 @@
                 android:textColor="@color/bpblack"
                 android:textStyle="bold"/>
 
-      <ImageButton android:layout_width="0dp"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="0.1"
-                   android:src="@drawable/ic_add_black_24dp"
-                   android:contentDescription="@string/firm"/>
+      <ImageButton
+          android:id="@+id/btn_add_firm"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.1"
+          android:src="@drawable/ic_add_black_24dp"
+          android:contentDescription="@string/firm"/>
       <TextView android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"/>

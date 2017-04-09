@@ -20,7 +20,7 @@ import com.diablo.dt.diablo.client.RetailerClient;
 import com.diablo.dt.diablo.client.RightClient;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.client.WLoginClient;
-import com.diablo.dt.diablo.client.WgoodClient;
+import com.diablo.dt.diablo.client.WGoodClient;
 import com.diablo.dt.diablo.entity.BaseSetting;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
@@ -270,7 +270,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getColor(){
-        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloColor>> call = face.listColor(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloColor>>() {
             @Override
@@ -292,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getSizeGroup(){
-        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloSizeGroup>> call = face.listSizeGroup(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloSizeGroup>>() {
             @Override
@@ -343,7 +343,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getBrand(){
-        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloBrand>> call = face.listBrand(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloBrand>>() {
             @Override
@@ -365,7 +365,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getType(){
-        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloType>> call = face.listType(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloType>>() {
             @Override
@@ -409,7 +409,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getAllMatchGood(){
-        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<MatchGood>> call = face.matchAllGood(
             Profile.instance().getToken(),
             new MatchGoodRequest(

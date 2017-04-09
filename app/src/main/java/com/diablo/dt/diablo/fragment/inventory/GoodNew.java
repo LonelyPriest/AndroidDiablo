@@ -1,9 +1,12 @@
 package com.diablo.dt.diablo.fragment.inventory;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,22 +14,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.client.WgoodClient;
+import com.diablo.dt.diablo.client.WGoodClient;
 import com.diablo.dt.diablo.controller.DiabloGoodController;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloButton;
+import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.inventory.GoodCalc;
+import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.inventory.InventoryNewRequest;
 import com.diablo.dt.diablo.response.inventory.InventoryNewResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
+import com.diablo.dt.diablo.utils.DiabloPattern;
+import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloGoodCalcView;
 
@@ -40,6 +48,10 @@ public class GoodNew extends Fragment {
     private String [] mSexes;
     private String [] mYears;
     private String [] mSeasons;
+
+    private View mBtnAddFirm;
+    private View mBtnAddBrand;
+    private View mBtnAddType;
 
     private SparseArray<DiabloButton> mButtons;
 
@@ -76,13 +88,37 @@ public class GoodNew extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_good_new, container, false);
+        final View view = inflater.inflate(R.layout.fragment_good_new, container, false);
 
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
+
+        mBtnAddFirm = view.findViewById(R.id.btn_add_firm);
+        mBtnAddFirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFirm(inflater, view);
+            }
+        });
+
+        mBtnAddBrand = view.findViewById(R.id.btn_add_brand);
+        mBtnAddBrand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addBrand(inflater, view);
+            }
+        });
+
+        mBtnAddType = view.findViewById(R.id.btn_add_good_type);
+        mBtnAddType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addType(inflater, view);
+            }
+        });
 
         mButtons = new SparseArray<>();
         mButtons.put(R.id.good_new_save, new DiabloButton(getContext(), R.id.good_new_save));
@@ -92,6 +128,163 @@ public class GoodNew extends Fragment {
 
         return view;
     }
+
+    private void addFirm(LayoutInflater inflater, View parent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        final View view = inflater.inflate(
+            R.layout.shortcut_create_firm, (ViewGroup) parent.findViewById(R.id.shortcut_create_firm));
+
+        final AlertDialog dialog = builder.setView(view)
+            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    String name = ((EditText) view.findViewById(R.id.firm_name)).getText().toString().trim();
+
+                    final Firm firm = new Firm(name);
+                    firm.addFirm(getContext(), new Firm.OnFirmAddListener() {
+                        @Override
+                        public void afterAdd(Firm addedFirm) {
+                            mGoodController.clearFocusOfFirm();
+                            mGoodController.removeFirmWatcher();
+                            mGoodController.setFirmWatcher(
+                                getContext(), Profile.instance().getFirms(), addedFirm);
+                            mGoodController.requestFocusOfFirm();
+                        }
+                    });
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                }
+            }).create();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+
+        final EditText editTextFirm = (EditText) view.findViewById(R.id.firm_name);
+        editTextFirm.addTextChangedListener(new DiabloTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String name = editable.toString().trim();
+                if (!DiabloPattern.isValidFirm(name)) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+                    editTextFirm.setError(getString(R.string.invalid_firm));
+                }
+                else {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+                }
+            }
+        });
+    }
+
+    private void addBrand(LayoutInflater inflater, View parent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        final View view = inflater.inflate(
+            R.layout.shortcut_create_brand, (ViewGroup) parent.findViewById(R.id.shortcut_create_brand));
+
+        final AlertDialog dialog = builder.setView(view)
+            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    String name = ((EditText) view.findViewById(R.id.brand_name)).getText().toString().trim();
+
+                    final DiabloBrand brand = new DiabloBrand(name);
+                    brand.addBrand(getContext(), new DiabloBrand.OnBrandAddListener() {
+                        @Override
+                        public void afterAdd(DiabloBrand addedBrand) {
+                            mGoodController.clearFocusOfBrand();
+                            mGoodController.removeBrandWatcher();
+                            mGoodController.setBrandWatcher(
+                                getContext(), Profile.instance().getBrands(), addedBrand);
+                            mGoodController.requestFocusOfBrand();
+                        }
+                    });
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                }
+            }).create();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+
+        final EditText editTextFirm = (EditText) view.findViewById(R.id.brand_name);
+        editTextFirm.addTextChangedListener(new DiabloTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String name = editable.toString().trim();
+                if (!DiabloPattern.isValidBrand(name)) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+                    editTextFirm.setError(getString(R.string.invalid_brand));
+                }
+                else {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+                }
+            }
+        });
+    }
+
+    private void addType(LayoutInflater inflater, View parent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        final View view = inflater.inflate(
+            R.layout.shortcut_create_good_type, (ViewGroup) parent.findViewById(R.id.shortcut_create_good_type));
+
+        final AlertDialog dialog = builder.setView(view)
+            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    String name = ((EditText) view.findViewById(R.id.good_type_name)).getText().toString().trim();
+
+                    final DiabloType goodType = new DiabloType(name);
+                    goodType.addGoodType(getContext(), new DiabloType.OnGoodTypeAddListener() {
+                        @Override
+                        public void afterAdd(DiabloType addedType) {
+                            mGoodController.clearFocusOfType();
+                            mGoodController.removeGoodTypeWatcher();
+                            mGoodController.setGoodTypeWatcher(
+                                getContext(), Profile.instance().getDiabloTypes(), goodType);
+                            mGoodController.requestFocusOfType();
+                        }
+                    });
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                }
+            }).create();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+
+        final EditText editTextFirm = (EditText) view.findViewById(R.id.good_type_name);
+        editTextFirm.addTextChangedListener(new DiabloTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String name = editable.toString().trim();
+                if (!DiabloPattern.isValidGoodType(name)) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+                    editTextFirm.setError(getString(R.string.invalid_good_type));
+                }
+                else {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+                }
+            }
+        });
+    }
+
 
     private void initView(View view) {
         mGoodCalcView = new DiabloGoodCalcView();
@@ -117,12 +310,14 @@ public class GoodNew extends Fragment {
     private void init() {
         DiabloBrand lastSelectBrand = null;
         Firm lastSelectFirm = null;
+        DiabloType lastSelectGoodType = null;
         String lastStyleNumber = null;
 
         if (null != mGoodController) {
             lastStyleNumber = mGoodController.getModel().getStyleNumber();
             lastSelectBrand = mGoodController.getModel().getBrand();
             lastSelectFirm = mGoodController.getModel().getFirm();
+            lastSelectGoodType = mGoodController.getModel().getGoodType();
 
             mGoodController.reset();
             mGoodController = null;
@@ -146,7 +341,7 @@ public class GoodNew extends Fragment {
         // brand
         mGoodController.setBrandWatcher(getContext(), Profile.instance().getBrands(), lastSelectBrand);
         // type
-        mGoodController.setGoodTypeWatcher(getContext(), Profile.instance().getDiabloTypes());
+        mGoodController.setGoodTypeWatcher(getContext(), Profile.instance().getDiabloTypes(), lastSelectGoodType);
 
         // price
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getOrgPrice());
@@ -213,6 +408,9 @@ public class GoodNew extends Fragment {
             case R.id.good_new_back:
                 // SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_DETAIL);
                 break;
+            case R.id.good_new_back_to_stock_in:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_IN);
+                break;
             case R.id.good_new_save:
                 startAdd();
                 break;
@@ -260,7 +458,7 @@ public class GoodNew extends Fragment {
     public void startRequest(final InventoryNewRequest request) {
         mButtons.get(R.id.good_new_save).disable();
 
-        WGoodInterface face = WgoodClient.getClient().create(WGoodInterface.class);
+        WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<InventoryNewResponse> call = face.addGood(Profile.instance().getToken(), request);
 
         call.enqueue(new Callback<InventoryNewResponse>() {

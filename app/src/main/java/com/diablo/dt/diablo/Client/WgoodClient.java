@@ -9,11 +9,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by buxianhui on 17/3/14.
  */
 
-public class WgoodClient {
+public class WGoodClient {
     private static Retrofit retrofit;
     private static final  String mUrl = "wgood/";
 
-    private WgoodClient(){
+    private WGoodClient(){
 
     }
 

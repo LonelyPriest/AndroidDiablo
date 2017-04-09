@@ -34,7 +34,8 @@ public class MatchAllGoodTask extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         mMatchedGoods.clear();
         for (MatchGood good : mMatchGoods){
-            if (good.getFirmId().equals(mStockCalc.getFirm()) && good.getName().toLowerCase().contains(params[0])) {
+            if (good.getFirmId().equals(mStockCalc.getFirm())
+                && good.getName().toUpperCase().contains(params[0].toUpperCase())) {
                 mMatchedGoods.add(good);
             }
         }

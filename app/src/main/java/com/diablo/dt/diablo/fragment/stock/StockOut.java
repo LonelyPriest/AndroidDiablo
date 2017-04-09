@@ -487,7 +487,7 @@ public class StockOut extends Fragment {
         dCalc.setComment(calc.getComment());
 
         dCalc.setBalance(calc.getBalance());
-        dCalc.setShouldPay(calc.getShouldPay());
+        dCalc.setShouldPay(-calc.getShouldPay());
         dCalc.setTotal(calc.getTotal());
 
         dCalc.setHasPay(calc.getHasPay());

@@ -7,6 +7,11 @@
         android:icon="@drawable/ic_arrow_back_black_24dp"
         app:showAsAction="ifRoom|withText" />
 
+  <item android:id="@+id/good_new_back_to_stock_in"
+        android:title="@string/btn_stock_in"
+        android:icon="@drawable/ic_add_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
   <item android:id="@+id/good_new_save"
         android:title="@string/btn_save"
         android:icon="@drawable/ic_file_download_black_24dp"

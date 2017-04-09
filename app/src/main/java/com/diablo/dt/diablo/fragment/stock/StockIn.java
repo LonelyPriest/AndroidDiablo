@@ -516,9 +516,6 @@ public class StockIn extends Fragment {
                     Firm firm = Profile.instance().getFirm(mStockCalcController.getFirm());
                     firm.setBalance(mStockCalcController.getStockCalc().calcAccBalance());
 
-                    // reset the controller
-                    init(mStockCalcController.getFirm());
-
                     // add stock to match
                     for (DiabloStockRowController controller: mStockTableController.getControllers()) {
                         if (0 == controller.getOrderId()) {
@@ -557,7 +554,14 @@ public class StockIn extends Fragment {
                         getContext(),
                         false,
                         getResources().getString(R.string.nav_stock_in),
-                        getContext().getString(R.string.stock_in_success) + res.getRsn()).create();
+                        getContext().getString(R.string.stock_in_success) + res.getRsn(),
+                        new DiabloAlertDialog.OnOkClickListener() {
+                            @Override
+                            public void onOk() {
+                                // reset the controller
+                                init(mStockCalcController.getFirm());
+                            }
+                        }).create();
                 }
                 else {
                     mButtons.get(R.id.stock_in_save).enable();

@@ -39,7 +39,8 @@ public class MatchAllStockOfFirmTask extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         mMatchedStocks.clear();
         for (MatchStock stock : mMatchStocks){
-            if (stock.getFirmId().equals(mStockCalc.getFirm()) && stock.getName().toLowerCase().contains(params[0])) {
+            if (stock.getFirmId().equals(mStockCalc.getFirm())
+                && stock.getName().toUpperCase().contains(params[0].toUpperCase())) {
                 mMatchedStocks.add(stock);
             }
         }
