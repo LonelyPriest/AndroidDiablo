@@ -1,7 +1,7 @@
 package com.diablo.dt.diablo.rest;
 
 import com.diablo.dt.diablo.entity.Firm;
-import com.diablo.dt.diablo.response.inventory.AddFirmResponse;
+import com.diablo.dt.diablo.response.good.AddFirmResponse;
 
 import java.util.List;
 

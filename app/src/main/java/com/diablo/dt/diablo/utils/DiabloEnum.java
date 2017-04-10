@@ -32,6 +32,8 @@ public class DiabloEnum {
 
     public static final String BUNDLE_PARAM_GOOD       = "GOOD";
     public static final String BUNDLE_PARAM_ID         = "ID";
+    public static final String BUNDLE_PARAM_IMMUTABLE_COLOR = "immutable_color";
+    public static final String BUNDLE_PARAM_IMMUTABLE_SIZE = "immutable_size";
 
     //shop
     public static final Integer SHOP_ONLY = 0;

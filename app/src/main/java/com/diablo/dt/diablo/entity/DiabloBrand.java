@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WGoodClient;
-import com.diablo.dt.diablo.response.inventory.AddFirmResponse;
+import com.diablo.dt.diablo.response.good.AddFirmResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -42,6 +42,13 @@ public class DiabloBrand {
         init();
     }
 
+    public DiabloBrand(DiabloBrand brand) {
+        this.id = brand.getId();
+        this.name = brand.getName();
+        this.firmId = brand.getFirmId();
+        this.firm = brand.getFirm();
+    }
+
     private void init() {
         id = 0;
         firmId = DiabloEnum.INVALID_INDEX;
@@ -52,12 +59,24 @@ public class DiabloBrand {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Integer getFirmId() {
         return firmId;
+    }
+
+    public void setFirmId(Integer firmId) {
+        this.firmId = firmId;
     }
 
     public String getFirm() {

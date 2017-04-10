@@ -7,11 +7,13 @@ import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.request.MatchGoodRequest;
-import com.diablo.dt.diablo.request.inventory.GoodDetailRequest;
-import com.diablo.dt.diablo.request.inventory.InventoryNewRequest;
-import com.diablo.dt.diablo.response.inventory.AddFirmResponse;
-import com.diablo.dt.diablo.response.inventory.GoodDetailResponse;
-import com.diablo.dt.diablo.response.inventory.InventoryNewResponse;
+import com.diablo.dt.diablo.request.good.GoodDetailRequest;
+import com.diablo.dt.diablo.request.good.GoodNewRequest;
+import com.diablo.dt.diablo.request.good.GoodUpdateRequest;
+import com.diablo.dt.diablo.response.Response;
+import com.diablo.dt.diablo.response.good.AddFirmResponse;
+import com.diablo.dt.diablo.response.good.GoodDetailResponse;
+import com.diablo.dt.diablo.response.good.InventoryNewResponse;
 
 import java.util.List;
 
@@ -20,6 +22,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by buxianhui on 17/3/14.
@@ -45,7 +48,7 @@ public interface WGoodInterface {
     Call<List<MatchGood>> matchAllGood(@Header("cookie") String token, @Body MatchGoodRequest request);
 
     @POST("new_w_good")
-    Call<InventoryNewResponse> addGood(@Header("cookie") String token, @Body InventoryNewRequest request);
+    Call<InventoryNewResponse> addGood(@Header("cookie") String token, @Body GoodNewRequest request);
 
     @POST("new_w_brand")
     Call<AddFirmResponse> addBrand(@Header("cookie") String token, @Body DiabloBrand brand);
@@ -55,4 +58,10 @@ public interface WGoodInterface {
 
     @POST("filter_w_good")
     Call<GoodDetailResponse> filterGood(@Header("cookie") String token, @Body GoodDetailRequest request);
+
+    @GET("get_w_good/{id}")
+    Call<MatchGood> getGood(@Header("cookie") String token, @Path("id") Integer goodId);
+
+    @POST("update_w_good")
+    Call<Response> updateGood(@Header("cookie") String token, @Body GoodUpdateRequest request);
 }

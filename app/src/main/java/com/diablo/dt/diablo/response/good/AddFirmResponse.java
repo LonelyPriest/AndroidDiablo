@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.response.inventory;
+package com.diablo.dt.diablo.response.good;
 
 import com.google.gson.annotations.SerializedName;
 

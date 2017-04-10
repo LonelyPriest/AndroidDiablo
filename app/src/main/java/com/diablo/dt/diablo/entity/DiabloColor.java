@@ -27,7 +27,7 @@ public class DiabloColor {
 
     public DiabloColor(){
         this.colorId = DiabloEnum.DIABLO_FREE_COLOR;
-    };
+    }
 
     public DiabloColor(Integer colorId){
         this.colorId = colorId;

@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              tools:context="com.diablo.dt.diablo.fragment.inventory.GoodUpdate">
+              tools:context="com.diablo.dt.diablo.fragment.good.GoodUpdate">
 
   <ScrollView android:layout_width="match_parent"
               android:layout_height="wrap_content">
@@ -382,7 +382,7 @@
                   android:textColor="@color/bpblack"
                   android:textStyle="bold"/>
 
-        <ImageButton android:id="@+id/good_select_color"
+        <ImageButton android:id="@+id/btn_select_color"
                      android:layout_width="0dp"
                      android:layout_height="wrap_content"
                      android:layout_weight="0.1"
@@ -421,7 +421,7 @@
                   android:textColor="@color/bpblack"
                   android:textStyle="bold"/>
 
-        <ImageButton android:id="@+id/good_select_size"
+        <ImageButton android:id="@+id/btn_select_size"
                      android:layout_width="0dp"
                      android:layout_height="wrap_content"
                      android:layout_weight="0.1"

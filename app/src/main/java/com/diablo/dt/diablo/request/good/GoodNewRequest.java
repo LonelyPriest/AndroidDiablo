@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.request.inventory;
+package com.diablo.dt.diablo.request.good;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -15,11 +15,11 @@ import java.util.List;
  * Created by buxianhui on 17/4/8.
  */
 
-public class InventoryNewRequest {
+public class GoodNewRequest {
     @SerializedName("good")
     private Inventory inventory;
 
-    public InventoryNewRequest(Inventory inv) {
+    public GoodNewRequest(Inventory inv) {
         this.inventory = inv;
     }
 

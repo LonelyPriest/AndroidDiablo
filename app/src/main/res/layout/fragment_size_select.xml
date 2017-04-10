@@ -3,7 +3,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      tools:context="com.diablo.dt.diablo.fragment.inventory.SizeSelect">
+      tools:context="com.diablo.dt.diablo.fragment.good.SizeSelect">
     <TableLayout
         android:id="@+id/t_size_select"
         android:layout_width="match_parent"

@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WGoodClient;
-import com.diablo.dt.diablo.response.inventory.AddFirmResponse;
+import com.diablo.dt.diablo.response.good.AddFirmResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -31,6 +31,11 @@ public class DiabloType {
     public DiabloType() {
         id = DiabloEnum.INVALID_INDEX;
         name = DiabloEnum.EMPTY_STRING;
+    }
+
+    public DiabloType(DiabloType type) {
+        this.id = type.getId();
+        this.name = type.getName();
     }
 
     public DiabloType(String name) {

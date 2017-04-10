@@ -46,13 +46,20 @@
             </menu>
         </item>
 
+
+
         <item android:title="@string/slide_inventory_manager">
             <menu>
                 <item
                     android:id="@+id/nav_inventory_detail"
                     android:icon="@drawable/ic_account_balance_black_24dp"
                     android:title="@string/nav_inventory_detail" />
+            </menu>
 
+        </item>
+
+        <item android:title="@string/slide_good_manager">
+            <menu>
                 <item
                     android:id="@+id/nav_good_detail"
                     android:icon="@drawable/ic_bubble_chart_black_24dp"

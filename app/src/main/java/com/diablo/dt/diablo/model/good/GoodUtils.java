@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.model.inventory;
+package com.diablo.dt.diablo.model.good;
 
 import com.google.gson.Gson;
 
@@ -13,9 +13,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.fragment.inventory.ColorSelect;
-import com.diablo.dt.diablo.fragment.inventory.SizeSelect;
+import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.entity.DiabloSizeGroup;
+import com.diablo.dt.diablo.fragment.good.ColorSelect;
+import com.diablo.dt.diablo.fragment.good.SizeSelect;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+
+import java.util.List;
 
 /**
  * Created by buxianhui on 17/4/10.
@@ -25,7 +29,8 @@ public class GoodUtils {
     public static void switchToColorSelectFrame(
         GoodCalc calc,
         Integer comeFrom,
-        Fragment from) {
+        Fragment from,
+        List<DiabloColor> immutableColors) {
 
         FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
         // find
@@ -35,11 +40,13 @@ public class GoodUtils {
             Bundle args = new Bundle();
             args.putInt(DiabloEnum.BUNDLE_PARAM_COME_FORM, comeFrom);
             args.putString(DiabloEnum.BUNDLE_PARAM_GOOD, new Gson().toJson(calc));
+            args.putString(DiabloEnum.BUNDLE_PARAM_IMMUTABLE_COLOR, new Gson().toJson(immutableColors));
             to = new ColorSelect();
             to.setArguments(args);
         } else {
             to.setComeFrom(comeFrom);
             to.setGoodCalc(new Gson().toJson(calc));
+            to.setImmutableColors(new Gson().toJson(immutableColors));
         }
 
         if (!to.isAdded()){
@@ -53,7 +60,8 @@ public class GoodUtils {
     public static void switchToSizeSelectFrame(
         GoodCalc calc,
         Integer comeFrom,
-        Fragment from) {
+        Fragment from,
+        List<DiabloSizeGroup> immutableGroups) {
 
         FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
         // find
@@ -63,11 +71,13 @@ public class GoodUtils {
             Bundle args = new Bundle();
             args.putInt(DiabloEnum.BUNDLE_PARAM_COME_FORM, comeFrom);
             args.putString(DiabloEnum.BUNDLE_PARAM_GOOD, new Gson().toJson(calc));
+            args.putString(DiabloEnum.BUNDLE_PARAM_IMMUTABLE_SIZE, new Gson().toJson(immutableGroups));
             to = new SizeSelect();
             to.setArguments(args);
         } else {
             to.setComeFrom(comeFrom);
             to.setGoodCalc(new Gson().toJson(calc));
+            to.setImmutableSizeGroups(new Gson().toJson(immutableGroups));
         }
 
         if (!to.isAdded()){

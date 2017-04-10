@@ -1,5 +1,7 @@
 package com.diablo.dt.diablo.entity;
 
+import static com.diablo.dt.diablo.R.string.good;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -659,6 +661,13 @@ public class Profile {
     public void addMatchGood(MatchGood good) {
         if (null == getMatchGood(good.getStyleNumber(), good.getBrandId())) {
             mMatchGoods.add(0, good);
+        }
+    }
+
+    public void removeMatchGood(String styleNumber, Integer brandId) {
+        MatchGood found = getMatchGood(styleNumber, brandId);
+        if (null != found) {
+            mMatchGoods.remove(found);
         }
     }
 

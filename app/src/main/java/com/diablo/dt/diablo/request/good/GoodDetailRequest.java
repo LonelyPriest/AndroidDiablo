@@ -1,27 +1,18 @@
-package com.diablo.dt.diablo.request.inventory;
+package com.diablo.dt.diablo.request.good;
 
 import com.google.gson.annotations.SerializedName;
 
 import com.diablo.dt.diablo.request.PageRequest;
-import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**
- * Created by buxianhui on 17/4/7.
+ * Created by buxianhui on 17/4/9.
  */
 
-public class InventoryDetailRequest extends PageRequest {
+public class GoodDetailRequest extends PageRequest {
     @SerializedName("fields")
     private Condition mCondition;
 
-    public InventoryDetailRequest(){
-        super();
-    }
-
-    public InventoryDetailRequest(Integer currentPage){
-        super(currentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-    }
-
-    public InventoryDetailRequest(Integer currentPage, Integer itemsPerPage){
+    public GoodDetailRequest(Integer currentPage, Integer itemsPerPage){
         super(currentPage, itemsPerPage);
     }
 

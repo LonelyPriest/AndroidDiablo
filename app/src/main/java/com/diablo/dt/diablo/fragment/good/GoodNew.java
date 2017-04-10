@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.fragment.inventory;
+package com.diablo.dt.diablo.fragment.good;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,11 +25,11 @@ import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.model.inventory.GoodCalc;
-import com.diablo.dt.diablo.model.inventory.GoodUtils;
+import com.diablo.dt.diablo.model.good.GoodCalc;
+import com.diablo.dt.diablo.model.good.GoodUtils;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
-import com.diablo.dt.diablo.request.inventory.InventoryNewRequest;
-import com.diablo.dt.diablo.response.inventory.InventoryNewResponse;
+import com.diablo.dt.diablo.request.good.GoodNewRequest;
+import com.diablo.dt.diablo.response.good.InventoryNewResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -76,14 +76,6 @@ public class GoodNew extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GoodNew.
-     */
     // TODO: Rename and change types and number of parameters
     public static GoodNew newInstance(String param1, String param2) {
         GoodNew fragment = new GoodNew();
@@ -94,10 +86,10 @@ public class GoodNew extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mSexes = getResources().getStringArray(R.array.sexes);
         mYears = getResources().getStringArray(R.array.years);
         mSeasons = getResources().getStringArray(R.array.seasons);
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -229,7 +221,10 @@ public class GoodNew extends Fragment {
                             mGoodController.clearFocusOfBrand();
                             mGoodController.removeBrandWatcher();
                             mGoodController.setBrandWatcher(
-                                getContext(), Profile.instance().getBrands(), addedBrand);
+                                getContext(),
+                                Profile.instance().getBrands(),
+                                addedBrand,
+                                null);
                             mGoodController.requestFocusOfBrand();
                         }
                     });
@@ -316,13 +311,21 @@ public class GoodNew extends Fragment {
 
     private void selectColor() {
         if (null != mGoodController) {
-            GoodUtils.switchToColorSelectFrame(mGoodController.getModel(), DiabloEnum.GOOD_NEW, this);
+            GoodUtils.switchToColorSelectFrame(
+                mGoodController.getModel(),
+                DiabloEnum.GOOD_NEW,
+                this,
+                null);
         }
     }
 
     private void selectSize() {
         if (null != mGoodController) {
-            GoodUtils.switchToSizeSelectFrame(mGoodController.getModel(), DiabloEnum.GOOD_NEW, this);
+            GoodUtils.switchToSizeSelectFrame(
+                mGoodController.getModel(),
+                DiabloEnum.GOOD_NEW,
+                this,
+                null);
         }
     }
 
@@ -373,14 +376,14 @@ public class GoodNew extends Fragment {
         mGoodController.setYearSelectedListener();
         mGoodController.setSeasonSelectedListener();
 
-        mGoodController.setValidateWatcherOfStyleNumber(getContext(), lastStyleNumber);
+        mGoodController.setValidateWatcherOfStyleNumber(getContext(), lastStyleNumber, null);
 //        mGoodController.setValidateWatcherOfBrand(getContext());
 //        mGoodController.setValidateWatcherOfGoodType(getContext());
 
         // firm
         mGoodController.setFirmWatcher(getContext(), Profile.instance().getFirms(), lastSelectFirm);
         // brand
-        mGoodController.setBrandWatcher(getContext(), Profile.instance().getBrands(), lastSelectBrand);
+        mGoodController.setBrandWatcher(getContext(), Profile.instance().getBrands(), lastSelectBrand, null);
         // type
         mGoodController.setGoodTypeWatcher(getContext(), Profile.instance().getDiabloTypes(), lastSelectGoodType);
 
@@ -487,7 +490,7 @@ public class GoodNew extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.good_new_back:
-                // SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_DETAIL);
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_GOOD_DETAIL);
                 break;
             case R.id.good_new_back_to_stock_in:
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_IN);
@@ -507,7 +510,7 @@ public class GoodNew extends Fragment {
     public void startAdd() {
         GoodCalc calc = mGoodController.getModel();
 
-        InventoryNewRequest.Inventory inv = new InventoryNewRequest.Inventory(
+        GoodNewRequest.Inventory inv = new GoodNewRequest.Inventory(
             calc.getColors(), calc.getSizeGroups());
 
 
@@ -531,12 +534,12 @@ public class GoodNew extends Fragment {
         inv.setPath(calc.getPath());
         inv.setAlarmDay(calc.getAlarmDay());
 
-        InventoryNewRequest request = new InventoryNewRequest(inv);
+        GoodNewRequest request = new GoodNewRequest(inv);
 
         startRequest(request);
     }
 
-    public void startRequest(final InventoryNewRequest request) {
+    public void startRequest(final GoodNewRequest request) {
         mButtons.get(R.id.good_new_save).disable();
 
         WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
@@ -624,7 +627,4 @@ public class GoodNew extends Fragment {
             }
         });
     }
-
-
-
 }

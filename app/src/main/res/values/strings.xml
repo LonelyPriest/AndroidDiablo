@@ -355,6 +355,8 @@
   <string name="add_good_success">新增货品成功</string>
   <string name="add_good_failed">新增货品失败</string>
   <string name="same_good">该货品对应的款号与品牌已存在，请重新输入</string>
+  <string name="good_update_success">货品编辑成功</string>
+  <string name="good_update_failed">货品编辑失败</string>
 
   <!-- toast -->
   <string name="refresh_top">己到达第一页，无需刷新</string>
@@ -452,6 +454,7 @@
   <string name="slide_sale_manager">销售管理</string>
   <string name="slide_stock_manager">采购管理</string>
   <string name="slide_inventory_manager">库存管理</string>
+  <string name="slide_good_manager">货品管理</string>
   <string name="slide_user_manager">用户管理</string>
 
   <string name="action_save">保存</string>
@@ -459,7 +462,8 @@
   <string name="action_unknown">未知</string>
 
   <string name="back_from_stock_select">从库存选择返回</string>
-  <string name="back_from_unknown">从未知返回</string>
+  <string name="back_from_unknown">从火星返回</string>
+  <string name="come_from_unknown">来自火星</string>
 
   <string name="back_from_good_select">从选择货品返回</string>
   <string name="back_from_color_select">从选择颜色返回</string>

@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.FirmClient;
-import com.diablo.dt.diablo.response.inventory.AddFirmResponse;
+import com.diablo.dt.diablo.response.good.AddFirmResponse;
 import com.diablo.dt.diablo.rest.FirmInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -38,6 +38,15 @@ public class Firm {
 
     public Firm() {
         init();
+    }
+
+    public Firm(Firm firm) {
+        this.id = firm.getId();
+        this.name = firm.getName();
+        this.mobile = firm.getMobile();
+        this.address = firm.getAddress();
+        this.balance = firm.getBalance();
+        this.datetime = firm.getDatetime();
     }
 
     public Firm(String name) {

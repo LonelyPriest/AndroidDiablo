@@ -21,9 +21,9 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.fragment.inventory.GoodDetail;
-import com.diablo.dt.diablo.fragment.inventory.GoodNew;
-import com.diablo.dt.diablo.fragment.inventory.InventoryDetail;
+import com.diablo.dt.diablo.fragment.good.GoodDetail;
+import com.diablo.dt.diablo.fragment.good.GoodNew;
+import com.diablo.dt.diablo.fragment.stock.InventoryDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -145,8 +145,9 @@ public class MainActivity extends AppCompatActivity {
         mNavTagMap.put(5, new NavigationTag(5, DiabloEnum.TAG_STOCK_OUT, R.id.nav_stock_out));
         mNavTagMap.put(6, new NavigationTag(6, DiabloEnum.TAG_STOCK_DETAIL, R.id.nav_stock_detail));
         mNavTagMap.put(7, new NavigationTag(7, DiabloEnum.TAG_STOCK_NOTE, R.id.nav_stock_note));
-
         mNavTagMap.put(8, new NavigationTag(8, DiabloEnum.TAG_INVENTORY_DETAIL, R.id.nav_inventory_detail));
+
+
         mNavTagMap.put(9, new NavigationTag(9, DiabloEnum.TAG_GOOD_DETAIL, R.id.nav_good_detail));
         mNavTagMap.put(10, new NavigationTag(10, DiabloEnum.TAG_GOOD_NEW, R.id.nav_good_new));
 
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(10);
+            selectMenuItem(9);
             loadHomeFragment();
         }
     }

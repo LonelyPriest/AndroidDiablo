@@ -1,7 +1,8 @@
-package com.diablo.dt.diablo.fragment.inventory;
+package com.diablo.dt.diablo.fragment.good;
 
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,8 +28,8 @@ import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloColorKind;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.model.inventory.GoodCalc;
-import com.diablo.dt.diablo.model.inventory.GoodUtils;
+import com.diablo.dt.diablo.model.good.GoodCalc;
+import com.diablo.dt.diablo.model.good.GoodUtils;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
@@ -42,6 +43,7 @@ public class ColorSelect extends Fragment {
      */
     private Integer mComeFrom;
     private GoodCalc mGoodCalc;
+    private List<DiabloColor> mImmutableColors;
 
     /**
      * menu operation
@@ -58,6 +60,10 @@ public class ColorSelect extends Fragment {
 
     public void setGoodCalc(String calcJson) {
         this.mGoodCalc = new Gson().fromJson(calcJson, GoodCalc.class);
+    }
+
+    public void setImmutableColors(String colorsJson) {
+        this.mImmutableColors = new Gson().fromJson(colorsJson, new TypeToken<List<DiabloColor>>(){}.getType());
     }
 
     public ColorSelect() {
@@ -78,6 +84,11 @@ public class ColorSelect extends Fragment {
         if (getArguments() != null) {
             mComeFrom  = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_COME_FORM);
             mGoodCalc = new Gson().fromJson(getArguments().getString(DiabloEnum.BUNDLE_PARAM_GOOD), GoodCalc.class);
+
+            String immutableColors = getArguments().getString(DiabloEnum.BUNDLE_PARAM_IMMUTABLE_COLOR);
+            if (null != immutableColors) {
+                mImmutableColors = new Gson().fromJson(immutableColors, new TypeToken<List<DiabloColor>>(){}.getType());
+            }
         }
         setHasOptionsMenu(true);
 
@@ -176,6 +187,12 @@ public class ColorSelect extends Fragment {
 
         if (null != mGoodCalc.getColor(color.getColorId())) {
             box.setChecked(true);
+            for (DiabloColor immutableColor: mImmutableColors) {
+                if (color.getColorId().equals(immutableColor.getColorId())) {
+                    box.setEnabled(false);
+                    break;
+                }
+            }
         } else {
             box.setChecked(false);
         }
@@ -258,7 +275,6 @@ public class ColorSelect extends Fragment {
 
     private Fragment getGoodNewFragment() {
         Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_GOOD_NEW);
-
         if (null == to ) {
             to = new GoodNew();
         }
@@ -268,11 +284,28 @@ public class ColorSelect extends Fragment {
         return to;
     }
 
+    private Fragment getGoodUpdateFragment() {
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_GOOD_UPDATE);
+
+        if (null == to ) {
+            to = new GoodUpdate();
+        }
+
+        ((GoodUpdate)to).setOnColorSelectListener(mOnColorSelectListener);
+        ((GoodUpdate)to).setBackFrom(R.string.back_from_color_select);
+        return to;
+    }
+
     private void switchFragment(){
         Fragment to = null;
         if (DiabloEnum.GOOD_NEW.equals(mComeFrom)) {
             to = getGoodNewFragment();
             ((MainActivity)getActivity()).selectMenuItem(10);
+        }
+
+        else if (DiabloEnum.GOOD_UPDATE.equals(mComeFrom)) {
+            to = getGoodUpdateFragment();
+            ((MainActivity)getActivity()).selectMenuItem(9);
         }
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();

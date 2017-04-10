@@ -57,6 +57,22 @@ public class MatchGood {
     @SerializedName("entry_date")
     private String datetime;
 
+    /**
+     * only use to update, these are the old value
+     */
+    @SerializedName("good_id")
+    private Integer goodId;
+    @SerializedName("shop")
+    private Integer shopId;
+    @SerializedName("o_style_number")
+    private String mOStyleNumber;
+    @SerializedName("o_brand")
+    private Integer mOBrand;
+    @SerializedName("o_path")
+    private String mOPath;
+    @SerializedName("o_firm")
+    private Integer mOFirm;
+
     public MatchGood() {
 
     }
@@ -251,5 +267,53 @@ public class MatchGood {
 
     public String getName() {
         return this.styleNumber + "/" + this.brand + "/" + this.type;
+    }
+
+    /**
+     * only use to update, these are the old value
+     */
+
+    public void setGoodId(Integer goodId) {
+        this.goodId = goodId;
+    }
+
+//    public Integer getShopId() {
+//        return shopId;
+//    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+//    public String getOStyleNumber() {
+//        return mOStyleNumber;
+//    }
+
+    public void setOStyleNumber(String oStyleNumber) {
+        this.mOStyleNumber = oStyleNumber;
+    }
+
+//    public Integer getOBrand() {
+//        return mOBrand;
+//    }
+
+    public void setOBrand(Integer oBrand) {
+        this.mOBrand = oBrand;
+    }
+
+//    public String getOPath() {
+//        return mOPath;
+//    }
+
+    public void setOPath(String oPath) {
+        this.mOPath = oPath;
+    }
+
+//    public Integer getOFirm() {
+//        return mOFirm;
+//    }
+
+    public void setOFirm(Integer oFirm) {
+        this.mOFirm = oFirm;
     }
 }

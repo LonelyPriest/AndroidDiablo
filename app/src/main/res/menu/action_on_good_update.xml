@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <item android:id="@+id/good_update_back"
+        android:title="@string/btn_back"
+        android:icon="@drawable/ic_arrow_back_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
+  <item android:id="@+id/good_update_save"
+        android:title="@string/btn_save"
+        android:icon="@drawable/ic_file_download_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+</menu>

@@ -1,17 +1,16 @@
-package com.diablo.dt.diablo.fragment.inventory;
+package com.diablo.dt.diablo.fragment.stock;
 
 
-import static android.graphics.Typeface.BOLD;
-
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,15 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.client.WGoodClient;
+import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
-import com.diablo.dt.diablo.request.inventory.GoodDetailRequest;
-import com.diablo.dt.diablo.response.inventory.GoodDetailResponse;
-import com.diablo.dt.diablo.rest.WGoodInterface;
+import com.diablo.dt.diablo.request.stock.InventoryDetailRequest;
+import com.diablo.dt.diablo.response.good.InventoryDetailResponse;
+import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
@@ -43,17 +42,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class GoodDetail extends Fragment {
-    private final static String LOG_TAG = "GoodDetail:";
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link InventoryDetail#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class InventoryDetail extends Fragment {
+    private final static String LOG_TAG = "InventoryDetail:";
     private final static DiabloUtils UTILS = DiabloUtils.instance();
     private String [] mTableHeads;
     private String [] mSeasons;
-    // private String mStatistic;
+    private String mStatistic;
 
-    private GoodDetailRequest mRequest;
-    private GoodDetailRequest.Condition mRequestCondition;
-    private WGoodInterface mGoodRest;
+    private InventoryDetailRequest mRequest;
+    private InventoryDetailRequest.Condition mRequestCondition;
+    private StockInterface mStockRest;
 
     private TableLayout mTable;
     private SwipyRefreshLayout mTableSwipe;
@@ -63,12 +66,12 @@ public class GoodDetail extends Fragment {
     private Integer mCurrentPage;
     private Integer mTotalPage;
 
-    public GoodDetail() {
+    public InventoryDetail() {
         // Required empty public constructor
     }
 
-    public static GoodDetail newInstance(String param1, String param2) {
-        GoodDetail fragment = new GoodDetail();
+    public static InventoryDetail newInstance(String param1, String param2) {
+        InventoryDetail fragment = new InventoryDetail();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -77,29 +80,22 @@ public class GoodDetail extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mTableHeads = getResources().getStringArray(R.array.thead_good_detail);
+        mTableHeads = getResources().getStringArray(R.array.thead_inventory_detail);
         mSeasons = getResources().getStringArray(R.array.seasons);
 
-        mRequest = new GoodDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-        mRequestCondition = new GoodDetailRequest.Condition();
+        mRequest = new InventoryDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
+        mRequestCondition = new InventoryDetailRequest.Condition();
         mRequest.setCondition(mRequestCondition);
 
-        mGoodRest = WGoodClient.getClient().create(WGoodInterface.class);
+        mStockRest = StockClient.getClient().create(StockInterface.class);
         init();
-    }
-
-    public void init() {
-        mCurrentPage = DiabloEnum.DEFAULT_PAGE;
-        mTotalPage = 0;
-        mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_good_detail, container, false);
+        final View view = inflater.inflate(R.layout.fragment_inventory_detail, container, false);
 
         String currentDate = UTILS.currentDate();
         String startDate = Profile.instance().getConfig(DiabloEnum.START_TIME, currentDate);
@@ -112,7 +108,7 @@ public class GoodDetail extends Fragment {
         (view.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(GoodDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                SaleUtils.DiabloDatePicker.build(InventoryDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         ((EditText) view.findViewById(R.id.text_start_date)).setText(date);
@@ -125,7 +121,7 @@ public class GoodDetail extends Fragment {
         view.findViewById(R.id.btn_end_date).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(GoodDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                SaleUtils.DiabloDatePicker.build(InventoryDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         ((EditText)view.findViewById(R.id.text_end_date)).setText(date);
@@ -139,7 +135,7 @@ public class GoodDetail extends Fragment {
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
-        mTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_good_detail_swipe);
+        mTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_inventory_detail_swipe);
         // mStockDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
@@ -183,10 +179,13 @@ public class GoodDetail extends Fragment {
                 TableRow.LayoutParams.WRAP_CONTENT,
                 1.0f);
             TextView cell = new TextView(this.getContext());
-            cell.setTypeface(null, BOLD);
+            cell.setTypeface(null, Typeface.BOLD);
             cell.setTextColor(Color.BLACK);
 
             if (getResources().getString(R.string.order_id).equals(title)) {
+                lp.weight = 0.8f;
+            }
+            else if (getResources().getString(R.string.sell).equals(title)) {
                 lp.weight = 0.8f;
             }
             else if (getResources().getString(R.string.shelfDate).equals(title)) {
@@ -204,10 +203,10 @@ public class GoodDetail extends Fragment {
 
         // TableLayout head = ((TableLayout)view.findViewById(R.id.t_sale_detail_head));
         // head.addView(row);
-        TableLayout head = (TableLayout) view.findViewById(R.id.t_good_detail_head);
+        TableLayout head = (TableLayout) view.findViewById(R.id.t_inventory_detail_head);
         head.addView(row);
 
-        mTable = (TableLayout) view.findViewById(R.id.t_good_detail);
+        mTable = (TableLayout) view.findViewById(R.id.t_inventory_detail);
 
         pageChanged();
 
@@ -216,46 +215,52 @@ public class GoodDetail extends Fragment {
 
     private void pageChanged(){
 
-        Call<GoodDetailResponse> call = mGoodRest.filterGood(Profile.instance().getToken(), mRequest);
+        Call<InventoryDetailResponse> call = mStockRest.filterInventory(Profile.instance().getToken(), mRequest);
 
-        call.enqueue(new Callback<GoodDetailResponse>() {
+        call.enqueue(new Callback<InventoryDetailResponse>() {
             @Override
-            public void onResponse(Call<GoodDetailResponse> call, Response<GoodDetailResponse> response) {
+            public void onResponse(Call<InventoryDetailResponse> call, Response<InventoryDetailResponse> response) {
                 Log.d(LOG_TAG, response.toString());
 
                 mTableSwipe.setRefreshing(false);
-                GoodDetailResponse base = response.body();
+                InventoryDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
                         mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
+                        Resources res = getResources();
+                        mStatistic =
+//                            res.getString(R.string.amount) + res.getString(R.string.colon) + UTILS.toString(base.getAmount())
+//                                + res.getString(R.string.space_4)
+                                res.getString(R.string.stock) + res.getString(R.string.colon) + UTILS.toString(base.getAmount())
+                                + res.getString(R.string.space_4)
+                                + res.getString(R.string.sell) + res.getString(R.string.colon) + UTILS.toString(base.getSell());
                     }
                 }
 
-                List<GoodDetailResponse.GoodNote> goodNotes = base.getGoods();
+                List<InventoryDetailResponse.inventory> inventories = base.getInventories();
                 Integer orderId = mRequest.getPageStartIndex();
                 // mSaleDetailTable.removeAllViews();
                 mTable.removeAllViews();
-
                 TableRow row = null;
-                for (Integer i=0; i<goodNotes.size(); i++){
+                for (Integer i=0; i<inventories.size(); i++){
                     row = new TableRow(getContext());
 
-                    GoodDetailResponse.GoodNote g = goodNotes.get(i);
+                    InventoryDetailResponse.inventory inv = inventories.get(i);
                     Resources res = getResources();
 
                     for (String title: mTableHeads){
                         TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
                         if (res.getString(R.string.order_id).equals(title)) {
-                            g.setOrderId(orderId);
+                            inv.setOrderId(orderId);
                             lp.weight = 0.8f;
                             TextView cell = addCell(row, orderId++, lp);
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
                         }
                         else if (res.getString(R.string.style_number).equals(title)) {
-                            addCell(row, g.getStyleNumber(), lp);
+                            addCell(row, inv.getStyleNumber(), lp);
                         }
                         else if (res.getString(R.string.brand).equals(title)) {
-                            DiabloBrand brand = Profile.instance().getBrand(g.getBrandId());
+                            DiabloBrand brand = Profile.instance().getBrand(inv.getBrandId());
                             TextView cell;
                             if (null != brand) {
                                 cell = addCell(row, brand.getName(), lp);
@@ -268,7 +273,7 @@ public class GoodDetail extends Fragment {
 
                         }
                         else if (res.getString(R.string.good_type).equals(title)) {
-                            DiabloType type = Profile.instance().getDiabloType(g.getTypeId());
+                            DiabloType type = Profile.instance().getDiabloType(inv.getTypeId());
                             if (null != type) {
                                 addCell(row, type.getName(), lp);
                             } else {
@@ -276,7 +281,7 @@ public class GoodDetail extends Fragment {
                             }
                         }
                         else if (res.getString(R.string.firm).equals(title)) {
-                            Firm firm = Profile.instance().getFirm(g.getFirmId());
+                            Firm firm = Profile.instance().getFirm(inv.getFirmId());
                             if ( null != firm ) {
                                 addCell(row, firm.getName(), lp);
                             } else {
@@ -284,30 +289,36 @@ public class GoodDetail extends Fragment {
                             }
                         }
                         else if (res.getString(R.string.season).equals(title)) {
-                            addCell(row, mSeasons[g.getSeason()], lp);
+                            addCell(row, mSeasons[inv.getSeason()], lp);
                         }
                         else if (res.getString(R.string.year).equals(title)) {
-                            addCell(row, g.getYear(), lp);
-                        }
-                        else if (res.getString(R.string.org_price).equals(title)) {
-                            TextView cell = addCell(row, g.getTagPrice(), lp);
-                                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.greenDark));
+                            addCell(row, inv.getYear(), lp);
                         }
                         else if (res.getString(R.string.tag_price).equals(title)) {
-                            TextView cell = addCell(row, g.getTagPrice(), lp);
-                            if (g.getTagPrice() > 0f) {
+                            TextView cell = addCell(row, inv.getTagPrice(), lp);
+                            if (inv.getTagPrice() > 0f) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.greenDark));
                             }
                         }
                         else if (res.getString(R.string.pkg_price).equals(title)) {
-                            TextView cell = addCell(row, g.getPkgPrice(), lp);
-                            if (g.getPkgPrice() > 0f) {
+                            TextView cell = addCell(row, inv.getPkgPrice(), lp);
+                            if (inv.getPkgPrice() > 0f) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.orangeDark));
                             }
                         }
+                        else if (res.getString(R.string.inventory).equals(title)) {
+                            TextView cell = addCell(row, inv.getAmount(), lp);
+                            if (inv.getAmount() > 0) {
+                                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpBlue));
+                            }
+                        }
+                        else if (res.getString(R.string.sell).equals(title)) {
+                            lp.weight = 0.8f;
+                            addCell(row, inv.getSell(), lp);
+                        }
                         else if (res.getString(R.string.shelfDate).equals(title)){
                             lp.weight = 0.8f;
-                            addCell(row, g.getDatetime(), lp);
+                            addCell(row, inv.getDatetime(), lp);
                         }
                     }
 
@@ -322,18 +333,18 @@ public class GoodDetail extends Fragment {
                     registerForContextMenu(row);
 
                     row.setBackgroundResource(R.drawable.table_row_bg);
-                    row.setTag(g);
+                    row.setTag(inv);
                     mTable.addView(row);
                 }
 
-                if ( null != row) {
+                if (null != row) {
                     row.setBackgroundResource(R.drawable.table_row_last_bg);
                 }
 
                 if (0 < mTotalPage ) {
                     row = new TableRow(getContext());
                     TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-                    // addCell(row, mStatistic, lp);
+                    UTILS.formatTableStatistic(addCell(row, mStatistic, lp));
 
                     String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
                         + getResources().getString(R.string.page)
@@ -347,52 +358,115 @@ public class GoodDetail extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<GoodDetailResponse> call, Throwable t) {
+            public void onFailure(Call<InventoryDetailResponse> call, Throwable t) {
                 mTableSwipe.setRefreshing(false);
             }
         });
     }
 
+    public void init() {
+        mCurrentPage = DiabloEnum.DEFAULT_PAGE;
+        mTotalPage = 0;
+        mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
+    }
+
+
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        mCurrentSelectedRow = (TableRow) v;
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_on_good_detail, menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.action_on_inventory_detail, menu);
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        GoodDetailResponse.GoodNote detail = ((GoodDetailResponse.GoodNote) mCurrentSelectedRow.getTag());
-        if (getResources().getString(R.string.modify) == item.getTitle()){
-            switchToStockUpdateFrame(detail.getId(), this, DiabloEnum.TAG_GOOD_UPDATE);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.inventory_refresh:
+                init();
+                pageChanged();
+                break;
+            default:
+                // return super.onOptionsItemSelected(item);
+                break;
+
         }
 
         return true;
     }
 
-    public void switchToStockUpdateFrame(Integer goodId, Fragment from, String tag) {
-
-        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
-        // find
-        Fragment to = from.getFragmentManager().findFragmentByTag(tag);
-
-        if (null == to){
-            to = new GoodUpdate();
-            Bundle args = new Bundle();
-            args.putInt(DiabloEnum.BUNDLE_PARAM_ID, goodId);
-            to.setArguments(args);
-
-        } else {
-            ((GoodUpdate)to).setGoodId(goodId);
-        }
-
-        if (!to.isAdded()){
-            transaction.hide(from).add(R.id.frame_container, to, tag).commit();
-        } else {
-            transaction.hide(from).show(to).commit();
-        }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+
+//    @Override
+//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//        super.onCreateContextMenu(menu, v, menuInfo);
+//        mCurrentSelectedRow = (TableRow) v;
+//        MenuInflater inflater = getActivity().getMenuInflater();
+//        inflater.inflate(R.menu.context_on_stock_detail, menu);
+//    }
+//
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//        StockDetailResponse.StockDetail detail = ((StockDetailResponse.StockDetail) mCurrentSelectedRow.getTag());
+//        if (getResources().getString(R.string.modify) == item.getTitle()){
+//            if (detail.getType().equals(DiabloEnum.STOCK_IN)){
+//                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_IN_UPDATE);
+//            }
+//            else if (detail.getType().equals(DiabloEnum.STOCK_OUT)) {
+//                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_OUT_UPDATE);
+//            }
+//
+//        }
+//
+//        return true;
+//    }
+
+//    public static void switchToStockUpdateFrame(String rsn, Fragment from, String tag) {
+//
+//        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
+//        // find
+//        Fragment to = from.getFragmentManager().findFragmentByTag(tag);
+//
+//        if (null == to){
+//            Bundle args = new Bundle();
+//            args.putString(DiabloEnum.BUNDLE_PARAM_RSN, rsn);
+//            if (DiabloEnum.TAG_STOCK_IN_UPDATE.equals(tag)) {
+//                to = new StockInUpdate();
+//            }
+//            else if (DiabloEnum.TAG_STOCK_OUT_UPDATE.equals(tag)) {
+//                to = new StockOutUpdate();
+//            }
+//
+//            if (null != to ) {
+//                to.setArguments(args);
+//            }
+//        } else {
+//            if (DiabloEnum.TAG_STOCK_IN_UPDATE.equals(tag)) {
+//                ((StockInUpdate)to).setRSN(rsn);
+//            }
+//            else if (DiabloEnum.TAG_STOCK_OUT_UPDATE.equals(tag)) {
+//                ((StockOutUpdate)to).setRSN(rsn);
+//            }
+//        }
+//
+//        if (null != to) {
+//            if (!to.isAdded()){
+//                transaction.hide(from).add(R.id.frame_container, to, tag).commit();
+//            } else {
+//                transaction.hide(from).show(to).commit();
+//            }
+//        }
+//
+//    }
+
+
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
         // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
@@ -437,5 +511,6 @@ public class GoodDetail extends Fragment {
         row.addView(cell);
         return  cell;
     }
+
 
 }

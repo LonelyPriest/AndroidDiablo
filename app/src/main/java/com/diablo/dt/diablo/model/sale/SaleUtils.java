@@ -16,9 +16,9 @@ import android.widget.TextView;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
-import com.diablo.dt.diablo.fragment.inventory.GoodDetail;
-import com.diablo.dt.diablo.fragment.inventory.GoodNew;
-import com.diablo.dt.diablo.fragment.inventory.InventoryDetail;
+import com.diablo.dt.diablo.fragment.good.GoodDetail;
+import com.diablo.dt.diablo.fragment.good.GoodNew;
+import com.diablo.dt.diablo.fragment.stock.InventoryDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -54,6 +54,11 @@ public class SaleUtils {
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_OUT, 5);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_DETAIL, 6);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_NOTE, 7);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_INVENTORY_DETAIL, 8);
+
+
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_DETAIL, 9);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_NEW, 10);
     }
 
     public static void switchToSlideMenu(Fragment from, String toTag) {

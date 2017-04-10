@@ -1,11 +1,14 @@
-package com.diablo.dt.diablo.model.inventory;
+package com.diablo.dt.diablo.model.good;
 
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
+import com.diablo.dt.diablo.entity.MatchGood;
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,72 @@ public class GoodCalc {
 
         mColors = new ArrayList<>();
         mSizeGroups = new ArrayList<>();
+    }
+
+    public GoodCalc(MatchGood good) {
+        mStyleNumber = good.getStyleNumber();
+
+        mBrand = new DiabloBrand(Profile.instance().getBrand(good.getBrandId()));
+        mGoodType = new DiabloType(Profile.instance().getDiabloType(good.getTypeId()));
+        mFirm = new Firm(Profile.instance().getFirm(good.getFirmId()));
+
+        mSex = good.getSex();
+        mYear = good.getYear();
+        mSeason = good.getSeason();
+
+        mOrgPrice = good.getOrgPrice();
+        mPkgPrice = good.getPkgPrice();
+        mTagPrice = good.getTagPrice();
+        mPrice3 = good.getPrice3();
+        mPrice4 = good.getPrice4();
+        mPrice5 = good.getPrice5();
+        mDiscount = good.getDiscount();
+
+        mAlarmDay = good.getAlarmDay();
+        mPath = good.getPath();
+        mFree = good.getFree();
+
+        mColors = new ArrayList<>();
+        for (String colorId: good.getColor().split(DiabloEnum.SIZE_SEPARATOR)) {
+            DiabloColor color = Profile.instance().getColor(DiabloUtils.instance().toInteger(colorId));
+            if (null != color) {
+                mColors.add(color);
+            }
+        }
+
+        mSizeGroups = new ArrayList<>();
+        for (String groupId: good.getsGroup().split(DiabloEnum.SIZE_SEPARATOR)) {
+            DiabloSizeGroup group = Profile.instance().getSizeGroup(DiabloUtils.instance().toInteger(groupId));
+            if (null != group) {
+                mSizeGroups.add(group);
+            }
+        }
+    }
+
+    public GoodCalc(GoodCalc calc) {
+        mStyleNumber = calc.getStyleNumber();
+        mBrand = new DiabloBrand(calc.getBrand());
+        mGoodType = new DiabloType(calc.getGoodType());
+        mFirm = new Firm(calc.getFirm());
+
+        mSex = calc.getSex();
+        mYear = calc.getYear();
+        mSeason = calc.getSeason();
+
+        mOrgPrice = calc.getOrgPrice();
+        mPkgPrice = calc.getPkgPrice();
+        mTagPrice = calc.getTagPrice();
+        mPrice3 = calc.getPrice3();
+        mPrice4 = calc.getPrice4();
+        mPrice5 = calc.getPrice5();
+        mDiscount = calc.getDiscount();
+
+        mAlarmDay = calc.getAlarmDay();
+        mPath = calc.getPath();
+        mFree = calc.getFree();
+
+        mColors = new ArrayList<>(calc.getColors());
+        mSizeGroups = new ArrayList<>(calc.getSizeGroups());
     }
 
     private List<DiabloColor> mColors;
@@ -248,6 +317,26 @@ public class GoodCalc {
         return found;
     }
 
+    public String getStringColors() {
+        List<String> colorNames = new ArrayList<>();
+        for(DiabloColor color: mColors) {
+            if (null != color.getName()) {
+                colorNames.add(color.getName());
+            }
+        }
+        return android.text.TextUtils.join(DiabloEnum.SIZE_SEPARATOR, colorNames);
+    }
+
+    public String getStringColorIds() {
+        List<Integer> ids = new ArrayList<>();
+        for(DiabloColor color: mColors) {
+            if (!DiabloEnum.DIABLO_FREE_COLOR.equals(color.getColorId())) {
+                ids.add(color.getColorId());
+            }
+        }
+        return android.text.TextUtils.join(DiabloEnum.SIZE_SEPARATOR, ids);
+    }
+
     public DiabloSizeGroup getSizeGroup(Integer groupId) {
         DiabloSizeGroup found = null;
         for (DiabloSizeGroup g: mSizeGroups) {
@@ -257,5 +346,22 @@ public class GoodCalc {
         }
 
         return found;
+    }
+
+    public String getStringSizeGroups() {
+        String ids = getStringSizeGroupIds();
+        return android.text.TextUtils.join(DiabloEnum.SIZE_SEPARATOR,
+            Profile.instance().genSortedSizeNamesByGroups(ids));
+    }
+
+    public String getStringSizeGroupIds() {
+        List<Integer> ids = new ArrayList<>();
+        for (DiabloSizeGroup g: mSizeGroups) {
+            if (0 != g.getGroupId()) {
+                ids.add(g.getGroupId());
+            }
+        }
+
+        return android.text.TextUtils.join(DiabloEnum.SIZE_SEPARATOR, ids);
     }
 }

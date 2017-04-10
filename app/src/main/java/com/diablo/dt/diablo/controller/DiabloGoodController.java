@@ -16,8 +16,9 @@ import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
+import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.model.inventory.GoodCalc;
+import com.diablo.dt.diablo.model.good.GoodCalc;
 import com.diablo.dt.diablo.task.MatchBrandTask;
 import com.diablo.dt.diablo.task.MatchFirmTask;
 import com.diablo.dt.diablo.task.MatchGoodTypeTask;
@@ -28,7 +29,6 @@ import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloGoodCalcView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,6 +93,48 @@ public class DiabloGoodController {
         mIsValidOrgPrice = true;
         mIsValidPkgPrice = true;
         mIsValidTagPrice = true;
+    }
+
+    public void setValidStyleNumber(boolean valid) {
+        mIsValidStyleNumber = valid;
+    }
+
+    public void setValidBrand(boolean valid) {
+        mIsValidBrand = valid;
+    }
+
+    public void setValidGoodType(boolean valid) {
+        mIsValidGoodType = valid;
+    }
+
+    public void setValidFirm(boolean valid) {
+        mIsValidFirm = valid;
+    }
+
+//    public void setValidOrgPrice(boolean valid) {
+//        mIsValidOrgPrice = valid;
+//    }
+//
+//    public void setValidPkgPrice(boolean valid) {
+//        mIsValidPkgPrice = valid;
+//    }
+//
+//    public void setValidTagPrice(boolean valid) {
+//        mIsValidTagPrice = valid;
+//    }
+
+    public void initViewText() {
+        mGoodCalcView.setStyleNumberText(mGoodCalc.getStyleNumber());
+        mGoodCalcView.setBrandText(mGoodCalc.getBrand().getName());
+        mGoodCalcView.setGoodTypeText(mGoodCalc.getGoodType().getName());
+        mGoodCalcView.setFirmText(mGoodCalc.getFirm().getName());
+
+        mGoodCalcView.setOrgPriceText(mGoodCalc.getOrgPrice());
+        mGoodCalcView.setPkgPriceText(mGoodCalc.getPkgPrice());
+        mGoodCalcView.setTagPriceText(mGoodCalc.getTagPrice());
+
+        mGoodCalcView.setColorText(mGoodCalc.getStringColors());
+        mGoodCalcView.setSizeText(mGoodCalc.getStringSizeGroups());
     }
 
     public final GoodCalc getModel() {
@@ -227,7 +269,8 @@ public class DiabloGoodController {
 
     public void setBrandWatcher(final Context context,
                                 final List<DiabloBrand> brands,
-                                final  DiabloBrand selectBrand) {
+                                final DiabloBrand selectBrand,
+                                final GoodCalc oldGoodCalc) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getBrand();
 
         if (null != selectBrand) {
@@ -258,21 +301,46 @@ public class DiabloGoodController {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 DiabloBrand brand = (DiabloBrand) adapterView.getItemAtPosition(i);
 
+                mIsValidBrand = true;
+
                 String styleNumber = mGoodCalc.getStyleNumber();
-                if (styleNumber.length() > 0
-                    && null != Profile.instance().getMatchGood(styleNumber, brand.getId())) {
-                    mIsValidBrand = false;
+                if (styleNumber.length() > 0) {
+                    MatchGood good = Profile.instance().getMatchGood(styleNumber, brand.getId());
+                    if (null != good) {
+                        if (null == oldGoodCalc) {
+                            mIsValidBrand = false;
+                        }
+                        else {
+                            if (!good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
+                                || !good.getBrandId().equals(oldGoodCalc.getBrand().getId())) {
+                                mIsValidBrand = false;
+                            }
+                        }
+                    }
+                }
+
+                if (!mIsValidBrand) {
                     DiabloUtils.instance().makeToast(
                         context,
                         context.getString(R.string.same_good),
                         Toast.LENGTH_SHORT);
-                } else {
-                    mIsValidStyleNumber = true;
-                    mIsValidBrand = true;
                 }
+                else {
+                    mIsValidStyleNumber = true;
+                }
+//                if (styleNumber.length() > 0
+//                    && null != Profile.instance().getMatchGood(styleNumber, brand.getId())) {
+//                    mIsValidBrand = false;
+//                    DiabloUtils.instance().makeToast(
+//                        context,
+//                        context.getString(R.string.same_good),
+//                        Toast.LENGTH_SHORT);
+//                } else {
+//                    mIsValidStyleNumber = true;
+//                    mIsValidBrand = true;
+//                }
 
                 mGoodCalc.setBrand(brand);
-
                 checkValidAction();
             }
         };
@@ -328,6 +396,7 @@ public class DiabloGoodController {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ((Spinner)mGoodCalcView.getSex()).setAdapter(adapter);
+        ((Spinner)mGoodCalcView.getSex()).setSelection(mGoodCalc.getSex());
     }
 
     public void setSexSelectedListener() {
@@ -409,7 +478,7 @@ public class DiabloGoodController {
     /**
      * validate
      */
-    private void checkValidAction() {
+    public void checkValidAction() {
         if (!mIsValidStyleNumber
             || !mIsValidBrand
             || !mIsValidGoodType
@@ -430,7 +499,10 @@ public class DiabloGoodController {
     }
 
     // style number
-    public void setValidateWatcherOfStyleNumber(final Context context, final String lastStyleNumber) {
+    public void setValidateWatcherOfStyleNumber(
+        final Context context,
+        final String lastStyleNumber,
+        final GoodCalc oldGoodCalc) {
         final EditText view = (EditText)mGoodCalcView.getStyleNumber();
 
         if (null != lastStyleNumber) {
@@ -458,23 +530,37 @@ public class DiabloGoodController {
                         mIsValidStyleNumber = false;
                     }
                     else {
-                        DiabloBrand brand = mGoodCalc.getBrand();
-                        if (null != brand
-                            && null != Profile.instance().getMatchGood(styleNumber.toUpperCase(), brand.getId())) {
-                            mIsValidStyleNumber = false;
-                            DiabloUtils.instance().makeToast(
-                                context,
-                                context.getString(R.string.same_good),
-                                Toast.LENGTH_SHORT);
-                        }
-                        else {
-                            mIsValidBrand = true;
-                            mIsValidStyleNumber = true;
-                        }
+                        mIsValidStyleNumber = true;
 
-                        mGoodCalc.setStyleNumber(styleNumber.toUpperCase());
-                        checkValidAction();
+                        DiabloBrand brand = mGoodCalc.getBrand();
+                        if (null != brand) {
+                            MatchGood good = Profile.instance().getMatchGood(styleNumber.toUpperCase(), brand.getId());
+                            if (null != good) {
+                                if (null == oldGoodCalc) {
+                                    mIsValidStyleNumber = false;
+                                }
+                                else {
+                                    if (!good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
+                                        || !good.getBrandId().equals(oldGoodCalc.getBrand().getId())) {
+                                        mIsValidStyleNumber = false;
+                                    }
+                                }
+                            }
+                        }
                     }
+
+                    if (!mIsValidStyleNumber) {
+                        DiabloUtils.instance().makeToast(
+                            context,
+                            context.getString(R.string.same_good),
+                            Toast.LENGTH_SHORT);
+                    }
+                    else {
+                        mIsValidBrand = true;
+                    }
+
+                    mGoodCalc.setStyleNumber(styleNumber.toUpperCase());
+                    checkValidAction();
                 }
             }
         };
@@ -526,28 +612,24 @@ public class DiabloGoodController {
      * adapter model operation
      */
     public void setColors(List<DiabloColor> colors) {
-        List<String> colorNames = new ArrayList<>();
+        // List<String> colorNames = new ArrayList<>();
         mGoodCalc.clearColor();
         for(DiabloColor color: colors) {
             mGoodCalc.addColor(color);
-            colorNames.add(color.getName());
+            // colorNames.add(color.getName());
         }
 
-        ((EditText)mGoodCalcView.getColor()).setText(
-            android.text.TextUtils.join(DiabloEnum.SIZE_SEPARATOR, colorNames));
+        mGoodCalcView.setColorText(mGoodCalc.getStringColors());
     }
 
     public void setSizeGroups(List<DiabloSizeGroup> groups) {
-        List<String> groupNames = new ArrayList<>();
+        // List<String> groupNames = new ArrayList<>();
         mGoodCalc.clearSizeGroups();
-
         for (DiabloSizeGroup g: groups) {
             mGoodCalc.addSizeGroup(g);
-            groupNames.add(g.getName());
+            // groupNames.add(g.getName());
         }
 
-        ((EditText)mGoodCalcView.getSize()).setText(
-            android.text.TextUtils.join(DiabloEnum.SIZE_SEPARATOR, groupNames));
+        mGoodCalcView.setSizeText(mGoodCalc.getStringSizeGroups());
     }
-
 }

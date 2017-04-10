@@ -5,6 +5,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 /**
  * Created by buxianhui on 17/4/8.
@@ -28,6 +29,42 @@ public class DiabloGoodCalcView {
 
     public DiabloGoodCalcView() {
 
+    }
+
+    public void setStyleNumberText(String styleNumber) {
+        ((EditText)mStyleNumber).setText(styleNumber);
+    }
+
+    public void setBrandText(String brand) {
+        ((AutoCompleteTextView)mBrand).setText(brand);
+    }
+
+    public void setGoodTypeText(String type) {
+        ((AutoCompleteTextView)mGoodType).setText(type);
+    }
+
+    public void setFirmText(String firm) {
+        ((AutoCompleteTextView)mFirm).setText(firm);
+    }
+
+    public void setOrgPriceText(Float orgPrice) {
+        ((EditText)mOrgPrice).setText(DiabloUtils.instance().toString(orgPrice));
+    }
+
+    public void setPkgPriceText(Float pkgPrice) {
+        ((EditText)mPkgPrice).setText(DiabloUtils.instance().toString(pkgPrice));
+    }
+
+    public void setTagPriceText(Float tagPrice) {
+        ((EditText)mTagPrice).setText(DiabloUtils.instance().toString(tagPrice));
+    }
+
+    public void setColorText(String color) {
+        ((EditText)mColor).setText(color);
+    }
+
+    public void setSizeText(String size) {
+        ((EditText)mSize).setText(size);
     }
 
     public void reset() {

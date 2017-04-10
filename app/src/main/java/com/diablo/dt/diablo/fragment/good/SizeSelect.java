@@ -1,9 +1,10 @@
-package com.diablo.dt.diablo.fragment.inventory;
+package com.diablo.dt.diablo.fragment.good;
 
 
-import static com.diablo.dt.diablo.fragment.inventory.GoodNew.UTILS;
+import static com.diablo.dt.diablo.fragment.good.GoodNew.UTILS;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -29,8 +30,10 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.model.inventory.GoodCalc;
+import com.diablo.dt.diablo.model.good.GoodCalc;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+
+import java.util.List;
 
 public class SizeSelect extends Fragment {
     /**
@@ -38,6 +41,7 @@ public class SizeSelect extends Fragment {
      */
     private Integer mComeFrom;
     private GoodCalc mGoodCalc;
+    private List<DiabloSizeGroup> mImmutableSizeGroups;
 
     /**
      * menu operation
@@ -53,6 +57,11 @@ public class SizeSelect extends Fragment {
 
     public void setGoodCalc(String calcJson) {
         this.mGoodCalc = new Gson().fromJson(calcJson, GoodCalc.class);
+    }
+
+    public void setImmutableSizeGroups(String groupsJson) {
+        this.mImmutableSizeGroups = new Gson().fromJson(
+            groupsJson, new TypeToken<List<DiabloSizeGroup>>(){}.getType());
     }
 
 
@@ -74,6 +83,11 @@ public class SizeSelect extends Fragment {
         if (getArguments() != null) {
             mComeFrom  = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_COME_FORM);
             mGoodCalc = new Gson().fromJson(getArguments().getString(DiabloEnum.BUNDLE_PARAM_GOOD), GoodCalc.class);
+
+            String sizeGroups = getArguments().getString(DiabloEnum.BUNDLE_PARAM_IMMUTABLE_SIZE);
+            if (null != sizeGroups) {
+                mImmutableSizeGroups = new Gson().fromJson(sizeGroups, new TypeToken<List<DiabloSizeGroup>>(){}.getType());
+            }
         }
     }
 
@@ -140,6 +154,14 @@ public class SizeSelect extends Fragment {
 
         if (null != mGoodCalc.getSizeGroup(group.getGroupId())) {
             box.setChecked(true);
+
+            for (DiabloSizeGroup immutableGroup: mImmutableSizeGroups) {
+                if (group.getGroupId().equals(immutableGroup.getGroupId())) {
+                    box.setEnabled(false);
+                    break;
+                }
+            }
+
         } else {
             box.setChecked(false);
         }
@@ -219,11 +241,28 @@ public class SizeSelect extends Fragment {
         return to;
     }
 
+    private Fragment getGoodUpdateFragment() {
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_GOOD_UPDATE);
+
+        if (null == to ) {
+            to = new GoodUpdate();
+        }
+
+        ((GoodUpdate)to).setOnSizeSelectListener(mOnSizeSelectListener);
+        ((GoodUpdate)to).setBackFrom(R.string.back_from_size_select);
+        return to;
+    }
+
     private void switchFragment(){
         Fragment to = null;
         if (DiabloEnum.GOOD_NEW.equals(mComeFrom)) {
             to = getGoodNewFragment();
             ((MainActivity)getActivity()).selectMenuItem(10);
+        }
+
+        else if (DiabloEnum.GOOD_UPDATE.equals(mComeFrom)) {
+            to = getGoodUpdateFragment();
+            ((MainActivity)getActivity()).selectMenuItem(9);
         }
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
