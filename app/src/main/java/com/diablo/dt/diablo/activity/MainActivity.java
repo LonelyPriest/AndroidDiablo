@@ -59,7 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
         DiabloEnum.TAG_GOOD_SELECT,
         DiabloEnum.TAG_STOCK_IN_UPDATE,
-        DiabloEnum.TAG_STOCK_OUT_UPDATE
+        DiabloEnum.TAG_STOCK_OUT_UPDATE,
+
+        DiabloEnum.TAG_GOOD_UPDATE,
+        DiabloEnum.TAG_COLOR_SELECT,
+        DiabloEnum.TAG_SIZE_SELECT
     };
 
     private NavigationTag mCurrentNavTag;
@@ -150,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(9);
+            selectMenuItem(10);
             loadHomeFragment();
         }
     }

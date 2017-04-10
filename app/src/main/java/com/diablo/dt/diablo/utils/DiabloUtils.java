@@ -13,8 +13,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -437,5 +439,9 @@ public class DiabloUtils {
                     DiabloError.getInstance().getError(99)).create();
             }
         });
+    }
+
+    public TableRow.LayoutParams createTableRowParams(Float weight){
+        return new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, weight);
     }
 }

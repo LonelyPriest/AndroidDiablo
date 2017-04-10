@@ -110,6 +110,9 @@ public class Profile {
     // matched goods
     private List<MatchGood> mMatchGoods;
 
+    // class kind
+    private List<DiabloColorKind> mColorKinds;
+
     public void clear(){
         Log.d(LOG_TAG, "clear called");
         mLoginShop = DiabloEnum.INVALID_INDEX;
@@ -166,7 +169,14 @@ public class Profile {
         }
 
         // matched goods
-        mMatchGoods.clear();
+        if (null != mMatchGoods) {
+            mMatchGoods.clear();
+        }
+
+        // color kind
+        if (null != mColorKinds) {
+            mColorKinds.clear();
+        }
     }
 
     /*
@@ -445,6 +455,10 @@ public class Profile {
         }
     }
 
+    public final List<DiabloColor> getColors() {
+        return mColors;
+    }
+
     public String getColorName(Integer colorId){
         String name = DiabloEnum.EMPTY_STRING;
 
@@ -656,4 +670,15 @@ public class Profile {
         return good;
     }
 
+    /**
+     * color kind
+     */
+
+    public List<DiabloColorKind> getColorKinds() {
+        return mColorKinds;
+    }
+
+    public void setColorKinds(List<DiabloColorKind> colorKinds) {
+        this.mColorKinds = new ArrayList<>(colorKinds);
+    }
 }

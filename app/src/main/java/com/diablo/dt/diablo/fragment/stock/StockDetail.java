@@ -466,7 +466,7 @@ public class StockDetail extends Fragment {
         return true;
     }
 
-    public static void switchToStockUpdateFrame(String rsn, Fragment from, String tag) {
+    public void switchToStockUpdateFrame(String rsn, Fragment from, String tag) {
 
         FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
         // find

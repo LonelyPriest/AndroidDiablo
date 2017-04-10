@@ -1,0 +1,440 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.diablo.dt.diablo.fragment.inventory.GoodUpdate">
+
+  <ScrollView android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:orientation="vertical"
+                  android:layout_height="wrap_content">
+
+      <!-- styleNumber -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <ImageView android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_star_black_24dp"
+                   android:scaleX="0.5"
+                   android:scaleY="0.5"
+                   android:layout_gravity="center"
+                   android:tint="@color/bpRed"
+                   android:contentDescription="@string/style_number"
+                   android:layout_weight="0.1"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/style_number"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <EditText android:id="@+id/good_style_number"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:hint="@string/please_input_style_number"
+                  android:inputType="text|textCapCharacters"
+                  android:textSize="@dimen/ampm_label_size"
+                  android:textColor="@color/bpblack"
+                  android:textStyle="bold"
+                  android:selectAllOnFocus="true"
+                  android:layout_weight="0.7"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+
+      </LinearLayout>
+
+      <!-- brand -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <ImageView android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_star_black_24dp"
+                   android:scaleX="0.5"
+                   android:scaleY="0.5"
+                   android:layout_gravity="center"
+                   android:tint="@color/bpRed"
+                   android:contentDescription="@string/brand"
+                   android:layout_weight="0.1"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/brand"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <AutoCompleteTextView android:id="@+id/good_brand"
+                              android:layout_width="0dp"
+                              android:layout_height="wrap_content"
+                              android:hint="@string/please_input_brand"
+                              android:inputType="textNoSuggestions"
+                              android:layout_weight="0.7"
+                              android:textSize="@dimen/ampm_label_size"
+                              android:textColor="@color/bpblack"
+                              android:textStyle="bold"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- type -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <ImageView android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_star_black_24dp"
+                   android:scaleX="0.5"
+                   android:scaleY="0.5"
+                   android:layout_gravity="center"
+                   android:tint="@color/bpRed"
+                   android:contentDescription="@string/good_type"
+                   android:layout_weight="0.1"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/good_type"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <AutoCompleteTextView android:id="@+id/good_type"
+                              android:layout_width="0dp"
+                              android:layout_height="wrap_content"
+                              android:inputType="textNoSuggestions"
+                              android:hint="@string/please_input_type"
+                              android:layout_weight="0.7"
+                              android:textSize="@dimen/ampm_label_size"
+                              android:textColor="@color/bpblack"
+                              android:textStyle="bold"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- firm -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <ImageView android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_star_black_24dp"
+                   android:scaleX="0.5"
+                   android:scaleY="0.5"
+                   android:layout_gravity="center"
+                   android:tint="@color/bpRed"
+                   android:contentDescription="@string/firm"
+                   android:layout_weight="0.1"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+                  android:text="@string/firm"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <AutoCompleteTextView android:id="@+id/good_firm"
+                              android:layout_width="0dp"
+                              android:layout_height="wrap_content"
+                              android:hint="@string/please_select_firm"
+                              android:inputType="textNoSuggestions"
+                              android:layout_weight="0.7"
+                              android:textSize="@dimen/ampm_label_size"
+                              android:textColor="@color/bpblack"
+                              android:textStyle="bold"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- sex -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/sex"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <Spinner android:id="@+id/good_sex"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:hint="@string/sex"
+                 style="@style/Widget.AppCompat.Spinner.Underlined"
+                 android:layout_weight="0.7"
+                 android:textStyle="bold"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- year -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/year"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <Spinner android:id="@+id/good_year"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:hint="@string/year"
+                 style="@style/Widget.AppCompat.Spinner.Underlined"
+                 android:layout_weight="0.7"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- season -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/season"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+        <Spinner android:id="@+id/good_season"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:hint="@string/season"
+                 style="@style/Widget.AppCompat.Spinner.Underlined"
+                 android:layout_weight="0.7"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- orgPrice-->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <ImageView android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_star_black_24dp"
+                   android:scaleX="0.5"
+                   android:scaleY="0.5"
+                   android:layout_gravity="center"
+                   android:tint="@color/bpRed"
+                   android:contentDescription="@string/firm"
+                   android:layout_weight="0.1"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/org_price"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <EditText android:id="@+id/good_org_price"
+                  android:tag="@string/org_price"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:hint="@string/please_input_orgPrice"
+                  android:inputType="numberDecimal"
+                  android:layout_weight="0.7"
+                  android:textSize="@dimen/ampm_label_size"
+                  android:textColor="@color/bpblack"
+                  android:textStyle="bold"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- pkgPrice -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <ImageView android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_star_black_24dp"
+                   android:scaleX="0.5"
+                   android:scaleY="0.5"
+                   android:layout_gravity="center"
+                   android:tint="@color/bpRed"
+                   android:contentDescription="@string/firm"
+                   android:layout_weight="0.1"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/pkg_price"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <EditText android:id="@+id/good_pkg_price"
+                  android:tag="@string/pkg_price"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:hint="@string/please_input_pkgPrice"
+                  android:inputType="numberDecimal"
+                  android:layout_weight="0.7"
+                  android:textSize="@dimen/ampm_label_size"
+                  android:textColor="@color/bpblack"
+                  android:textStyle="bold"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- tagPrice -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <ImageView android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_star_black_24dp"
+                   android:scaleX="0.5"
+                   android:scaleY="0.5"
+                   android:layout_gravity="center"
+                   android:tint="@color/bpRed"
+                   android:contentDescription="@string/tag_price"
+                   android:layout_weight="0.1"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/tag_price"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <EditText android:id="@+id/good_tag_price"
+                  android:tag="@string/tag_price"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:hint="@string/please_input_tagPrice"
+                  android:inputType="numberDecimal"
+                  android:layout_weight="0.7"
+                  android:textSize="@dimen/ampm_label_size"
+                  android:textColor="@color/bpblack"
+                  android:textStyle="bold"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- color -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/color"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <EditText android:id="@+id/good_colors"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:hint="@string/no_color_no_select"
+                  android:enabled="false"
+                  android:layout_weight="0.6"
+                  android:textSize="@dimen/ampm_label_size"
+                  android:textColor="@color/bpblack"
+                  android:textStyle="bold"/>
+
+        <ImageButton android:id="@+id/good_select_color"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_weight="0.1"
+                     android:src="@drawable/ic_touch_app_black_24dp"
+                     android:contentDescription="@string/color"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+      <!-- size -->
+      <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/size"
+                  android:gravity="center"
+                  android:layout_weight="0.1"
+                  android:textSize="@dimen/label_font_size"
+                  android:textColor="@color/black"/>
+
+        <EditText android:id="@+id/good_sizes"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:enabled="false"
+                  android:hint="@string/no_size_no_select"
+                  android:layout_weight="0.6"
+                  android:textSize="@dimen/ampm_label_size"
+                  android:textColor="@color/bpblack"
+                  android:textStyle="bold"/>
+
+        <ImageButton android:id="@+id/good_select_size"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_weight="0.1"
+                     android:src="@drawable/ic_touch_app_black_24dp"
+                     android:contentDescription="@string/size"/>
+        <TextView android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"/>
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+
+</LinearLayout>

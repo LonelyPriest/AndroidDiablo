@@ -401,14 +401,14 @@
                 android:textColor="@color/bpblack"
                 android:textStyle="bold"/>
 
-      <ImageButton android:id="@+id/good_select_color"
+      <ImageButton android:id="@+id/btn_select_color"
                    android:layout_width="0dp"
                    android:layout_height="wrap_content"
                    android:layout_weight="0.1"
-                   android:src="@drawable/ic_pin_drop_black_24dp"
+                   android:src="@drawable/ic_touch_app_black_24dp"
                    android:contentDescription="@string/color"/>
 
-      <ImageButton android:id="@+id/good_add_color"
+      <ImageButton android:id="@+id/btn_add_color"
                    android:layout_width="0dp"
                    android:layout_height="wrap_content"
                    android:layout_weight="0.1"
@@ -446,11 +446,11 @@
                 android:textColor="@color/bpblack"
                 android:textStyle="bold"/>
 
-      <ImageButton android:id="@+id/good_select_size"
+      <ImageButton android:id="@+id/btn_select_size"
                    android:layout_width="0dp"
                    android:layout_height="wrap_content"
                    android:layout_weight="0.1"
-                   android:src="@drawable/ic_pin_drop_black_24dp"
+                   android:src="@drawable/ic_touch_app_black_24dp"
                    android:contentDescription="@string/size"/>
       <TextView android:layout_width="0dp"
                 android:layout_height="wrap_content"

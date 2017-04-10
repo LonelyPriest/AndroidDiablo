@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.diablo.dt.diablo.fragment.inventory.ColorSelect">
+
+  <TableLayout
+      android:id="@+id/t_color_kind_head"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp">
+  </TableLayout>
+
+  <ScrollView android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <TableLayout
+        android:id="@+id/t_color_kind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+    </TableLayout>
+  </ScrollView>
+
+</LinearLayout>

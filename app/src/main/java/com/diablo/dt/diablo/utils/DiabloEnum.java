@@ -27,6 +27,9 @@ public class DiabloEnum {
     public static final String BUNDLE_PARAM_COME_FORM  = "COME_FROM";
     public static final String BUNDLE_PARAM_RSN        = "RSN";
 
+    public static final String BUNDLE_PARAM_GOOD       = "GOOD";
+    public static final String BUNDLE_PARAM_ID         = "ID";
+
     //shop
     public static final Integer SHOP_ONLY = 0;
     public static final Integer REPO_ONLY = 1;
@@ -95,6 +98,9 @@ public class DiabloEnum {
     public static final String TAG_GOOD_SELECT = "goodSelect";
     public static final String TAG_STOCK_IN_UPDATE = "stockInUpdate";
     public static final String TAG_STOCK_OUT_UPDATE = "stockOutUpdate";
+    public static final String TAG_GOOD_UPDATE = "goodUpdate";
+    public static final String TAG_COLOR_SELECT = "colorSelect";
+    public static final String TAG_SIZE_SELECT = "sizeSelect";
 
     public static final Integer SALE_IN = 0;
     public static final Integer SALE_OUT = 1;
@@ -108,6 +114,9 @@ public class DiabloEnum {
     public static final Integer STOCK_OUT = 1;
     public static final Integer STOCK_IN_UPDATE = 2;
     public static final Integer STOCK_OUT_UPDATE = 3;
+
+    public static final Integer GOOD_NEW = 4;
+    public static final Integer GOOD_UPDATE = 5;
 
     /**
      * DB table

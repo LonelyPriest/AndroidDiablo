@@ -5,13 +5,15 @@ import static android.graphics.Typeface.BOLD;
 
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -349,6 +351,47 @@ public class GoodDetail extends Fragment {
                 mTableSwipe.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        mCurrentSelectedRow = (TableRow) v;
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_on_good_detail, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        GoodDetailResponse.GoodNote detail = ((GoodDetailResponse.GoodNote) mCurrentSelectedRow.getTag());
+        if (getResources().getString(R.string.modify) == item.getTitle()){
+            switchToStockUpdateFrame(detail.getId(), this, DiabloEnum.TAG_GOOD_UPDATE);
+        }
+
+        return true;
+    }
+
+    public void switchToStockUpdateFrame(Integer goodId, Fragment from, String tag) {
+
+        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
+        // find
+        Fragment to = from.getFragmentManager().findFragmentByTag(tag);
+
+        if (null == to){
+            to = new GoodUpdate();
+            Bundle args = new Bundle();
+            args.putInt(DiabloEnum.BUNDLE_PARAM_ID, goodId);
+            to.setArguments(args);
+
+        } else {
+            ((GoodUpdate)to).setGoodId(goodId);
+        }
+
+        if (!to.isAdded()){
+            transaction.hide(from).add(R.id.frame_container, to, tag).commit();
+        } else {
+            transaction.hide(from).show(to).commit();
+        }
     }
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){

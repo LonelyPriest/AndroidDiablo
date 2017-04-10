@@ -24,6 +24,7 @@ import com.diablo.dt.diablo.client.WGoodClient;
 import com.diablo.dt.diablo.entity.BaseSetting;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.entity.DiabloColorKind;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.DiabloUser;
@@ -435,6 +436,28 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void getColorKind(){
+        WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
+        Call<List<DiabloColorKind>> call = face.listColorKind(Profile.instance().getToken());
+        call.enqueue(new Callback<List<DiabloColorKind>>() {
+            @Override
+            public void onResponse(Call<List<DiabloColorKind>> call, Response<List<DiabloColorKind>> response) {
+                Log.d(LOG_TAG, "success to get color kind");
+                Profile.instance().setColorKinds(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 120;
+                message.sendToTarget();
+            }
+
+            @Override
+            public void onFailure(Call<List<DiabloColorKind>> call, Throwable t) {
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 121;
+                message.sendToTarget();
+            }
+        });
+    }
+
     private static class LoginHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
 
@@ -508,9 +531,15 @@ public class LoginActivity extends AppCompatActivity {
                         activity.loginError(1199);
                         break;
                     case 110:
-                        activity.gotoMain();
+                        activity.getColorKind();
                         break;
                     case 111:
+                        activity.loginError(1199);
+                        break;
+                    case 120:
+                        activity.gotoMain();
+                        break;
+                    case 121:
                         activity.loginError(1199);
                         break;
                     default:

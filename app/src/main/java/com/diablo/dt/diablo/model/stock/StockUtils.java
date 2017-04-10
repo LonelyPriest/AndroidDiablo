@@ -11,7 +11,6 @@ import android.view.Gravity;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.fragment.stock.GoodSelect;
-import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 

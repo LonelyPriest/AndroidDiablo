@@ -444,6 +444,7 @@
   <string name="sale_out_update">交易单编辑（退货）</string>
   <string name="stock_in_update">采购单编辑（采购）</string>
   <string name="stock_out_update">采购单编辑（退货）</string>
+  <string name="good_update">货品编辑</string>
 
   <string name="slide_sale_manager">销售管理</string>
   <string name="slide_stock_manager">采购管理</string>

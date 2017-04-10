@@ -2,6 +2,7 @@ package com.diablo.dt.diablo.rest;
 
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.entity.DiabloColorKind;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.MatchGood;
@@ -27,6 +28,9 @@ import retrofit2.http.POST;
 public interface WGoodInterface {
     @GET("list_w_color")
     Call<List<DiabloColor>> listColor(@Header("cookie") String token);
+
+    @GET("list_color_type")
+    Call<List<DiabloColorKind>> listColorKind(@Header("cookie") String token);
 
     @GET("list_w_size")
     Call<List<DiabloSizeGroup>> listSizeGroup(@Header("cookie") String token);

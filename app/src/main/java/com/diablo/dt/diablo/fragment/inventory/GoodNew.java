@@ -26,6 +26,7 @@ import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.inventory.GoodCalc;
+import com.diablo.dt.diablo.model.inventory.GoodUtils;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.inventory.InventoryNewRequest;
 import com.diablo.dt.diablo.response.inventory.InventoryNewResponse;
@@ -48,10 +49,6 @@ public class GoodNew extends Fragment {
     private String [] mSexes;
     private String [] mYears;
     private String [] mSeasons;
-
-    private View mBtnAddFirm;
-    private View mBtnAddBrand;
-    private View mBtnAddType;
 
     private SparseArray<DiabloButton> mButtons;
 
@@ -96,27 +93,35 @@ public class GoodNew extends Fragment {
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
-        mBtnAddFirm = view.findViewById(R.id.btn_add_firm);
-        mBtnAddFirm.setOnClickListener(new View.OnClickListener() {
+        View btnAddFirm = view.findViewById(R.id.btn_add_firm);
+        btnAddFirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addFirm(inflater, view);
             }
         });
 
-        mBtnAddBrand = view.findViewById(R.id.btn_add_brand);
-        mBtnAddBrand.setOnClickListener(new View.OnClickListener() {
+        View btnAddBrand = view.findViewById(R.id.btn_add_brand);
+        btnAddBrand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addBrand(inflater, view);
             }
         });
 
-        mBtnAddType = view.findViewById(R.id.btn_add_good_type);
-        mBtnAddType.setOnClickListener(new View.OnClickListener() {
+        View btnAddType = view.findViewById(R.id.btn_add_good_type);
+        btnAddType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addType(inflater, view);
+            }
+        });
+
+        View btnSelectColor = view.findViewById(R.id.btn_select_color);
+        btnSelectColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectColor();
             }
         });
 
@@ -283,6 +288,13 @@ public class GoodNew extends Fragment {
                 }
             }
         });
+    }
+
+    private void selectColor() {
+        if (null != mGoodController) {
+            GoodUtils.switchToColorSelectFrame(mGoodController.getModel(), DiabloEnum.GOOD_NEW, this);
+        }
+
     }
 
 
