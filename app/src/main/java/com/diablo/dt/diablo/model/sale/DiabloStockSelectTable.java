@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.List;
@@ -34,14 +35,6 @@ public class DiabloStockSelectTable {
     private TableRow[] mRows;
 
     private OnStockListener mStockListener;
-
-    // private List<SaleStockAmount> mStockAmounts;
-
-    // private SaleStockAmount mStockAmount;
-
-//    public List<SaleStockAmount> getStockAmounts(){
-//        return mStockAmounts;
-//    }
 
     public DiabloStockSelectTable(Context context, TableLayout table, List<DiabloColor> colors, List<String> sizes){
         this.mContext = context;
@@ -80,20 +73,33 @@ public class DiabloStockSelectTable {
     }
 
     public void genHead(){
-        // empty
-        TextView cell = new TextView(mContext);
-        cell.setLayoutParams(genRowWeight(0.8f));
-        mHead.addView(cell);
+        TableRow.LayoutParams lp02f = genRowWeight(0.2f);
+        TableRow.LayoutParams lp08f = genRowWeight(0.8f);
 
-        TableRow.LayoutParams lp = genRowWeight(1f);
+        // empty
+        TextView col0 = new TextView(mContext);
+        col0.setLayoutParams(lp08f);
+        mHead.addView(col0);
+
+
         for (Integer i=0; i<mOrderedSizes.size(); i++){
-            cell = new TextView(mContext);
-            cell.setLayoutParams(lp);
-            setTextCellStyle(cell, 20, 100);
-            cell.setTypeface(null, Typeface.BOLD);
-            cell.setText(mOrderedSizes.get(i));
-            cell.setGravity(Gravity.CENTER_VERTICAL);
-            mHead.addView(cell);
+            TextView col = new TextView(mContext);
+            col.setLayoutParams(lp02f);
+            mHead.addView(col);
+
+            col = new TextView(mContext);
+            col.setLayoutParams(lp08f);
+            mHead.addView(col);
+
+            setTextCellStyle(col, 20, 100);
+            col.setTypeface(null, Typeface.BOLD);
+            col.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
+
+            if (mOrderedSizes.get(i).equals(DiabloEnum.DIABLO_FREE_SIZE)) {
+                col.setText(mContext.getString(R.string.free_size));
+            } else {
+                col.setText(mOrderedSizes.get(i));
+            }
         }
     }
 
@@ -108,7 +114,13 @@ public class DiabloStockSelectTable {
             col0.setLayoutParams(genRowWeight(0.8f));
             setTextCellStyle(col0, 20, 100);
             col0.setTypeface(null, Typeface.BOLD);
-            col0.setText(mOrderedColors.get(i).getName());
+
+            if (mOrderedColors.get(i).getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)) {
+                col0.setText(mContext.getString(R.string.free_color));
+            } else {
+                col0.setText(mOrderedColors.get(i).getName());
+            }
+            
             col0.setGravity(Gravity.CENTER_VERTICAL);
             row.addView(col0);
 

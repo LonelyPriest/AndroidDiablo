@@ -34,6 +34,11 @@ public class DiabloSizeGroup {
         this.mSortedSizeNames = new ArrayList<>();
     }
 
+    public void initWithFreeSizeGroup() {
+        SI = DiabloEnum.DIABLO_FREE_SIZE;
+        gid = DiabloEnum.DIABLO_FREE_SIZE_GROUP;
+    }
+
     public Integer getGroupId() {
         return gid;
     }
@@ -42,47 +47,47 @@ public class DiabloSizeGroup {
         return name;
     }
 
-    public String getSI() {
+    private String getSI() {
         return SI;
     }
 
-    public String getSII() {
+    private String getSII() {
         return SII;
     }
 
-    public String getSIII() {
+    private String getSIII() {
         return SIII;
     }
 
-    public String getSIV() {
+    private String getSIV() {
         return SIV;
     }
 
-    public String getSV() {
+    private String getSV() {
         return SV;
     }
 
-    public String getSVI() {
+    private String getSVI() {
         return SVI;
     }
 
     public void genSortedSizeNames(){
-        if (!getSI().equals(DiabloEnum.EMPTY_STRING))
+        if (null != SI && !getSI().equals(DiabloEnum.EMPTY_STRING))
             mSortedSizeNames.add(getSI());
 
-        if (!getSII().equals(DiabloEnum.EMPTY_STRING))
+        if (null != SII && !getSII().equals(DiabloEnum.EMPTY_STRING))
             mSortedSizeNames.add(getSII());
 
-        if (!getSIII().equals(DiabloEnum.EMPTY_STRING))
+        if (null != SIII && !getSIII().equals(DiabloEnum.EMPTY_STRING))
             mSortedSizeNames.add(getSIII());
 
-        if (!getSIV().equals(DiabloEnum.EMPTY_STRING))
+        if (null != SIV && !getSIV().equals(DiabloEnum.EMPTY_STRING))
             mSortedSizeNames.add(getSIV());
 
-        if (!getSV().equals(DiabloEnum.EMPTY_STRING))
+        if (null != SV && !getSV().equals(DiabloEnum.EMPTY_STRING))
             mSortedSizeNames.add(getSV());
 
-        if (!getSVI().equals(DiabloEnum.EMPTY_STRING))
+        if (null != SVI && !getSVI().equals(DiabloEnum.EMPTY_STRING))
             mSortedSizeNames.add(getSVI());
     }
 

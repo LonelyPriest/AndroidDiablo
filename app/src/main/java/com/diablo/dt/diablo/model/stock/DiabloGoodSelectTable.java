@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.List;
@@ -83,7 +84,12 @@ public class DiabloGoodSelectTable {
             cell.setLayoutParams(lp);
             setTextCellStyle(cell, 20, 100);
             cell.setTypeface(null, Typeface.BOLD);
-            cell.setText(mOrderedSizes.get(i));
+            if (mOrderedSizes.get(i).equals(DiabloEnum.DIABLO_FREE_SIZE)) {
+                cell.setText(mContext.getString(R.string.free_size));
+            } else {
+                cell.setText(mOrderedSizes.get(i));
+            }
+
             cell.setGravity(Gravity.CENTER_VERTICAL);
             mHead.addView(cell);
         }
@@ -100,7 +106,11 @@ public class DiabloGoodSelectTable {
             col0.setLayoutParams(genRowWeight(0.8f));
             setTextCellStyle(col0, 20, 100);
             col0.setTypeface(null, Typeface.BOLD);
-            col0.setText(mOrderedColors.get(i).getName());
+            if (mOrderedColors.get(i).getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)) {
+                col0.setText(mContext.getString(R.string.free_color));
+            } else {
+                col0.setText(mOrderedColors.get(i).getName());
+            }
             col0.setGravity(Gravity.CENTER_VERTICAL);
             row.addView(col0);
 

@@ -489,9 +489,18 @@ public class Profile {
             mSizeGroups.add(s);
         }
 
+        // add free group
+        DiabloSizeGroup freeSizeGroup = new DiabloSizeGroup();
+        freeSizeGroup.initWithFreeSizeGroup();
+        mSizeGroups.add(freeSizeGroup);
+
         for (DiabloSizeGroup s: mSizeGroups){
             s.genSortedSizeNames();
         }
+    }
+
+    public final List<DiabloSizeGroup> getSizeGroups() {
+        return mSizeGroups;
     }
 
     public final DiabloSizeGroup getSizeGroup(Integer groupId) {

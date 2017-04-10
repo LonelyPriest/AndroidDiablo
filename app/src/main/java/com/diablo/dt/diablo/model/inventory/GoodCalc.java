@@ -142,8 +142,25 @@ public class GoodCalc {
         return mColors;
     }
 
+    public void clearColor() {
+        mColors.clear();
+    }
+
     public void addColor(DiabloColor color) {
-        this.mColors.add(color);
+        if (null == getColor(color.getColorId())) {
+            this.mColors.add(color);
+        }
+    }
+
+    public void removeColor(DiabloColor color) {
+        DiabloColor removed = getColor(color.getColorId());
+        if (null != removed) {
+            this.mColors.remove(removed);
+        }
+    }
+
+    public void clearSizeGroups() {
+        mSizeGroups.clear();
     }
 
     public List<DiabloSizeGroup> getSizeGroups() {
@@ -151,7 +168,16 @@ public class GoodCalc {
     }
 
     public void addSizeGroup(DiabloSizeGroup sizeGroup) {
-        this.mSizeGroups.add(sizeGroup);
+        if (null == getSizeGroup(sizeGroup.getGroupId())) {
+            this.mSizeGroups.add(sizeGroup);
+        }
+    }
+
+    public void removeSizeGroup(DiabloSizeGroup sizeGroup) {
+        DiabloSizeGroup removed = getSizeGroup(sizeGroup.getGroupId());
+        if (null != removed) {
+            this.mSizeGroups.remove(removed);
+        }
     }
 
 
@@ -209,5 +235,27 @@ public class GoodCalc {
 
     public void setFree(Integer free) {
         this.mFree = free;
+    }
+
+    public DiabloColor getColor(Integer colorId) {
+        DiabloColor found = null;
+        for (DiabloColor color: mColors) {
+            if(color.getColorId().equals(colorId)) {
+                found = color;
+            }
+        }
+
+        return found;
+    }
+
+    public DiabloSizeGroup getSizeGroup(Integer groupId) {
+        DiabloSizeGroup found = null;
+        for (DiabloSizeGroup g: mSizeGroups) {
+            if (g.getGroupId().equals(groupId)) {
+                found = g;
+            }
+        }
+
+        return found;
     }
 }

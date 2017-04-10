@@ -259,7 +259,8 @@
   <string name="price4">价4</string>
   <string name="price5">价5</string>
 
-  <string name="free_color">均码</string>
+  <string name="free_color">均色</string>
+  <string name="free_size">均码</string>
   <string name="sell">已售</string>
   <string name="inventory">库存</string>
   <string name="shelfDate">上架日期</string>
@@ -445,6 +446,8 @@
   <string name="stock_in_update">采购单编辑（采购）</string>
   <string name="stock_out_update">采购单编辑（退货）</string>
   <string name="good_update">货品编辑</string>
+  <string name="select_color">请选择颜色</string>
+  <string name="select_size">请选择尺码</string>
 
   <string name="slide_sale_manager">销售管理</string>
   <string name="slide_stock_manager">采购管理</string>
@@ -458,6 +461,8 @@
   <string name="back_from_stock_select">从库存选择返回</string>
   <string name="back_from_unknown">从未知返回</string>
 
-  <string name="back_from_good_select">从货品选择返回</string>
+  <string name="back_from_good_select">从选择货品返回</string>
+  <string name="back_from_color_select">从选择颜色返回</string>
+  <string name="back_from_size_select">从选择尺码返回</string>
 
 </resources>

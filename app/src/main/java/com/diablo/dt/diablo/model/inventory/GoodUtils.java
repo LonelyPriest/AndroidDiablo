@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.fragment.inventory.ColorSelect;
+import com.diablo.dt.diablo.fragment.inventory.SizeSelect;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**
@@ -43,6 +44,34 @@ public class GoodUtils {
 
         if (!to.isAdded()){
             transaction.hide(from).add(R.id.frame_container, to, DiabloEnum.TAG_COLOR_SELECT).commit();
+        } else {
+            transaction.hide(from).show(to).commit();
+        }
+    }
+
+
+    public static void switchToSizeSelectFrame(
+        GoodCalc calc,
+        Integer comeFrom,
+        Fragment from) {
+
+        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
+        // find
+        SizeSelect to = (SizeSelect) from.getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SIZE_SELECT);
+
+        if (null == to){
+            Bundle args = new Bundle();
+            args.putInt(DiabloEnum.BUNDLE_PARAM_COME_FORM, comeFrom);
+            args.putString(DiabloEnum.BUNDLE_PARAM_GOOD, new Gson().toJson(calc));
+            to = new SizeSelect();
+            to.setArguments(args);
+        } else {
+            to.setComeFrom(comeFrom);
+            to.setGoodCalc(new Gson().toJson(calc));
+        }
+
+        if (!to.isAdded()){
+            transaction.hide(from).add(R.id.frame_container, to, DiabloEnum.TAG_SIZE_SELECT).commit();
         } else {
             transaction.hide(from).show(to).commit();
         }

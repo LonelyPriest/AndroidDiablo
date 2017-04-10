@@ -1,7 +1,8 @@
 package com.diablo.dt.diablo.entity;
 
-import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.google.gson.annotations.SerializedName;
+
+import com.diablo.dt.diablo.utils.DiabloEnum;
 
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class DiabloColor {
     private String typeName;
     @SerializedName("remark")
     private String remark;
+
+//    @SerializedName("select")
+//    private boolean isSelect;
 
     public DiabloColor(){
         this.colorId = DiabloEnum.DIABLO_FREE_COLOR;
@@ -48,6 +52,14 @@ public class DiabloColor {
     public String getRemark() {
         return remark;
     }
+
+//    public boolean isSelect() {
+//        return isSelect;
+//    }
+
+//    public void setSelect(boolean select) {
+//        isSelect = select;
+//    }
 
     public boolean includeIn(List<DiabloColor> colors){
         boolean include = false;

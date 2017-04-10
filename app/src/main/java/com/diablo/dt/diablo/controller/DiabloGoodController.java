@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloBrand;
+import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
@@ -26,6 +28,7 @@ import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloGoodCalcView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -517,6 +520,34 @@ public class DiabloGoodController {
                 checkValidAction();
             }
         });
+    }
+
+    /**
+     * adapter model operation
+     */
+    public void setColors(List<DiabloColor> colors) {
+        List<String> colorNames = new ArrayList<>();
+        mGoodCalc.clearColor();
+        for(DiabloColor color: colors) {
+            mGoodCalc.addColor(color);
+            colorNames.add(color.getName());
+        }
+
+        ((EditText)mGoodCalcView.getColor()).setText(
+            android.text.TextUtils.join(DiabloEnum.SIZE_SEPARATOR, colorNames));
+    }
+
+    public void setSizeGroups(List<DiabloSizeGroup> groups) {
+        List<String> groupNames = new ArrayList<>();
+        mGoodCalc.clearSizeGroups();
+
+        for (DiabloSizeGroup g: groups) {
+            mGoodCalc.addSizeGroup(g);
+            groupNames.add(g.getName());
+        }
+
+        ((EditText)mGoodCalcView.getSize()).setText(
+            android.text.TextUtils.join(DiabloEnum.SIZE_SEPARATOR, groupNames));
     }
 
 }

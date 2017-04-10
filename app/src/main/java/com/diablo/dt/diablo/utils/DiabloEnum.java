@@ -13,10 +13,13 @@ public class DiabloEnum {
 
     public static final Integer INVALID_INDEX = -1;
     public static final Integer DIABLO_FREE = 0;
+    public static final Integer DIABLO_NON_FREE = 1;
     public static final Integer DIABLO_FALSE = 0;
     public static final Integer DIABLO_TRUE = 1;
     public static final Integer DIABLO_FREE_COLOR = 0;
     public static final String  DIABLO_FREE_SIZE = "0";
+    public static final Integer DIABLO_FREE_SIZE_GROUP = 0;
+
     public static final String  DIABLO_STRING_ZERO = "0";
     public static final String  DIABLO_INVALID_RSN = "INVALID_RSN";
 

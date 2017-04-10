@@ -56,6 +56,22 @@ public class GoodNew extends Fragment {
     // private GoodCalc mGoodCalc;
     private DiabloGoodController mGoodController;
 
+    private ColorSelect.OnColorSelectListener mOnColorSelectListener;
+    private SizeSelect.OnSizeSelectListener mOnSizeSelectListener;
+    private Integer mBackFrom = R.string.back_from_unknown;
+
+    public void setOnColorSelectListener(ColorSelect.OnColorSelectListener listener) {
+        mOnColorSelectListener = listener;
+    }
+
+    public void  setOnSizeSelectListener(SizeSelect.OnSizeSelectListener listener) {
+        mOnSizeSelectListener = listener;
+    }
+
+    public void setBackFrom(Integer backFrom) {
+        mBackFrom = backFrom;
+    }
+
     public GoodNew() {
         // Required empty public constructor
     }
@@ -122,6 +138,14 @@ public class GoodNew extends Fragment {
             @Override
             public void onClick(View v) {
                 selectColor();
+            }
+        });
+
+        View btnSelectSize = view.findViewById(R.id.btn_select_size);
+        btnSelectSize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectSize();
             }
         });
 
@@ -294,7 +318,12 @@ public class GoodNew extends Fragment {
         if (null != mGoodController) {
             GoodUtils.switchToColorSelectFrame(mGoodController.getModel(), DiabloEnum.GOOD_NEW, this);
         }
+    }
 
+    private void selectSize() {
+        if (null != mGoodController) {
+            GoodUtils.switchToSizeSelectFrame(mGoodController.getModel(), DiabloEnum.GOOD_NEW, this);
+        }
     }
 
 
@@ -393,6 +422,46 @@ public class GoodNew extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        // utils.makeToast(getContext(), hidden ? "hidden" : "show");
+        if (!hidden){
+            if (mBackFrom.equals(R.string.back_from_color_select)){
+                switch (mOnColorSelectListener.getCurrentOperation()){
+                    case R.string.action_save:
+                        GoodCalc calc = mOnColorSelectListener.afterSelectColor();
+                        mGoodController.setColors(calc.getColors());
+                        break;
+                    case R.string.action_cancel:
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            else if (mBackFrom.equals(R.string.back_from_size_select)) {
+                switch (mOnSizeSelectListener.getCurrentOperation()){
+                    case R.string.action_save:
+                        GoodCalc calc = mOnSizeSelectListener.afterSelectSizeGroup();
+                        mGoodController.setSizeGroups(calc.getSizeGroups());
+                        break;
+                    case R.string.action_cancel:
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            mBackFrom = R.string.back_from_unknown;
+//            else {
+//                View cell = ((TableRow) mSaleTable.getChildAt(0)).getChildAt(1);
+//                cell.requestFocus();
+//                utils.openKeyboard(getContext(), cell);
+//            }
+        }
     }
 
     /**
@@ -497,7 +566,17 @@ public class GoodNew extends Fragment {
                     good.setsGroup(request.getInventory().getSizeGroupsWithComma());
                     good.setSize(request.getInventory().getSizesWithComma());
 
-                    good.setFree(calc.getFree());
+                    if (1 == calc.getColors().size()
+                        && calc.getColors().get(0).getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)
+                        && 1 == calc.getSizeGroups().size()
+                        && calc.getSizeGroups().get(0).getGroupId().equals(DiabloEnum.DIABLO_FREE_SIZE_GROUP)
+                        ){
+                        good.setFree(DiabloEnum.DIABLO_FREE);
+                    }
+                    else {
+                        good.setFree(DiabloEnum.DIABLO_NON_FREE);
+                    }
+
 
                     good.setOrgPrice(calc.getOrgPrice());
                     good.setTagPrice(calc.getTagPrice());
@@ -545,5 +624,7 @@ public class GoodNew extends Fragment {
             }
         });
     }
+
+
 
 }
