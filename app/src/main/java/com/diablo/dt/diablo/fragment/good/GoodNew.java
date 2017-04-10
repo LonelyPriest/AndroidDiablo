@@ -367,7 +367,10 @@ public class GoodNew extends Fragment {
             mGoodController = null;
         }
 
-        mGoodController = new DiabloGoodController(new GoodCalc(), mGoodCalcView);
+        GoodCalc calc = new GoodCalc();
+        calc.setSex(DiabloEnum.DIABLO_FAMAN);
+        mGoodController = new DiabloGoodController(calc, mGoodCalcView);
+
         mGoodController.setSexAdapter(getContext(), mSexes);
         mGoodController.setYearAdapter(getContext(), mYears, UTILS.currentYear());
         mGoodController.setSeasonAdapter(getContext(), mSeasons, UTILS.currentMonth());

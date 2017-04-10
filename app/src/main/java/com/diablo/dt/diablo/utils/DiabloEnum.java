@@ -20,6 +20,9 @@ public class DiabloEnum {
     public static final String  DIABLO_FREE_SIZE = "0";
     public static final Integer DIABLO_FREE_SIZE_GROUP = 0;
 
+    public static final Integer DIABLO_FAMAN = 0;
+    public static final Integer DIABLO_MAN = 1;
+
     public static final String  DIABLO_STRING_ZERO = "0";
     public static final String  DIABLO_INVALID_RSN = "INVALID_RSN";
 
