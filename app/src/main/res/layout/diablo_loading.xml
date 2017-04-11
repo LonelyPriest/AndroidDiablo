@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/diablo_loading"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:background="@android:color/transparent"
+              android:gravity="center"
+              android:minHeight="60dp"
+              android:minWidth="180dp"
+              android:orientation="vertical"
+              android:padding="10dp">
+
+  <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/diablo_loading_image"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:src="@drawable/ic_refresh_black_24dp"
+             android:contentDescription="@string/btn_refresh">
+
+  </ImageView>
+</LinearLayout>

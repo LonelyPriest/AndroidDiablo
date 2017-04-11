@@ -59,6 +59,7 @@ public class DiabloEnum {
     // pagination
     public static final Integer DEFAULT_PAGE = 1;
     public static final Integer DEFAULT_ITEMS_PER_PAGE = 15;
+    public static final Integer START_DEFAULT_INDEX = 1;
 
     // base setting
     public static final String  START_TIME = "qtime_start";
@@ -102,6 +103,8 @@ public class DiabloEnum {
     public static final String TAG_INVENTORY_DETAIL = "inventoryDetail";
     public static final String TAG_GOOD_NEW = "goodNew";
     public static final String TAG_GOOD_DETAIL = "goodDetail";
+    public static final String TAG_GOOD_COLOR = "goodColor";
+    public static final String TAG_GOOD_SIZE = "goodSize";
 
     public static final String TAG_GOOD_SELECT = "goodSelect";
     public static final String TAG_STOCK_IN_UPDATE = "stockInUpdate";

@@ -211,11 +211,11 @@ public class SaleStock {
         return brandId;
     }
 
-//    public void setBrandId(Integer brandId){
+//    public void setBrand(Integer brandId){
 //        this.brandId = brandId;
 //    }
 //
-//    public void setTypeId(Integer typeId) {
+//    public void setType(Integer typeId) {
 //        this.typeId = typeId;
 //    }
 

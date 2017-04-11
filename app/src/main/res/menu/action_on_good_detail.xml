@@ -14,6 +14,12 @@
       app:showAsAction="ifRoom|withText"/>
 
   <item
+      android:id="@+id/good_detail_to_add"
+      android:icon="@drawable/ic_add_circle_black_24dp"
+      android:title="@string/add"
+      app:showAsAction="ifRoom|withText"/>
+
+  <item
       android:id="@+id/good_detail_refresh"
       android:icon="@drawable/ic_refresh_black_24dp"
       android:title="@string/btn_refresh"

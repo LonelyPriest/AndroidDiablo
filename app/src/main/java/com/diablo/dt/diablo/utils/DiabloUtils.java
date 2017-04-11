@@ -3,19 +3,26 @@ package com.diablo.dt.diablo.utils;
 import static java.lang.String.format;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +30,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WSaleClient;
+import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloShop;
+import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
@@ -34,6 +43,7 @@ import com.diablo.dt.diablo.rest.WSaleInterface;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -338,6 +348,50 @@ public class DiabloUtils {
             DiabloError.getInstance().getError(errorCode)).create();
     }
 
+    public TextView addCell(Context context, TableRow row, String value, TableRow.LayoutParams lp){
+        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
+        TextView cell = new TextView(context);
+        cell.setLayoutParams(lp);
+        // cell.setTextColor(context.getResources().getColor(R.color.black));
+        cell.setText(value.trim());
+        cell.setTextSize(18);
+        // cell.setHeight(105);
+        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
+        row.addView(cell);
+        return  cell;
+    }
+
+    public TextView addCell(Context context, TableRow row, Integer value, TableRow.LayoutParams lp){
+        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
+        TextView cell = new TextView(context);
+        if (value < 0) {
+            cell.setTextColor(ContextCompat.getColor(context, R.color.red));
+        }
+        cell.setLayoutParams(lp);
+        cell.setText(DiabloUtils.instance().toString(value).trim());
+        cell.setTextSize(20);
+        // cell.setHeight(120);
+        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
+        row.addView(cell);
+        return  cell;
+    }
+
+    public TextView addCell(Context context, TableRow row, float value, TableRow.LayoutParams lp){
+        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
+        TextView cell = new TextView(context);
+        if (value < 0f) {
+            cell.setTextColor(ContextCompat.getColor(context, R.color.red));
+        }
+
+        cell.setLayoutParams(lp);
+        cell.setText(DiabloUtils.instance().toString(value).trim());
+        cell.setTextSize(20);
+        // cell.setHeight(120);
+        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
+        row.addView(cell);
+        return  cell;
+    }
+
     public void formatPageInfo(final TextView cell) {
         cell.setGravity(Gravity.END);
         cell.setTextColor(Color.BLACK);
@@ -441,7 +495,71 @@ public class DiabloUtils {
         });
     }
 
+    public List<DiabloColor> stringColorToArray(final String stringColors) {
+        List<DiabloColor> colors = new ArrayList<>();
+        for (String colorId:stringColors.split(DiabloEnum.SIZE_SEPARATOR)) {
+            DiabloColor color = Profile.instance().getColor(DiabloUtils.instance().toInteger(colorId));
+            if (null != color) {
+                colors.add(color);
+            }
+        }
+
+        return colors;
+    }
+
+    public List<DiabloSizeGroup> stringSizeGroupToArray(final String stringGroups) {
+        List<DiabloSizeGroup> sizeGroups = new ArrayList<>();
+        for (String groupId: stringGroups.split(DiabloEnum.SIZE_SEPARATOR)) {
+            DiabloSizeGroup group = Profile.instance().getSizeGroup(DiabloUtils.instance().toInteger(groupId));
+            if (null != group) {
+                sizeGroups.add(group);
+            }
+        }
+
+        return sizeGroups;
+    }
+
     public TableRow.LayoutParams createTableRowParams(Float weight){
         return new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, weight);
     }
+
+//    private Animation createRotateAnimation() {
+//        Animation animation = new RotateAnimation(0.0f, 360.0f,
+//            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+//            0.5f);
+//        animation.setRepeatCount(Animation.INFINITE);
+//        animation.setDuration(2000);
+//        return animation;
+//    }
+//
+//    public ImageView loadRefreshView(Context context, LayoutInflater inflater, ViewGroup root) {
+//        ImageView refreshView = (ImageView) inflater.inflate(R.layout.diablo_loading, root);
+//        // Animation rotateAnimation = createRotateAnimation();
+//        Animation rotation = AnimationUtils.loadAnimation(context, R.anim.refresh_rotate);
+//        rotation.setRepeatCount(Animation.INFINITE);
+//        refreshView.startAnimation(rotation);
+//        return refreshView;
+//    }
+
+    public Dialog createLoadingDialog(Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.diablo_loading, null);
+
+        LinearLayout layout = (LinearLayout) view.findViewById(R.id.diablo_loading);
+        ImageView image = (ImageView) view.findViewById(R.id.diablo_loading_image);
+
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.refresh_rotate);
+        animation.setRepeatCount(Animation.INFINITE);
+        image.startAnimation(animation);
+
+        Dialog loadingDialog = new Dialog(context, R.style.RefreshDialog);
+        loadingDialog.setCancelable(false);
+
+        loadingDialog.setContentView(layout, new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT));
+
+        return loadingDialog;
+    }
+
 }

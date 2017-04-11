@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.fragment.stock;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -68,6 +69,7 @@ public class StockDetail extends Fragment {
     * */
     private TableLayout mStockDetailTable;
     private SwipyRefreshLayout mStockDetailTableSwipe;
+    private Dialog mRefreshDialog;
 
     private TableRow mCurrentSelectedRow;
 
@@ -102,6 +104,8 @@ public class StockDetail extends Fragment {
         mRequest.setCondition(mRequestCondition);
 
         mStockRest = StockClient.getClient().create(StockInterface.class);
+        mRefreshDialog = UTILS.createLoadingDialog(getContext());
+
         init();
 
     }
@@ -237,6 +241,8 @@ public class StockDetail extends Fragment {
                 Log.d("SALE_DETAIL %s", response.toString());
 
                 mStockDetailTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
+
                 StockDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
@@ -388,6 +394,7 @@ public class StockDetail extends Fragment {
             @Override
             public void onFailure(Call<StockDetailResponse> call, Throwable t) {
                 mStockDetailTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
             }
         });
     }
@@ -415,6 +422,7 @@ public class StockDetail extends Fragment {
                 break;
             case R.id.stock_detail_refresh:
                 init();
+                mRefreshDialog.show();
                 pageChanged();
                 break;
             default:

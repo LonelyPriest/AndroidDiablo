@@ -215,6 +215,7 @@ public class GoodNew extends Fragment {
                     String name = ((EditText) view.findViewById(R.id.brand_name)).getText().toString().trim();
 
                     final DiabloBrand brand = new DiabloBrand(name);
+
                     brand.addBrand(getContext(), new DiabloBrand.OnBrandAddListener() {
                         @Override
                         public void afterAdd(DiabloBrand addedBrand) {
@@ -462,11 +463,6 @@ public class GoodNew extends Fragment {
             }
 
             mBackFrom = R.string.back_from_unknown;
-//            else {
-//                View cell = ((TableRow) mSaleTable.getChildAt(0)).getChildAt(1);
-//                cell.requestFocus();
-//                utils.openKeyboard(getContext(), cell);
-//            }
         }
     }
 
@@ -518,8 +514,10 @@ public class GoodNew extends Fragment {
 
 
         inv.setStyleNumber(calc.getStyleNumber());
-        inv.setBrandId(calc.getBrand().getName());
-        inv.setTypeId(calc.getGoodType().getName());
+        inv.setBrandId(calc.getBrand().getId());
+        inv.setBrand(calc.getBrand().getName());
+        inv.setTypeId(calc.getGoodType().getId());
+        inv.setType(calc.getGoodType().getName());
 
         inv.setSex(calc.getSex());
         inv.setFirm(calc.getFirm().getId());
@@ -572,17 +570,20 @@ public class GoodNew extends Fragment {
                     good.setsGroup(request.getInventory().getSizeGroupsWithComma());
                     good.setSize(request.getInventory().getSizesWithComma());
 
-                    if (1 == calc.getColors().size()
-                        && calc.getColors().get(0).getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)
-                        && 1 == calc.getSizeGroups().size()
-                        && calc.getSizeGroups().get(0).getGroupId().equals(DiabloEnum.DIABLO_FREE_SIZE_GROUP)
-                        ){
+                    if (0 == calc.getColors().size() && 0 == calc.getSizeGroups().size()) {
                         good.setFree(DiabloEnum.DIABLO_FREE);
+                    } else {
+                        if (1 == calc.getColors().size()
+                            && calc.getColors().get(0).getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)
+                            && 1 == calc.getSizeGroups().size()
+                            && calc.getSizeGroups().get(0).getGroupId().equals(DiabloEnum.DIABLO_FREE_SIZE_GROUP)
+                            ){
+                            good.setFree(DiabloEnum.DIABLO_FREE);
+                        }
+                        else {
+                            good.setFree(DiabloEnum.DIABLO_NON_FREE);
+                        }
                     }
-                    else {
-                        good.setFree(DiabloEnum.DIABLO_NON_FREE);
-                    }
-
 
                     good.setOrgPrice(calc.getOrgPrice());
                     good.setTagPrice(calc.getTagPrice());

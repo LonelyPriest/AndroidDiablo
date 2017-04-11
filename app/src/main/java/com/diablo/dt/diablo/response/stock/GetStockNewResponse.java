@@ -28,6 +28,18 @@ public class GetStockNewResponse extends Response {
         return StockNotes;
     }
 
+    public final StockNote getStockNote(Integer colorId, String size) {
+        StockNote found = null;
+        for (StockNote n: this.StockNotes) {
+            if (colorId.equals(n.getColorId()) && size.equals(n.getSize())) {
+                found = n;
+                break;
+            }
+        }
+
+        return found;
+    }
+
     public static class StockNote {
         @SerializedName("rsn")
         private String rsn;

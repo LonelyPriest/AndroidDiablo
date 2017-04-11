@@ -30,8 +30,12 @@ public class GoodNewRequest {
     public static class Inventory {
         @SerializedName("style_number")
         private String styleNumber;
+        @SerializedName("brand_id")
+        private Integer brandId;
         @SerializedName("brand")
         private String brand;
+        @SerializedName("type_id")
+        private Integer typeId;
         @SerializedName("type")
         private String type;
 
@@ -92,12 +96,20 @@ public class GoodNewRequest {
             this.styleNumber = styleNumber;
         }
 
-        public void setBrandId(String brand) {
+        public void setBrandId(Integer brandId) {
+            this.brandId = brandId;
+        }
+
+        public void setBrand(String brand) {
             this.brand = brand;
         }
 
-        public void setTypeId(String type) {
+        public void setType(String type) {
             this.type = type;
+        }
+
+        public void setTypeId(Integer typeId) {
+            this.typeId = typeId;
         }
 
         public void setSex(Integer sex) {

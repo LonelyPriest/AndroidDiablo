@@ -1,10 +1,10 @@
 package com.diablo.dt.diablo.fragment.good;
 
 
-import static android.graphics.Typeface.BOLD;
-
+import android.app.Dialog;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WGoodClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
+import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
@@ -34,6 +35,7 @@ import com.diablo.dt.diablo.request.good.GoodDetailRequest;
 import com.diablo.dt.diablo.response.good.GoodDetailResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloTableStockNote;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -58,6 +60,7 @@ public class GoodDetail extends Fragment {
 
     private TableLayout mTable;
     private SwipyRefreshLayout mTableSwipe;
+    private Dialog mRefreshDialog;
 
     private TableRow mCurrentSelectedRow;
 
@@ -87,6 +90,8 @@ public class GoodDetail extends Fragment {
         mRequest.setCondition(mRequestCondition);
 
         mGoodRest = WGoodClient.getClient().create(WGoodInterface.class);
+        mRefreshDialog = UTILS.createLoadingDialog(getContext());
+
         init();
     }
 
@@ -184,7 +189,7 @@ public class GoodDetail extends Fragment {
                 TableRow.LayoutParams.WRAP_CONTENT,
                 1.0f);
             TextView cell = new TextView(this.getContext());
-            cell.setTypeface(null, BOLD);
+            cell.setTypeface(null, Typeface.BOLD);
             cell.setTextColor(Color.BLACK);
 
             if (getResources().getString(R.string.order_id).equals(title)) {
@@ -225,6 +230,7 @@ public class GoodDetail extends Fragment {
                 Log.d(LOG_TAG, response.toString());
 
                 mTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
                 GoodDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
@@ -350,6 +356,7 @@ public class GoodDetail extends Fragment {
             @Override
             public void onFailure(Call<GoodDetailResponse> call, Throwable t) {
                 mTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
             }
         });
     }
@@ -368,10 +375,23 @@ public class GoodDetail extends Fragment {
         if (getResources().getString(R.string.modify) == item.getTitle()){
             switchToStockUpdateFrame(detail.getId(), this, DiabloEnum.TAG_GOOD_UPDATE);
         }
+        else if (getResources().getString(R.string.note) == item.getTitle()) {
+            List<DiabloColor> colors = UTILS.stringColorToArray((
+                (GoodDetailResponse.GoodNote) mCurrentSelectedRow.getTag()).getColors());
+
+            List<String> sizes = Profile.instance().genSortedSizeNamesByGroups(
+                ((GoodDetailResponse.GoodNote) mCurrentSelectedRow.getTag()).getsGroup());
+
+            new DiabloTableStockNote(
+                getContext(),
+                detail.getStyleNumber(),
+                detail.getBrandId(),
+                colors,
+                sizes).show();
+        }
 
         return true;
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -388,8 +408,12 @@ public class GoodDetail extends Fragment {
             case R.id.good_detail_to_stock_out:
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_OUT);
                 break;
-            case R.id.stock_detail_refresh:
+            case R.id.good_detail_to_add:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_GOOD_NEW);
+                break;
+            case R.id.good_detail_refresh:
                 init();
+                mRefreshDialog.show();
                 pageChanged();
                 break;
             default:

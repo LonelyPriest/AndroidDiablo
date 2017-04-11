@@ -30,6 +30,17 @@ public class GetSaleNewResponse extends Response {
         return saleNotes;
     }
 
+    public final SaleNote getSaleNote(Integer colorId, String size) {
+        SaleNote found = null;
+        for (SaleNote n: this.saleNotes) {
+            if (colorId.equals(n.getColor()) && size.equals(n.getSize())) {
+                found = n;
+                break;
+            }
+        }
+        return found;
+    }
+
     public static class SaleNote {
         @SerializedName("id")
         private Integer id;

@@ -50,7 +50,7 @@ public class DiabloBrand {
     }
 
     private void init() {
-        id = 0;
+        id = DiabloEnum.INVALID_INDEX;
         firmId = DiabloEnum.INVALID_INDEX;
         firm = DiabloEnum.EMPTY_STRING;
     }

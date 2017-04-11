@@ -20,6 +20,7 @@
   <string name="nav_inventory_detail">库存详情</string>
   <string name="nav_good_detail">货品详情</string>
   <string name="nav_good_new">新增货品</string>
+  <string name="nav_good_color">颜色</string>
 
   <!-- Toolbar titles when navigation menu item is selected -->
   <string-array name="nav_item_activity_titles">
@@ -34,8 +35,10 @@
     <item>采购明细</item>
 
     <item>库存详情</item>
+
     <item>货品详情</item>
     <item>新增货品</item>
+    <item>颜色</item>
 
   </string-array>
 
@@ -198,6 +201,12 @@
     <item>上架日期</item>
   </string-array>
 
+  <string-array name="thead_color_detail">
+    <item>序号</item>
+    <item>名称</item>
+    <item>基础色</item>
+  </string-array>
+
   <string-array name="sexes">
     <item>女</item>
     <item>男</item>
@@ -275,6 +284,8 @@
   <string name="color">颜色</string>
   <string name="size">尺码</string>
   <string name="star">*</string>
+  <string name="color_name">名称</string>
+  <string name="color_type">基础色</string>
 
   <string name="sale_in_fragment">Sale In fragment</string>
 
@@ -436,6 +447,7 @@
   <string name="btn_draft">草稿</string>
   <string name="btn_next">下一单</string>
   <string name="btn_back">返回</string>
+  <string name="btn_add">新增</string>
   <string name="btn_cancel">取消</string>
   <string name="btn_draft_clear">清除草稿</string>
 

@@ -59,7 +59,6 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class StockOutUpdate extends Fragment {
     private final static DiabloUtils UTILS = DiabloUtils.instance();
@@ -476,24 +475,11 @@ public class StockOutUpdate extends Fragment {
     }
 
     private void getStockOutFromServer() {
-        StockInterface face = StockClient.getClient().create(StockInterface.class);
-        Call<GetStockNewResponse> call = face.getStockNewInfo(Profile.instance().getToken(), mRSN);
-
-        call.enqueue(new Callback<GetStockNewResponse>() {
+        StockUtils.getStockNewInfoFormServer(mRSN, new StockUtils.OnGetStockNewFormSeverListener() {
             @Override
-            public void onResponse(Call<GetStockNewResponse> call, Response<GetStockNewResponse> response) {
-                Log.d(LOG_TAG, "success to get stock new by rsn:" + mRSN);
-                final GetStockNewResponse news = response.body();
-                if (DiabloEnum.SUCCESS.equals(news.getCode())) {
-                    mRSNId = news.getStockCalc().getId();
-                    recoverFromResponse(news.getStockCalc(), news.getStockNotes());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<GetStockNewResponse> call, Throwable t) {
-                Log.d(LOG_TAG, "fail to get stock new by rsn:" + mRSN);
+            public void afterGet(GetStockNewResponse response) {
+                mRSNId = response.getStockCalc().getId();
+                recoverFromResponse(response.getStockCalc(), response.getStockNotes());
             }
         });
     }

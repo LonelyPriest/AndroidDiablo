@@ -10,11 +10,19 @@ import android.text.InputType;
 import android.view.Gravity;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.client.StockClient;
+import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.stock.GoodSelect;
+import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
+import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by buxianhui on 17/3/25.
@@ -162,5 +170,33 @@ public class StockUtils {
             }
         }
         return found;
+    }
+
+    public interface OnGetStockNewFormSeverListener {
+        void afterGet(GetStockNewResponse response);
+    }
+
+    public static void getStockNewInfoFormServer(String rsn, final OnGetStockNewFormSeverListener listener) {
+        StockInterface face = StockClient.getClient().create(StockInterface.class);
+        Call<GetStockNewResponse> call = face.getStockNewInfo(Profile.instance().getToken(), rsn);
+
+        call.enqueue(new Callback<GetStockNewResponse>() {
+            @Override
+            public void onResponse(Call<GetStockNewResponse> call, Response<GetStockNewResponse> response) {
+                final GetStockNewResponse news = response.body();
+                if (DiabloEnum.SUCCESS.equals(news.getCode())) {
+                    listener.afterGet(news);
+
+//                    mRSNId = news.getStockCalc().getId();
+//                    recoverFromResponse(news.getStockCalc(), news.getStockNotes());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<GetStockNewResponse> call, Throwable t) {
+
+            }
+        });
     }
 }

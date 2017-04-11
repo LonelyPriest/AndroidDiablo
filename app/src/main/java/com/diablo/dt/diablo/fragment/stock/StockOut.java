@@ -56,7 +56,7 @@ import retrofit2.Callback;
 
 public class StockOut extends Fragment {
     private final static DiabloUtils UTILS = DiabloUtils.instance();
-    private final static String LOG_TAG = "StockIn:";
+    private final static String LOG_TAG = "StockOut:";
 
     private DiabloCellLabel[] mLabels;
     private SparseArray<DiabloButton> mButtons;

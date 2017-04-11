@@ -1,5 +1,6 @@
 package com.diablo.dt.diablo.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,8 +20,8 @@ import com.diablo.dt.diablo.client.FirmClient;
 import com.diablo.dt.diablo.client.RetailerClient;
 import com.diablo.dt.diablo.client.RightClient;
 import com.diablo.dt.diablo.client.StockClient;
-import com.diablo.dt.diablo.client.WLoginClient;
 import com.diablo.dt.diablo.client.WGoodClient;
+import com.diablo.dt.diablo.client.WLoginClient;
 import com.diablo.dt.diablo.entity.BaseSetting;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
@@ -64,6 +65,8 @@ public class LoginActivity extends AppCompatActivity {
     Button mBtnLogin;
     TextInputLayout mLoginWrap, mPasswordWrap;
     Context mContext;
+
+    private Dialog mLoadingDialog;
 
     private final LoginHandler mLoginHandler = new LoginHandler(this);
     // private CoordinatorLayout coordinatorLayout;
@@ -130,7 +133,8 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     }
                                 }
-
+                                mLoadingDialog = DiabloUtils.instance().createLoadingDialog(mContext);
+                                mLoadingDialog.show();
                                 getLoginUserInfo();
                             }
                         }
@@ -153,9 +157,14 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+        mLoadingDialog.dismiss();
     }
 
     public void loginError(Integer code){
+        if (null != mLoadingDialog){
+            mLoadingDialog.dismiss();
+        }
+
         String error = DiabloError.getInstance().getError(code);
         new MaterialDialog.Builder(mContext)
                 .title(R.string.user_login)

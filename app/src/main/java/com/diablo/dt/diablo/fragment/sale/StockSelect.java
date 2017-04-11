@@ -336,7 +336,7 @@ public class StockSelect extends Fragment {
     }
 
     public SaleStockAmount findStock(Integer colorId, String size){
-        return SaleUtils.getSaleStockAmounts(mSaleStock.getAmounts(), colorId, size);
+        return SaleUtils.getSaleStockAmount(mSaleStock.getAmounts(), colorId, size);
 //        for ( Integer i=0; i<mSaleStock.getAmounts().size(); i++){
 //            SaleStockAmount a = mSaleStock.getAmounts().get(i);
 //            if (a.getColorId().equals(colorId) && a.getSize().equals(size)){

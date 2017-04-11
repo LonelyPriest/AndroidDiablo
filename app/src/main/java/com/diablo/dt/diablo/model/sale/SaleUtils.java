@@ -16,18 +16,23 @@ import android.widget.TextView;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
+import com.diablo.dt.diablo.client.WSaleClient;
+import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.fragment.good.GoodColor;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
-import com.diablo.dt.diablo.fragment.stock.InventoryDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
 import com.diablo.dt.diablo.fragment.sale.SaleOut;
+import com.diablo.dt.diablo.fragment.sale.StockSelect;
 import com.diablo.dt.diablo.fragment.stock.StockDetail;
 import com.diablo.dt.diablo.fragment.stock.StockIn;
 import com.diablo.dt.diablo.fragment.stock.StockNote;
 import com.diablo.dt.diablo.fragment.stock.StockOut;
-import com.diablo.dt.diablo.fragment.sale.StockSelect;
+import com.diablo.dt.diablo.fragment.stock.StockStoreDetail;
+import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
+import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
@@ -36,6 +41,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by buxianhui on 17/3/23.
@@ -59,6 +68,7 @@ public class SaleUtils {
 
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_DETAIL, 9);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_NEW, 10);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_COLOR, 11);
     }
 
     public static void switchToSlideMenu(Fragment from, String toTag) {
@@ -90,13 +100,16 @@ public class SaleUtils {
                     f = new StockNote();
                     break;
                 case DiabloEnum.TAG_INVENTORY_DETAIL:
-                    f = new InventoryDetail();
+                    f = new StockStoreDetail();
                     break;
                 case DiabloEnum.TAG_GOOD_DETAIL:
                     f = new GoodDetail();
                     break;
                 case DiabloEnum.TAG_GOOD_NEW:
                     f = new GoodNew();
+                    break;
+                case DiabloEnum.TAG_GOOD_COLOR:
+                    f = new GoodColor();
                     break;
                 default:
                     break;
@@ -256,6 +269,33 @@ public class SaleUtils {
 
     }
 
+
+    public interface OnGetSaleNewFormSeverListener {
+        void afterGet(final GetSaleNewResponse response);
+    }
+
+    public static void getSaleNewInfoFormServer(String rsn, final OnGetSaleNewFormSeverListener listener) {
+        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+        Call<GetSaleNewResponse> call = face.getSale(Profile.instance().getToken(), rsn);
+
+        call.enqueue(new Callback<GetSaleNewResponse>() {
+            @Override
+            public void onResponse(Call<GetSaleNewResponse> call, Response<GetSaleNewResponse> response) {
+                GetSaleNewResponse news = response.body();
+                if (DiabloEnum.SUCCESS.equals(news.getCode())) {
+                    listener.afterGet(news);
+                }
+//                mRSNId = news.getSaleCalc().getId();
+//                recoverFromResponse(news.getSaleCalc(), news.getSaleNotes());
+            }
+
+            @Override
+            public void onFailure(Call<GetSaleNewResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
     public static SaleStock getSaleStock(List<SaleStock> stocks, String styleNumber, Integer brandId){
         SaleStock stock = null;
         for (SaleStock s: stocks){
@@ -268,7 +308,7 @@ public class SaleUtils {
         return stock;
     }
 
-    public static SaleStockAmount getSaleStockAmounts(final List<SaleStockAmount>amounts, Integer colorId, String size){
+    public static SaleStockAmount getSaleStockAmount(final List<SaleStockAmount>amounts, Integer colorId, String size){
         SaleStockAmount found = null;
         for (SaleStockAmount amount: amounts) {
             if (amount.getColorId().equals(colorId) && amount.getSize().equals(size)) {

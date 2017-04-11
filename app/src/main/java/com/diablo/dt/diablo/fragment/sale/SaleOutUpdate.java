@@ -460,23 +460,31 @@ public class SaleOutUpdate extends Fragment {
     }
 
     private void getSaleInfoFromServer() {
-        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
-        Call<GetSaleNewResponse> call = face.getSale(Profile.instance().getToken(), mRSN);
-
-        call.enqueue(new Callback<GetSaleNewResponse>() {
+        SaleUtils.getSaleNewInfoFormServer(mRSN, new SaleUtils.OnGetSaleNewFormSeverListener() {
             @Override
-            public void onResponse(Call<GetSaleNewResponse> call, Response<GetSaleNewResponse> response) {
-                Log.d(LOG_TAG, "success to get sale new by rsn:" + mRSN);
-                GetSaleNewResponse news = response.body();
-                mRSNId = news.getSaleCalc().getId();
-                recoverFromResponse(news.getSaleCalc(), news.getSaleNotes());
-            }
-
-            @Override
-            public void onFailure(Call<GetSaleNewResponse> call, Throwable t) {
-                Log.d(LOG_TAG, "fail to get sale new by rsn:" + mRSN);
+            public void afterGet(GetSaleNewResponse response) {
+                mRSNId = response.getSaleCalc().getId();
+                recoverFromResponse(response.getSaleCalc(), response.getSaleNotes());
             }
         });
+
+//        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+//        Call<GetSaleNewResponse> call = face.getSale(Profile.instance().getToken(), mRSN);
+//
+//        call.enqueue(new Callback<GetSaleNewResponse>() {
+//            @Override
+//            public void onResponse(Call<GetSaleNewResponse> call, Response<GetSaleNewResponse> response) {
+//                Log.d(LOG_TAG, "success to get sale new by rsn:" + mRSN);
+//                GetSaleNewResponse news = response.body();
+//                mRSNId = news.getSaleCalc().getId();
+//                recoverFromResponse(news.getSaleCalc(), news.getSaleNotes());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<GetSaleNewResponse> call, Throwable t) {
+//                Log.d(LOG_TAG, "fail to get sale new by rsn:" + mRSN);
+//            }
+//        });
     }
 
     private void recoverFromResponse(SaleDetailResponse.SaleDetail detail,
@@ -605,7 +613,7 @@ public class SaleOutUpdate extends Fragment {
 
         List<SaleStockAmount> saleStockAmounts = new ArrayList<>();
         for (SaleStockAmount n: newAmounts) {
-            SaleStockAmount found = SaleUtils.getSaleStockAmounts(oldAmounts, n.getColorId(), n.getSize());
+            SaleStockAmount found = SaleUtils.getSaleStockAmount(oldAmounts, n.getColorId(), n.getSize());
             // new
             if (null == found) {
                 SaleStockAmount add = new SaleStockAmount(n, DiabloEnum.ADD_THE_STOCK);
@@ -623,7 +631,7 @@ public class SaleOutUpdate extends Fragment {
 
         // delete
         for (SaleStockAmount old: oldAmounts) {
-            SaleStockAmount found = SaleUtils.getSaleStockAmounts(newAmounts, old.getColorId(), old.getSize());
+            SaleStockAmount found = SaleUtils.getSaleStockAmount(newAmounts, old.getColorId(), old.getSize());
             if (null == found) {
                 SaleStockAmount delete = new SaleStockAmount(old, DiabloEnum.DELETE_THE_STOCK);
                 saleStockAmounts.add(delete);

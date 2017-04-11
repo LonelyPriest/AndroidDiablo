@@ -69,6 +69,11 @@
                     android:id="@+id/nav_good_new"
                     android:icon="@drawable/ic_add_shopping_cart_black_24dp"
                     android:title="@string/nav_good_new" />
+
+                <item
+                    android:id="@+id/nav_good_color"
+                    android:icon="@drawable/ic_color_lens_black_24dp"
+                    android:title="@string/nav_good_color" />
             </menu>
 
         </item>

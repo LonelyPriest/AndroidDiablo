@@ -1,7 +1,5 @@
 package com.diablo.dt.diablo.entity;
 
-import static com.diablo.dt.diablo.R.string.good;
-
 import android.content.Context;
 import android.util.Log;
 
@@ -692,8 +690,19 @@ public class Profile {
      * color kind
      */
 
-    public List<DiabloColorKind> getColorKinds() {
+    public final List<DiabloColorKind> getColorKinds() {
         return mColorKinds;
+    }
+
+    public final DiabloColorKind getColorKind(Integer kindId) {
+        DiabloColorKind kind = null;
+        for (DiabloColorKind k: mColorKinds) {
+            if (k.getId().equals(kindId)) {
+                kind = k;
+            }
+        }
+
+        return kind;
     }
 
     public void setColorKinds(List<DiabloColorKind> colorKinds) {

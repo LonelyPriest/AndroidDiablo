@@ -1,6 +1,9 @@
 package com.diablo.dt.diablo.fragment.stock;
 
 
+import static com.diablo.dt.diablo.R.string.inventory;
+
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -9,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,31 +28,32 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
+import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.entity.Stock;
+import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.stock.InventoryDetailRequest;
 import com.diablo.dt.diablo.response.good.InventoryDetailResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
+import com.diablo.dt.diablo.task.MatchSingleStockTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloTableStockNote;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link InventoryDetail#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class InventoryDetail extends Fragment {
-    private final static String LOG_TAG = "InventoryDetail:";
+public class StockStoreDetail extends Fragment {
+    private final static String LOG_TAG = "StockStoreDetail:";
     private final static DiabloUtils UTILS = DiabloUtils.instance();
     private String [] mTableHeads;
     private String [] mSeasons;
@@ -66,12 +71,14 @@ public class InventoryDetail extends Fragment {
     private Integer mCurrentPage;
     private Integer mTotalPage;
 
-    public InventoryDetail() {
+    private Dialog mRefreshDialog;
+
+    public StockStoreDetail() {
         // Required empty public constructor
     }
 
-    public static InventoryDetail newInstance(String param1, String param2) {
-        InventoryDetail fragment = new InventoryDetail();
+    public static StockStoreDetail newInstance(String param1, String param2) {
+        StockStoreDetail fragment = new StockStoreDetail();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -88,6 +95,8 @@ public class InventoryDetail extends Fragment {
         mRequest.setCondition(mRequestCondition);
 
         mStockRest = StockClient.getClient().create(StockInterface.class);
+        mRefreshDialog = UTILS.createLoadingDialog(getContext());
+
         init();
     }
 
@@ -95,7 +104,7 @@ public class InventoryDetail extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_inventory_detail, container, false);
+        final View view = inflater.inflate(R.layout.fragment_stock_store_detail, container, false);
 
         String currentDate = UTILS.currentDate();
         String startDate = Profile.instance().getConfig(DiabloEnum.START_TIME, currentDate);
@@ -108,7 +117,7 @@ public class InventoryDetail extends Fragment {
         (view.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(InventoryDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                SaleUtils.DiabloDatePicker.build(StockStoreDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         ((EditText) view.findViewById(R.id.text_start_date)).setText(date);
@@ -121,7 +130,7 @@ public class InventoryDetail extends Fragment {
         view.findViewById(R.id.btn_end_date).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(InventoryDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                SaleUtils.DiabloDatePicker.build(StockStoreDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         ((EditText)view.findViewById(R.id.text_end_date)).setText(date);
@@ -214,7 +223,6 @@ public class InventoryDetail extends Fragment {
     }
 
     private void pageChanged(){
-
         Call<InventoryDetailResponse> call = mStockRest.filterInventory(Profile.instance().getToken(), mRequest);
 
         call.enqueue(new Callback<InventoryDetailResponse>() {
@@ -223,6 +231,8 @@ public class InventoryDetail extends Fragment {
                 Log.d(LOG_TAG, response.toString());
 
                 mTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
+
                 InventoryDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
@@ -306,7 +316,7 @@ public class InventoryDetail extends Fragment {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.orangeDark));
                             }
                         }
-                        else if (res.getString(R.string.inventory).equals(title)) {
+                        else if (res.getString(inventory).equals(title)) {
                             TextView cell = addCell(row, inv.getAmount(), lp);
                             if (inv.getAmount() > 0) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpBlue));
@@ -360,6 +370,7 @@ public class InventoryDetail extends Fragment {
             @Override
             public void onFailure(Call<InventoryDetailResponse> call, Throwable t) {
                 mTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
             }
         });
     }
@@ -374,7 +385,7 @@ public class InventoryDetail extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.action_on_inventory_detail, menu);
+        inflater.inflate(R.menu.action_on_stock_store_detail, menu);
     }
 
     @Override
@@ -382,12 +393,31 @@ public class InventoryDetail extends Fragment {
         switch (item.getItemId()){
             case R.id.inventory_refresh:
                 init();
+                mRefreshDialog.show();
                 pageChanged();
                 break;
             default:
                 // return super.onOptionsItemSelected(item);
                 break;
 
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        mCurrentSelectedRow = (TableRow) v;
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_on_stock_store_detail, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        InventoryDetailResponse.inventory stock = ((InventoryDetailResponse.inventory) mCurrentSelectedRow.getTag());
+        if (getResources().getString(R.string.note) == item.getTitle()) {
+            getStockNoteFromServer(stock);
         }
 
         return true;
@@ -402,70 +432,6 @@ public class InventoryDetail extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-
-
-//    @Override
-//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-//        super.onCreateContextMenu(menu, v, menuInfo);
-//        mCurrentSelectedRow = (TableRow) v;
-//        MenuInflater inflater = getActivity().getMenuInflater();
-//        inflater.inflate(R.menu.context_on_stock_detail, menu);
-//    }
-//
-//    @Override
-//    public boolean onContextItemSelected(MenuItem item) {
-//        StockDetailResponse.StockDetail detail = ((StockDetailResponse.StockDetail) mCurrentSelectedRow.getTag());
-//        if (getResources().getString(R.string.modify) == item.getTitle()){
-//            if (detail.getType().equals(DiabloEnum.STOCK_IN)){
-//                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_IN_UPDATE);
-//            }
-//            else if (detail.getType().equals(DiabloEnum.STOCK_OUT)) {
-//                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_OUT_UPDATE);
-//            }
-//
-//        }
-//
-//        return true;
-//    }
-
-//    public static void switchToStockUpdateFrame(String rsn, Fragment from, String tag) {
-//
-//        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
-//        // find
-//        Fragment to = from.getFragmentManager().findFragmentByTag(tag);
-//
-//        if (null == to){
-//            Bundle args = new Bundle();
-//            args.putString(DiabloEnum.BUNDLE_PARAM_RSN, rsn);
-//            if (DiabloEnum.TAG_STOCK_IN_UPDATE.equals(tag)) {
-//                to = new StockInUpdate();
-//            }
-//            else if (DiabloEnum.TAG_STOCK_OUT_UPDATE.equals(tag)) {
-//                to = new StockOutUpdate();
-//            }
-//
-//            if (null != to ) {
-//                to.setArguments(args);
-//            }
-//        } else {
-//            if (DiabloEnum.TAG_STOCK_IN_UPDATE.equals(tag)) {
-//                ((StockInUpdate)to).setRSN(rsn);
-//            }
-//            else if (DiabloEnum.TAG_STOCK_OUT_UPDATE.equals(tag)) {
-//                ((StockOutUpdate)to).setRSN(rsn);
-//            }
-//        }
-//
-//        if (null != to) {
-//            if (!to.isAdded()){
-//                transaction.hide(from).add(R.id.frame_container, to, tag).commit();
-//            } else {
-//                transaction.hide(from).show(to).commit();
-//            }
-//        }
-//
-//    }
-
 
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
@@ -512,5 +478,59 @@ public class InventoryDetail extends Fragment {
         return  cell;
     }
 
+    private void getStockNoteFromServer(final InventoryDetailResponse.inventory inventory) {
+        MatchSingleStockTask task = new MatchSingleStockTask(
+            inventory.getStyleNumber(),
+            inventory.getBrandId(),
+            inventory.getShopId());
+
+        task.setMatchSingleStockTaskListener(new MatchSingleStockTask.OnMatchSingleStockTaskListener() {
+            @Override
+            public void onMatchSuccess(List<Stock> matchedStocks) {
+                Log.d(LOG_TAG, "success to get stock");
+
+                final List<SaleStockAmount> amounts = new ArrayList<>();
+                List<DiabloColor> colors = new ArrayList<>();
+
+                for(Stock s: matchedStocks){
+                    DiabloColor color = Profile.instance().getColor(s.getColorId());
+                    if (!color.includeIn(colors)){
+                        colors.add(color);
+                    }
+
+                    SaleStockAmount amount = new SaleStockAmount(s.getColorId(), s.getSize());
+                    amount.setStock(s.getExist());
+                    amounts.add(amount);
+                }
+
+                ArrayList<String> sizes = Profile.instance().genSortedSizeNamesByGroups(inventory.getsGroup());
+
+                new DiabloTableStockNote(
+                    getContext(),
+                    inventory.getStyleNumber(),
+                    inventory.getBrandId(),
+                    colors,
+                    sizes,
+                    new DiabloTableStockNote.OnStockNoteListener() {
+                        @Override
+                        public Integer getStockNote(Integer color, String size) {
+                            SaleStockAmount amount = SaleUtils.getSaleStockAmount(amounts, color, size);
+                            if (null != amount) {
+                                return amount.getStock();
+                            }
+                            return null;
+                        }
+                    }
+                ).show();
+            }
+
+            @Override
+            public void onMatchFailed(Throwable t) {
+                Log.d(LOG_TAG, "failed to get stock");
+            }
+        });
+
+        task.getStock();
+    }
 
 }

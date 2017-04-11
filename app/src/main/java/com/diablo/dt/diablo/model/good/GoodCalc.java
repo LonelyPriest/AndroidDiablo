@@ -81,21 +81,23 @@ public class GoodCalc {
         mPath = good.getPath();
         mFree = good.getFree();
 
-        mColors = new ArrayList<>();
-        for (String colorId: good.getColor().split(DiabloEnum.SIZE_SEPARATOR)) {
-            DiabloColor color = Profile.instance().getColor(DiabloUtils.instance().toInteger(colorId));
-            if (null != color) {
-                mColors.add(color);
-            }
-        }
+        mColors = DiabloUtils.instance().stringColorToArray(good.getColor());
+//        mColors = new ArrayList<>();
+//        for (String colorId: good.getColor().split(DiabloEnum.SIZE_SEPARATOR)) {
+//            DiabloColor color = Profile.instance().getColor(DiabloUtils.instance().toInteger(colorId));
+//            if (null != color) {
+//                mColors.add(color);
+//            }
+//        }
 
-        mSizeGroups = new ArrayList<>();
-        for (String groupId: good.getsGroup().split(DiabloEnum.SIZE_SEPARATOR)) {
-            DiabloSizeGroup group = Profile.instance().getSizeGroup(DiabloUtils.instance().toInteger(groupId));
-            if (null != group) {
-                mSizeGroups.add(group);
-            }
-        }
+        mSizeGroups = DiabloUtils.instance().stringSizeGroupToArray(good.getsGroup());
+//        mSizeGroups = new ArrayList<>();
+//        for (String groupId: good.getsGroup().split(DiabloEnum.SIZE_SEPARATOR)) {
+//            DiabloSizeGroup group = Profile.instance().getSizeGroup(DiabloUtils.instance().toInteger(groupId));
+//            if (null != group) {
+//                mSizeGroups.add(group);
+//            }
+//        }
     }
 
     public GoodCalc(GoodCalc calc) {

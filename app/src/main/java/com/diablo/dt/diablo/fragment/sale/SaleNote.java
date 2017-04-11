@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.fragment.sale;
 
 
+import android.app.Dialog;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -24,18 +25,22 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
+import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.SaleNoteRequest;
+import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
 import com.diablo.dt.diablo.response.sale.SaleNoteResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloTableStockNote;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,6 +59,7 @@ public class SaleNote extends Fragment {
 
     private android.widget.TableLayout mSaleNoteTable;
     private SwipyRefreshLayout mSaleNoteTableSwipe;
+    private Dialog mRefreshDialog;
     // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
 
     private TableRow mCurrentSelectedRow;
@@ -92,6 +98,7 @@ public class SaleNote extends Fragment {
         mRequest.setCondtion(mRequestCondition);
 
         mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
+        mRefreshDialog = UTILS.createLoadingDialog(getContext());
 
         init();
     }
@@ -200,6 +207,8 @@ public class SaleNote extends Fragment {
                 Log.d("SALE_DETAIL %s", response.toString());
 
                 mSaleNoteTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
+
                 SaleNoteResponse base = response.body();
                 if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage) && 0 != base.getTotal()){
                     mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
@@ -347,6 +356,7 @@ public class SaleNote extends Fragment {
             @Override
             public void onFailure(Call<SaleNoteResponse> call, Throwable t) {
                 mSaleNoteTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
             }
         });
     }
@@ -362,6 +372,7 @@ public class SaleNote extends Fragment {
         switch (item.getItemId()){
             case R.id.sale_note_refresh:
                 init();
+                mRefreshDialog.show();
                 pageChanged();
                 break;
             default:
@@ -383,7 +394,43 @@ public class SaleNote extends Fragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        SaleNoteResponse.SaleNote note = ((SaleNoteResponse.SaleNote) mCurrentSelectedRow.getTag());
+        final SaleNoteResponse.SaleNote detail = ((SaleNoteResponse.SaleNote) mCurrentSelectedRow.getTag());
+
+        if (getResources().getString(R.string.note) == item.getTitle()) {
+            SaleUtils.getSaleNewInfoFormServer(detail.getRsn(), new SaleUtils.OnGetSaleNewFormSeverListener() {
+                @Override
+                public void afterGet(final GetSaleNewResponse response) {
+                    List<DiabloColor> colors = new ArrayList<>();
+
+                    for(GetSaleNewResponse.SaleNote s: response.getSaleNotes()){
+                        DiabloColor color = Profile.instance().getColor(s.getColor());
+                        if (!color.includeIn(colors)){
+                            colors.add(color);
+                        }
+                    }
+
+                    ArrayList<String> sizes = Profile.instance().genSortedSizeNamesByGroups(detail.getsGroup());
+
+                    new DiabloTableStockNote(
+                        getContext(),
+                        detail.getStyleNumber(),
+                        detail.getBrandId(),
+                        colors,
+                        sizes,
+                        new DiabloTableStockNote.OnStockNoteListener() {
+                            @Override
+                            public Integer getStockNote(Integer color, String size) {
+                                GetSaleNewResponse.SaleNote note = response.getSaleNote(color, size);
+                                if (null != note) {
+                                    return note.getAmount();
+                                }
+                                return null;
+                            }
+                        }
+                    ).show();
+                }
+            });
+        }
 
         return true;
     }

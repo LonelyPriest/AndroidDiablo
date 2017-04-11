@@ -1,5 +1,6 @@
 package com.diablo.dt.diablo.fragment.sale;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -68,6 +69,7 @@ public class SaleDetail extends Fragment {
 
     private android.widget.TableLayout mSaleDetailTable;
     private SwipyRefreshLayout mSaleDetailTableSwipe;
+    private Dialog mRefreshDialog;
     // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
 
     private TableRow mCurrentSelectedRow;
@@ -113,6 +115,8 @@ public class SaleDetail extends Fragment {
         mRequest.setCondition(mRequestCondition);
 
         mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
+        mRefreshDialog = UTILS.createLoadingDialog(getContext());
+
         init();
         // mRows = new TableRow[mRequest.getCount()];
     }
@@ -320,6 +324,8 @@ public class SaleDetail extends Fragment {
                 Log.d("SALE_DETAIL %s", response.toString());
 
                 mSaleDetailTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
+
                 SaleDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
@@ -516,6 +522,7 @@ public class SaleDetail extends Fragment {
             @Override
             public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
                 mSaleDetailTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
             }
         });
     }
@@ -539,6 +546,7 @@ public class SaleDetail extends Fragment {
                 break;
             case R.id.sale_detail_refresh:
                 init();
+                mRefreshDialog.show();
                 pageChanged();
                 break;
             default:

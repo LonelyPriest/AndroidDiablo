@@ -1,6 +1,9 @@
 package com.diablo.dt.diablo.fragment.stock;
 
 
+import static com.diablo.dt.diablo.R.string.amount;
+
+import android.app.Dialog;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -24,28 +27,28 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
+import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
+import com.diablo.dt.diablo.model.stock.StockUtils;
 import com.diablo.dt.diablo.request.stock.StockNoteRequest;
+import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
 import com.diablo.dt.diablo.response.stock.StockNoteResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloTableStockNote;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link StockNote#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class StockNote extends Fragment {
     private final static DiabloUtils UTILS = DiabloUtils.instance();
     private String [] mTableHeads;
@@ -57,6 +60,7 @@ public class StockNote extends Fragment {
 
     private android.widget.TableLayout mSaleNoteTable;
     private SwipyRefreshLayout mSaleNoteTableSwipe;
+    private Dialog mRefreshDialog;
     // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
 
     private TableRow mCurrentSelectedRow;
@@ -95,6 +99,7 @@ public class StockNote extends Fragment {
         mRequest.setCondition(mRequestCondition);
 
         mStockRest = StockClient.getClient().create(StockInterface.class);
+        mRefreshDialog = UTILS.createLoadingDialog(getContext());
 
         init();
     }
@@ -197,13 +202,15 @@ public class StockNote extends Fragment {
                 Log.d("SALE_DETAIL %s", response.toString());
 
                 mSaleNoteTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
+
                 StockNoteResponse base = response.body();
                 if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage) && 0 != base.getTotal()){
                     mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
 
                     Resources res = getResources();
                     mStatistic =
-                        res.getString(R.string.amount)
+                        res.getString(amount)
                             + res.getString(R.string.colon)
                             + UTILS.toString(base.getAmount());
 
@@ -274,7 +281,7 @@ public class StockNote extends Fragment {
                         else if (getContext().getString(R.string.discount).equals(title)){
                             addCell(row, note.getDiscount(), lp);
                         }
-                        else if (getContext().getString(R.string.amount).equals(title)){
+                        else if (getContext().getString(amount).equals(title)){
                             addCell(row, note.getAmount(), lp);
                         }
                         else if (getResources().getString(R.string.date).equals(title)){
@@ -315,6 +322,7 @@ public class StockNote extends Fragment {
             @Override
             public void onFailure(Call<StockNoteResponse> call, Throwable t) {
                 mSaleNoteTableSwipe.setRefreshing(false);
+                mRefreshDialog.dismiss();
             }
         });
     }
@@ -330,6 +338,7 @@ public class StockNote extends Fragment {
         switch (item.getItemId()){
             case R.id.sale_note_refresh:
                 init();
+                mRefreshDialog.show();
                 pageChanged();
                 break;
             default:
@@ -351,7 +360,43 @@ public class StockNote extends Fragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        StockNoteResponse.StockNote note = ((StockNoteResponse.StockNote) mCurrentSelectedRow.getTag());
+        final StockNoteResponse.StockNote detail = ((StockNoteResponse.StockNote) mCurrentSelectedRow.getTag());
+
+        if (getResources().getString(R.string.note) == item.getTitle()) {
+            StockUtils.getStockNewInfoFormServer(detail.getRsn(), new StockUtils.OnGetStockNewFormSeverListener() {
+                @Override
+                public void afterGet(final GetStockNewResponse response) {
+                    List<DiabloColor> colors = new ArrayList<>();
+
+                    for(GetStockNewResponse.StockNote s: response.getStockNotes()){
+                        DiabloColor color = Profile.instance().getColor(s.getColorId());
+                        if (!color.includeIn(colors)){
+                            colors.add(color);
+                        }
+                    }
+
+                    ArrayList<String> sizes = Profile.instance().genSortedSizeNamesByGroups(detail.getsGroup());
+
+                    new DiabloTableStockNote(
+                        getContext(),
+                        detail.getStyleNumber(),
+                        detail.getBrandId(),
+                        colors,
+                        sizes,
+                        new DiabloTableStockNote.OnStockNoteListener() {
+                            @Override
+                            public Integer getStockNote(Integer color, String size) {
+                                GetStockNewResponse.StockNote note = response.getStockNote(color, size);
+                                if (null != note) {
+                                    return note.getAmount();
+                                }
+                                return null;
+                            }
+                        }
+                    ).show();
+                }
+            });
+        }
 
         return true;
     }

@@ -21,9 +21,10 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.fragment.good.GoodColor;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
-import com.diablo.dt.diablo.fragment.stock.InventoryDetail;
+import com.diablo.dt.diablo.fragment.stock.StockStoreDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -150,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         mNavTagMap.put(9, new NavigationTag(9, DiabloEnum.TAG_GOOD_DETAIL, R.id.nav_good_detail));
         mNavTagMap.put(10, new NavigationTag(10, DiabloEnum.TAG_GOOD_NEW, R.id.nav_good_new));
+        mNavTagMap.put(11, new NavigationTag(11, DiabloEnum.TAG_GOOD_COLOR, R.id.nav_good_color));
 
         // initializing navigation menu
         setUpNavigationView();
@@ -275,13 +277,16 @@ public class MainActivity extends AppCompatActivity {
                 f = new StockNote();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(8)) {
-                f = new InventoryDetail();
+                f = new StockStoreDetail();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(9)) {
                 f = new GoodDetail();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(10)) {
                 f = new GoodNew();
+            }
+            else if (mCurrentNavTag.getTitleIndex().equals(11)) {
+                f = new GoodColor();
             }
             else {
                 f = new SaleDetail();
@@ -344,6 +349,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_good_new:
                         selectMenuItem(10);
+                        break;
+                    case R.id.nav_good_color:
+                        selectMenuItem(11);
                         break;
                     case R.id.nav_logout:
                         logout();

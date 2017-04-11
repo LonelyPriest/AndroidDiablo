@@ -115,9 +115,6 @@ public class DiabloGoodSelectTable {
             row.addView(col0);
 
             for (Integer j=0; j<mOrderedSizes.size(); j++){
-                TextView col = new TextView(mContext);
-                setTextCellStyle(col, 20, 100);
-
                 EntryStockAmount a = mGoodListener.getGoodByColorAndSize(
                     mOrderedColors.get(i).getColorId(), mOrderedSizes.get(j));
 
@@ -136,6 +133,8 @@ public class DiabloGoodSelectTable {
                     mGoodListener.onGoodSelected(editCol, mOrderedColors.get(i).getColorId(), mOrderedSizes.get(j));
 
                 } else {
+                    TextView col = new TextView(mContext);
+                    setTextCellStyle(col, 20, 100);
                     col.setLayoutParams(lp);
                     row.addView(col);
                 }
