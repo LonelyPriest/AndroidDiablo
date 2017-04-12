@@ -21,7 +21,7 @@ import com.diablo.dt.diablo.task.MatchFirmTask;
 import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
-import com.diablo.dt.diablo.view.DiabloStockCalcView;
+import com.diablo.dt.diablo.view.stock.DiabloStockCalcView;
 
 import java.util.List;
 

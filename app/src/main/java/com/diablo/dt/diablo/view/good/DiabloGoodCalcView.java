@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.view;
+package com.diablo.dt.diablo.view.good;
 
 import android.view.View;
 import android.widget.AutoCompleteTextView;

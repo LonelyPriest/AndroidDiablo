@@ -21,9 +21,11 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.fragment.good.GoodColor;
+import com.diablo.dt.diablo.fragment.firm.DiabloFirmDetail;
+import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
+import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.stock.StockStoreDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
@@ -146,12 +148,16 @@ public class MainActivity extends AppCompatActivity {
         mNavTagMap.put(5, new NavigationTag(5, DiabloEnum.TAG_STOCK_OUT, R.id.nav_stock_out));
         mNavTagMap.put(6, new NavigationTag(6, DiabloEnum.TAG_STOCK_DETAIL, R.id.nav_stock_detail));
         mNavTagMap.put(7, new NavigationTag(7, DiabloEnum.TAG_STOCK_NOTE, R.id.nav_stock_note));
-        mNavTagMap.put(8, new NavigationTag(8, DiabloEnum.TAG_INVENTORY_DETAIL, R.id.nav_inventory_detail));
+        mNavTagMap.put(8, new NavigationTag(8, DiabloEnum.TAG_STOCK_STORE_DETAIL, R.id.nav_inventory_detail));
 
 
         mNavTagMap.put(9, new NavigationTag(9, DiabloEnum.TAG_GOOD_DETAIL, R.id.nav_good_detail));
         mNavTagMap.put(10, new NavigationTag(10, DiabloEnum.TAG_GOOD_NEW, R.id.nav_good_new));
         mNavTagMap.put(11, new NavigationTag(11, DiabloEnum.TAG_GOOD_COLOR, R.id.nav_good_color));
+
+        mNavTagMap.put(12, new NavigationTag(12, DiabloEnum.TAG_RETAILER_DETAIL, R.id.nav_retailer_detail));
+
+        mNavTagMap.put(13, new NavigationTag(12, DiabloEnum.TAG_FIRM_DETAIL, R.id.nav_firm_detail));
 
         // initializing navigation menu
         setUpNavigationView();
@@ -286,8 +292,13 @@ public class MainActivity extends AppCompatActivity {
                 f = new GoodNew();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(11)) {
-                f = new GoodColor();
+                f = new GoodColorDetail();
             }
+            else if (mCurrentNavTag.getTitleIndex().equals(12)) {
+                f = new DiabloRetailerDetail();
+            }
+            else if (mCurrentNavTag.getTitleIndex().equals(13))
+                f = new DiabloFirmDetail();
             else {
                 f = new SaleDetail();
             }
@@ -352,6 +363,12 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_good_color:
                         selectMenuItem(11);
+                        break;
+                    case R.id.nav_retailer_detail:
+                        selectMenuItem(12);
+                        break;
+                    case R.id.nav_firm_detail:
+                        selectMenuItem(13);
                         break;
                     case R.id.nav_logout:
                         logout();

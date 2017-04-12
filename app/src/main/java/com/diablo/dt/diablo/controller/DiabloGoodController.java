@@ -27,7 +27,7 @@ import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloPattern;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
-import com.diablo.dt.diablo.view.DiabloGoodCalcView;
+import com.diablo.dt.diablo.view.good.DiabloGoodCalcView;
 
 import java.util.List;
 

@@ -455,6 +455,12 @@ public class Profile {
         }
     }
 
+    public void addColor(DiabloColor color) {
+        if (null != getColor(color.getColorId())) {
+            mColors.add(0, color);
+        }
+    }
+
     public final List<DiabloColor> getColors() {
         return mColors;
     }

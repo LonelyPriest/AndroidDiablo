@@ -21,6 +21,8 @@
   <string name="nav_good_detail">货品详情</string>
   <string name="nav_good_new">新增货品</string>
   <string name="nav_good_color">颜色</string>
+  <string name="nav_retailer_detail">零售商</string>
+  <string name="nav_firm_detail">厂商</string>
 
   <!-- Toolbar titles when navigation menu item is selected -->
   <string-array name="nav_item_activity_titles">
@@ -38,7 +40,10 @@
 
     <item>货品详情</item>
     <item>新增货品</item>
-    <item>颜色</item>
+    <item>颜色详情</item>
+
+    <item>零售商详情</item>
+    <item>厂商详情</item>
 
   </string-array>
 
@@ -233,6 +238,17 @@
     <item>2030</item>
   </string-array>
 
+  <string-array name="color_kinds">
+    <item>红</item>
+    <item>黄</item>
+    <item>绿</item>
+    <item>蓝</item>
+    <item>黑</item>
+    <item>白</item>
+    <item>紫</item>
+    <item>灰</item>
+  </string-array>
+
   <string name="order_id">序号</string>
   <string name="rsn">单号</string>
   <string name="trans">交易</string>
@@ -338,6 +354,8 @@
   <string name="rg_print_wrong_printer_conn">打印机连接设备不存在，请检查设备编号是否正确</string>
   <string name="rg_print_lack_size">打印格式缺少尺码，请在打印格式设置中选中尺码</string>
 
+  <string name="color_has_been_exist">该颜色已经存在</string>
+
   <string name="update_same">"修改前后信息一致，请重新编辑修改项"</string>
   <string name="different_good">"货品厂商不一致，请重新选择货品"</string>
 
@@ -350,6 +368,8 @@
   <string name="invalid_price">价格输入错误（dd.dd）</string>
   <string name="invalid_firm">厂商名称只能是字母或中文，不超过15个字符，不能以横杠开头或结尾</string>
   <string name="invalid_retailer">客户名称只能是字母或中文，不超过20个字符，不能以横杠开头或结尾</string>
+
+  <string name="invalid_color_name">颜色只能是中文，不超过3个字符</string>
 
 
   <!-- message -->
@@ -394,6 +414,11 @@
   <string name="title_add_retailer">新增客户</string>
   <string name="success_to_add_retailer">新增客户成功</string>
   <string name="title_get_retailer">查找客户</string>
+
+  <!-- color -->
+  <string name="title_add_color">新增颜色</string>
+  <string name="input_color_name">请输入颜色名称</string>
+  <string name="success_to_add_color">新增颜色成功</string>
 
   <string name="title_add_firm">新增厂商</string>
   <string name="success_to_add_firm">新增厂商成功</string>
@@ -453,6 +478,7 @@
 
   <string name="btn_stock_in">入库</string>
   <string name="btn_stock_out">退货</string>
+  <string name="btn_good">货品</string>
 
   <string name="select_stock">请选择库存</string>
   <string name="sale_in_update">交易单编辑（销售）</string>
@@ -468,6 +494,8 @@
   <string name="slide_inventory_manager">库存管理</string>
   <string name="slide_good_manager">货品管理</string>
   <string name="slide_user_manager">用户管理</string>
+  <string name="slide_retailer_manager">零售商管理</string>
+  <string name="slide_firm_manager">厂商管理</string>
 
   <string name="action_save">保存</string>
   <string name="action_cancel">取消</string>

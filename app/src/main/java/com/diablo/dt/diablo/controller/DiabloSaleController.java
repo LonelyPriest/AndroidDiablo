@@ -21,7 +21,7 @@ import com.diablo.dt.diablo.task.MatchRetailerTask;
 import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
-import com.diablo.dt.diablo.view.DiabloSaleCalcView;
+import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
 
 /**
  * Created by buxianhui on 17/3/19.

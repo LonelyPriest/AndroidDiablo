@@ -29,7 +29,7 @@ import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
-import com.diablo.dt.diablo.view.DiabloGoodCalcView;
+import com.diablo.dt.diablo.view.good.DiabloGoodCalcView;
 
 import retrofit2.Call;
 import retrofit2.Callback;

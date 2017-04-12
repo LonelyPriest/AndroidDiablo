@@ -100,11 +100,15 @@ public class DiabloEnum {
     public static final String TAG_SALE_IN_UPDATE = "stockInUpdate";
     public static final String TAG_SALE_OUT_UPDATE = "stockOutUpdate";
 
-    public static final String TAG_INVENTORY_DETAIL = "inventoryDetail";
+    public static final String TAG_STOCK_STORE_DETAIL = "stockStoreDetail";
     public static final String TAG_GOOD_NEW = "goodNew";
     public static final String TAG_GOOD_DETAIL = "goodDetail";
     public static final String TAG_GOOD_COLOR = "goodColor";
     public static final String TAG_GOOD_SIZE = "goodSize";
+
+    public static final String TAG_RETAILER_DETAIL = "retailerDetail";
+
+    public static final String TAG_FIRM_DETAIL = "firmDetail";
 
     public static final String TAG_GOOD_SELECT = "goodSelect";
     public static final String TAG_STOCK_IN_UPDATE = "stockInUpdate";

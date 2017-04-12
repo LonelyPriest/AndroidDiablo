@@ -78,6 +78,26 @@
 
         </item>
 
+        <item android:title="@string/slide_retailer_manager">
+            <menu>
+                <item
+                    android:id="@+id/nav_retailer_detail"
+                    android:icon="@drawable/ic_people_black_24dp"
+                    android:title="@string/nav_retailer_detail" />
+            </menu>
+
+        </item>
+
+        <item android:title="@string/slide_firm_manager">
+            <menu>
+                <item
+                    android:id="@+id/nav_firm_detail"
+                    android:icon="@drawable/ic_landscape_black_24dp"
+                    android:title="@string/nav_firm_detail" />
+            </menu>
+
+        </item>
+
         <item android:title="@string/slide_user_manager">
             <menu>
                 <item

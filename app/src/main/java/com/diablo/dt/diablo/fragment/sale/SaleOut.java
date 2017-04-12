@@ -46,7 +46,7 @@ import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 import com.diablo.dt.diablo.view.DiabloCellView;
 import com.diablo.dt.diablo.view.DiabloRowView;
-import com.diablo.dt.diablo.view.DiabloSaleCalcView;
+import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

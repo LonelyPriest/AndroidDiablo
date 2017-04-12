@@ -11,6 +11,11 @@
         android:icon="@drawable/ic_file_download_black_24dp"
         app:showAsAction="ifRoom|withText" />
 
+  <item android:id="@+id/stock_in_to_good_new"
+        android:title="@string/btn_good"
+        android:icon="@drawable/ic_add_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
   <item android:id="@+id/stock_in_next"
         android:title="@string/btn_next"
         android:icon="@drawable/ic_add_circle_black_24dp"

@@ -26,6 +26,7 @@ import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.good.GoodCalc;
+import com.diablo.dt.diablo.model.good.GoodColorNewDialog;
 import com.diablo.dt.diablo.model.good.GoodUtils;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.good.GoodNewRequest;
@@ -37,7 +38,7 @@ import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloPattern;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
-import com.diablo.dt.diablo.view.DiabloGoodCalcView;
+import com.diablo.dt.diablo.view.good.DiabloGoodCalcView;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -122,6 +123,14 @@ public class GoodNew extends Fragment {
             @Override
             public void onClick(View v) {
                 addType(inflater, view);
+            }
+        });
+
+        View btnAddColor = view.findViewById(R.id.btn_add_color);
+        btnAddColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GoodColorNewDialog(getContext(), null).show();
             }
         });
 

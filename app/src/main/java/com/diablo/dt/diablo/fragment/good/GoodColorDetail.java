@@ -20,23 +20,24 @@ import android.widget.TextView;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.model.good.GoodColorNewDialog;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.List;
 
-public class GoodColor extends Fragment {
+public class GoodColorDetail extends Fragment {
     private final static DiabloUtils UTILS = DiabloUtils.instance();
     private String [] mTableTitles;
 
     private TableLayout mColorDetailTable;
 
-    public GoodColor() {
+    public GoodColorDetail() {
         // Required empty public constructor
     }
 
-    public static GoodColor newInstance(String param1, String param2) {
-        GoodColor fragment = new GoodColor();
+    public static GoodColorDetail newInstance(String param1, String param2) {
+        GoodColorDetail fragment = new GoodColorDetail();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -84,6 +85,7 @@ public class GoodColor extends Fragment {
     }
 
     private void init() {
+        mColorDetailTable.removeAllViews();
         List<DiabloColor> colors = Profile.instance().getColors();
 
         Integer orderId = DiabloEnum.START_DEFAULT_INDEX;
@@ -135,7 +137,13 @@ public class GoodColor extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case 200: // cancel
+            case 200: // add
+                new GoodColorNewDialog(getContext(), new DiabloColor.OnGoodColorChangeListener() {
+                    @Override
+                    public void afterAdd(DiabloColor color) {
+                        init();
+                    }
+                }).show();
                 break;
             default:
                 break;

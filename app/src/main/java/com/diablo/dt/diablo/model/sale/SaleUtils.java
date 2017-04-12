@@ -18,9 +18,10 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.fragment.good.GoodColor;
+import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
+import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -63,7 +64,7 @@ public class SaleUtils {
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_OUT, 5);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_DETAIL, 6);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_NOTE, 7);
-        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_INVENTORY_DETAIL, 8);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_STOCK_STORE_DETAIL, 8);
 
 
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_DETAIL, 9);
@@ -99,7 +100,7 @@ public class SaleUtils {
                 case DiabloEnum.TAG_STOCK_NOTE:
                     f = new StockNote();
                     break;
-                case DiabloEnum.TAG_INVENTORY_DETAIL:
+                case DiabloEnum.TAG_STOCK_STORE_DETAIL:
                     f = new StockStoreDetail();
                     break;
                 case DiabloEnum.TAG_GOOD_DETAIL:
@@ -109,7 +110,13 @@ public class SaleUtils {
                     f = new GoodNew();
                     break;
                 case DiabloEnum.TAG_GOOD_COLOR:
-                    f = new GoodColor();
+                    f = new GoodColorDetail();
+                    break;
+                case DiabloEnum.TAG_RETAILER_DETAIL:
+                    f = new DiabloRetailerDetail();
+                    break;
+                case DiabloEnum.TAG_FIRM_DETAIL:
+                    f = new DiabloRetailerDetail();
                     break;
                 default:
                     break;

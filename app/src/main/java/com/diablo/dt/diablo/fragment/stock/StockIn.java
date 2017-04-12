@@ -46,7 +46,7 @@ import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 import com.diablo.dt.diablo.view.DiabloCellView;
 import com.diablo.dt.diablo.view.DiabloRowView;
-import com.diablo.dt.diablo.view.DiabloStockCalcView;
+import com.diablo.dt.diablo.view.stock.DiabloStockCalcView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -331,6 +331,9 @@ public class StockIn extends Fragment {
                 break;
             case R.id.stock_in_save:
                 startStock();
+                break;
+            case R.id.stock_in_to_good_new:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_GOOD_NEW);
                 break;
             case R.id.stock_in_next:
                 init(mStockCalcController.getFirm());

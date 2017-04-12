@@ -53,6 +53,11 @@ public class DiabloError {
         mErrors.put(2423, r.getString(R.string.rg_print_lack_size));
 
         /**
+         * color
+         */
+        mErrors.put(1901, r.getString(R.string.color_has_been_exist));
+
+        /**
          * firm
          */
         mErrors.put(1601, r.getString(R.string.firm_exist));

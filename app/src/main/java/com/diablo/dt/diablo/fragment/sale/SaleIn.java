@@ -64,7 +64,7 @@ import com.diablo.dt.diablo.model.sale.DiabloSaleRow;
 import com.diablo.dt.diablo.utils.DiabloPattern;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
-import com.diablo.dt.diablo.view.DiabloSaleCalcView;
+import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

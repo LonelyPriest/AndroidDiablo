@@ -11,6 +11,7 @@ import com.diablo.dt.diablo.request.good.GoodDetailRequest;
 import com.diablo.dt.diablo.request.good.GoodNewRequest;
 import com.diablo.dt.diablo.request.good.GoodUpdateRequest;
 import com.diablo.dt.diablo.response.Response;
+import com.diablo.dt.diablo.response.good.AddColorResponse;
 import com.diablo.dt.diablo.response.good.AddFirmResponse;
 import com.diablo.dt.diablo.response.good.GoodDetailResponse;
 import com.diablo.dt.diablo.response.good.InventoryNewResponse;
@@ -64,4 +65,7 @@ public interface WGoodInterface {
 
     @POST("update_w_good")
     Call<Response> updateGood(@Header("cookie") String token, @Body GoodUpdateRequest request);
+
+    @POST("new_w_color")
+    Call<AddColorResponse> addColor(@Header("cookie") String token, @Body DiabloColor color);
 }
