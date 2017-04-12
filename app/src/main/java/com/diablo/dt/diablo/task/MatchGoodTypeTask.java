@@ -31,7 +31,7 @@ public class MatchGoodTypeTask extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         mMatchedGoodTypes.clear();
         for (DiabloType type : mOriginGoodTypes){
-            if (type.getName().contains(params[0])) {
+            if (type.getName().toUpperCase().contains(params[0].toUpperCase())) {
                 mMatchedGoodTypes.add(type);
             }
         }

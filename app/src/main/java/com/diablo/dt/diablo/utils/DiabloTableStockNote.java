@@ -149,6 +149,7 @@ public class DiabloTableStockNote {
                 }
             }
         }
+        
     }
 
     public void show() {

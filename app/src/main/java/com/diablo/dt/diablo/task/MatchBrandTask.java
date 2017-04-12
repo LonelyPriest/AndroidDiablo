@@ -31,7 +31,7 @@ public class MatchBrandTask extends AsyncTask <String, Void, Void>{
     protected Void doInBackground(String... params) {
         mMatchedBrands.clear();
         for (DiabloBrand brand : mOriginBrands){
-            if (brand.getName().contains(params[0])) {
+            if (brand.getName().toUpperCase().contains(params[0].toUpperCase())) {
                 mMatchedBrands.add(brand);
             }
         }

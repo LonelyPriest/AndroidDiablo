@@ -31,7 +31,7 @@ public class MatchFirmTask extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         mMatchedFirms.clear();
         for (Firm firm : mOriginFirms){
-            if (firm.getName().contains(params[0])) {
+            if (firm.getName().toUpperCase().contains(params[0].toUpperCase())) {
                 mMatchedFirms.add(firm);
             }
         }
