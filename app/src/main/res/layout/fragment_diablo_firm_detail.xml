@@ -1,13 +1,52 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.diablo.dt.diablo.fragment.firm.DiabloFirmDetail">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.diablo.dt.diablo.fragment.firm.DiabloFirmDetail">
 
-  <!-- TODO: Update blank fragment layout -->
-  <TextView
+  <LinearLayout
+      android:orientation="horizontal"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:text="@string/hello_blank_fragment"/>
+      android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/search_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.9"
+        android:hint="@string/search_firm"
+        android:textSize="@dimen/ampm_label_size"
+        android:textColor="@color/bpDarker_red"
+        android:maxLines="1"/>
+    <ImageButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:contentDescription="@string/firm"
+        android:src="@drawable/ic_search_black_24dp"/>
+  </LinearLayout>
 
-</FrameLayout>
+  <TableLayout
+      android:id="@+id/t_firm_detail_head"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp">
+  </TableLayout>
+
+  <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+      android:id="@+id/t_firm_detail_swipe"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+      <TableLayout
+          android:id="@+id/t_firm_detail"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+      </TableLayout>
+    </ScrollView>
+  </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+  
+</LinearLayout>

@@ -129,6 +129,15 @@ public class Firm {
                     Firm f = Firm.this;
                     f.id = res.getInsertId();
 
+                    if (null == f.getMobile()) {
+                        f.setMobile(DiabloEnum.EMPTY_STRING);
+                    }
+                    if (null == f.getAddress()) {
+                        f.setAddress(DiabloEnum.EMPTY_STRING);
+                    }
+
+                    f.setDatetime(DiabloUtils.instance().currentDate());
+
                     Profile.instance().addFirm(f);
                     listener.afterAdd(f);
 

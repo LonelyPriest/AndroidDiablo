@@ -874,6 +874,7 @@ public class SaleIn extends Fragment{
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+
         setCurrentSelectRow((TableRow) v);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_on_sale, menu);
@@ -950,13 +951,13 @@ public class SaleIn extends Fragment{
             DiabloButton button = mButtons.get(key);
             menu.findItem(button.getResId()).setEnabled(button.isEnabled());
         }
-
-        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        // menu.clear();
+
         inflater.inflate(R.menu.action_on_sale_in, menu);
         // MenuItem save = menu.findItem(R.id.sale_in_save);
         // ((Button)save.getActionView()).setTextColor(Color.BLUE);

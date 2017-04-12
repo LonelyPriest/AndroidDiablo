@@ -19,6 +19,11 @@ public class DiabloPattern {
 
     private final static String PATTERN_COLOR_NAME = "^[\\u4e00-\\u9fa5]{1,3}";
 
+    private final static String PATTERN_PHONE = "^((13[0-9])|(15[^4])|(18[01235-9])|(17[0-8])|(147))\\d{8}$";
+    private final static String PATTERN_PHONE_HK = "^(5|6|8|9)\\d{7}$";
+
+    private final static String PATTERN_ADDRESS = "^(?!-)(?!.*?-$)[\\u4e00-\\u9fa5A-Za-z0-9-]{2,30}$";
+
     public static boolean isValidStyleNumber(String styleNumber) {
         Pattern pattern = Pattern.compile(PATTERN_STYLE_NUMBER);
         Matcher matcher = pattern.matcher(styleNumber);
@@ -59,5 +64,16 @@ public class DiabloPattern {
         Pattern pattern = Pattern.compile(PATTERN_COLOR_NAME);
         Matcher matcher = pattern.matcher(name);
         return matcher.matches();
+    }
+
+    public static boolean isValidPhone(String name) {
+        Pattern pattern = Pattern.compile(PATTERN_PHONE);
+        Pattern patternHK = Pattern.compile(PATTERN_PHONE_HK);
+        return pattern.matcher(name).matches() || patternHK.matcher(name).matches();
+    }
+
+    public static boolean isValidAddress(String address) {
+        Pattern pattern = Pattern.compile(PATTERN_ADDRESS);
+        return pattern.matcher(address).matches();
     }
 }

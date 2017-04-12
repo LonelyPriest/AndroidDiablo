@@ -567,6 +567,8 @@ public class StockOutUpdate extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        // menu.clear();
+
         inflater.inflate(R.menu.action_on_stock_out_update, menu);
     }
 

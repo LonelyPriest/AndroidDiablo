@@ -3,6 +3,7 @@ package com.diablo.dt.diablo.entity;
 import com.google.gson.annotations.SerializedName;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
@@ -82,7 +83,7 @@ public class Retailer {
         return this.mobile;
     }
 
-    public void setMobile(String mobile) {
+    public void setMobile(@Nullable String mobile) {
         this.mobile = mobile;
     }
 
@@ -134,7 +135,7 @@ public class Retailer {
         this.merchant = merchant;
     }
 
-    public void newRetailer(final Context context, final OnRetailerChangeListener listener) {
+    public void newRetailer(final Context context, @Nullable final OnRetailerChangeListener listener) {
         final RetailerInterface face = RetailerClient.getClient().create(RetailerInterface.class);
         Call<AddRetailerResponse> call = face.addRetailer(Profile.instance().getToken(), this);
 
@@ -167,9 +168,12 @@ public class Retailer {
                     if (null == r.getProvince()) {
                         r.setProvince(DiabloEnum.INVALID_INDEX);
                     }
+                    r.setEntryDate(DiabloUtils.instance().currentDate());
 
                     Profile.instance().addRetailer(Retailer.this);
-                    listener.afterAdd(Retailer.this);
+                    if (null != listener) {
+                        listener.afterAdd(Retailer.this);
+                    }
 
                 } else {
                     Integer errorCode = response.code() == 0 ? res.getCode() : response.code();

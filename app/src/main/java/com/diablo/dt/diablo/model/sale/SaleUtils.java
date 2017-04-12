@@ -18,10 +18,12 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
 import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
+import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerPager;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -112,11 +114,11 @@ public class SaleUtils {
                 case DiabloEnum.TAG_GOOD_COLOR:
                     f = new GoodColorDetail();
                     break;
-                case DiabloEnum.TAG_RETAILER_DETAIL:
-                    f = new DiabloRetailerDetail();
+                case DiabloEnum.TAG_RETAILER_PAGER:
+                    f = new DiabloRetailerPager();
                     break;
-                case DiabloEnum.TAG_FIRM_DETAIL:
-                    f = new DiabloRetailerDetail();
+                case DiabloEnum.TAG_FIRM_PAGER:
+                    f = new DiabloFirmPager();
                     break;
                 default:
                     break;
@@ -351,7 +353,7 @@ public class SaleUtils {
 
 
         public interface OnDateSetListener {
-            public void onDateSet(String date, String nextDate);
+            void onDateSet(String date, String nextDate);
         }
     }
 }

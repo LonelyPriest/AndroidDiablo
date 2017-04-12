@@ -577,6 +577,8 @@ public class SaleInUpdate extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        // menu.clear();
+
         inflater.inflate(R.menu.action_on_sale_in_update, menu);
     }
 
@@ -601,6 +603,7 @@ public class SaleInUpdate extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+
         mCurrentSelectedRow = (TableRow) v;
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_on_sale, menu);

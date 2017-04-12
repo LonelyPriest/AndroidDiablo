@@ -212,6 +212,24 @@
     <item>基础色</item>
   </string-array>
 
+  <string-array name="thead_retailer_detail">
+    <item>序号</item>
+    <item>名称</item>
+    <item>帐户欠款</item>
+    <item>联系方式</item>
+    <item>联系地址</item>
+    <item>创建日期</item>
+  </string-array>
+
+  <string-array name="thead_firm_detail">
+    <item>序号</item>
+    <item>名称</item>
+    <item>帐户欠款</item>
+    <item>联系方式</item>
+    <item>联系地址</item>
+    <item>创建日期</item>
+  </string-array>
+
   <string-array name="sexes">
     <item>女</item>
     <item>男</item>
@@ -303,6 +321,12 @@
   <string name="color_name">名称</string>
   <string name="color_type">基础色</string>
 
+  <string name="diablo_name">名称</string>
+  <string name="diablo_arrears">帐户欠款</string>
+  <string name="diablo_phone">联系方式</string>
+  <string name="diablo_address">联系地址</string>
+  <string name="diablo_datetime">创建日期</string>
+
   <string name="sale_in_fragment">Sale In fragment</string>
 
   <string name="diablo_server">http://192.168.0.109:63551/</string>
@@ -368,8 +392,9 @@
   <string name="invalid_price">价格输入错误（dd.dd）</string>
   <string name="invalid_firm">厂商名称只能是字母或中文，不超过15个字符，不能以横杠开头或结尾</string>
   <string name="invalid_retailer">客户名称只能是字母或中文，不超过20个字符，不能以横杠开头或结尾</string>
-
   <string name="invalid_color_name">颜色只能是中文，不超过3个字符</string>
+  <string name="invalid_phone">请输入正确的手机号码</string>
+  <string name="invalid_address">联系地址只能是字母，数字或横杠，不能以横杠开头或结尾，不超过30个字符</string>
 
 
   <!-- message -->
@@ -400,6 +425,8 @@
   <string name="sale_stock_exist">该款号已存在，请重新选择，序号：</string>
   <string name="fail_to_destroy_token">清除用户Token失败，请人工强制退出系统</string>
   <string name="title_logout">用户注销</string>
+  <string name="failed_to_fetch_retailers">获取零售商信息失败</string>
+  <string name="failed_to_fetch_firms">获取厂商信息失败</string>
 
   <!-- pagination -->
   <string name="current_page">当前第</string>
@@ -414,6 +441,8 @@
   <string name="title_add_retailer">新增客户</string>
   <string name="success_to_add_retailer">新增客户成功</string>
   <string name="title_get_retailer">查找客户</string>
+  <string name="diablo_detail">详情</string>
+  <string name="diablo_add">新增</string>
 
   <!-- color -->
   <string name="title_add_color">新增颜色</string>
@@ -452,8 +481,14 @@
   <string name="please_input_orgPrice">请输入原价，默认为0</string>
   <string name="please_input_pkgPrice">请输入批发价，默认为0</string>
   <string name="please_input_tagPrice">请输入吊牌价，默认为0</string>
+  <string name="please_input_arrears_balance">请输入帐户欠款，默认为0</string>
+  <string name="please_input_phone">请输入手机或电话号码</string>
+  <string name="please_input_address">请输入联系地址</string>
   <string name="no_color_no_select">没有颜色不需要选择</string>
   <string name="no_size_no_select">没有尺码不需要选择</string>
+
+  <string name="search_retailer">支持名称/手机号码查询</string>
+  <string name="search_firm">支持名称/手机号码查询</string>
 
   <!-- button -->
   <string name="add">新增</string>

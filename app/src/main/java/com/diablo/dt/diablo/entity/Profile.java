@@ -137,7 +137,8 @@ public class Profile {
         mEmployees.clear();
 
         // retailer
-        mRetailers.clear();
+        // mRetailers.clear();
+        clearRetailers();
 
         // base settings
         mBaseSettings.clear();
@@ -164,9 +165,10 @@ public class Profile {
         }
 
         // firms
-        if (null != mFirms) {
-            mFirms.clear();
-        }
+        clearFirms();
+//        if (null != mFirms) {
+//            mFirms.clear();
+//        }
 
         // matched goods
         if (null != mMatchGoods) {
@@ -411,6 +413,12 @@ public class Profile {
         mRetailers.add(0, retailer);
     }
 
+    public void clearRetailers() {
+        if (null != mRetailers){
+            mRetailers.clear();
+        }
+    }
+
     /*
     * Base setting
     * */
@@ -631,6 +639,12 @@ public class Profile {
      */
     public void setFirms(List<Firm> firms) {
         this.mFirms = new ArrayList<>(firms);
+    }
+
+    public void clearFirms() {
+        if (null != mFirms) {
+            mFirms.clear();
+        }
     }
 
     public void addFirm(Firm firm) {

@@ -21,12 +21,11 @@ import android.widget.Toast;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.fragment.firm.DiabloFirmDetail;
+import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
-import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
-import com.diablo.dt.diablo.fragment.stock.StockStoreDetail;
+import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerPager;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -35,6 +34,7 @@ import com.diablo.dt.diablo.fragment.stock.StockDetail;
 import com.diablo.dt.diablo.fragment.stock.StockIn;
 import com.diablo.dt.diablo.fragment.stock.StockNote;
 import com.diablo.dt.diablo.fragment.stock.StockOut;
+import com.diablo.dt.diablo.fragment.stock.StockStoreDetail;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
@@ -155,15 +155,15 @@ public class MainActivity extends AppCompatActivity {
         mNavTagMap.put(10, new NavigationTag(10, DiabloEnum.TAG_GOOD_NEW, R.id.nav_good_new));
         mNavTagMap.put(11, new NavigationTag(11, DiabloEnum.TAG_GOOD_COLOR, R.id.nav_good_color));
 
-        mNavTagMap.put(12, new NavigationTag(12, DiabloEnum.TAG_RETAILER_DETAIL, R.id.nav_retailer_detail));
+        mNavTagMap.put(12, new NavigationTag(12, DiabloEnum.TAG_RETAILER_PAGER, R.id.nav_retailer_pager));
 
-        mNavTagMap.put(13, new NavigationTag(12, DiabloEnum.TAG_FIRM_DETAIL, R.id.nav_firm_detail));
+        mNavTagMap.put(13, new NavigationTag(13, DiabloEnum.TAG_FIRM_PAGER, R.id.nav_firm_pager));
 
         // initializing navigation menu
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(9);
+            selectMenuItem(13);
             loadHomeFragment();
         }
     }
@@ -295,10 +295,10 @@ public class MainActivity extends AppCompatActivity {
                 f = new GoodColorDetail();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(12)) {
-                f = new DiabloRetailerDetail();
+                f = new DiabloRetailerPager();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(13))
-                f = new DiabloFirmDetail();
+                f = new DiabloFirmPager();
             else {
                 f = new SaleDetail();
             }
@@ -364,10 +364,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_good_color:
                         selectMenuItem(11);
                         break;
-                    case R.id.nav_retailer_detail:
+                    case R.id.nav_retailer_pager:
                         selectMenuItem(12);
                         break;
-                    case R.id.nav_firm_detail:
+                    case R.id.nav_firm_pager:
                         selectMenuItem(13);
                         break;
                     case R.id.nav_logout:

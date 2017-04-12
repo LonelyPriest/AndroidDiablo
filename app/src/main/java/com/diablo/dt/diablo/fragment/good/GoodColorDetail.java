@@ -129,6 +129,8 @@ public class GoodColorDetail extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        // menu.clear();
+
         menu.add(Menu.NONE, 200, Menu.NONE, getResources().getString(R.string.btn_add))
             .setIcon(R.drawable.ic_add_circle_black_24dp)
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
