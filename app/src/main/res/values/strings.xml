@@ -349,6 +349,8 @@
   <!-- TODO: Remove or change this placeholder text -->
   <string name="hello_blank_fragment">Hello blank fragment</string>
 
+  <string name="add_filter_condition">增加匹配条件</string>
+
   <!-- dialog -->
   <string name="login_ok">确认</string>
   <string name="login_cancel">取消</string>

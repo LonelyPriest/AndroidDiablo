@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -33,8 +36,10 @@ import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
+import com.diablo.dt.diablo.task.FilterRetailerTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
+import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -60,7 +65,6 @@ public class SaleDetail extends Fragment {
     * rest request
     * */
     private SaleDetailRequest mRequest;
-    private SaleDetailRequest.Condition mRequestCondition;
     private WSaleInterface mSaleRest;
 
     /*
@@ -77,6 +81,11 @@ public class SaleDetail extends Fragment {
 
     private Integer mCurrentPage;
     private Integer mTotalPage;
+
+    /**
+     * filter condition
+     */
+    private AutoCompleteTextView mViewRetailer;
 
     public SaleDetail() {
         // Required empty public constructor
@@ -112,13 +121,12 @@ public class SaleDetail extends Fragment {
         mSaleTypes = getResources().getStringArray(R.array.sale_type);
 
         mRequest = new SaleDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-        mRequestCondition = new SaleDetailRequest.Condition();
-        mRequest.setCondition(mRequestCondition);
+//        mRequestCondition = new SaleDetailRequest.Condition();
+//        mRequest.setCondition(mRequestCondition);
 
         mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
 
-        init();
         // mRows = new TableRow[mRequest.getCount()];
     }
 
@@ -129,10 +137,10 @@ public class SaleDetail extends Fragment {
 
         String currentDate = UTILS.currentDate();
         ((EditText)view.findViewById(R.id.text_start_date)).setText(currentDate);
-        mRequest.getCondition().setStartTime(currentDate);
+        mRequest.setStartTime(currentDate);
 
         ((EditText)view.findViewById(R.id.text_end_date)).setText(currentDate);
-        mRequest.getCondition().setEndTime(UTILS.nextDate());
+        mRequest.setEndTime(UTILS.nextDate());
 
         (view.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +149,7 @@ public class SaleDetail extends Fragment {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         ((EditText) view.findViewById(R.id.text_start_date)).setText(date);
-                        mRequest.getCondition().setStartTime(date);
+                        mRequest.setStartTime(date);
                     }
                 });
             }
@@ -154,7 +162,7 @@ public class SaleDetail extends Fragment {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         ((EditText)view.findViewById(R.id.text_end_date)).setText(date);
-                        mRequest.getCondition().setEndTime(nextDate);
+                        mRequest.setEndTime(nextDate);
                     }
                 });
             }
@@ -289,7 +297,26 @@ public class SaleDetail extends Fragment {
 //            mRows[i].setBackgroundResource(R.drawable.table_row_bg);
 //        }
 
+        init();
         pageChanged();
+
+        mViewRetailer = (AutoCompleteTextView) view.findViewById(R.id.select_retailer);
+        mViewRetailer.addTextChangedListener(new DiabloTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mRequest.setRetailer(null);
+                String name = editable.toString();
+                new FilterRetailerTask(getContext(), mViewRetailer, Profile.instance().getRetailers()).execute(name);
+            }
+        });
+
+        mViewRetailer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Retailer r = ((Retailer)parent.getItemAtPosition(position));
+                mRequest.setRetailer(r.getId());
+            }
+        });
 
         return view;
     }

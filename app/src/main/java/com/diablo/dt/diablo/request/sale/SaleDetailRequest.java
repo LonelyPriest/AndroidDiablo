@@ -3,7 +3,6 @@ package com.diablo.dt.diablo.request.sale;
 import com.google.gson.annotations.SerializedName;
 
 import com.diablo.dt.diablo.request.PageRequest;
-import com.diablo.dt.diablo.utils.DiabloEnum;
 
 /**
  * Created by buxianhui on 17/2/23.
@@ -13,50 +12,63 @@ public class SaleDetailRequest extends PageRequest {
     @SerializedName("fields")
     private Condition mCondition;
 
-    public SaleDetailRequest(){
-        super();
-    }
-
-    public SaleDetailRequest(Integer currentPage){
-        super(currentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-    }
+//    public SaleDetailRequest(){
+//        super();
+//        mCondition = new Condition();
+//    }
+//
+//    public SaleDetailRequest(Integer currentPage){
+//        super(currentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
+//        mCondition = new Condition();
+//    }
 
     public SaleDetailRequest(Integer currentPage, Integer itemsPerPage){
         super(currentPage, itemsPerPage);
+        mCondition = new Condition();
     }
 
-    public Condition getCondition() {
-        return mCondition;
+    public void setStartTime(String startTime) {
+        mCondition.setStartTime(startTime);
     }
 
-    public void setCondition(Condition condition) {
-        this.mCondition = condition;
+    public void setEndTime(String endTime) {
+        mCondition.setEndTime(endTime);
     }
 
-    public static class Condition{
+    public void setRetailer(Integer retailer) {
+        mCondition.setRetailer(retailer);
+    }
+
+//    public Condition getCondition() {
+//        return mCondition;
+//    }
+//
+//    public void setCondition(Condition condition) {
+//        this.mCondition = condition;
+//    }
+
+    private static class Condition{
         @SerializedName("start_time")
-        String mStartTime;
+        private String mStartTime;
         @SerializedName("end_time")
-        String mEndTime;
+        private String mEndTime;
+        @SerializedName("retailer")
+        private Integer mRetailer;
 
         public Condition(){
 
-        }
-
-        public String getStartTime() {
-            return mStartTime;
         }
 
         public void setStartTime(String startTime) {
             this.mStartTime = startTime;
         }
 
-        public String getEndTime() {
-            return mEndTime;
-        }
-
         public void setEndTime(String endTime) {
             this.mEndTime = endTime;
+        }
+
+        private void setRetailer(Integer retailer) {
+            this.mRetailer = retailer;
         }
     }
 }
