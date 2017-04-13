@@ -12,6 +12,7 @@ import android.text.InputType;
 import android.view.Gravity;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.diablo.dt.diablo.R;
@@ -22,7 +23,6 @@ import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
-import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerPager;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
@@ -37,6 +37,7 @@ import com.diablo.dt.diablo.fragment.stock.StockStoreDetail;
 import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 
@@ -283,7 +284,7 @@ public class SaleUtils {
         void afterGet(final GetSaleNewResponse response);
     }
 
-    public static void getSaleNewInfoFormServer(String rsn, final OnGetSaleNewFormSeverListener listener) {
+    public static void getSaleNewInfoFormServer(final Context context, String rsn, final OnGetSaleNewFormSeverListener listener) {
         WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
         Call<GetSaleNewResponse> call = face.getSale(Profile.instance().getToken(), rsn);
 
@@ -300,7 +301,8 @@ public class SaleUtils {
 
             @Override
             public void onFailure(Call<GetSaleNewResponse> call, Throwable t) {
-
+                DiabloUtils.instance()
+                    .makeToast(context, DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
             }
         });
     }

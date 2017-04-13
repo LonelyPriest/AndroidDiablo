@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -424,7 +425,10 @@ public class SaleOutUpdate extends Fragment {
 
     public void initTitle() {
         String title = getResources().getString(R.string.sale_out_update);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(title);
+        }
     }
 
     @Override
@@ -460,7 +464,7 @@ public class SaleOutUpdate extends Fragment {
     }
 
     private void getSaleInfoFromServer() {
-        SaleUtils.getSaleNewInfoFormServer(mRSN, new SaleUtils.OnGetSaleNewFormSeverListener() {
+        SaleUtils.getSaleNewInfoFormServer(getContext(), mRSN, new SaleUtils.OnGetSaleNewFormSeverListener() {
             @Override
             public void afterGet(GetSaleNewResponse response) {
                 mRSNId = response.getSaleCalc().getId();

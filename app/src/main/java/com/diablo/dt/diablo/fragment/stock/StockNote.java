@@ -37,6 +37,7 @@ import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
 import com.diablo.dt.diablo.response.stock.StockNoteResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloTableStockNote;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
@@ -321,6 +322,7 @@ public class StockNote extends Fragment {
 
             @Override
             public void onFailure(Call<StockNoteResponse> call, Throwable t) {
+                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
                 mSaleNoteTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }
@@ -365,7 +367,7 @@ public class StockNote extends Fragment {
         final StockNoteResponse.StockNote detail = ((StockNoteResponse.StockNote) mCurrentSelectedRow.getTag());
 
         if (getResources().getString(R.string.note) == item.getTitle()) {
-            StockUtils.getStockNewInfoFormServer(detail.getRsn(), new StockUtils.OnGetStockNewFormSeverListener() {
+            StockUtils.getStockNewInfoFormServer(getContext(), detail.getRsn(), new StockUtils.OnGetStockNewFormSeverListener() {
                 @Override
                 public void afterGet(final GetStockNewResponse response) {
                     List<DiabloColor> colors = new ArrayList<>();

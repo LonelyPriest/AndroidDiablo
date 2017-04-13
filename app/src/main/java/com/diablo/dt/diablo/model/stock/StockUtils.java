@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.view.Gravity;
+import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.StockClient;
@@ -16,6 +17,8 @@ import com.diablo.dt.diablo.fragment.stock.GoodSelect;
 import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 
 import java.util.List;
@@ -176,7 +179,7 @@ public class StockUtils {
         void afterGet(GetStockNewResponse response);
     }
 
-    public static void getStockNewInfoFormServer(String rsn, final OnGetStockNewFormSeverListener listener) {
+    public static void getStockNewInfoFormServer(final Context context, String rsn, final OnGetStockNewFormSeverListener listener) {
         StockInterface face = StockClient.getClient().create(StockInterface.class);
         Call<GetStockNewResponse> call = face.getStockNewInfo(Profile.instance().getToken(), rsn);
 
@@ -195,7 +198,8 @@ public class StockUtils {
 
             @Override
             public void onFailure(Call<GetStockNewResponse> call, Throwable t) {
-
+                DiabloUtils.instance()
+                    .makeToast(context, DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
             }
         });
     }

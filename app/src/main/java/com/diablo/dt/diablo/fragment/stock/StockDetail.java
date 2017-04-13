@@ -35,6 +35,7 @@ import com.diablo.dt.diablo.request.stock.StockDetailRequest;
 import com.diablo.dt.diablo.response.stock.StockDetailResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -393,6 +394,7 @@ public class StockDetail extends Fragment {
 
             @Override
             public void onFailure(Call<StockDetailResponse> call, Throwable t) {
+                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
                 mStockDetailTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }

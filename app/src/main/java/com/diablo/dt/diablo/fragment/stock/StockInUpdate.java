@@ -477,7 +477,7 @@ public class StockInUpdate extends Fragment {
     }
 
     private void getStockInfoFromServer() {
-        StockUtils.getStockNewInfoFormServer(mRSN, new StockUtils.OnGetStockNewFormSeverListener() {
+        StockUtils.getStockNewInfoFormServer(getContext(), mRSN, new StockUtils.OnGetStockNewFormSeverListener() {
             @Override
             public void afterGet(GetStockNewResponse response) {
                 mRSNId = response.getStockCalc().getId();

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -171,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
                 .content(error)
                 // .contentColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
                 .positiveText(mContext.getResources().getString(R.string.login_ok))
-                .positiveColor(mContext.getResources().getColor(R.color.colorPrimaryDark))
+                .positiveColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark))
                 .show();
     }
 

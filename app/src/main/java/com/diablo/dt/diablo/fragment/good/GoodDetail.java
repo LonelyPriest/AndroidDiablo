@@ -35,6 +35,7 @@ import com.diablo.dt.diablo.request.good.GoodDetailRequest;
 import com.diablo.dt.diablo.response.good.GoodDetailResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloTableStockNote;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
@@ -355,6 +356,7 @@ public class GoodDetail extends Fragment {
 
             @Override
             public void onFailure(Call<GoodDetailResponse> call, Throwable t) {
+                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
                 mTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }

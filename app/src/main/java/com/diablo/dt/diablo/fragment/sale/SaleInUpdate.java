@@ -483,7 +483,7 @@ public class SaleInUpdate extends Fragment {
 
     private void getSaleInfoFromServer(){
 
-        SaleUtils.getSaleNewInfoFormServer(mRSN, new SaleUtils.OnGetSaleNewFormSeverListener() {
+        SaleUtils.getSaleNewInfoFormServer(getContext(), mRSN, new SaleUtils.OnGetSaleNewFormSeverListener() {
             @Override
             public void afterGet(GetSaleNewResponse response) {
                 mRSNId = response.getSaleCalc().getId();

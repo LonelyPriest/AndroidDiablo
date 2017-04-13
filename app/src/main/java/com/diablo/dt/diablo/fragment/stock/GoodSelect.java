@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
@@ -28,6 +29,7 @@ import com.diablo.dt.diablo.model.stock.EntryStock;
 import com.diablo.dt.diablo.model.stock.EntryStockAmount;
 import com.diablo.dt.diablo.task.MatchSingleStockTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
@@ -223,6 +225,8 @@ public class GoodSelect extends Fragment {
             @Override
             public void onMatchFailed(Throwable t) {
                 Log.d(LOG_TAG, "failed to get stock");
+                DiabloUtils.instance()
+                    .makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
             }
         });
 

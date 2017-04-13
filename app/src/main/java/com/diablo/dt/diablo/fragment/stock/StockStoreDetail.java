@@ -40,6 +40,7 @@ import com.diablo.dt.diablo.response.good.InventoryDetailResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.task.MatchSingleStockTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloTableStockNote;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
@@ -369,6 +370,7 @@ public class StockStoreDetail extends Fragment {
 
             @Override
             public void onFailure(Call<InventoryDetailResponse> call, Throwable t) {
+                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
                 mTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }
@@ -529,6 +531,7 @@ public class StockStoreDetail extends Fragment {
             @Override
             public void onMatchFailed(Throwable t) {
                 Log.d(LOG_TAG, "failed to get stock");
+                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
             }
         });
 

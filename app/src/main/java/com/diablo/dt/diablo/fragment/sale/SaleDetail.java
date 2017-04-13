@@ -34,6 +34,7 @@ import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -521,6 +522,7 @@ public class SaleDetail extends Fragment {
 
             @Override
             public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
+                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
                 mSaleDetailTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }
