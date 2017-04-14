@@ -267,6 +267,12 @@
     <item>灰</item>
   </string-array>
 
+  <string-array name="filter_sale_detail">
+    <item>客户</item>
+    <item>店铺</item>
+    <item>单号</item>
+  </string-array>
+
   <string name="order_id">序号</string>
   <string name="rsn">单号</string>
   <string name="trans">交易</string>

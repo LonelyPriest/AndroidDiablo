@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -19,9 +18,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -32,18 +32,22 @@ import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.filter.DiabloEntityFilter;
+import com.diablo.dt.diablo.filter.DiabloFilterController;
+import com.diablo.dt.diablo.filter.RSNFilter;
+import com.diablo.dt.diablo.filter.RetailerFilter;
+import com.diablo.dt.diablo.filter.ShopFilter;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
-import com.diablo.dt.diablo.task.FilterRetailerTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -77,10 +81,14 @@ public class SaleDetail extends Fragment {
     private Dialog mRefreshDialog;
     // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
 
+    private View mViewFragment;
     private TableRow mCurrentSelectedRow;
 
     private Integer mCurrentPage;
     private Integer mTotalPage;
+
+    private DiabloEntityFilter mRetailerFilter;
+    private DiabloFilterController mFilterController;
 
     /**
      * filter condition
@@ -133,35 +141,36 @@ public class SaleDetail extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_sale_detail, container, false);
+        mViewFragment = inflater.inflate(R.layout.fragment_sale_detail, container, false);
+        // final View fragmentView = view.findViewById(R.id.fragment_sale_detail);
 
         String currentDate = UTILS.currentDate();
-        ((EditText)view.findViewById(R.id.text_start_date)).setText(currentDate);
+        ((EditText)mViewFragment.findViewById(R.id.text_start_date)).setText(currentDate);
         mRequest.setStartTime(currentDate);
 
-        ((EditText)view.findViewById(R.id.text_end_date)).setText(currentDate);
+        ((EditText)mViewFragment.findViewById(R.id.text_end_date)).setText(currentDate);
         mRequest.setEndTime(UTILS.nextDate());
 
-        (view.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
+        (mViewFragment.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SaleUtils.DiabloDatePicker.build(SaleDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
-                        ((EditText) view.findViewById(R.id.text_start_date)).setText(date);
+                        ((EditText) mViewFragment.findViewById(R.id.text_start_date)).setText(date);
                         mRequest.setStartTime(date);
                     }
                 });
             }
         });
 
-        view.findViewById(R.id.btn_end_date).setOnClickListener(new View.OnClickListener() {
+        mViewFragment.findViewById(R.id.btn_end_date).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SaleUtils.DiabloDatePicker.build(SaleDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
-                        ((EditText)view.findViewById(R.id.text_end_date)).setText(date);
+                        ((EditText)mViewFragment.findViewById(R.id.text_end_date)).setText(date);
                         mRequest.setEndTime(nextDate);
                     }
                 });
@@ -191,7 +200,7 @@ public class SaleDetail extends Fragment {
 //            }
 //        });
 
-        mSaleDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
+        mSaleDetailTableSwipe = (SwipyRefreshLayout) mViewFragment.findViewById(R.id.t_sale_detail_swipe);
         // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mSaleDetailTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
@@ -286,10 +295,10 @@ public class SaleDetail extends Fragment {
 
         // TableLayout head = ((TableLayout)view.findViewById(R.id.t_sale_detail_head));
         // head.addView(row);
-        TableLayout head = (TableLayout) view.findViewById(R.id.t_sale_detail_head);
+        final TableLayout head = (TableLayout) mViewFragment.findViewById(R.id.t_sale_detail_head);
         head.addView(row);
 
-        mSaleDetailTable = (TableLayout) view.findViewById(R.id.t_sale_detail);
+        mSaleDetailTable = (TableLayout) mViewFragment.findViewById(R.id.t_sale_detail);
 
 //        for (Integer i = 0; i<mRows.length; i++){
 //            mRows[i] = new TableRow(this.getContext());
@@ -298,27 +307,26 @@ public class SaleDetail extends Fragment {
 //        }
 
         init();
+        initFilters();
         pageChanged();
 
-        mViewRetailer = (AutoCompleteTextView) view.findViewById(R.id.select_retailer);
-        mViewRetailer.addTextChangedListener(new DiabloTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mRequest.setRetailer(null);
-                String name = editable.toString();
-                new FilterRetailerTask(getContext(), mViewRetailer, Profile.instance().getRetailers()).execute(name);
-            }
-        });
+        return mViewFragment;
+    }
 
-        mViewRetailer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Retailer r = ((Retailer)parent.getItemAtPosition(position));
-                mRequest.setRetailer(r.getId());
-            }
-        });
+    private void initFilters() {
+        mViewRetailer = (AutoCompleteTextView) mViewFragment.findViewById(R.id.select_retailer);
+        mRetailerFilter = new RetailerFilter(getContext(), getString(R.string.retailer));
 
-        return view;
+        ImageButton btnAdd = (ImageButton) mViewFragment.findViewById(R.id.btn_add_filter);
+        ImageButton btnMinus = (ImageButton) mViewFragment.findViewById(R.id.btn_minus_filter);
+
+        List<DiabloEntityFilter> entities = new ArrayList<>();
+        entities.add(new RetailerFilter(getContext(), getString(R.string.retailer)));
+        entities.add(new RSNFilter(getContext(), getString(R.string.rsn)));
+        entities.add(new ShopFilter(getContext(), getString(R.string.shop)));
+
+        mFilterController = new DiabloFilterController(getContext(), entities, 1);
+        mFilterController.init((LinearLayout)mViewFragment, R.id.t_sale_detail, btnAdd, btnMinus);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -337,12 +345,6 @@ public class SaleDetail extends Fragment {
     }
 
     private void pageChanged(){
-        // hidden keyboard
-        // DiabloUtils.instance().hiddenKeyboard(getContext());
-        // get data from from web server
-        // mRequest.getCondition().setStartTime(DiabloUtils.instance().currentDate());
-        // mRequest.getCondition().setStartTime("2016-01-01");
-        // mRequest.getCondition().setEndTime(DiabloUtils.instance().nextDate());
 
         Call<SaleDetailResponse> call = mSaleRest.filterSaleNew(Profile.instance().getToken(), mRequest);
 

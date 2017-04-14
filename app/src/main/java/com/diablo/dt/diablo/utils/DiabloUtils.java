@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -560,6 +561,17 @@ public class DiabloUtils {
             LinearLayout.LayoutParams.MATCH_PARENT));
 
         return loadingDialog;
+    }
+
+    public static void linearLayoutAddView(LinearLayout parent, View view, @IdRes Integer childResId) {
+        Integer index = DiabloEnum.DEFAULT_INDEX;
+        for (int i = DiabloEnum.DEFAULT_INDEX; i<parent.getChildCount(); i++) {
+            if (parent.getChildAt(i).getId() == childResId) {
+                index = i;
+            }
+        }
+
+        parent.addView(view, index);
     }
 
 }

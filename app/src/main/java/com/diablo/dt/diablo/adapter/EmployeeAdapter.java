@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.Employee;
-import com.diablo.dt.diablo.entity.Retailer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +20,12 @@ import java.util.List;
  */
 
 public class EmployeeAdapter extends ArrayAdapter<Employee> {
-    Context context;
-    Integer resource, textViewResourceId;
-    List<Employee> items, tempItems, suggestions;
+    private Context context;
+    private Integer resource;
+    private Integer textViewResourceId;
+    private List<Employee> items;
+    private List<Employee> tempItems;
+    private List<Employee> suggestions;
 
     public EmployeeAdapter(Context context, Integer resource, Integer textViewResourceId, List<Employee> items) {
         super(context, resource, textViewResourceId, items);
@@ -31,8 +33,8 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
         this.items = items;
-        tempItems = new ArrayList<Employee>(items); // this makes the difference.
-        suggestions = new ArrayList<Employee>();
+        tempItems = new ArrayList<>(items); // this makes the difference.
+        suggestions = new ArrayList<>();
     }
 
     @NonNull
@@ -58,7 +60,7 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
     private Filter nameFilter = new Filter() {
         @Override
         public CharSequence convertResultToString(Object resultValue) {
-            return ((Retailer) resultValue).getName();
+            return ((Employee) resultValue).getName();
         }
 
         @Override
@@ -107,5 +109,5 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
                 lblName.setText(people.getName());
         }
         return view;
-    };
+    }
 }

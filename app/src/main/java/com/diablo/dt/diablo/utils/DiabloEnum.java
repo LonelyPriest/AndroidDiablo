@@ -12,6 +12,7 @@ public class DiabloEnum {
     public static final String  DATE_SEPARATOR = "-";
 
     public static final Integer INVALID_INDEX = -1;
+    public static final Integer DEFAULT_INDEX = 1;
     public static final Integer DIABLO_FREE = 0;
     public static final Integer DIABLO_NON_FREE = 1;
     public static final Integer DIABLO_FALSE = 0;

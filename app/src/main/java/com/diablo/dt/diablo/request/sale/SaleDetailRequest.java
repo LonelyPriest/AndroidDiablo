@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import com.diablo.dt.diablo.request.PageRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by buxianhui on 17/2/23.
  */
@@ -35,8 +38,24 @@ public class SaleDetailRequest extends PageRequest {
         mCondition.setEndTime(endTime);
     }
 
-    public void setRetailer(Integer retailer) {
-        mCondition.setRetailer(retailer);
+    public void addRetailer(Integer retailer) {
+        mCondition.addRetailer(retailer);
+    }
+
+    public void removeRetailer(Integer retailer) {
+        mCondition.removeRetailer(retailer);
+    }
+
+    public void addShop(Integer shop) {
+        mCondition.addShop(shop);
+    }
+
+    public void removeShop(Integer shop) {
+        mCondition.removeShop(shop);
+    }
+
+    public void addRSN(String rsn) {
+        mCondition.addRSN(rsn);
     }
 
 //    public Condition getCondition() {
@@ -53,10 +72,16 @@ public class SaleDetailRequest extends PageRequest {
         @SerializedName("end_time")
         private String mEndTime;
         @SerializedName("retailer")
-        private Integer mRetailer;
+        private List<Integer> mRetailers;
+        @SerializedName("shop")
+        private List<Integer> mShops;
+        @SerializedName("rsn")
+        private List<String> mRSNs;
 
         public Condition(){
-
+            mRetailers = new ArrayList<>();
+            mShops = new ArrayList<>();
+            mRSNs = new ArrayList<>();
         }
 
         public void setStartTime(String startTime) {
@@ -67,8 +92,40 @@ public class SaleDetailRequest extends PageRequest {
             this.mEndTime = endTime;
         }
 
-        private void setRetailer(Integer retailer) {
-            this.mRetailer = retailer;
+        private void addRetailer(Integer retailer) {
+            if (null != mRetailers) {
+                if (!mRetailers.contains(retailer)) {
+                    this.mRetailers.add(retailer);
+                }
+            }
+        }
+
+        private void removeRetailer(Integer retailer) {
+            if (null != mRetailers) {
+                mRetailers.remove(retailer);
+            }
+        }
+
+        private void addShop(Integer shop) {
+            if (null != mShops) {
+                if (!mShops.contains(shop)) {
+                    this.mShops.add(shop);
+                }
+            }
+        }
+
+        private void removeShop(Integer shop) {
+            if (null != mShops) {
+                mShops.remove(shop);
+            }
+        }
+
+        private void addRSN(String rsn) {
+            if (null != mRSNs) {
+                if (!mRSNs.contains(rsn)) {
+                    this.mRSNs.add(rsn);
+                }
+            }
         }
     }
 }
