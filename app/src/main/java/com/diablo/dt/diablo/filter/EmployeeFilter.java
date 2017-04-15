@@ -5,21 +5,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
-import com.diablo.dt.diablo.adapter.SpinnerShopAdapter;
+import com.diablo.dt.diablo.adapter.EmployeeAdapter;
 import com.diablo.dt.diablo.entity.Profile;
 
 /**
- * Created by buxianhui on 17/4/14.
+ * Created by buxianhui on 17/4/15.
  */
 
-public class ShopFilter extends DiabloFilter {
-    public ShopFilter(Context context, String name) {
+public class EmployeeFilter extends DiabloFilter {
+    public EmployeeFilter(Context context, String name) {
         super(context, name);
     }
 
     @Override
     public DiabloFilter copy() {
-        return new ShopFilter(getContext(), getName());
+        return new EmployeeFilter(getContext(), getName());
     }
 
     @Override
@@ -30,18 +30,17 @@ public class ShopFilter extends DiabloFilter {
 
     @Override
     public void init(final View view) {
-        // super.init(view);
-        // final Spinner view = new Spinner(getContext());
         setView(view);
-        SpinnerShopAdapter adapter = new SpinnerShopAdapter(
+
+        EmployeeAdapter adapter = new EmployeeAdapter(
             getContext(),
             android.R.layout.simple_spinner_item,
-            Profile.instance().getSortShop());
+            Profile.instance().getEmployees());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        ((Spinner) view).setAdapter(adapter);
-        setSelectFilter(((Spinner) view).getSelectedItem());
-        // ((AppCompatSpinner) view).setSelection(0);
+        ((Spinner)view).setAdapter(adapter);
+
+        setSelectFilter( ((Spinner) view).getSelectedItem() );
 
         ((Spinner) view).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

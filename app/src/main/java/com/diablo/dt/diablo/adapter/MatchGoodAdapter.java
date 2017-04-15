@@ -57,11 +57,16 @@ public class MatchGoodAdapter extends ArrayAdapter<MatchGood> {
     @Override
     public Filter getFilter() {
         if (null == filter)
-            filter = new StockFilter();
+            filter = new GoodFilter();
         return filter;
     }
 
-    private class StockFilter extends Filter{
+    private class GoodFilter extends Filter{
+        @Override
+        public CharSequence convertResultToString(Object resultValue) {
+            return ((MatchGood) resultValue).getName();
+        }
+
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults filterResults = new FilterResults();

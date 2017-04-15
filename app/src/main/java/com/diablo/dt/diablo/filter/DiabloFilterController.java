@@ -24,14 +24,14 @@ public class DiabloFilterController {
     private final static Integer MAX_FILTER_PER_LINE = 3;
 
     private Context mContext;
-    private List<DiabloEntityFilter> mFilters;
+    private List<DiabloFilter> mFilters;
 
     private Integer mCount;
     private SparseArray<DiabloFilterLayout> mFilterLayouts;
     private Integer mMaxCount;
 
     public DiabloFilterController(Context context,
-                                  List<DiabloEntityFilter> filters,
+                                  List<DiabloFilter> filters,
                                   Integer maxCount) {
         this.mContext = context;
         this.mFilters = filters;
@@ -42,13 +42,13 @@ public class DiabloFilterController {
     }
 
     public void init(final LinearLayout parent,
-                      @IdRes final Integer child,
-                      @NonNull final ImageButton btnAdd,
-                      @NonNull final ImageButton btnMinus) {
+                     final @IdRes Integer childResId,
+                     @NonNull final ImageButton btnAdd,
+                     @NonNull final ImageButton btnMinus) {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addFilter(parent, child);
+                addFilter(parent, childResId);
 
                 if (mCount.equals(mMaxCount)) {
                     btnAdd.setEnabled(false);
@@ -75,10 +75,10 @@ public class DiabloFilterController {
         return mCount;
     }
 
-    public List<DiabloEntityFilter> getEntityFilters() {
-        List<DiabloEntityFilter> entityFilters = new ArrayList<>();
+    public List<DiabloFilter> getEntityFilters() {
+        List<DiabloFilter> entityFilters = new ArrayList<>();
         for (int i=0; i<mCount; i++) {
-            SparseArray<DiabloEntityFilter> fs = mFilterLayouts.get(i).getFilters();
+            SparseArray<DiabloFilter> fs = mFilterLayouts.get(i+1).getFilters();
             for(int j=0; j<fs.size(); j++) {
                 entityFilters.add(fs.get(fs.keyAt(j)));
             }
@@ -87,14 +87,14 @@ public class DiabloFilterController {
         return entityFilters;
     }
 
-    private void addFilter(LinearLayout parent, @IdRes Integer child) {
+    private void addFilter(LinearLayout parent,  @IdRes Integer childResId) {
 
         LinearLayout layout = new LinearLayout(mContext);
         DiabloFilterLayout filterLayout = new DiabloFilterLayout(layout);
         for (int i=0; i<MAX_FILTER_PER_LINE; i++){
             addItem(filterLayout, i);
         }
-        DiabloUtils.linearLayoutAddView(parent, layout, child);
+        DiabloUtils.linearLayoutAddView(parent, layout, childResId);
 
         this.mCount++;
         mFilterLayouts.put(this.mCount, filterLayout);
@@ -109,7 +109,7 @@ public class DiabloFilterController {
 //        for (int i=0; i<layout.getChildCount(); i++) {
 //            View cell = layout.getChildAt(i);
 //            if (cell instanceof Spinner) {
-//                DiabloEntityFilter filter = (DiabloEntityFilter) ((Spinner)cell).getSelectedItem();
+//                DiabloFilter filter = (DiabloFilter) ((Spinner)cell).getSelectedItem();
 //
 //            }
 //        }
@@ -125,10 +125,17 @@ public class DiabloFilterController {
         Spinner spinner = new Spinner(mContext);
         spinner.setLayoutParams(lp0);
 
+        List<DiabloFilter> entityFilters = new ArrayList<>();
+        for (DiabloFilter f: mFilters) {
+            DiabloFilter copy = f.copy();
+            copy.init();
+            entityFilters.add(copy);
+        }
+
         SpinnerFilterAdapter adapter = new SpinnerFilterAdapter(
             mContext,
             android.R.layout.simple_spinner_item,
-            mFilters);
+            entityFilters);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -137,38 +144,46 @@ public class DiabloFilterController {
         layout.addView(spinner);
 
         final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-            0, LinearLayout.LayoutParams.MATCH_PARENT, 0.7f);
+            0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.7f);
         Integer position = mCount * MAX_FILTER_PER_LINE + index;
-        if (position < mFilters.size()) {
+
+        // View filterView;
+        DiabloFilter filter;
+        if (position < entityFilters.size()) {
             spinner.setSelection(position);
+            // mFilters.get(position).init();
+            filter = entityFilters.get(position);
+            // filterView = entityFilters.get(position).getView();
 
-            mFilters.get(position).init();
-            mFilters.get(position).getView().setLayoutParams(lp);
-
-            layout.addView(mFilters.get(position).getView());
-
-
-            final Integer removeIndex = layout.indexOfChild(mFilters.get(position).getView());
-            filterLayout.addEntityFilter(removeIndex, mFilters.get(position));
-
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                    DiabloEntityFilter entityFilter = (DiabloEntityFilter) adapterView.getItemAtPosition(position);
-                    layout.removeViewAt(removeIndex);
-
-                    entityFilter.init();
-                    entityFilter.getView().setLayoutParams(lp);
-                    layout.addView(mFilters.get(position).getView(), removeIndex);
-                    filterLayout.setEntityFilter(removeIndex, entityFilter);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
+        } else {
+            filter = entityFilters.get(0);
+            // filterView = entityFilters.get(0).getView();
         }
+
+        filter.getView().setLayoutParams(lp);
+        layout.addView(filter.getView());
+
+        final Integer removeIndex = layout.indexOfChild(filter.getView());
+        filterLayout.addEntityFilter(removeIndex, filter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                DiabloFilter filter = (DiabloFilter) adapterView.getItemAtPosition(position);
+                layout.removeViewAt(removeIndex);
+
+                // entityFilter.init();
+                // DiabloUtils.instance().makeToast(mContext, removeIndex, Toast.LENGTH_SHORT);
+                filter.getView().setLayoutParams(lp);
+                layout.addView(filter.getView(), removeIndex);
+                filterLayout.setEntityFilter(removeIndex, filter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     /**
@@ -176,24 +191,23 @@ public class DiabloFilterController {
      */
     private static class DiabloFilterLayout {
         private LinearLayout mLayout;
-        // private List<DiabloEntityFilter> mFilters;
-        private SparseArray<DiabloEntityFilter> mFilters;
+        // private List<DiabloFilter> mFilters;
+        private SparseArray<DiabloFilter> mFilters;
 
         private DiabloFilterLayout(LinearLayout layout) {
             mLayout = layout;
-            List<DiabloEntityFilter> filters;
             mFilters = new SparseArray<>();
         }
 
-        private void addEntityFilter(Integer key, DiabloEntityFilter filter) {
+        private void addEntityFilter(Integer key, DiabloFilter filter) {
             mFilters.put(key, filter);
         }
 
-        private void setEntityFilter(Integer key, DiabloEntityFilter filter) {
-            mFilters.setValueAt(key, filter);
+        private void setEntityFilter(Integer key, DiabloFilter filter) {
+            mFilters.put(key, filter);
         }
 
-        private SparseArray<DiabloEntityFilter> getFilters() {
+        private SparseArray<DiabloFilter> getFilters() {
             return mFilters;
         }
 

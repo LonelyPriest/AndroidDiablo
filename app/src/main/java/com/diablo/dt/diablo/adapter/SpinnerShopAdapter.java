@@ -45,7 +45,7 @@ public class SpinnerShopAdapter extends ArrayAdapter<DiabloShop> {
     @Override
     public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
         TextView view = (TextView) super.getDropDownView(position, convertView, parent);
-        view.setTextSize(18);
+        // view.setTextSize(18);
         view.setTextColor(Color.BLACK);
 
         DiabloShop shop = filterShops.get(position);

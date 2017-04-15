@@ -125,7 +125,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         DiabloDBManager.instance().init(this);
+
+        Profile.instance().setResource(getResources());
+        Profile.instance().setServer(getString(R.string.diablo_server));
+        Profile.instance().setDiabloYears(getResources().getStringArray(R.array.years));
+        Profile.instance().setSaleTypes(getResources().getStringArray(R.array.sale_types_desc));
+        Profile.instance().setStockTypes(getResources().getStringArray(R.array.stock_types_desc));
 
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);

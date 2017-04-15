@@ -1,9 +1,8 @@
 package com.diablo.dt.diablo.entity;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
-import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
@@ -16,37 +15,44 @@ import java.util.List;
 
 public class Profile {
     private static final String LOG_TAG = "Profile:";
-    private static Profile mProfile;
     private static final String mSessionId = DiabloEnum.SESSION_ID;
-    private static Integer mTableRows = DiabloEnum.ROW_SIZE;
+
+    private static Profile mProfile;
+    // private static Integer mTableRows = DiabloEnum.ROW_SIZE;
 
     // private static final String[] SIZE_TITLES = {"si", "sii", "siii", "siv", "sv", "svi"};
 
-    private Profile() {}
+    private Profile() {
 
-    public static Profile instance() {
+    }
+
+    synchronized public static Profile instance() {
         if ( null == mProfile){
             mProfile = new Profile();
         }
         return mProfile;
     }
 
-    public static Integer getTableRows(){
-        return Profile.mTableRows;
-    }
+//    public static Integer getTableRows(){
+//        return Profile.mTableRows;
+//    }
 
     // android context
-    private Context mContext;
+    // private Context mContext;
     // token from server
     private String mToken;
+    // server
+    private String mServer;
+    // resource handler
+    private Resources mResource;
 
-    public void setContext(Context context){
-        this.mContext = context;
-    }
-
-    public Context getContext(){
-        return this.mContext;
-    }
+//    public void setContext(Context context){
+//        this.mContext = context;
+//    }
+//
+//    public Context getContext(){
+//        return this.mContext;
+//    }
 
     public void setToken(String token){
         mToken = Profile.mSessionId + "=" + token;
@@ -56,8 +62,20 @@ public class Profile {
         return this.mToken;
     }
 
-    public String getServer(){
-        return mContext.getResources().getString(R.string.diablo_server);
+    public void setServer(final String server) {
+        this.mServer = server;
+    }
+    public final String getServer(){
+        return mServer;
+        // return mContext.getResources().getString(R.string.diablo_server);
+    }
+
+    public void setResource (Resources resource) {
+        this.mResource = resource;
+    }
+
+    public Resources getResource() {
+        return mResource;
     }
 
     // login information
@@ -112,6 +130,15 @@ public class Profile {
 
     // class kind
     private List<DiabloColorKind> mColorKinds;
+
+    // years
+    private String [] mDiabloYears;
+
+    // sale type
+    private String [] mSaleTypes;
+
+    // stock type
+    private String [] mStockTypes;
 
     public void clear(){
         Log.d(LOG_TAG, "clear called");
@@ -727,5 +754,32 @@ public class Profile {
 
     public void setColorKinds(List<DiabloColorKind> colorKinds) {
         this.mColorKinds = new ArrayList<>(colorKinds);
+    }
+
+    // years
+    public void setDiabloYears(String [] years) {
+        this.mDiabloYears = years.clone();
+    }
+
+    public String[] getDiabloYears() {
+        return this.mDiabloYears;
+    }
+
+    // sale types
+    public void setSaleTypes(String [] types) {
+        this.mSaleTypes = types.clone();
+    }
+
+    public String[] getSaleTypes() {
+        return this.mSaleTypes;
+    }
+
+    // stock types
+    public void setStockTypes(String [] types) {
+        this.mStockTypes = types.clone();
+    }
+
+    public String[] getStockTypes() {
+        return this.mStockTypes;
     }
 }

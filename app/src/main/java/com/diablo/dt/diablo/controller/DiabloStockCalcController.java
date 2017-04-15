@@ -256,10 +256,11 @@ public class DiabloStockCalcController {
     public void setEmployeeAdapter(Context context) {
         EmployeeAdapter adapter = new EmployeeAdapter(
             context,
-            R.layout.typeahead_employee,
-            R.id.typeahead_select_employee,
+            android.R.layout.simple_spinner_item,
             Profile.instance().getEmployees());
         ((Spinner)mStockCalcView.getViewEmployee()).setAdapter(adapter);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 
     public void setExtraCostTypeAdapter(Context context){

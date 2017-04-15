@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -28,11 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
+import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
-import com.diablo.dt.diablo.filter.DiabloEntityFilter;
+import com.diablo.dt.diablo.filter.DiabloFilter;
 import com.diablo.dt.diablo.filter.DiabloFilterController;
 import com.diablo.dt.diablo.filter.RSNFilter;
 import com.diablo.dt.diablo.filter.RetailerFilter;
@@ -41,6 +40,7 @@ import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
+import com.diablo.dt.diablo.utils.DiabloDatePicker;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -68,8 +68,10 @@ public class SaleDetail extends Fragment {
     /*
     * rest request
     * */
-    private SaleDetailRequest mRequest;
+    // private SaleDetailRequest mRequest;
     private WSaleInterface mSaleRest;
+//    private String mStartTime;
+//    private String mEndTime;
 
     /*
     * row of table
@@ -87,13 +89,9 @@ public class SaleDetail extends Fragment {
     private Integer mCurrentPage;
     private Integer mTotalPage;
 
-    private DiabloEntityFilter mRetailerFilter;
+    private DiabloFilter mRetailerFilter;
     private DiabloFilterController mFilterController;
-
-    /**
-     * filter condition
-     */
-    private AutoCompleteTextView mViewRetailer;
+    private DiabloDatePicker mDatePicker;
 
     public SaleDetail() {
         // Required empty public constructor
@@ -102,7 +100,7 @@ public class SaleDetail extends Fragment {
     public void init() {
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mTotalPage = 0;
-        mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
+        // mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
     }
 
     /**
@@ -125,80 +123,30 @@ public class SaleDetail extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_DETAIL));
+
         mTableHeads = getResources().getStringArray(R.array.thead_sale_detail);
         mSaleTypes = getResources().getStringArray(R.array.sale_type);
 
-        mRequest = new SaleDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-//        mRequestCondition = new SaleDetailRequest.Condition();
-//        mRequest.setCondition(mRequestCondition);
-
         mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
-
-        // mRows = new TableRow[mRequest.getCount()];
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         mViewFragment = inflater.inflate(R.layout.fragment_sale_detail, container, false);
-        // final View fragmentView = view.findViewById(R.id.fragment_sale_detail);
 
-        String currentDate = UTILS.currentDate();
-        ((EditText)mViewFragment.findViewById(R.id.text_start_date)).setText(currentDate);
-        mRequest.setStartTime(currentDate);
-
-        ((EditText)mViewFragment.findViewById(R.id.text_end_date)).setText(currentDate);
-        mRequest.setEndTime(UTILS.nextDate());
-
-        (mViewFragment.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(SaleDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(String date, String nextDate) {
-                        ((EditText) mViewFragment.findViewById(R.id.text_start_date)).setText(date);
-                        mRequest.setStartTime(date);
-                    }
-                });
-            }
-        });
-
-        mViewFragment.findViewById(R.id.btn_end_date).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(SaleDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(String date, String nextDate) {
-                        ((EditText)mViewFragment.findViewById(R.id.text_end_date)).setText(date);
-                        mRequest.setEndTime(nextDate);
-                    }
-                });
-            }
-        });
-
-        ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_DETAIL));
+        mDatePicker = new DiabloDatePicker(
+            SaleDetail.this,
+            mViewFragment.findViewById(R.id.btn_start_date),
+            mViewFragment.findViewById(R.id.btn_end_date),
+            (EditText) mViewFragment.findViewById(R.id.text_start_date),
+            (EditText)mViewFragment.findViewById(R.id.text_end_date),
+            UTILS.currentDate());
 
         // support action bar
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
-
-//        final DiabloTableSwipRefreshLayout tableSwipe = (DiabloTableSwipRefreshLayout)view.findViewById(R.id.t_sale_detail_swipe);
-//        tableSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                DiabloUtils.instance().makeToast(getContext(), "refresh");
-//                tableSwipe.setRefreshing(false);
-//            }
-//        });
-//
-//        tableSwipe.setOnLoadListener(new DiabloTableSwipRefreshLayout.OnLoadListener() {
-//            @Override
-//            public void onLoad() {
-//                DiabloUtils.instance().makeToast(getContext(), "onLoad");
-//                tableSwipe.setLoading(false);
-//            }
-//        });
 
         mSaleDetailTableSwipe = (SwipyRefreshLayout) mViewFragment.findViewById(R.id.t_sale_detail_swipe);
         // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
@@ -210,7 +158,7 @@ public class SaleDetail extends Fragment {
                 if (direction == SwipyRefreshLayoutDirection.TOP){
                     if (!mCurrentPage.equals(DiabloEnum.DEFAULT_PAGE)){
                         mCurrentPage--;
-                        mRequest.setPage(mCurrentPage);
+                        // mRequest.setPage(mCurrentPage);
                         pageChanged();
                     } else {
                         DiabloUtils.instance().makeToast(
@@ -229,7 +177,7 @@ public class SaleDetail extends Fragment {
                         mSaleDetailTableSwipe.setRefreshing(false);
                     } else {
                         mCurrentPage++;
-                        mRequest.setPage(mCurrentPage);
+                        // mRequest.setPage(mCurrentPage);
                         pageChanged();
                     }
 
@@ -314,19 +262,20 @@ public class SaleDetail extends Fragment {
     }
 
     private void initFilters() {
-        mViewRetailer = (AutoCompleteTextView) mViewFragment.findViewById(R.id.select_retailer);
+        View retailerView = mViewFragment.findViewById(R.id.select_retailer);
         mRetailerFilter = new RetailerFilter(getContext(), getString(R.string.retailer));
+        mRetailerFilter.init(retailerView);
 
         ImageButton btnAdd = (ImageButton) mViewFragment.findViewById(R.id.btn_add_filter);
         ImageButton btnMinus = (ImageButton) mViewFragment.findViewById(R.id.btn_minus_filter);
 
-        List<DiabloEntityFilter> entities = new ArrayList<>();
+        List<DiabloFilter> entities = new ArrayList<>();
         entities.add(new RetailerFilter(getContext(), getString(R.string.retailer)));
         entities.add(new RSNFilter(getContext(), getString(R.string.rsn)));
         entities.add(new ShopFilter(getContext(), getString(R.string.shop)));
 
         mFilterController = new DiabloFilterController(getContext(), entities, 1);
-        mFilterController.init((LinearLayout)mViewFragment, R.id.t_sale_detail, btnAdd, btnMinus);
+        mFilterController.init((LinearLayout)mViewFragment, R.id.t_sale_detail_swipe, btnAdd, btnMinus);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -345,8 +294,36 @@ public class SaleDetail extends Fragment {
     }
 
     private void pageChanged(){
+        final SaleDetailRequest request = new SaleDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
+        request.setStartTime(mDatePicker.startTime());
+        request.setEndTime(mDatePicker.endTime());
 
-        Call<SaleDetailResponse> call = mSaleRest.filterSaleNew(Profile.instance().getToken(), mRequest);
+        if (null != mRetailerFilter.getSelect()) {
+            Object select = mRetailerFilter.getSelect();
+            request.addRetailer(((Retailer)select).getId());
+        }
+
+        for (DiabloFilter filter: mFilterController.getEntityFilters()) {
+            Object select = filter.getSelect();
+            if (null != select) {
+                if (filter instanceof RetailerFilter) {
+                    request.addRetailer(((Retailer)select).getId());
+                }
+                else if (filter instanceof ShopFilter) {
+                    request.addShop(((DiabloShop)select).getShop());
+                }
+                else if (filter instanceof RSNFilter) {
+                    request.addRSN((String) select);
+                }
+            }
+        }
+
+        if (0 == request.getShops().size()) {
+            request.setShops(Profile.instance().getShopIds());
+        }
+
+        request.trim();
+        Call<SaleDetailResponse> call = mSaleRest.filterSaleNew(Profile.instance().getToken(), request);
 
         call.enqueue(new Callback<SaleDetailResponse>() {
             @Override
@@ -359,7 +336,7 @@ public class SaleDetail extends Fragment {
                 SaleDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
-                        mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
+                        mTotalPage = UTILS.calcTotalPage(base.getTotal(), request.getCount());
                         Resources res = getResources();
                         mStatistic =
                             res.getString(R.string.amount) + res.getString(R.string.colon) + UTILS.toString(base.getAmount())
@@ -371,7 +348,7 @@ public class SaleDetail extends Fragment {
                 }
 
                 List<SaleDetailResponse.SaleDetail> details = base.getSaleDetail();
-                Integer orderId = mRequest.getPageStartIndex();
+                Integer orderId = request.getPageStartIndex();
                 // mSaleDetailTable.removeAllViews();
                 TableRow row = null;
                 mSaleDetailTable.removeAllViews();

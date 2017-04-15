@@ -42,17 +42,25 @@ public class SaleDetailRequest extends PageRequest {
         mCondition.addRetailer(retailer);
     }
 
-    public void removeRetailer(Integer retailer) {
-        mCondition.removeRetailer(retailer);
-    }
-
+//    public void removeRetailer(Integer retailer) {
+//        mCondition.removeRetailer(retailer);
+//    }
+//
     public void addShop(Integer shop) {
         mCondition.addShop(shop);
     }
 
-    public void removeShop(Integer shop) {
-        mCondition.removeShop(shop);
+    public List<Integer> getShops() {
+        return mCondition.getShops();
     }
+
+    public void setShops(List<Integer> shops) {
+        mCondition.setShops(shops);
+    }
+//
+//    public void removeShop(Integer shop) {
+//        mCondition.removeShop(shop);
+//    }
 
     public void addRSN(String rsn) {
         mCondition.addRSN(rsn);
@@ -65,6 +73,10 @@ public class SaleDetailRequest extends PageRequest {
 //    public void setCondition(Condition condition) {
 //        this.mCondition = condition;
 //    }
+
+    public void trim() {
+        mCondition.trim();
+    }
 
     private static class Condition{
         @SerializedName("start_time")
@@ -84,6 +96,20 @@ public class SaleDetailRequest extends PageRequest {
             mRSNs = new ArrayList<>();
         }
 
+        public void trim() {
+            if (0 == mRetailers.size()) {
+                mRetailers = null;
+            }
+
+//            if (0 == mShops.size()) {
+//                mShops = null;
+//            }
+
+            if (0 == mRSNs.size()) {
+                mRSNs = null;
+            }
+        }
+
         public void setStartTime(String startTime) {
             this.mStartTime = startTime;
         }
@@ -93,38 +119,40 @@ public class SaleDetailRequest extends PageRequest {
         }
 
         private void addRetailer(Integer retailer) {
-            if (null != mRetailers) {
-                if (!mRetailers.contains(retailer)) {
-                    this.mRetailers.add(retailer);
-                }
+            if (!mRetailers.contains(retailer)) {
+                this.mRetailers.add(retailer);
             }
         }
 
-        private void removeRetailer(Integer retailer) {
-            if (null != mRetailers) {
-                mRetailers.remove(retailer);
-            }
-        }
-
+//        private void removeRetailer(Integer retailer) {
+//            if (null != mRetailers) {
+//                mRetailers.remove(retailer);
+//            }
+//        }
+//
         private void addShop(Integer shop) {
-            if (null != mShops) {
-                if (!mShops.contains(shop)) {
-                    this.mShops.add(shop);
-                }
+            if (!mShops.contains(shop)) {
+                this.mShops.add(shop);
             }
         }
 
-        private void removeShop(Integer shop) {
-            if (null != mShops) {
-                mShops.remove(shop);
-            }
+        private List<Integer> getShops() {
+            return this.mShops;
         }
+
+        private void setShops(List<Integer> shops) {
+            this.mShops = shops;
+        }
+//
+//        private void removeShop(Integer shop) {
+//            if (null != mShops) {
+//                mShops.remove(shop);
+//            }
+//        }
 
         private void addRSN(String rsn) {
-            if (null != mRSNs) {
-                if (!mRSNs.contains(rsn)) {
-                    this.mRSNs.add(rsn);
-                }
+            if (!mRSNs.contains(rsn)) {
+                this.mRSNs.add(rsn);
             }
         }
     }

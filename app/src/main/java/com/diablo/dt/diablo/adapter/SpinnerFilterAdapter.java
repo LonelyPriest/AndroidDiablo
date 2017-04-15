@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.diablo.dt.diablo.filter.DiabloEntityFilter;
+import com.diablo.dt.diablo.filter.DiabloFilter;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ import java.util.List;
  * Created by buxianhui on 17/4/14.
  */
 
-public class SpinnerFilterAdapter extends ArrayAdapter<DiabloEntityFilter> {
+public class SpinnerFilterAdapter extends ArrayAdapter<DiabloFilter> {
     // private Context context;
-    private List<DiabloEntityFilter> filterItems;
+    private List<DiabloFilter> filterItems;
 
-    public SpinnerFilterAdapter(Context context, Integer resource, List<DiabloEntityFilter> items) {
+    public SpinnerFilterAdapter(Context context, Integer resource, List<DiabloFilter> items) {
         super(context, resource, items);
         // this.context = context;
         this.filterItems = items;
@@ -34,7 +34,7 @@ public class SpinnerFilterAdapter extends ArrayAdapter<DiabloEntityFilter> {
         view.setTextSize(18);
         view.setTextColor(Color.MAGENTA);
 
-        DiabloEntityFilter entity = filterItems.get(position);
+        DiabloFilter entity = filterItems.get(position);
         if (null != entity) {
             view.setText(entity.getName());
         }
@@ -47,7 +47,7 @@ public class SpinnerFilterAdapter extends ArrayAdapter<DiabloEntityFilter> {
         view.setTextSize(18);
         view.setTextColor(Color.BLACK);
 
-        DiabloEntityFilter entity = filterItems.get(position);
+        DiabloFilter entity = filterItems.get(position);
         if (null != entity) {
             view.setText(entity.getName());
         }

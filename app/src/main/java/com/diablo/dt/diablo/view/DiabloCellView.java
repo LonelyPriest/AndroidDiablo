@@ -32,7 +32,7 @@ public class DiabloCellView {
     }
 
     public void setCellFocusable(boolean focusable) {
-        view.setFocusableInTouchMode(true);
+        view.setFocusableInTouchMode(focusable);
         view.setFocusable(focusable);
     }
 

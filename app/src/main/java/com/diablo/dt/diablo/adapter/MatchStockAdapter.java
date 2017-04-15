@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.diablo.dt.diablo.entity.MatchStock;
@@ -23,26 +22,32 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     private Context context;
     private Integer resource;
     private Integer textViewResourceId;
-    private TableRow mRow;
+    // private TableRow mRow;
     // private List<MatchStock> originStocks;
     private List<MatchStock> filterStocks;
     private Filter filter;
+
+    private boolean mShowStyleNumberOnly;
     // private List<MatchStock> suggestions;
 
     public MatchStockAdapter(Context context,
                              Integer resource,
                              Integer textViewResourceId,
                              List<MatchStock> stocks,
-                             TableRow row) {
+                             boolean showStyleNumberOnly) {
         super(context, resource, textViewResourceId, stocks);
         this.context = context;
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
         // this.originStocks = stocks;
         this.filterStocks = stocks;
-
-        this.mRow = row;
+        mShowStyleNumberOnly = false;
+        this.mShowStyleNumberOnly = showStyleNumberOnly;
     }
+
+//    public void setShowStyleNumberOnly(boolean showStyleNumberOnly) {
+//        this.mShowStyleNumberOnly = showStyleNumberOnly;
+//    }
 
     @NonNull
     @Override
@@ -71,6 +76,15 @@ public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
     }
 
     private class StockFilter extends Filter{
+        @Override
+        public CharSequence convertResultToString(Object resultValue) {
+            if (mShowStyleNumberOnly) {
+                return ((MatchStock) resultValue).getStyleNumber();
+            } else {
+                return ((MatchStock) resultValue).getName();
+            }
+        }
+
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults filterResults = new FilterResults();

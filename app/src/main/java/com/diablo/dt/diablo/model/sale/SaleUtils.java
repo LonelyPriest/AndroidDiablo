@@ -333,6 +333,7 @@ public class SaleUtils {
     public static class DiabloDatePicker {
         public static void build(final Fragment fragment, final OnDateSetListener listener) {
             CalendarDatePickerDialogFragment dpd = new CalendarDatePickerDialogFragment();
+            // dpd.setPreselectedDate(2017, 2, 1);
             // dpd.setThemeCustom(R.style.DiabloBetterPickersDialogs);
             dpd.setThemeDark();
             dpd.show(fragment.getFragmentManager(), "datePicker");

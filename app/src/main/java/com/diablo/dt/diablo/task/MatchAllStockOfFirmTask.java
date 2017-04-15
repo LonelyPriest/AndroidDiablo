@@ -56,7 +56,7 @@ public class MatchAllStockOfFirmTask extends AsyncTask<String, Void, Void> {
             R.layout.typeahead_match_stock_on_sale,
             R.id.typeahead_select_stock_on_sale,
             mMatchedStocks,
-            null);
+            false);
 
         mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
 

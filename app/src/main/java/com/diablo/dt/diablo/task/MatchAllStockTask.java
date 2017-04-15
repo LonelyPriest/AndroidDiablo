@@ -3,7 +3,6 @@ package com.diablo.dt.diablo.task;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.AutoCompleteTextView;
-import android.widget.TableRow;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.MatchStockAdapter;
@@ -19,21 +18,24 @@ import java.util.List;
 public class MatchAllStockTask extends AsyncTask<String, Void, Void> {
     private Context mContext;
     private AutoCompleteTextView mCompleteView;
-    private TableRow mRow;
-    private List<MatchStock> mMatchStocks;
+    private boolean mShowStyleNumberOnly;
+    private List<MatchStock> mOriginStocks;
     private List<MatchStock> mMatchedStocks= new ArrayList<>();
 
-    public MatchAllStockTask(Context context, AutoCompleteTextView view, TableRow row, List<MatchStock> stocks){
+    public MatchAllStockTask(Context context,
+                             AutoCompleteTextView view,
+                             List<MatchStock> stocks,
+                             boolean showStyleNumberOnly){
         this.mContext = context;
         this.mCompleteView = view;
-        mMatchStocks = stocks;
-        mRow = row;
+        mOriginStocks = stocks;
+        mShowStyleNumberOnly = showStyleNumberOnly;
     }
 
     @Override
     protected Void doInBackground(String... params) {
         mMatchedStocks.clear();
-        for (MatchStock stock : mMatchStocks){
+        for (MatchStock stock : mOriginStocks){
             if (stock.getName().toUpperCase().contains(params[0].toUpperCase())) {
                 mMatchedStocks.add(stock);
             }
@@ -45,11 +47,11 @@ public class MatchAllStockTask extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         MatchStockAdapter adapter = new MatchStockAdapter(
-                mContext,
-                R.layout.typeahead_match_stock_on_sale,
-                R.id.typeahead_select_stock_on_sale,
-                mMatchedStocks,
-                mRow);
+            mContext,
+            R.layout.typeahead_match_stock_on_sale,
+            R.id.typeahead_select_stock_on_sale,
+            mMatchedStocks,
+            mShowStyleNumberOnly);
 
         mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
 
@@ -61,6 +63,7 @@ public class MatchAllStockTask extends AsyncTask<String, Void, Void> {
         }
 
         mCompleteView.setAdapter(adapter);
+        mCompleteView.setThreshold(1);
         adapter.notifyDataSetChanged();
     }
 }

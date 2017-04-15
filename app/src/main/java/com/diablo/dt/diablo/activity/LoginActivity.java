@@ -81,7 +81,9 @@ public class LoginActivity extends AppCompatActivity {
         DiabloDBManager.instance().init(this);
 
         mContext = this;
-        Profile.instance().setContext(this.getApplicationContext());
+
+        Profile.instance().setServer(getString(R.string.diablo_server));
+        // Profile.instance().setContext(this.getApplicationContext());
 
         mLoginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
         mPasswordWrap = (TextInputLayout) findViewById(R.id.login_password_holder);

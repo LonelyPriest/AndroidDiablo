@@ -7,21 +7,21 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.task.FilterRetailerTask;
+import com.diablo.dt.diablo.task.MatchFirmTask;
 import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 
 /**
- * Created by buxianhui on 17/4/14.
+ * Created by buxianhui on 17/4/15.
  */
 
-public class RetailerFilter extends DiabloFilter {
-    public RetailerFilter(Context context, String name) {
+public class FirmFilter extends DiabloFilter {
+    public FirmFilter(Context context, String name) {
         super(context, name);
     }
 
     @Override
     public DiabloFilter copy() {
-        return new RetailerFilter(getContext(), getName());
+        return new FirmFilter(getContext(), getName());
     }
 
     @Override
@@ -40,10 +40,10 @@ public class RetailerFilter extends DiabloFilter {
             public void afterTextChanged(Editable editable) {
                 setSelectFilter(null);
                 String name = editable.toString();
-                new FilterRetailerTask(
+                new MatchFirmTask(
                     getContext(),
                     ((AutoCompleteTextView) view),
-                    Profile.instance().getRetailers()).execute(name);
+                    Profile.instance().getFirms()).execute(name);
             }
         });
 

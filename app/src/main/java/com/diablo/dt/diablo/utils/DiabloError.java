@@ -26,7 +26,7 @@ public class DiabloError {
 
     private static final SparseArray<String> mErrors;
     static {
-        Resources r = Profile.instance().getContext().getResources();
+        Resources r = Profile.instance().getResource();
 
         mErrors = new SparseArray<>();
         mErrors.put(99, r.getString(R.string.network_invalid));

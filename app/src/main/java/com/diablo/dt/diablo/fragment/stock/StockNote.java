@@ -109,14 +109,14 @@ public class StockNote extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_sale_note, container, false);
+        View view =  inflater.inflate(R.layout.fragment_stock_note, container, false);
         ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_NOTE));
 
         // support action bar
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
-        mSaleNoteTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_note_swipe);
+        mSaleNoteTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_stock_note_swipe);
         // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mSaleNoteTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
@@ -171,10 +171,10 @@ public class StockNote extends Fragment {
             row.addView(cell);
         }
 
-        TableLayout head = (TableLayout) view.findViewById(R.id.t_sale_note_head);
+        TableLayout head = (TableLayout) view.findViewById(R.id.t_stock_note_head);
         head.addView(row);
 
-        mSaleNoteTable = (TableLayout) view.findViewById(R.id.t_sale_note);
+        mSaleNoteTable = (TableLayout) view.findViewById(R.id.t_stock_note);
 
         pageChanged();
 

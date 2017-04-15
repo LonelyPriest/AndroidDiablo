@@ -235,6 +235,16 @@
     <item>男</item>
   </string-array>
 
+  <string-array name="sale_types_desc">
+    <item>销售开单</item>
+    <item>销售退货</item>
+  </string-array>
+
+  <string-array name="stock_types_desc">
+    <item>采购入库</item>
+    <item>采购退货</item>
+  </string-array>
+
   <string-array name="years">
     <item>2013</item>
     <item>2014</item>

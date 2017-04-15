@@ -5,21 +5,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
-import com.diablo.dt.diablo.adapter.SpinnerShopAdapter;
+import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
 import com.diablo.dt.diablo.entity.Profile;
 
 /**
- * Created by buxianhui on 17/4/14.
+ * Created by buxianhui on 17/4/15.
  */
 
-public class ShopFilter extends DiabloFilter {
-    public ShopFilter(Context context, String name) {
+public class SaleTypeFilter extends DiabloFilter{
+    public SaleTypeFilter(Context context, String name) {
         super(context, name);
     }
 
     @Override
     public DiabloFilter copy() {
-        return new ShopFilter(getContext(), getName());
+        return new SaleTypeFilter(getContext(), getName());
     }
 
     @Override
@@ -30,23 +30,21 @@ public class ShopFilter extends DiabloFilter {
 
     @Override
     public void init(final View view) {
-        // super.init(view);
-        // final Spinner view = new Spinner(getContext());
         setView(view);
-        SpinnerShopAdapter adapter = new SpinnerShopAdapter(
+
+        SpinnerStringAdapter adapter = new SpinnerStringAdapter(
             getContext(),
             android.R.layout.simple_spinner_item,
-            Profile.instance().getSortShop());
+            Profile.instance().getSaleTypes());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        ((Spinner) view).setAdapter(adapter);
-        setSelectFilter(((Spinner) view).getSelectedItem());
-        // ((AppCompatSpinner) view).setSelection(0);
+        ((Spinner)view).setAdapter(adapter);
+        setSelectFilter( ((Spinner) view).getSelectedItemPosition() );
 
         ((Spinner) view).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                setSelectFilter(parent.getItemAtPosition(position));
+                setSelectFilter(position);
             }
 
             @Override

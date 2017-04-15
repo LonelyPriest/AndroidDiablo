@@ -99,8 +99,8 @@ public class DiabloSaleRowController {
                     new MatchAllStockTask(
                         context,
                         (AutoCompleteTextView) cell.getView(),
-                        mRowView.getView(),
-                        stocks).execute(s);
+                        stocks,
+                        false).execute(s);
                 }
             }
         };
@@ -117,7 +117,8 @@ public class DiabloSaleRowController {
                     Integer key = label.getLabelId();
                     View v = mRowView.getCell(key).getView();
                     if (key.equals(R.string.good)) {
-                        mRowView.setCellText(R.string.good, mSaleStock.getName());
+                        mRowView.getCell(R.string.good).setCellFocusable(false);
+                        // mRowView.setCellText(R.string.good, mSaleStock.getName());
                     }
                     else if (key.equals(R.string.price_type)) {
                         ((Spinner)v).setAdapter(mSelectPriceAdapter);

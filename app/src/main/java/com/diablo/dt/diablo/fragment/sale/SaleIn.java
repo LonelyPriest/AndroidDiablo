@@ -519,7 +519,7 @@ public class SaleIn extends Fragment{
                     @Override
                     public void afterTextChanged(String value) {
                         if (value.length() > 0) {
-                            new MatchAllStockTask(getContext(), eCell, row, mMatchStocks).execute(value);
+                            new MatchAllStockTask(getContext(), eCell, mMatchStocks, false).execute(value);
                         }
                     }
                 });
@@ -547,7 +547,7 @@ public class SaleIn extends Fragment{
 
                                 if (getResources().getString(R.string.good).equals(name)) {
                                     cell.setFocusable(false);
-                                    ((AutoCompleteTextView )cell).setText(s.getName());
+                                    // ((AutoCompleteTextView )cell).setText(s.getName());
                                 }
 
                                 if (getResources().getString(R.string.price).equals(name)) {

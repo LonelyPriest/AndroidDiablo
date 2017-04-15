@@ -563,8 +563,9 @@ public class DiabloUtils {
         return loadingDialog;
     }
 
-    public static void linearLayoutAddView(LinearLayout parent, View view, @IdRes Integer childResId) {
+    public static void linearLayoutAddView(LinearLayout parent, View view,  @IdRes Integer childResId) {
         Integer index = DiabloEnum.DEFAULT_INDEX;
+        // Integer index = parent.indexOfChild(child);
         for (int i = DiabloEnum.DEFAULT_INDEX; i<parent.getChildCount(); i++) {
             if (parent.getChildAt(i).getId() == childResId) {
                 index = i;
@@ -572,6 +573,7 @@ public class DiabloUtils {
         }
 
         parent.addView(view, index);
+        // parent.requestLayout();
     }
 
 }
