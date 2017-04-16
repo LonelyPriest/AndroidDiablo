@@ -477,7 +477,7 @@ public class GoodUpdate extends Fragment {
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.good_update),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -487,7 +487,7 @@ public class GoodUpdate extends Fragment {
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.good_update),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
@@ -119,15 +118,8 @@ public class SaleNote extends Fragment {
 
         mTableHeads = getResources().getStringArray(R.array.thead_sale_detail_note);
         mSaleTypes = getResources().getStringArray(R.array.sale_type);
-
-//        mRequest = new SaleNoteRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-//        mRequestCondition = mRequest.new Condition();
-//        mRequest.setCondition(mRequestCondition);
-
         mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
-
-        ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_NOTE));
     }
 
     @Override
@@ -135,7 +127,9 @@ public class SaleNote extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_sale_note, container, false);
-
+        // support action bar
+        setHasOptionsMenu(true);
+        getActivity().supportInvalidateOptionsMenu();
 
         mDatePicker = new DiabloDatePicker(
             SaleNote.this,
@@ -144,10 +138,6 @@ public class SaleNote extends Fragment {
             (EditText) view.findViewById(R.id.text_start_date),
             (EditText)view.findViewById(R.id.text_end_date),
             UTILS.currentDate());
-
-        // support action bar
-        setHasOptionsMenu(true);
-        getActivity().supportInvalidateOptionsMenu();
 
         mSaleNoteTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_note_swipe);
         // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
@@ -252,7 +242,7 @@ public class SaleNote extends Fragment {
 
 
         mFilterController = new DiabloFilterController(getContext(), entities, 4);
-        mFilterController.init((LinearLayout)view, R.id.t_sale_note_swipe, btnAdd, btnMinus);
+        mFilterController.init((LinearLayout)view, R.id.t_sale_note_head, btnAdd, btnMinus);
     }
 
     private void pageChanged(){
@@ -478,7 +468,7 @@ public class SaleNote extends Fragment {
 
             @Override
             public void onFailure(Call<SaleNoteResponse> call, Throwable t) {
-                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
+                UTILS.makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_LONG);
                 mSaleNoteTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }
@@ -560,49 +550,4 @@ public class SaleNote extends Fragment {
 
         return true;
     }
-
-//    public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
-//        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-//        TextView cell = new TextView(getContext());
-//        cell.setLayoutParams(lp);
-//        // cell.setTextColor(context.getResources().getColor(R.color.black));
-//        cell.setText(value.trim());
-//        cell.setTextSize(18);
-//        // cell.setHeight(105);
-//        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-//        row.addView(cell);
-//        return  cell;
-//    }
-//
-//    public TextView addCell(TableRow row, Integer value, TableRow.LayoutParams lp){
-//        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-//        TextView cell = new TextView(getContext());
-//        if (value < 0) {
-//            cell.setTextColor(getContext().getResources().getColor(R.color.red));
-//        }
-//        cell.setLayoutParams(lp);
-//        cell.setText(DiabloUtils.instance().toString(value).trim());
-//        cell.setTextSize(20);
-//        // cell.setHeight(120);
-//        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-//        row.addView(cell);
-//        return  cell;
-//    }
-//
-//    public TextView addCell(TableRow row, float value, TableRow.LayoutParams lp){
-//        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-//        TextView cell = new TextView(getContext());
-//        if (value < 0f) {
-//            cell.setTextColor(getContext().getResources().getColor(R.color.red));
-//        }
-//
-//        cell.setLayoutParams(lp);
-//        cell.setText(DiabloUtils.instance().toString(value).trim());
-//        cell.setTextSize(20);
-//        // cell.setHeight(120);
-//        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-//        row.addView(cell);
-//        return  cell;
-//    }
-
 }

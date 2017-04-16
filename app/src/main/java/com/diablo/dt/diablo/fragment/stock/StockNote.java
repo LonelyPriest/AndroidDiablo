@@ -18,24 +18,37 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.activity.MainActivity;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.DiabloType;
+import com.diablo.dt.diablo.entity.Firm;
+import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.model.sale.SaleUtils;
+import com.diablo.dt.diablo.filter.BrandFilter;
+import com.diablo.dt.diablo.filter.DiabloFilter;
+import com.diablo.dt.diablo.filter.DiabloFilterController;
+import com.diablo.dt.diablo.filter.FirmFilter;
+import com.diablo.dt.diablo.filter.GoodTypeFilter;
+import com.diablo.dt.diablo.filter.ShopFilter;
+import com.diablo.dt.diablo.filter.StyleNumberFilter;
+import com.diablo.dt.diablo.filter.YearFilter;
 import com.diablo.dt.diablo.model.stock.StockUtils;
 import com.diablo.dt.diablo.request.stock.StockNoteRequest;
 import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
 import com.diablo.dt.diablo.response.stock.StockNoteResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
+import com.diablo.dt.diablo.utils.DiabloDatePicker;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloTableStockNote;
@@ -72,9 +85,10 @@ public class StockNote extends Fragment {
     /**
      * request
      */
-    private StockNoteRequest mRequest;
-    private StockNoteRequest.Condition mRequestCondition;
     private StockInterface mStockRest;
+    private DiabloDatePicker mDatePicker;
+    private StyleNumberFilter mStyleNumberFilter;
+    private DiabloFilterController mFilterController;
 
     public StockNote() {
         // Required empty public constructor
@@ -95,14 +109,12 @@ public class StockNote extends Fragment {
         mTableHeads = getResources().getStringArray(R.array.thead_stock_detail_note);
         mStockTypes = getResources().getStringArray(R.array.stock_type);
 
-        mRequest = new StockNoteRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-        mRequestCondition = new StockNoteRequest.Condition();
-        mRequest.setCondition(mRequestCondition);
+//        mRequest = new StockNoteRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
+//        mRequestCondition = new StockNoteRequest.Condition();
+//        mRequest.setCondition(mRequestCondition);
 
         mStockRest = StockClient.getClient().create(StockInterface.class);
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
-
-        init();
     }
 
     @Override
@@ -110,14 +122,20 @@ public class StockNote extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_stock_note, container, false);
-        ((MainActivity)getActivity()).selectMenuItem(SaleUtils.SLIDE_MENU_TAGS.get(DiabloEnum.TAG_SALE_NOTE));
 
         // support action bar
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
+        mDatePicker = new DiabloDatePicker(
+            StockNote.this,
+            view.findViewById(R.id.btn_start_date),
+            view.findViewById(R.id.btn_end_date),
+            (EditText) view.findViewById(R.id.text_start_date),
+            (EditText)view.findViewById(R.id.text_end_date),
+            UTILS.currentDate());
+
         mSaleNoteTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_stock_note_swipe);
-        // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mSaleNoteTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
         mSaleNoteTableSwipe.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
@@ -126,7 +144,6 @@ public class StockNote extends Fragment {
                 if (direction == SwipyRefreshLayoutDirection.TOP){
                     if (!mCurrentPage.equals(DiabloEnum.DEFAULT_PAGE)){
                         mCurrentPage--;
-                        mRequest.setPage(mCurrentPage);
                         pageChanged();
                     } else {
                         DiabloUtils.instance().makeToast(
@@ -145,10 +162,8 @@ public class StockNote extends Fragment {
                         mSaleNoteTableSwipe.setRefreshing(false);
                     } else {
                         mCurrentPage++;
-                        mRequest.setPage(mCurrentPage);
                         pageChanged();
                     }
-
                 }
             }
         });
@@ -176,6 +191,8 @@ public class StockNote extends Fragment {
 
         mSaleNoteTable = (TableLayout) view.findViewById(R.id.t_stock_note);
 
+        init();
+        initFilter(view);
         pageChanged();
 
         return view;
@@ -184,18 +201,74 @@ public class StockNote extends Fragment {
     public void init() {
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mTotalPage = 0;
-        mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
+    }
+
+    private void initFilter(View view) {
+        View styleNumberView = view.findViewById(R.id.select_style_number);
+        mStyleNumberFilter = new StyleNumberFilter(getContext(), getString(R.string.style_number));
+        mStyleNumberFilter.init(styleNumberView);
+
+        ImageButton btnAdd = (ImageButton) view.findViewById(R.id.btn_add_filter);
+        ImageButton btnMinus = (ImageButton) view.findViewById(R.id.btn_minus_filter);
+
+        List<DiabloFilter> entities = new ArrayList<>();
+        entities.add(new StyleNumberFilter(getContext(), getString(R.string.style_number)));
+        entities.add(new FirmFilter(getContext(), getString(R.string.firm)));
+        entities.add(new BrandFilter(getContext(), getString(R.string.brand)));
+
+        entities.add(new GoodTypeFilter(getContext(), getString(R.string.good_type)));
+        entities.add(new YearFilter(getContext(), getString(R.string.year)));
+        entities.add(new ShopFilter(getContext(), getString(R.string.shop)));
+
+        mFilterController = new DiabloFilterController(getContext(), entities, 2);
+        mFilterController.init((LinearLayout)view, R.id.t_stock_note_head, btnAdd, btnMinus);
     }
 
     private void pageChanged(){
         // hidden keyboard
         // DiabloUtils.instance().hiddenKeyboard(getContext());
         // get data from from web server
-        mRequest.getCondition().setStartTime(DiabloUtils.instance().currentDate());
-        // mRequest.getCondition().setStartTime("2016-01-01");
-        mRequest.getCondition().setEndTime(DiabloUtils.instance().nextDate());
+        final StockNoteRequest request = new StockNoteRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
+        request.setStartTime(mDatePicker.startTime());
+        request.setEndTime(mDatePicker.endTime());
 
-        Call<StockNoteResponse> call = mStockRest.filterStockNote(Profile.instance().getToken(), mRequest);
+        if (null != mStyleNumberFilter.getSelect()) {
+            Object select =  mStyleNumberFilter.getSelect();
+            request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
+        }
+
+        for (DiabloFilter filter: mFilterController.getEntityFilters()) {
+            Object select = filter.getSelect();
+
+            if (null != select) {
+                if (filter instanceof StyleNumberFilter) {
+                    request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
+                }
+                else if (filter instanceof BrandFilter) {
+                    request.addBrand( ((DiabloBrand)select).getId() );
+                }
+                else if (filter instanceof GoodTypeFilter) {
+                    request.addGoodType( ((DiabloType)select).getId() );
+                }
+                else if (filter instanceof FirmFilter) {
+                    request.addFirm( ((Firm)select).getId() );
+                }
+                else if (filter instanceof YearFilter) {
+                    request.addYear( (String) select );
+                }
+                else if (filter instanceof ShopFilter) {
+                    request.addShop( ((DiabloShop)select).getShop() );
+                }
+            }
+        }
+
+        if (0 == request.getShops().size()) {
+            request.setShops(Profile.instance().getShopIds());
+        }
+
+        request.trim();
+
+        Call<StockNoteResponse> call = mStockRest.filterStockNote(Profile.instance().getToken(), request);
 
         call.enqueue(new Callback<StockNoteResponse>() {
             @Override
@@ -207,7 +280,7 @@ public class StockNote extends Fragment {
 
                 StockNoteResponse base = response.body();
                 if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage) && 0 != base.getTotal()){
-                    mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
+                    mTotalPage = UTILS.calcTotalPage(base.getTotal(), request.getCount());
 
                     Resources res = getResources();
                     mStatistic =
@@ -224,7 +297,7 @@ public class StockNote extends Fragment {
                 }
 
                 List<StockNoteResponse.StockNote> notes = base.getStockNotes();
-                Integer orderId = mRequest.getPageStartIndex();
+                Integer orderId = request.getPageStartIndex();
                 // mSaleDetailTable.removeAllViews();
                 mSaleNoteTable.removeAllViews();
                 TableRow row = null;
@@ -322,7 +395,7 @@ public class StockNote extends Fragment {
 
             @Override
             public void onFailure(Call<StockNoteResponse> call, Throwable t) {
-                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
+                UTILS.makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_LONG);
                 mSaleNoteTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }
@@ -406,47 +479,15 @@ public class StockNote extends Fragment {
     }
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
-        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        cell.setLayoutParams(lp);
-        // cell.setTextColor(context.getResources().getColor(R.color.black));
-        cell.setText(value.trim());
-        cell.setTextSize(18);
-        // cell.setHeight(105);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
     public TextView addCell(TableRow row, Integer value, TableRow.LayoutParams lp){
-        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        if (value < 0) {
-            cell.setTextColor(getContext().getResources().getColor(R.color.red));
-        }
-        cell.setLayoutParams(lp);
-        cell.setText(DiabloUtils.instance().toString(value).trim());
-        cell.setTextSize(20);
-        // cell.setHeight(120);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
     public TextView addCell(TableRow row, float value, TableRow.LayoutParams lp){
-        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        if (value < 0f) {
-            cell.setTextColor(getContext().getResources().getColor(R.color.red));
-        }
-
-        cell.setLayoutParams(lp);
-        cell.setText(DiabloUtils.instance().toString(value).trim());
-        cell.setTextSize(20);
-        // cell.setHeight(120);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
 }

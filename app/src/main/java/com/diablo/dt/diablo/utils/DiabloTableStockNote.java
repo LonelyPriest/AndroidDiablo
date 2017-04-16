@@ -117,6 +117,7 @@ public class DiabloTableStockNote {
             TextView col0 = new TextView(mContext);
             col0.setLayoutParams(UTILS.createTableRowParams(0.8f));
             col0.setTextSize(20);
+            col0.setHeight(80);
             col0.setTypeface(null, Typeface.BOLD);
 
             if (colors.get(i).getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)) {
@@ -131,6 +132,7 @@ public class DiabloTableStockNote {
                 TextView col = new TextView(mContext);
                 col.setTextSize(20);
                 col.setLayoutParams(lp);
+                col.setGravity(Gravity.CENTER_VERTICAL);
                 row.addView(col);
 
                 if (null != mOnStockNoteListener) {

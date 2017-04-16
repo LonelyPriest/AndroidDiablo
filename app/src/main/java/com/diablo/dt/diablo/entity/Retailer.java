@@ -181,7 +181,7 @@ public class Retailer {
                     new DiabloAlertDialog(
                         context,
                         context.getResources().getString(R.string.title_add_retailer),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -190,7 +190,7 @@ public class Retailer {
                 new DiabloAlertDialog(
                     context,
                     context.getResources().getString(R.string.title_add_retailer),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }
@@ -210,7 +210,7 @@ public class Retailer {
                 new DiabloAlertDialog(
                     context,
                     context.getResources().getString(R.string.title_get_retailer),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

@@ -302,7 +302,7 @@ public class SaleUtils {
             @Override
             public void onFailure(Call<GetSaleNewResponse> call, Throwable t) {
                 DiabloUtils.instance()
-                    .makeToast(context, DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
+                    .makeToast(context, DiabloError.getError(99), Toast.LENGTH_LONG);
             }
         });
     }
@@ -335,6 +335,39 @@ public class SaleUtils {
             CalendarDatePickerDialogFragment dpd = new CalendarDatePickerDialogFragment();
             // dpd.setPreselectedDate(2017, 2, 1);
             // dpd.setThemeCustom(R.style.DiabloBetterPickersDialogs);
+            dpd.setThemeDark();
+            dpd.show(fragment.getFragmentManager(), "datePicker");
+            dpd.setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
+                @Override
+                public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(year, monthOfYear, dayOfMonth);
+                    String selectDate = DiabloUtils.mDateFormat.format(cal.getTime());
+
+                    cal.add(Calendar.DATE, 1);
+                    String nextDate = DiabloUtils.mDateFormat.format(cal.getTime());
+
+                    // cal.clear();
+                    listener.onDateSet(selectDate, nextDate);
+                    // ((EditText)mViewStartDate).setText(UTILS.formatDate(year, monthOfYear, dayOfMonth));
+                }
+            });
+        }
+
+        /**
+         *
+         * @param fragment
+         * @param preSelectDate format 2017-01-01
+         * @param listener
+         */
+        public static void build(final Fragment fragment, String preSelectDate, final OnDateSetListener listener) {
+            CalendarDatePickerDialogFragment dpd = new CalendarDatePickerDialogFragment();
+            Integer year = DiabloUtils.instance().toInteger(preSelectDate.substring(0, 4));
+            // based 0
+            Integer month = DiabloUtils.instance().toInteger(preSelectDate.substring(5, 7)) - 1;
+            Integer date = DiabloUtils.instance().toInteger(preSelectDate.substring(8, 10));
+
+            dpd.setPreselectedDate(year, month, date);
             dpd.setThemeDark();
             dpd.show(fragment.getFragmentManager(), "datePicker");
             dpd.setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {

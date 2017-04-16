@@ -615,7 +615,7 @@ public class SaleOut extends Fragment {
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.nav_sale_out),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -625,7 +625,7 @@ public class SaleOut extends Fragment {
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.nav_sale_out),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

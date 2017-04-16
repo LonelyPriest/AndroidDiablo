@@ -550,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
                 new DiabloAlertDialog(
                     MainActivity.this,
                     getResources().getString(R.string.title_logout),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
 

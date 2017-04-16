@@ -628,7 +628,7 @@ public class GoodNew extends Fragment {
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.nav_good_new),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                     }
             }
 
@@ -638,7 +638,7 @@ public class GoodNew extends Fragment {
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.nav_good_new),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

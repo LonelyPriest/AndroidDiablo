@@ -382,6 +382,21 @@
   <string name="authen_error">操作鉴权失败</string>
   <string name="database_error">数据库操作失败，请重试或联系服务人员</string>
 
+
+  <string name="failed_to_get_user_info">获取用户权限信息失败</string>
+  <string name="failed_to_get_employee">获取员工信息失败</string>
+  <string name="failed_to_get_base_setting">获取系统配置信息失败</string>
+  <string name="failed_to_get_retailer">获取客户信息失败</string>
+  <string name="failed_to_get_color">获取颜色信息失败</string>
+  <string name="failed_to_get_size_group">获取尺码组信息失败</string>
+  <string name="failed_to_get_stock">获取库存信息失败</string>
+  <string name="failed_to_get_brand">获取品牌信息失败</string>
+  <string name="failed_to_get_good_type">获取货品类型信息失败</string>
+  <string name="failed_to_get_firm">获取厂商信息失败</string>
+  <string name="failed_to_get_good">获取货品信息失败</string>
+  <string name="failed_to_get_color_kind">获取颜色类型信息失败</string>
+  <string name="failed_to_get_main_dashboard">登录系统主界面失败</string>
+
   <string name="print_wrong_printer_sn">"打印机编号错误"</string>
   <string name="print_failed_to_deliver_recode">"服务器处理订单失败"</string>
   <string name="print_long_content">打印内容太长"</string>

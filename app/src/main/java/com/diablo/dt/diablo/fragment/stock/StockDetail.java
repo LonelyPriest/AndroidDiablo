@@ -227,7 +227,7 @@ public class StockDetail extends Fragment {
         entities.add(new ShopFilter(getContext(), getString(R.string.shop)));
 
         mFilterController = new DiabloFilterController(getContext(), entities, 1);
-        mFilterController.init((LinearLayout)view, R.id.t_stock_detail_swipe, btnAdd, btnMinus);
+        mFilterController.init((LinearLayout)view, R.id.t_stock_detail_head, btnAdd, btnMinus);
     }
 
     private void pageChanged(){
@@ -422,7 +422,7 @@ public class StockDetail extends Fragment {
 
             @Override
             public void onFailure(Call<StockDetailResponse> call, Throwable t) {
-                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
+                UTILS.makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_LONG);
                 mStockDetailTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }

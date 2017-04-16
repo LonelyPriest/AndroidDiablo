@@ -575,7 +575,7 @@ public class StockIn extends Fragment {
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.nav_stock_in),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -585,7 +585,7 @@ public class StockIn extends Fragment {
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.sale_in_update),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

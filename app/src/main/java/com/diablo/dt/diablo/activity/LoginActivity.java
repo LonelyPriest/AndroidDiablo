@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         mContext = this;
 
         Profile.instance().setServer(getString(R.string.diablo_server));
+        Profile.instance().setResource(getResources());
         // Profile.instance().setContext(this.getApplicationContext());
 
         mLoginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
@@ -168,7 +169,9 @@ public class LoginActivity extends AppCompatActivity {
             mLoadingDialog.dismiss();
         }
 
-        String error = DiabloError.getInstance().getError(code);
+        mBtnLogin.setClickable(true);
+
+        String error = DiabloError.getError(code);
         new MaterialDialog.Builder(mContext)
                 .title(R.string.user_login)
                 .content(error)
@@ -431,7 +434,7 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<MatchGood>>() {
             @Override
             public void onResponse(Call<List<MatchGood>> call, Response<List<MatchGood>> response) {
-                Log.d(LOG_TAG, "success to get match stock");
+                Log.d(LOG_TAG, "success to get match good");
                 Profile.instance().setMatchGoods(response.body());
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 110;
@@ -440,7 +443,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<MatchGood>> call, Throwable t) {
-                Log.d(LOG_TAG, "failed to get match stock");
+                Log.d(LOG_TAG, "failed to get match good");
                 Message message = Message.obtain(mLoginHandler);
                 message.what = 111;
                 message.sendToTarget();
@@ -487,72 +490,72 @@ public class LoginActivity extends AppCompatActivity {
                         activity.getEmployee();
                         break;
                     case 11:
-                        activity.loginError(1199);
+                        activity.loginError(211);
                         break;
                     case 20: // get base setting
                         activity.getBaseSetting();
                         break;
                     case 21:
-                        activity.loginError(1199);
+                        activity.loginError(202);
                         break;
                     case 30:// get retailer
                         activity.getRetailer();
                         break;
                     case 31:
-                        activity.loginError(1199);
+                        activity.loginError(200);
                         break;
                     case 40: // color
                         activity.getColor();
                         break;
                     case 41:
-                        activity.loginError(1199);
+                        activity.loginError(201);
                         break;
                     case 50: // size group
                         activity.getSizeGroup();
                         break;
                     case 51:
-                        activity.loginError(1199);
+                        activity.loginError(203);
                     case 60:
                         activity.getAllMatchStock();
                         break;
                     case 61:
-                        activity.loginError(1199);
+                        activity.loginError(204);
                         break;
                     case 70:
                         activity.getBrand();
                         break;
                     case 71:
-                        activity.loginError(1199);
+                        activity.loginError(205);
                         break;
                     case 80:
                         activity.getType();
                         break;
                     case 81:
-                        activity.loginError(1199);
+                        activity.loginError(206);
                         break;
                     case 90:
                         activity.getFirm();
                         break;
                     case 91:
-                        activity.loginError(1199);
+                        activity.loginError(207);
                         break;
                     case 100:
                         activity.getAllMatchGood();
                         break;
                     case 101:
-                        activity.loginError(1199);
+                        activity.loginError(208);
                         break;
                     case 110:
                         activity.getColorKind();
                         break;
                     case 111:
-                        activity.loginError(1199);
+                        activity.loginError(209);
                         break;
                     case 120:
                         activity.gotoMain();
                         break;
                     case 121:
-                        activity.loginError(1199);
+                        activity.loginError(210);
                         break;
                     default:
                         break;

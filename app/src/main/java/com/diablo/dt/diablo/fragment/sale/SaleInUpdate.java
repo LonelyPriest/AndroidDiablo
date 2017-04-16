@@ -846,7 +846,7 @@ public class SaleInUpdate extends Fragment {
             new DiabloAlertDialog(
                 getContext(),
                 getResources().getString(R.string.sale_in_update),
-                DiabloError.getInstance().getError(2699)).create();
+                DiabloError.getError(2699)).create();
 
         } else {
             startRequest(saleRequest);
@@ -906,7 +906,7 @@ public class SaleInUpdate extends Fragment {
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.nav_sale_out),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -916,7 +916,7 @@ public class SaleInUpdate extends Fragment {
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.sale_in_update),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

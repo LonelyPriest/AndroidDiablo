@@ -199,7 +199,7 @@ public class StockUtils {
             @Override
             public void onFailure(Call<GetStockNewResponse> call, Throwable t) {
                 DiabloUtils.instance()
-                    .makeToast(context, DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
+                    .makeToast(context, DiabloError.getError(99), Toast.LENGTH_LONG);
             }
         });
     }

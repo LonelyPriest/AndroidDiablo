@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -29,11 +31,20 @@ import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
+import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.filter.BrandFilter;
+import com.diablo.dt.diablo.filter.DiabloFilter;
+import com.diablo.dt.diablo.filter.DiabloFilterController;
+import com.diablo.dt.diablo.filter.FirmFilter;
+import com.diablo.dt.diablo.filter.GoodTypeFilter;
+import com.diablo.dt.diablo.filter.StyleNumberFilter;
+import com.diablo.dt.diablo.filter.YearFilter;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.good.GoodDetailRequest;
 import com.diablo.dt.diablo.response.good.GoodDetailResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
+import com.diablo.dt.diablo.utils.DiabloDatePicker;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloTableStockNote;
@@ -41,6 +52,7 @@ import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -53,10 +65,7 @@ public class GoodDetail extends Fragment {
     private final static DiabloUtils UTILS = DiabloUtils.instance();
     private String [] mTableHeads;
     private String [] mSeasons;
-    // private String mStatistic;
 
-    private GoodDetailRequest mRequest;
-    private GoodDetailRequest.Condition mRequestCondition;
     private WGoodInterface mGoodRest;
 
     private TableLayout mTable;
@@ -67,6 +76,10 @@ public class GoodDetail extends Fragment {
 
     private Integer mCurrentPage;
     private Integer mTotalPage;
+
+    private DiabloDatePicker mDatePicker;
+    private StyleNumberFilter mStyleNumberFilter;
+    private DiabloFilterController mFilterController;
 
     public GoodDetail() {
         // Required empty public constructor
@@ -86,20 +99,13 @@ public class GoodDetail extends Fragment {
         mTableHeads = getResources().getStringArray(R.array.thead_good_detail);
         mSeasons = getResources().getStringArray(R.array.seasons);
 
-        mRequest = new GoodDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-        mRequestCondition = new GoodDetailRequest.Condition();
-        mRequest.setCondition(mRequestCondition);
-
         mGoodRest = WGoodClient.getClient().create(WGoodInterface.class);
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
-
-        init();
     }
 
     public void init() {
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mTotalPage = 0;
-        mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
     }
 
     @Override
@@ -108,46 +114,11 @@ public class GoodDetail extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_good_detail, container, false);
 
-        String currentDate = UTILS.currentDate();
-        String startDate = Profile.instance().getConfig(DiabloEnum.START_TIME, currentDate);
-        ((EditText)view.findViewById(R.id.text_start_date)).setText(startDate);
-        mRequest.getCondition().setStartTime(startDate);
-
-        ((EditText)view.findViewById(R.id.text_end_date)).setText(currentDate);
-        mRequest.getCondition().setEndTime(UTILS.nextDate());
-
-        (view.findViewById(R.id.btn_start_date)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(GoodDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(String date, String nextDate) {
-                        ((EditText) view.findViewById(R.id.text_start_date)).setText(date);
-                        mRequest.getCondition().setStartTime(date);
-                    }
-                });
-            }
-        });
-
-        view.findViewById(R.id.btn_end_date).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(GoodDetail.this, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(String date, String nextDate) {
-                        ((EditText)view.findViewById(R.id.text_end_date)).setText(date);
-                        mRequest.getCondition().setEndTime(nextDate);
-                    }
-                });
-            }
-        });
-
         // support action bar
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
         mTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_good_detail_swipe);
-        // mStockDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
         mTableSwipe.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
@@ -156,7 +127,6 @@ public class GoodDetail extends Fragment {
                 if (direction == SwipyRefreshLayoutDirection.TOP){
                     if (!mCurrentPage.equals(DiabloEnum.DEFAULT_PAGE)){
                         mCurrentPage--;
-                        mRequest.setPage(mCurrentPage);
                         pageChanged();
                     } else {
                         DiabloUtils.instance().makeToast(
@@ -175,7 +145,6 @@ public class GoodDetail extends Fragment {
                         mTableSwipe.setRefreshing(false);
                     } else {
                         mCurrentPage++;
-                        mRequest.setPage(mCurrentPage);
                         pageChanged();
                     }
 
@@ -207,23 +176,88 @@ public class GoodDetail extends Fragment {
             row.addView(cell);
         }
 
-
-
-        // TableLayout head = ((TableLayout)view.findViewById(R.id.t_sale_detail_head));
-        // head.addView(row);
         TableLayout head = (TableLayout) view.findViewById(R.id.t_good_detail_head);
         head.addView(row);
 
         mTable = (TableLayout) view.findViewById(R.id.t_good_detail);
 
+        init();
+        initFilter(view);
         pageChanged();
 
         return view;
     }
 
+    private void initFilter(View view) {
+        mDatePicker = new DiabloDatePicker(
+            GoodDetail.this,
+            view.findViewById(R.id.btn_start_date),
+            view.findViewById(R.id.btn_end_date),
+            (EditText) view.findViewById(R.id.text_start_date),
+            (EditText)view.findViewById(R.id.text_end_date),
+            Profile.instance().getConfig(DiabloEnum.START_TIME, UTILS.currentDate()));
+
+
+        View styleNumberView = view.findViewById(R.id.select_style_number);
+        mStyleNumberFilter = new StyleNumberFilter(getContext(), getString(R.string.style_number));
+        mStyleNumberFilter.init(styleNumberView);
+
+        ImageButton btnAdd = (ImageButton) view.findViewById(R.id.btn_add_filter);
+        ImageButton btnMinus = (ImageButton) view.findViewById(R.id.btn_minus_filter);
+
+        List<DiabloFilter> entities = new ArrayList<>();
+        entities.add(new StyleNumberFilter(getContext(), getString(R.string.style_number)));
+        entities.add(new FirmFilter(getContext(), getString(R.string.firm)));
+        entities.add(new BrandFilter(getContext(), getString(R.string.brand)));
+
+        entities.add(new GoodTypeFilter(getContext(), getString(R.string.good_type)));
+        entities.add(new YearFilter(getContext(), getString(R.string.year)));
+
+        mFilterController = new DiabloFilterController(getContext(), entities, 2);
+        mFilterController.init((LinearLayout)view, R.id.t_good_detail_head, btnAdd, btnMinus);
+    }
+
+    private GoodDetailRequest createRequest() {
+        final GoodDetailRequest request = new GoodDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
+        request.setStartTime(mDatePicker.startTime());
+        request.setEndTime(mDatePicker.endTime());
+
+        if (null != mStyleNumberFilter.getSelect()) {
+            Object select =  mStyleNumberFilter.getSelect();
+            request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
+        }
+
+        for (DiabloFilter filter: mFilterController.getEntityFilters()) {
+            Object select = filter.getSelect();
+
+            if (null != select) {
+                if (filter instanceof StyleNumberFilter) {
+                    request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
+                }
+                else if (filter instanceof BrandFilter) {
+                    request.addBrand( ((DiabloBrand)select).getId() );
+                }
+                else if (filter instanceof GoodTypeFilter) {
+                    request.addGoodType( ((DiabloType)select).getId() );
+                }
+                else if (filter instanceof FirmFilter) {
+                    request.addFirm( ((Firm)select).getId() );
+                }
+                else if (filter instanceof YearFilter) {
+                    request.addYear( (String) select );
+                }
+            }
+        }
+
+        request.trim();
+
+        return request;
+    }
+
     private void pageChanged(){
 
-        Call<GoodDetailResponse> call = mGoodRest.filterGood(Profile.instance().getToken(), mRequest);
+        final GoodDetailRequest request = createRequest();
+        Call<GoodDetailResponse> call = mGoodRest.filterGood(Profile.instance().getToken(), request);
 
         call.enqueue(new Callback<GoodDetailResponse>() {
             @Override
@@ -235,12 +269,12 @@ public class GoodDetail extends Fragment {
                 GoodDetailResponse base = response.body();
                 if (0 != base.getTotal()) {
                     if (DiabloEnum.DEFAULT_PAGE.equals(mCurrentPage)) {
-                        mTotalPage = UTILS.calcTotalPage(base.getTotal(), mRequest.getCount());
+                        mTotalPage = UTILS.calcTotalPage(base.getTotal(), request.getCount());
                     }
                 }
 
                 List<GoodDetailResponse.GoodNote> goodNotes = base.getGoods();
-                Integer orderId = mRequest.getPageStartIndex();
+                Integer orderId = request.getPageStartIndex();
                 // mSaleDetailTable.removeAllViews();
                 mTable.removeAllViews();
 
@@ -356,7 +390,7 @@ public class GoodDetail extends Fragment {
 
             @Override
             public void onFailure(Call<GoodDetailResponse> call, Throwable t) {
-                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
+                UTILS.makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_LONG);
                 mTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }
@@ -451,47 +485,15 @@ public class GoodDetail extends Fragment {
     }
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
-        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        cell.setLayoutParams(lp);
-        // cell.setTextColor(context.getResources().getColor(R.color.black));
-        cell.setText(value.trim());
-        cell.setTextSize(18);
-        // cell.setHeight(105);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
     public TextView addCell(TableRow row, Integer value, TableRow.LayoutParams lp){
-        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        if (value < 0) {
-            cell.setTextColor(getContext().getResources().getColor(R.color.red));
-        }
-        cell.setLayoutParams(lp);
-        cell.setText(DiabloUtils.instance().toString(value).trim());
-        cell.setTextSize(20);
-        // cell.setHeight(120);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
     public TextView addCell(TableRow row, float value, TableRow.LayoutParams lp){
-        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        if (value < 0f) {
-            cell.setTextColor(getContext().getResources().getColor(R.color.red));
-        }
-
-        cell.setLayoutParams(lp);
-        cell.setText(DiabloUtils.instance().toString(value).trim());
-        cell.setTextSize(20);
-        // cell.setHeight(120);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
 }

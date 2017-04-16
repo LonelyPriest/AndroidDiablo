@@ -39,21 +39,21 @@
         android:inputType="datetime"
         android:layout_weight="0.6"/>
 
-    <ImageView
+    <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
-        android:src="@drawable/ic_extension_black_24dp"
+        android:drawableStart="@drawable/ic_extension_black_24dp"
         android:layout_gravity="center"
-        android:contentDescription="@string/style_number"/>
+        android:text="@string/style_number"/>
     <AutoCompleteTextView
-        android:id="@+id/select_firm"
+        android:id="@+id/select_style_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/style_number"
         android:completionThreshold="1"
         android:gravity="center_horizontal"
-        android:layout_weight="0.6" />
+        android:layout_weight="0.8"/>
 
 
     <ImageButton
@@ -80,14 +80,14 @@
 
 
   <TableLayout
-      android:id="@+id/t_inventory_detail_head"
+      android:id="@+id/t_stock_store_detail_head"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="10dp">
   </TableLayout>
 
   <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
-      android:id="@+id/t_inventory_detail_swipe"
+      android:id="@+id/t_stock_store_detail_swipe"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
     <ScrollView
@@ -95,7 +95,7 @@
         android:layout_height="wrap_content">
 
       <TableLayout
-          android:id="@+id/t_inventory_detail"
+          android:id="@+id/t_stock_store_detail"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:stretchColumns="*">

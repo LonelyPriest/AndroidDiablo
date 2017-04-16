@@ -116,7 +116,7 @@ public class DiabloColor {
                     new DiabloAlertDialog(
                         context,
                         context.getResources().getString(R.string.title_add_color),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -125,7 +125,7 @@ public class DiabloColor {
                 new DiabloAlertDialog(
                     context,
                     context.getResources().getString(R.string.title_add_color),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

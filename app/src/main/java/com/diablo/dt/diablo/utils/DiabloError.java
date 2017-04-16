@@ -10,19 +10,19 @@ import com.diablo.dt.diablo.entity.Profile;
  * Created by buxianhui on 17/2/22.
  */
 public class DiabloError {
-    private static DiabloError mInstance;
-
-    public static DiabloError getInstance() {
-        if (null == mInstance){
-            mInstance = new DiabloError();
-        }
-
-        return mInstance;
-    }
-
-    private DiabloError() {
-
-    }
+//    private static DiabloError mInstance;
+//
+//    public static DiabloError getInstance() {
+//        if (null == mInstance){
+//            mInstance = new DiabloError();
+//        }
+//
+//        return mInstance;
+//    }
+//
+//    private DiabloError() {
+//
+//    }
 
     private static final SparseArray<String> mErrors;
     static {
@@ -35,6 +35,19 @@ public class DiabloError {
         mErrors.put(1101, r.getString(R.string.invalid_name_password));
         mErrors.put(1199, r.getString(R.string.network_unreachable));
         mErrors.put(9001, r.getString(R.string.database_error));
+
+        mErrors.put(200, r.getString(R.string.failed_to_get_employee));
+        mErrors.put(201, r.getString(R.string.failed_to_get_base_setting));
+        mErrors.put(202, r.getString(R.string.failed_to_get_retailer));
+        mErrors.put(203, r.getString(R.string.failed_to_get_color));
+        mErrors.put(204, r.getString(R.string.failed_to_get_size_group));
+        mErrors.put(205, r.getString(R.string.failed_to_get_stock));
+        mErrors.put(206, r.getString(R.string.failed_to_get_brand));
+        mErrors.put(207, r.getString(R.string.failed_to_get_good_type));
+        mErrors.put(208, r.getString(R.string.failed_to_get_firm));
+        mErrors.put(209, r.getString(R.string.failed_to_get_good));
+        mErrors.put(210, r.getString(R.string.failed_to_get_color_kind));
+        mErrors.put(211, r.getString(R.string.failed_to_get_user_info));
 
         mErrors.put(2699, r.getString(R.string.update_same));
         mErrors.put(2703, r.getString(R.string.error_style_number));
@@ -65,8 +78,8 @@ public class DiabloError {
 
     }
 
-    public String getError(Integer ecode){
-        return mErrors.get(ecode);
+    public static String getError(Integer code){
+        return mErrors.get(code);
     }
 
 }

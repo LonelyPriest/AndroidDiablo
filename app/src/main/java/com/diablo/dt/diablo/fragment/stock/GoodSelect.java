@@ -226,7 +226,7 @@ public class GoodSelect extends Fragment {
             public void onMatchFailed(Throwable t) {
                 Log.d(LOG_TAG, "failed to get stock");
                 DiabloUtils.instance()
-                    .makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
+                    .makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_LONG);
             }
         });
 

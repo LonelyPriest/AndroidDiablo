@@ -3,7 +3,7 @@ package com.diablo.dt.diablo.rest;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.request.MatchStockRequest;
-import com.diablo.dt.diablo.request.stock.InventoryDetailRequest;
+import com.diablo.dt.diablo.request.stock.StockStoreDetailRequest;
 import com.diablo.dt.diablo.request.stock.NewStockRequest;
 import com.diablo.dt.diablo.request.stock.StockDetailRequest;
 import com.diablo.dt.diablo.request.stock.StockNoteRequest;
@@ -44,7 +44,7 @@ public interface StockInterface {
     // inventory
     @POST("filter_w_inventory_group")
     Call<InventoryDetailResponse> filterInventory(@Header("cookie") String token,
-                                                  @Body InventoryDetailRequest request);
+                                                  @Body StockStoreDetailRequest request);
 
     @POST("new_w_inventory")
     Call<NewStockResponse> addStock(@Header("cookie") String token, @Body NewStockRequest request);

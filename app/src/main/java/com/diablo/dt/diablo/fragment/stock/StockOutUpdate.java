@@ -776,7 +776,7 @@ public class StockOutUpdate extends Fragment {
             new DiabloAlertDialog(
                 getContext(),
                 getResources().getString(R.string.sale_out_update),
-                DiabloError.getInstance().getError(2699)).create();
+                DiabloError.getError(2699)).create();
 
         } else {
             startRequest(stockRequest);
@@ -822,7 +822,7 @@ public class StockOutUpdate extends Fragment {
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.stock_in_update),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -832,7 +832,7 @@ public class StockOutUpdate extends Fragment {
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.stock_in_update),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

@@ -155,7 +155,7 @@ public class Firm {
                 new DiabloAlertDialog(
                     context,
                     context.getResources().getString(R.string.title_add_firm),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

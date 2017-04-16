@@ -346,7 +346,7 @@ public class DiabloUtils {
         new DiabloAlertDialog(
             context,
             context.getResources().getString(titleId),
-            DiabloError.getInstance().getError(errorCode)).create();
+            DiabloError.getError(errorCode)).create();
     }
 
     public TextView addCell(Context context, TableRow row, String value, TableRow.LayoutParams lp){
@@ -475,11 +475,11 @@ public class DiabloUtils {
                     String eMessage = context.getString(R.string.print_failed);
                     List<NewSaleResponse.printResponse> pInfos = pres.getPinfos();
                     if (null == pInfos || 0 == pInfos.size()) {
-                        eMessage = DiabloError.getInstance().getError(pres.getCode());
+                        eMessage = DiabloError.getError(pres.getCode());
                     } else {
                         for (NewSaleResponse.printResponse p: pInfos) {
                             eMessage += "[" + p.getDevice().toString() + "]"
-                                + DiabloError.getInstance().getError(p.getEcode());
+                                + DiabloError.getError(p.getEcode());
                         }
                     }
                     new DiabloAlertDialog(context, context.getString(titleRes), eMessage).create();
@@ -491,7 +491,7 @@ public class DiabloUtils {
                 new DiabloAlertDialog(
                     context,
                     context.getString(R.string.nav_sale_in),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

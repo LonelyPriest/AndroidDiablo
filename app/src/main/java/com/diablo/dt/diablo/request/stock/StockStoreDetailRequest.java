@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.request.good;
+package com.diablo.dt.diablo.request.stock;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,18 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by buxianhui on 17/4/9.
+ * Created by buxianhui on 17/4/7.
  */
 
-public class GoodDetailRequest extends PageRequest {
+public class StockStoreDetailRequest extends PageRequest {
     @SerializedName("fields")
     private Condition mCondition;
 
-    public GoodDetailRequest(Integer currentPage, Integer itemsPerPage){
+    public StockStoreDetailRequest(Integer currentPage, Integer itemsPerPage){
         super(currentPage, itemsPerPage);
         mCondition = new Condition();
     }
-
+    
     public void setStartTime(String startTime) {
         mCondition.setStartTime(startTime);
     }
@@ -49,6 +49,18 @@ public class GoodDetailRequest extends PageRequest {
         mCondition.addYear(DiabloUtils.instance().toInteger(year));
     }
 
+    public void addShop(Integer shop) {
+        mCondition.addShop(shop);
+    }
+
+    public List<Integer> getShops() {
+        return mCondition.getShops();
+    }
+
+    public void setShops(List<Integer> shops) {
+        mCondition.setShops(shops);
+    }
+
     public void trim() {
         mCondition.trim();
     }
@@ -70,12 +82,17 @@ public class GoodDetailRequest extends PageRequest {
         @SerializedName("year")
         private List<Integer> mYears;
 
+        @SerializedName("shop")
+        private List<Integer> mShops;
+
         private Condition(){
             mStyleNumbers = new ArrayList<>();
             mBrands = new ArrayList<>();
             mGoodTypes = new ArrayList<>();
             mFirms = new ArrayList<>();
             mYears = new ArrayList<>();
+
+            mShops = new ArrayList<>();
         }
 
         private void setStartTime(String startTime) {
@@ -116,6 +133,20 @@ public class GoodDetailRequest extends PageRequest {
             }
         }
 
+        private void addShop(Integer shop) {
+            if (!mShops.contains(shop)) {
+                this.mShops.add(shop);
+            }
+        }
+
+        private void setShops(List<Integer> shops) {
+            this.mShops = shops;
+        }
+
+        private List<Integer> getShops() {
+            return mShops;
+        }
+
         private void trim() {
             if (0 == mStyleNumbers.size())
                 mStyleNumbers = null;
@@ -127,6 +158,8 @@ public class GoodDetailRequest extends PageRequest {
                 mFirms = null;
             if (0 == mYears.size())
                 mYears = null;
+            if (0 == mShops.size())
+                mShops = null;
         }
     }
 }

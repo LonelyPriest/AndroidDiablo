@@ -44,7 +44,7 @@ public class DiabloDatePicker {
         mBtnStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaleUtils.DiabloDatePicker.build(mFragment, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
+                SaleUtils.DiabloDatePicker.build(mFragment, mStartSelectDate, new SaleUtils.DiabloDatePicker.OnDateSetListener() {
                     @Override
                     public void onDateSet(String date, String nextDate) {
                         mStartDateText.setText(date);

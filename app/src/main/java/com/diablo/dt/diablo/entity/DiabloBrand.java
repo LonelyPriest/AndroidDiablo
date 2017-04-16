@@ -62,7 +62,7 @@ public class DiabloBrand {
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -111,7 +111,7 @@ public class DiabloBrand {
                     new DiabloAlertDialog(
                         context,
                         context.getResources().getString(R.string.title_add_firm),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -120,7 +120,7 @@ public class DiabloBrand {
                 new DiabloAlertDialog(
                     context,
                     context.getResources().getString(R.string.title_add_firm),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

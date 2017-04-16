@@ -1308,7 +1308,7 @@ public class SaleIn extends Fragment{
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.nav_sale_in),
-                        DiabloError.getInstance().getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(errorCode) + extraMessage).create();
                 }
             }
 
@@ -1318,7 +1318,7 @@ public class SaleIn extends Fragment{
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.nav_sale_in),
-                    DiabloError.getInstance().getError(99)).create();
+                    DiabloError.getError(99)).create();
             }
         });
     }

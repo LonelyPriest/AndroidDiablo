@@ -275,7 +275,7 @@ public class SaleDetail extends Fragment {
         entities.add(new ShopFilter(getContext(), getString(R.string.shop)));
 
         mFilterController = new DiabloFilterController(getContext(), entities, 1);
-        mFilterController.init((LinearLayout)mViewFragment, R.id.t_sale_detail_swipe, btnAdd, btnMinus);
+        mFilterController.init((LinearLayout)mViewFragment, R.id.t_sale_detail_head, btnAdd, btnMinus);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -528,7 +528,7 @@ public class SaleDetail extends Fragment {
 
             @Override
             public void onFailure(Call<SaleDetailResponse> call, Throwable t) {
-                UTILS.makeToast(getContext(), DiabloError.getInstance().getError(99), Toast.LENGTH_LONG);
+                UTILS.makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_LONG);
                 mSaleDetailTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
             }
@@ -569,47 +569,16 @@ public class SaleDetail extends Fragment {
     }
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
-        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        cell.setLayoutParams(lp);
-        // cell.setTextColor(context.getResources().getColor(R.color.black));
-        cell.setText(value.trim());
-        cell.setTextSize(18);
-        // cell.setHeight(105);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
     public TextView addCell(TableRow row, Integer value, TableRow.LayoutParams lp){
         // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        if (value < 0) {
-            cell.setTextColor(getContext().getResources().getColor(R.color.red));
-        }
-        cell.setLayoutParams(lp);
-        cell.setText(DiabloUtils.instance().toString(value).trim());
-        cell.setTextSize(20);
-        // cell.setHeight(120);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
     public TextView addCell(TableRow row, float value, TableRow.LayoutParams lp){
-        // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
-        TextView cell = new TextView(getContext());
-        if (value < 0f) {
-            cell.setTextColor(getContext().getResources().getColor(R.color.red));
-        }
-
-        cell.setLayoutParams(lp);
-        cell.setText(DiabloUtils.instance().toString(value).trim());
-        cell.setTextSize(20);
-        // cell.setHeight(120);
-        // cell.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
-        row.addView(cell);
-        return  cell;
+        return UTILS.addCell(getContext(), row, value, lp);
     }
 
     @Override
