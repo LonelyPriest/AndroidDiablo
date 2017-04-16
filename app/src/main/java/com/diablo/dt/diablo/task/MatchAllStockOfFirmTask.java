@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.MatchStockAdapter;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.model.stock.StockCalc;
 
@@ -51,23 +49,23 @@ public class MatchAllStockOfFirmTask extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
-        MatchStockAdapter adapter = new MatchStockAdapter(
-            mContext,
-            R.layout.typeahead_match_stock_on_sale,
-            R.id.typeahead_select_stock_on_sale,
-            mMatchedStocks,
-            false);
-
-        mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
-
-        if (mMatchedStocks.size() > 10){
-            mCompleteView.setDropDownVerticalOffset(-9999);
-        }
-        else{
-            mCompleteView.setDropDownVerticalOffset(-mCompleteView.getHeight());
-        }
-
-        mCompleteView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+//        MatchStockAdapter adapter = new MatchStockAdapter(
+//            mContext,
+//            R.layout.typeahead_match_stock_on_sale,
+//            R.id.typeahead_select_stock_on_sale,
+//            mMatchedStocks,
+//            false);
+//
+//        mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
+//
+//        if (mMatchedStocks.size() > 10){
+//            mCompleteView.setDropDownVerticalOffset(-9999);
+//        }
+//        else{
+//            mCompleteView.setDropDownVerticalOffset(-mCompleteView.getHeight());
+//        }
+//
+//        mCompleteView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
     }
 }

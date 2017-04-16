@@ -36,7 +36,8 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
-import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
+import com.diablo.dt.diablo.adapter.MatchStockAdapter;
+import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.controller.DiabloSaleController;
 import com.diablo.dt.diablo.entity.DiabloButton;
@@ -45,6 +46,8 @@ import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.entity.Stock;
+import com.diablo.dt.diablo.model.sale.DiabloSaleAmountChangeWatcher;
+import com.diablo.dt.diablo.model.sale.DiabloSaleRow;
 import com.diablo.dt.diablo.model.sale.SaleCalc;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
@@ -52,17 +55,13 @@ import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.NewSaleRequest;
 import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
-import com.diablo.dt.diablo.task.MatchAllStockTask;
 import com.diablo.dt.diablo.task.MatchSingleStockTask;
-import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
-import com.diablo.dt.diablo.model.sale.DiabloSaleAmountChangeWatcher;
-import com.diablo.dt.diablo.model.sale.DiabloSaleRow;
 import com.diablo.dt.diablo.utils.DiabloPattern;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
 
@@ -265,7 +264,7 @@ public class SaleIn extends Fragment{
 
         // (EditText) addRetailerDialog.findViewById(R.id.retailer_phone);
         final EditText editTextName = ((EditText) view.findViewById(R.id.retailer_name));
-        editTextName.addTextChangedListener(new DiabloTextWatcher() {
+        editTextName.addTextChangedListener(new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!DiabloPattern.isValidRetailer(editable.toString().trim())) {
@@ -430,7 +429,7 @@ public class SaleIn extends Fragment{
             }
             else if (getResources().getString(R.string.price_type).equals(title)) {
                 Spinner cell = (Spinner)diabloRow.getCell(title);
-                SpinnerStringAdapter adapter=new SpinnerStringAdapter(
+                StringArrayAdapter adapter=new StringArrayAdapter(
                         this.getContext(),
                         android.R.layout.simple_spinner_dropdown_item,
                     mPriceTypes);
@@ -515,14 +514,31 @@ public class SaleIn extends Fragment{
                 eCell.setThreshold(1);
 //              eCell.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED);
 
-                new AutoCompleteTextChangeListener(eCell).addListen(new AutoCompleteTextChangeListener.TextWatch() {
-                    @Override
-                    public void afterTextChanged(String value) {
-                        if (value.length() > 0) {
-                            new MatchAllStockTask(getContext(), eCell, mMatchStocks, false).execute(value);
-                        }
-                    }
-                });
+                new MatchStockAdapter(
+                    getContext(),
+                    R.layout.typeahead_match_stock_on_sale,
+                    R.id.typeahead_select_stock_on_sale,
+                    eCell);
+
+//                new DiabloAutoCompleteTextWatcher(
+//                    eCell,
+//                    new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+//                    @Override
+//                    public void afterTextChanged(String s) {
+//                        if (s.length() > 0) {
+//                            new MatchAllStockTask(getContext(), eCell).execute(s);
+//                        }
+//                    }
+//                });
+
+//                new DiabloAutoCompleteTextWatcher(eCell).addWatcher(new DiabloAutoCompleteTextWatcher.DiabloTextWatcher() {
+//                    @Override
+//                    public void afterTextChanged(String value) {
+//                        if (value.length() > 0) {
+//                            new MatchAllStockTask(getContext(), eCell, mMatchStocks, false).execute(value);
+//                        }
+//                    }
+//                });
 
                 eCell.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -600,7 +616,7 @@ public class SaleIn extends Fragment{
                 Spinner sCell = new Spinner(this.getContext());
                 lp.weight = 1.5f;
                 sCell.setLayoutParams(lp);
-                SpinnerStringAdapter adapter = new SpinnerStringAdapter(
+                StringArrayAdapter adapter = new StringArrayAdapter(
                         this.getContext(),
                         android.R.layout.simple_spinner_dropdown_item,
                     mPriceTypes);
@@ -1004,7 +1020,7 @@ public class SaleIn extends Fragment{
                                 dialog.dismiss();
                                 // utils.makeToast(getContext(), i);
                                 SaleCalc c = sparseCalcs.get(i);
-                                resetWith(c, recoverFromDB(c));;
+                                resetWith(c, recoverFromDB(c));
                             }
                         });
 

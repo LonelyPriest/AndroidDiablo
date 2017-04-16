@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.task.MatchAllStockTask;
 
 /**
@@ -44,7 +43,7 @@ public class StyleNumberFilter extends DiabloFilter {
 //        ((AutoCompleteTextView)view).setSelectAllOnFocus(true);
 //        setView(view);
 //
-//        ((AutoCompleteTextView) view).addTextChangedListener(new DiabloTextWatcher() {
+//        ((AutoCompleteTextView) view).addTextChangedListener(new DiabloEditTextWatcher() {
 //            @Override
 //            public void afterTextChanged(Editable editable) {
 //                setSelectFilter(null);
@@ -70,11 +69,8 @@ public class StyleNumberFilter extends DiabloFilter {
     @Override
     public void startAutoComplete(String name) {
         AutoCompleteTextView view = ((AutoCompleteTextView) getView());
-
         new MatchAllStockTask(
             getContext(),
-            view,
-            Profile.instance().getMatchStocks(),
-            true).execute(name);
+            view).execute(name);
     }
 }

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.MatchGoodTypeAdapter;
 import com.diablo.dt.diablo.entity.DiabloType;
 
 import java.util.ArrayList;
@@ -41,20 +39,19 @@ public class MatchGoodTypeTask extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        MatchGoodTypeAdapter adapter = new MatchGoodTypeAdapter(
-            mContext,
-            R.layout.typeahead_firm,
-            R.id.typeahead_select_firm,
-            mMatchedGoodTypes);
-
-        mCompleteView.setAdapter(adapter);
-        mCompleteView.setThreshold(1);
-
-        if (null != mMatchedGoodTypes && mMatchedGoodTypes.size() > 0) {
-            mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
-            mCompleteView.setDropDownVerticalOffset(-90);
-        }
-
-        adapter.notifyDataSetChanged();
+//        MatchGoodTypeAdapter adapter = new MatchGoodTypeAdapter(
+//            mContext,
+//            R.layout.typeahead_firm,
+//            R.id.typeahead_select_firm);
+//
+//        mCompleteView.setAdapter(adapter);
+//        mCompleteView.setThreshold(1);
+//
+//        if (null != mMatchedGoodTypes && mMatchedGoodTypes.size() > 0) {
+//            mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
+//            mCompleteView.setDropDownVerticalOffset(-90);
+//        }
+//
+//        adapter.notifyDataSetChanged();
     }
 }

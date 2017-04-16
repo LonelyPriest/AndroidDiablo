@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.diablo.dt.diablo.entity.DiabloShop;
+import com.diablo.dt.diablo.filter.DiabloFilter;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ import java.util.List;
  * Created by buxianhui on 17/4/14.
  */
 
-public class SpinnerShopAdapter extends ArrayAdapter<DiabloShop> {
+public class DiabloFilterAdapter extends ArrayAdapter<DiabloFilter> {
     // private Context context;
-    private List<DiabloShop> filterShops;
+    private List<DiabloFilter> filterItems;
 
-    public SpinnerShopAdapter(Context context, Integer resource, List<DiabloShop> shops) {
-        super(context, resource, shops);
+    public DiabloFilterAdapter(Context context, Integer resource, List<DiabloFilter> items) {
+        super(context, resource, items);
         // this.context = context;
-        this.filterShops = shops;
+        this.filterItems = items;
     }
 
     @NonNull
@@ -32,12 +32,11 @@ public class SpinnerShopAdapter extends ArrayAdapter<DiabloShop> {
 
         TextView view = (TextView) super.getView(position, convertView, parent);
         view.setTextSize(18);
-        view.setTextColor(Color.BLACK);
-        // view.setTextColor(Color.MAGENTA);
+        view.setTextColor(Color.MAGENTA);
 
-        DiabloShop shop = filterShops.get(position);
-        if (null != shop) {
-            view.setText(shop.getName());
+        DiabloFilter entity = filterItems.get(position);
+        if (null != entity) {
+            view.setText(entity.getName());
         }
         return view;
     }
@@ -45,14 +44,13 @@ public class SpinnerShopAdapter extends ArrayAdapter<DiabloShop> {
     @Override
     public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
         TextView view = (TextView) super.getDropDownView(position, convertView, parent);
-        // view.setTextSize(18);
+        view.setTextSize(18);
         view.setTextColor(Color.BLACK);
 
-        DiabloShop shop = filterShops.get(position);
-        if (null != shop) {
-            view.setText(shop.getName());
+        DiabloFilter entity = filterItems.get(position);
+        if (null != entity) {
+            view.setText(entity.getName());
         }
-
         return view;
     }
 }

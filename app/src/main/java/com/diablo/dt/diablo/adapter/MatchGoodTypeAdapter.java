@@ -1,79 +1,37 @@
 package com.diablo.dt.diablo.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.TextView;
+import android.widget.AutoCompleteTextView;
 
+import com.diablo.dt.diablo.entity.DiabloEntity;
 import com.diablo.dt.diablo.entity.DiabloType;
+import com.diablo.dt.diablo.entity.Profile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by buxianhui on 17/4/8.
  */
 
-public class MatchGoodTypeAdapter extends ArrayAdapter<DiabloType> {
-    private Context context;
-    private Integer resource;
-    private Integer textViewResourceId;
-    private List<DiabloType> filterGoodTypes;
-
-    public MatchGoodTypeAdapter(Context context, Integer resource, Integer textViewResourceId, List<DiabloType> types) {
-        super(context, resource, textViewResourceId, types);
-        this.context = context;
-        this.resource = resource;
-        this.textViewResourceId = textViewResourceId;
-        this.filterGoodTypes = types;
+public class MatchGoodTypeAdapter extends DiabloAdapter {
+    public MatchGoodTypeAdapter(Context context, Integer resource, Integer textViewResourceId) {
+        super(context, resource, textViewResourceId);
     }
 
-    @NonNull
+    public MatchGoodTypeAdapter(Context context, Integer resource, Integer textViewResourceId, AutoCompleteTextView view) {
+        super(context, resource, textViewResourceId, view);
+    }
+
     @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        View view = convertView;
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(resource, parent, false);
+    public List<DiabloEntity> findItems(String s) {
+        List<DiabloType> types = Profile.instance().getDiabloTypes();
+        List<DiabloEntity> suggestions = new ArrayList<>();
+        for (DiabloType type: types) {
+            if (type.getName().toUpperCase().contains(s.toUpperCase())) {
+                suggestions.add(type);
+            }
         }
-
-        DiabloType goodType = filterGoodTypes.get(position);
-        if (goodType != null) {
-            TextView retailerView = (TextView) view.findViewById(textViewResourceId);
-            retailerView.setText(goodType.getName());
-        }
-        return view;
+        return suggestions;
     }
-
-    @NonNull
-    @Override
-    public Filter getFilter() {
-        return nameFilter;
-    }
-
-    /**
-     * Custom Filter implementation for custom suggestions we provide.
-     */
-    private Filter nameFilter = new Filter() {
-        @Override
-        public CharSequence convertResultToString(Object resultValue) {
-            return ((DiabloType) resultValue).getName();
-        }
-
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults filterResults = new FilterResults();
-            filterResults.values = filterGoodTypes;
-            filterResults.count = filterGoodTypes.size();
-            return filterResults;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            notifyDataSetChanged();
-        }
-    };
 }

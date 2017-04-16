@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
-import com.diablo.dt.diablo.adapter.SpinnerShopAdapter;
+import com.diablo.dt.diablo.adapter.ShopAdapter;
 import com.diablo.dt.diablo.entity.Profile;
 
 /**
@@ -33,7 +33,7 @@ public class ShopFilter extends DiabloFilter {
         // super.init(view);
         // final Spinner view = new Spinner(getContext());
         setView(view);
-        SpinnerShopAdapter adapter = new SpinnerShopAdapter(
+        ShopAdapter adapter = new ShopAdapter(
             getContext(),
             android.R.layout.simple_spinner_item,
             Profile.instance().getSortShop());

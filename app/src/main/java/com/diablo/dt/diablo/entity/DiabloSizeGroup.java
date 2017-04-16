@@ -11,7 +11,7 @@ import java.util.List;
  * Created by buxianhui on 17/3/14.
  */
 
-public class DiabloSizeGroup {
+public class DiabloSizeGroup extends DiabloEntity{
     @SerializedName("id")
     private Integer gid;
     @SerializedName("name")
@@ -43,7 +43,13 @@ public class DiabloSizeGroup {
         return gid;
     }
 
+    @Override
     public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getViewName() {
         return name;
     }
 

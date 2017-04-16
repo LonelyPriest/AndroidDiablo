@@ -23,7 +23,7 @@ import retrofit2.Response;
  * Created by buxianhui on 17/2/24.
  */
 
-public class Retailer {
+public class Retailer extends DiabloEntity{
     @SerializedName("id")
     private Integer id;
     @SerializedName("name")
@@ -71,7 +71,13 @@ public class Retailer {
         this.id = id;
     }
 
+    @Override
     public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public String getViewName() {
         return this.name;
     }
 

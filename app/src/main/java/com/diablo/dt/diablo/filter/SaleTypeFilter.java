@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
-import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
+import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.entity.Profile;
 
 /**
@@ -32,7 +32,7 @@ public class SaleTypeFilter extends DiabloFilter{
     public void init(final View view) {
         setView(view);
 
-        SpinnerStringAdapter adapter = new SpinnerStringAdapter(
+        StringArrayAdapter adapter = new StringArrayAdapter(
             getContext(),
             android.R.layout.simple_spinner_item,
             Profile.instance().getSaleTypes());

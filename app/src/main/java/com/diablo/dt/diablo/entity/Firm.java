@@ -22,7 +22,7 @@ import retrofit2.Response;
  * Created by buxianhui on 17/4/3.
  */
 
-public class Firm {
+public class Firm extends DiabloEntity{
     @SerializedName("id")
     private Integer id;
     @SerializedName("name")
@@ -62,6 +62,11 @@ public class Firm {
         datetime = DiabloEnum.EMPTY_STRING;
     }
 
+    @Override
+    public String getViewName() {
+        return name;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -70,6 +75,7 @@ public class Firm {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

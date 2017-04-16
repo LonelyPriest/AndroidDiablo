@@ -1,8 +1,6 @@
 package com.diablo.dt.diablo.controller;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,15 +9,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.adapter.BackendRetailerAdapter;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
 import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleCalc;
-import com.diablo.dt.diablo.task.MatchRetailerTask;
-import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloAutoCompleteTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
 
@@ -37,7 +35,7 @@ public class DiabloSaleController {
      * listener
      */
     // retailer
-    private AutoCompleteTextChangeListener mOnAutoCompletedRetailerListener;
+    private DiabloAutoCompleteTextWatcher mOnAutoCompletedRetailerListener;
     private AdapterView.OnItemClickListener mOnRetailerClickListener;
 
     // employee
@@ -46,13 +44,13 @@ public class DiabloSaleController {
     private AdapterView.OnItemSelectedListener mOnExtraCostTypeSelectedListener;
 
     // extra cost
-    private TextWatcher mExtraCostWatcher;
+    private android.text.TextWatcher mExtraCostWatcher;
     // comment
-    private TextWatcher mCommentWatcher;
-    private TextWatcher mCashWatcher;
-    private TextWatcher mCardWatcher;
-    private TextWatcher mWireWatcher;
-    private TextWatcher mVerificateWatcher;
+    private android.text.TextWatcher mCommentWatcher;
+    private android.text.TextWatcher mCashWatcher;
+    private android.text.TextWatcher mCardWatcher;
+    private android.text.TextWatcher mWireWatcher;
+    private android.text.TextWatcher mVerificateWatcher;
 
     /**
      * interface
@@ -117,16 +115,7 @@ public class DiabloSaleController {
 
     public void setRetailerWatcher(final Context context) {
         final AutoCompleteTextView r = (AutoCompleteTextView) mSaleCalcView.getViewRetailer();
-        mOnAutoCompletedRetailerListener = new AutoCompleteTextChangeListener(r);
-
-        mOnAutoCompletedRetailerListener.addListen(new AutoCompleteTextChangeListener.TextWatch() {
-            @Override
-            public void afterTextChanged(String s) {
-                if (s.trim().length() > 0) {
-                    new MatchRetailerTask(context, r).execute(s);
-                }
-            }
-        });
+        new BackendRetailerAdapter(context, R.layout.typeahead_retailer, R.id.typeahead_select_retailer, r);
 
         mOnRetailerClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -144,7 +133,7 @@ public class DiabloSaleController {
 
     public void removeRetailerWatcher() {
         if (null != mOnAutoCompletedRetailerListener) {
-            mOnAutoCompletedRetailerListener.removeListen();
+            mOnAutoCompletedRetailerListener.remove();
         }
     }
 
@@ -186,77 +175,78 @@ public class DiabloSaleController {
     }
 
     public void setCommentWatcher() {
-        mCommentWatcher = new DiabloTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mSaleCalc.setComment(editable.toString().trim());
-            }
-        };
-
-        ((EditText)mSaleCalcView.getViewComment()).addTextChangedListener(mCommentWatcher);
+        mCommentWatcher = new DiabloEditTextWatcher(
+            (EditText) mSaleCalcView.getViewComment(),
+            new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    mSaleCalc.setComment(s);
+                }
+            });
     }
 
     public void setExtraCostWatcher() {
-        mExtraCostWatcher = new DiabloTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mSaleCalc.setExtraCost(UTILS.toFloat(editable.toString().trim()));
-                resetAccBalance();
-            }
-        };
-
-        ((EditText)mSaleCalcView.getViewExtraCost()).addTextChangedListener(mExtraCostWatcher);
+        mExtraCostWatcher = new DiabloEditTextWatcher(
+            (EditText) mSaleCalcView.getViewExtraCost(),
+            new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    mSaleCalc.setExtraCost(UTILS.toFloat(s));
+                    resetAccBalance();
+                }
+            });
     }
 
     public void setCashWatcher() {
-        mCashWatcher = new DiabloTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mSaleCalc.setCash(UTILS.toFloat(editable.toString().trim()));
-                calcHasPay();
-                resetAccBalance();
-            }
-        };
-
-        ((EditText)mSaleCalcView.getViewCash()).addTextChangedListener(mCashWatcher);
+        mCashWatcher = new DiabloEditTextWatcher(
+            (EditText) mSaleCalcView.getViewCash(),
+            new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    mSaleCalc.setCash(UTILS.toFloat(s));
+                    calcHasPay();
+                    resetAccBalance();
+                }
+            });
     }
 
     public void setCardWatcher() {
-        mCardWatcher = new DiabloTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mSaleCalc.setCard(UTILS.toFloat(editable.toString().trim()));
-                calcHasPay();
-                resetAccBalance();
-            }
-        };
+        mCardWatcher = new DiabloEditTextWatcher(
+            (EditText) mSaleCalcView.getViewCard(),
+            new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    mSaleCalc.setCard(UTILS.toFloat(s));
+                    calcHasPay();
+                    resetAccBalance();
+                }
+            });
 
-        ((EditText)mSaleCalcView.getViewCard()).addTextChangedListener(mCardWatcher);
     }
 
     public void setWireWatcher() {
-        mWireWatcher = new DiabloTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mSaleCalc.setWire(UTILS.toFloat(editable.toString().trim()));
-                calcHasPay();
-                resetAccBalance();
-            }
-        };
-
-        ((EditText)mSaleCalcView.getViewWire()).addTextChangedListener(mWireWatcher);
+        mWireWatcher = new DiabloEditTextWatcher(
+            mSaleCalcView.getViewWire(),
+            new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    mSaleCalc.setWire(UTILS.toFloat(s));
+                    calcHasPay();
+                    resetAccBalance();
+                }
+            });
     }
 
     public void setVerificateWatcher() {
-        mVerificateWatcher = new DiabloTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mSaleCalc.setVerificate(UTILS.toFloat(editable.toString().trim()));
-                resetAccBalance();
-            }
-        };
-
-        ((EditText)mSaleCalcView.getViewVerificate()).addTextChangedListener(mVerificateWatcher);
+        mVerificateWatcher = new DiabloEditTextWatcher(
+            mSaleCalcView.getViewVerificate(),
+            new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    mSaleCalc.setVerificate(UTILS.toFloat(s));
+                    resetAccBalance();
+                }
+            });
     }
 
     public void setEmployeeAdapter(Context context) {
@@ -264,8 +254,8 @@ public class DiabloSaleController {
             context,
             android.R.layout.simple_spinner_item,
             Profile.instance().getEmployees());
-        ((Spinner)mSaleCalcView.getViewEmployee()).setAdapter(adapter);
 
+        ((Spinner)mSaleCalcView.getViewEmployee()).setAdapter(adapter);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 

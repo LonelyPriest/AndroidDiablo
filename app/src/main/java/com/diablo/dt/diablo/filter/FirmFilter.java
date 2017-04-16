@@ -8,7 +8,7 @@ import android.widget.AutoCompleteTextView;
 
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.task.MatchFirmTask;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 
 /**
  * Created by buxianhui on 17/4/15.
@@ -35,7 +35,7 @@ public class FirmFilter extends DiabloFilter {
         ((AutoCompleteTextView)view).setSelectAllOnFocus(true);
         setView(view);
 
-        ((AutoCompleteTextView) view).addTextChangedListener(new DiabloTextWatcher() {
+        ((AutoCompleteTextView) view).addTextChangedListener(new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 setSelectFilter(null);

@@ -632,6 +632,18 @@ public class Profile {
         return brand;
     }
 
+    public DiabloBrand getBrand(String name) {
+        DiabloBrand brand = null;
+        for (DiabloBrand b: mBrands) {
+            if (b.getName().equals(name)) {
+                brand = b;
+                break;
+            }
+        }
+
+        return brand;
+    }
+
     /**
      * types
      */
@@ -653,6 +665,18 @@ public class Profile {
         DiabloType type = null;
         for (DiabloType t: mDiabloTypes) {
             if (t.getId().equals(typeId)) {
+                type = t;
+                break;
+            }
+        }
+
+        return type;
+    }
+
+    public DiabloType getDiabloType(String name) {
+        DiabloType type = null;
+        for (DiabloType t: mDiabloTypes) {
+            if (t.getName().equals(name)) {
                 type = t;
                 break;
             }
@@ -695,6 +719,19 @@ public class Profile {
 
         return firm;
     }
+
+    public Firm getFirm(String name) {
+        Firm firm = null;
+        for (Firm f: mFirms) {
+            if (f.getName().equals(name)) {
+                firm = f;
+                break;
+            }
+        }
+
+        return firm;
+    }
+
 
     /**
      * match good

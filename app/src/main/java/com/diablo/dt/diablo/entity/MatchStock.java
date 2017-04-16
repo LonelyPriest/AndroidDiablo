@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * used at match
  */
-public class MatchStock {
+public class MatchStock extends DiabloEntity{
     @SerializedName("style_number")
     private String styleNumber;
     @SerializedName("brand_id")
@@ -219,7 +219,13 @@ public class MatchStock {
         return alarmDay;
     }
 
+    @Override
     public String getName() {
         return this.styleNumber + "/" + this.brand + "/" + this.type;
+    }
+
+    @Override
+    public String getViewName() {
+        return this.styleNumber;
     }
 }

@@ -35,7 +35,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/please_input_style_number"
-                android:inputType="text|textCapSentences|textNoSuggestions"
+                android:inputType="textNoSuggestions"
                 android:textSize="@dimen/ampm_label_size"
                 android:textColor="@color/bpblack"
                 android:textStyle="bold"

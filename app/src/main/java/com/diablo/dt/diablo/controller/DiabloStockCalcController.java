@@ -2,7 +2,6 @@ package com.diablo.dt.diablo.controller;
 
 import android.content.Context;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,14 +11,13 @@ import android.widget.Spinner;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
+import com.diablo.dt.diablo.adapter.FirmAdapter;
 import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.stock.StockCalc;
-import com.diablo.dt.diablo.task.MatchFirmTask;
-import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.stock.DiabloStockCalcView;
 
@@ -39,7 +37,7 @@ public class DiabloStockCalcController {
      * listener
      */
     // firm
-    private AutoCompleteTextChangeListener mOnAutoCompletedFirmListener;
+    // private DiabloAutoCompleteTextWatcher mOnAutoCompletedFirmListener;
     private AdapterView.OnItemClickListener mOnFirmClickListener;
 
     // employee
@@ -48,13 +46,13 @@ public class DiabloStockCalcController {
     private AdapterView.OnItemSelectedListener mOnExtraCostTypeSelectedListener;
 
     // extra cost
-    private TextWatcher mExtraCostWatcher;
+    private android.text.TextWatcher mExtraCostWatcher;
     // comment
-    private TextWatcher mCommentWatcher;
-    private TextWatcher mCashWatcher;
-    private TextWatcher mCardWatcher;
-    private TextWatcher mWireWatcher;
-    private TextWatcher mVerificateWatcher;
+    private android.text.TextWatcher mCommentWatcher;
+    private android.text.TextWatcher mCashWatcher;
+    private android.text.TextWatcher mCardWatcher;
+    private android.text.TextWatcher mWireWatcher;
+    private android.text.TextWatcher mVerificateWatcher;
 
     /**
      * interface
@@ -76,7 +74,7 @@ public class DiabloStockCalcController {
         mWireWatcher = null;
         mVerificateWatcher = null;
 
-        mOnAutoCompletedFirmListener = null;
+        // mOnAutoCompletedFirmListener = null;
         mOnFirmClickListener = null;
         mOnEmployeeSelectedListener = null;
         mOnExtraCostTypeSelectedListener = null;
@@ -95,7 +93,7 @@ public class DiabloStockCalcController {
         mWireWatcher = null;
         mVerificateWatcher = null;
 
-        mOnAutoCompletedFirmListener = null;
+        // mOnAutoCompletedFirmListener = null;
         mOnFirmClickListener = null;
         mOnEmployeeSelectedListener = null;
         mOnExtraCostTypeSelectedListener = null;
@@ -111,16 +109,18 @@ public class DiabloStockCalcController {
 
     public void setFirmWatcher(final Context context, final List<Firm> firms) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mStockCalcView.getViewFirm();
-        mOnAutoCompletedFirmListener = new AutoCompleteTextChangeListener(f);
+        // mOnAutoCompletedFirmListener = new DiabloAutoCompleteTextWatcher(f);
 
-        mOnAutoCompletedFirmListener.addListen(new AutoCompleteTextChangeListener.TextWatch() {
-            @Override
-            public void afterTextChanged(String s) {
-                if (s.trim().length() > 0) {
-                    new MatchFirmTask(context, f, firms).execute(s);
-                }
-            }
-        });
+//        mOnAutoCompletedFirmListener.addWatcher(new DiabloAutoCompleteTextWatcher.DiabloTextWatcher() {
+//            @Override
+//            public void afterTextChanged(String s) {
+//                if (s.trim().length() > 0) {
+//                    new MatchFirmTask(context, f, firms).execute(s);
+//                }
+//            }
+//        });
+
+        new FirmAdapter(context, R.layout.typeahead_firm, R.id.typeahead_select_firm, f);
 
         mOnFirmClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -137,9 +137,9 @@ public class DiabloStockCalcController {
     }
 
     public void removeFirmWatcher() {
-        if (null != mOnAutoCompletedFirmListener) {
-            mOnAutoCompletedFirmListener.removeListen();
-        }
+//        if (null != mOnAutoCompletedFirmListener) {
+//            mOnAutoCompletedFirmListener.remove();
+//        }
     }
 
 //    public void setRetailerListSelection(Integer position) {
@@ -180,7 +180,7 @@ public class DiabloStockCalcController {
     }
 
     public void setCommentWatcher() {
-        mCommentWatcher = new DiabloTextWatcher() {
+        mCommentWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mStockCalc.setComment(editable.toString().trim());
@@ -191,7 +191,7 @@ public class DiabloStockCalcController {
     }
 
     public void setExtraCostWatcher() {
-        mExtraCostWatcher = new DiabloTextWatcher() {
+        mExtraCostWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mStockCalc.setExtraCost(UTILS.toFloat(editable.toString().trim()));
@@ -203,7 +203,7 @@ public class DiabloStockCalcController {
     }
 
     public void setCashWatcher() {
-        mCashWatcher = new DiabloTextWatcher() {
+        mCashWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mStockCalc.setCash(UTILS.toFloat(editable.toString().trim()));
@@ -216,7 +216,7 @@ public class DiabloStockCalcController {
     }
 
     public void setCardWatcher() {
-        mCardWatcher = new DiabloTextWatcher() {
+        mCardWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mStockCalc.setCard(UTILS.toFloat(editable.toString().trim()));
@@ -229,7 +229,7 @@ public class DiabloStockCalcController {
     }
 
     public void setWireWatcher() {
-        mWireWatcher = new DiabloTextWatcher() {
+        mWireWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mStockCalc.setWire(UTILS.toFloat(editable.toString().trim()));
@@ -242,7 +242,7 @@ public class DiabloStockCalcController {
     }
 
     public void setVerificateWatcher() {
-        mVerificateWatcher = new DiabloTextWatcher() {
+        mVerificateWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mStockCalc.setVerificate(UTILS.toFloat(editable.toString().trim()));
@@ -254,6 +254,12 @@ public class DiabloStockCalcController {
     }
 
     public void setEmployeeAdapter(Context context) {
+//        EmployeeAdapter adapter = new EmployeeAdapter(
+//            context,
+//            android.R.layout.simple_spinner_item,
+//            Profile.instance().getEmployees());
+
+
         EmployeeAdapter adapter = new EmployeeAdapter(
             context,
             android.R.layout.simple_spinner_item,

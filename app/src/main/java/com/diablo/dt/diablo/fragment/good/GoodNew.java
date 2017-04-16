@@ -33,10 +33,10 @@ import com.diablo.dt.diablo.request.good.GoodNewRequest;
 import com.diablo.dt.diablo.response.good.InventoryNewResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloPattern;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.good.DiabloGoodCalcView;
 
@@ -176,9 +176,8 @@ public class GoodNew extends Fragment {
                         @Override
                         public void afterAdd(Firm addedFirm) {
                             mGoodController.clearFocusOfFirm();
-                            mGoodController.removeFirmWatcher();
-                            mGoodController.setFirmWatcher(
-                                getContext(), Profile.instance().getFirms(), addedFirm);
+                            mGoodController.removeFirmListener();
+                            mGoodController.setFirmWatcher(getContext(), addedFirm);
                             mGoodController.requestFocusOfFirm();
                         }
                     });
@@ -196,7 +195,7 @@ public class GoodNew extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
 
         final EditText editTextFirm = (EditText) view.findViewById(R.id.firm_name);
-        editTextFirm.addTextChangedListener(new DiabloTextWatcher() {
+        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 String name = editable.toString().trim();
@@ -229,12 +228,8 @@ public class GoodNew extends Fragment {
                         @Override
                         public void afterAdd(DiabloBrand addedBrand) {
                             mGoodController.clearFocusOfBrand();
-                            mGoodController.removeBrandWatcher();
-                            mGoodController.setBrandWatcher(
-                                getContext(),
-                                Profile.instance().getBrands(),
-                                addedBrand,
-                                null);
+                            mGoodController.removeBrandListener();
+                            mGoodController.setBrandWatcher(getContext(), addedBrand, null);
                             mGoodController.requestFocusOfBrand();
                         }
                     });
@@ -252,7 +247,7 @@ public class GoodNew extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
 
         final EditText editTextFirm = (EditText) view.findViewById(R.id.brand_name);
-        editTextFirm.addTextChangedListener(new DiabloTextWatcher() {
+        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 String name = editable.toString().trim();
@@ -284,9 +279,8 @@ public class GoodNew extends Fragment {
                         @Override
                         public void afterAdd(DiabloType addedType) {
                             mGoodController.clearFocusOfType();
-                            mGoodController.removeGoodTypeWatcher();
-                            mGoodController.setGoodTypeWatcher(
-                                getContext(), Profile.instance().getDiabloTypes(), goodType);
+                            mGoodController.removeGoodTypeListener();
+                            mGoodController.setGoodTypeWatcher(getContext(), goodType);
                             mGoodController.requestFocusOfType();
                         }
                     });
@@ -304,7 +298,7 @@ public class GoodNew extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
 
         final EditText editTextFirm = (EditText) view.findViewById(R.id.good_type_name);
-        editTextFirm.addTextChangedListener(new DiabloTextWatcher() {
+        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 String name = editable.toString().trim();
@@ -394,11 +388,11 @@ public class GoodNew extends Fragment {
 //        mGoodController.setValidateWatcherOfGoodType(getContext());
 
         // firm
-        mGoodController.setFirmWatcher(getContext(), Profile.instance().getFirms(), lastSelectFirm);
+        mGoodController.setFirmWatcher(getContext(), lastSelectFirm);
         // brand
-        mGoodController.setBrandWatcher(getContext(), Profile.instance().getBrands(), lastSelectBrand, null);
+        mGoodController.setBrandWatcher(getContext(), lastSelectBrand, null);
         // type
-        mGoodController.setGoodTypeWatcher(getContext(), Profile.instance().getDiabloTypes(), lastSelectGoodType);
+        mGoodController.setGoodTypeWatcher(getContext(), lastSelectGoodType);
 
         // price
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getOrgPrice());

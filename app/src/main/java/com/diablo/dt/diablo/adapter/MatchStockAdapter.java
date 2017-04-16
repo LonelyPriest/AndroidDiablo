@@ -1,16 +1,13 @@
 package com.diablo.dt.diablo.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.TextView;
+import android.widget.AutoCompleteTextView;
 
+import com.diablo.dt.diablo.entity.DiabloEntity;
 import com.diablo.dt.diablo.entity.MatchStock;
+import com.diablo.dt.diablo.entity.Profile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,85 +15,36 @@ import java.util.List;
  */
 
 
-public class MatchStockAdapter extends ArrayAdapter<MatchStock> {
-    private Context context;
-    private Integer resource;
-    private Integer textViewResourceId;
-    // private TableRow mRow;
-    // private List<MatchStock> originStocks;
-    private List<MatchStock> filterStocks;
-    private Filter filter;
-
-    private boolean mShowStyleNumberOnly;
-    // private List<MatchStock> suggestions;
-
-    public MatchStockAdapter(Context context,
-                             Integer resource,
-                             Integer textViewResourceId,
-                             List<MatchStock> stocks,
-                             boolean showStyleNumberOnly) {
-        super(context, resource, textViewResourceId, stocks);
-        this.context = context;
-        this.resource = resource;
-        this.textViewResourceId = textViewResourceId;
-        // this.originStocks = stocks;
-        this.filterStocks = stocks;
-        mShowStyleNumberOnly = false;
-        this.mShowStyleNumberOnly = showStyleNumberOnly;
+public class MatchStockAdapter extends DiabloAdapter {
+    public MatchStockAdapter(Context context, Integer resource, Integer textViewResourceId) {
+        super(context, resource, textViewResourceId);
     }
 
-//    public void setShowStyleNumberOnly(boolean showStyleNumberOnly) {
-//        this.mShowStyleNumberOnly = showStyleNumberOnly;
-//    }
+    public MatchStockAdapter(Context context, Integer resource, Integer textViewResourceId, AutoCompleteTextView view) {
+        super(context, resource, textViewResourceId, view);
+    }
 
-    @NonNull
     @Override
-    public View getView(int position, View convertView, final ViewGroup parent) {
-        View view = convertView;
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(resource, parent, false);
-        }
-
-        MatchStock stock = filterStocks.get(position);
-        if (stock != null) {
-            TextView dropdownView = (TextView) view.findViewById(textViewResourceId);
-            if (dropdownView != null)
-                dropdownView.setText(stock.getName());
-        }
-        return view;
-    }
-
-    @NonNull
-    @Override
-    public Filter getFilter() {
-        if (null == filter)
-            filter = new StockFilter();
-        return filter;
-    }
-
-    private class StockFilter extends Filter{
-        @Override
-        public CharSequence convertResultToString(Object resultValue) {
-            if (mShowStyleNumberOnly) {
-                return ((MatchStock) resultValue).getStyleNumber();
-            } else {
-                return ((MatchStock) resultValue).getName();
+    public List<DiabloEntity> findItems(String s) {
+        List<MatchStock> stocks = Profile.instance().getMatchStocks();
+        List<DiabloEntity> suggestions = new ArrayList<>();
+        for (MatchStock stock: stocks) {
+            if (stock.getName().toUpperCase().contains(s.toUpperCase())) {
+                suggestions.add(stock);
             }
         }
+        return suggestions;
+    }
 
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            FilterResults filterResults = new FilterResults();
-            filterResults.values = filterStocks;
-            filterResults.count = filterStocks.size();
-            return filterResults;
+    @Override
+    public void setDropDownOffset() {
+        getView().setDropDownHorizontalOffset(getView().getWidth());
+
+        if (getCount() > 10){
+            getView().setDropDownVerticalOffset(-9999);
         }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            notifyDataSetChanged();
+        else{
+            getView().setDropDownVerticalOffset(-getView().getHeight());
         }
     }
 }

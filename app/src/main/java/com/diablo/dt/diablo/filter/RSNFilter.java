@@ -5,7 +5,7 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 
 /**
  * Created by buxianhui on 17/4/14.
@@ -30,7 +30,7 @@ public class RSNFilter extends DiabloFilter {
     public void init(final View view) {
         setView(view);
         ((EditText)view).setSelectAllOnFocus(true);
-        ((EditText) view).addTextChangedListener(new DiabloTextWatcher() {
+        ((EditText) view).addTextChangedListener(new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 String s = editable.toString().trim();

@@ -24,7 +24,7 @@ import retrofit2.Response;
  * Created by buxianhui on 17/3/14.
  */
 
-public class DiabloColor {
+public class DiabloColor extends DiabloEntity{
     @SerializedName("id")
     private Integer colorId;
     @SerializedName("name")
@@ -57,7 +57,13 @@ public class DiabloColor {
         return colorId;
     }
 
+    @Override
     public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getViewName() {
         return name;
     }
 

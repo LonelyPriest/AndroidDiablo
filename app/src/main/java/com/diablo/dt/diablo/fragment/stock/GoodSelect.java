@@ -30,7 +30,7 @@ import com.diablo.dt.diablo.model.stock.EntryStockAmount;
 import com.diablo.dt.diablo.task.MatchSingleStockTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.ArrayList;
@@ -186,7 +186,7 @@ public class GoodSelect extends Fragment {
 
             @Override
             public void onGoodSelected(EditText cell, final Integer colorId, final String size) {
-                cell.addTextChangedListener(new DiabloTextWatcher() {
+                cell.addTextChangedListener(new DiabloEditTextWatcher() {
                     @Override
                     public void afterTextChanged(Editable editable) {
                         String inputValue = editable.toString().trim();

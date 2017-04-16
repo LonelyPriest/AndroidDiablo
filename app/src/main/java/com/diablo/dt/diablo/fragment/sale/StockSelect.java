@@ -35,7 +35,7 @@ import com.diablo.dt.diablo.response.sale.LastSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.task.MatchSingleStockTask;
 import com.diablo.dt.diablo.utils.DiabloEnum;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.ArrayList;
@@ -267,7 +267,7 @@ public class StockSelect extends Fragment {
 
             @Override
             public void onStockSelected(EditText cell, final Integer colorId, final String size) {
-                cell.addTextChangedListener(new DiabloTextWatcher() {
+                cell.addTextChangedListener(new DiabloEditTextWatcher() {
                     @Override
                     public void afterTextChanged(Editable editable) {
                         String inputValue = editable.toString().trim();

@@ -14,9 +14,9 @@ import android.widget.Spinner;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.DiabloColor;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloPattern;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 
 /**
  * Created by buxianhui on 17/4/12.
@@ -95,7 +95,7 @@ public class GoodColorNewDialog {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
-        ((EditText)mColorName).addTextChangedListener(new DiabloTextWatcher() {
+        ((EditText)mColorName).addTextChangedListener(new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 String name = editable.toString().trim();

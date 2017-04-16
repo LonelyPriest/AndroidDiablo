@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by buxianhui on 17/2/24.
  */
 
-public class Employee {
+public class Employee extends DiabloEntity{
     @SerializedName("id")
     private Integer Id;
     @SerializedName("name")
@@ -25,12 +25,19 @@ public class Employee {
     private Integer position;
 
 
+
     public Integer getId() {
         return this.Id;
     }
 
+    @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public String getViewName() {
+        return name;
     }
 
     public String getNumber() {

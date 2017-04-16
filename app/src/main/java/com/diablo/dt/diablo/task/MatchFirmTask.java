@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.FirmAdapter;
 import com.diablo.dt.diablo.entity.Firm;
 
 import java.util.ArrayList;
@@ -41,21 +39,20 @@ public class MatchFirmTask extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        FirmAdapter adapter = new FirmAdapter(
-            mContext,
-            R.layout.typeahead_firm,
-            R.id.typeahead_select_firm,
-            mMatchedFirms);
-
-        mCompleteView.setAdapter(adapter);
-        mCompleteView.setThreshold(1);
-
-        if (null != mMatchedFirms && mMatchedFirms.size() > 0) {
-            mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
-            mCompleteView.setDropDownVerticalOffset(-90);
-        }
-
-        adapter.notifyDataSetChanged();
+//        FirmAdapter adapter = new FirmAdapter(
+//            mContext,
+//            R.layout.typeahead_firm,
+//            R.id.typeahead_select_firm);
+//
+//        mCompleteView.setAdapter(adapter);
+//        mCompleteView.setThreshold(1);
+//
+//        if (null != mMatchedFirms && mMatchedFirms.size() > 0) {
+//            mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
+//            mCompleteView.setDropDownVerticalOffset(-90);
+//        }
+//
+//        adapter.notifyDataSetChanged();
     }
 
 }

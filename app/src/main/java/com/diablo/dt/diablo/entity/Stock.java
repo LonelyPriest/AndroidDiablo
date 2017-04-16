@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * stock use at sale, when choose a good styleNumber, will query the stocks information from server
  */
-public class Stock {
+public class Stock extends DiabloEntity{
     @SerializedName("style_number")
     private String styleNumber;
     @SerializedName("brand_id")
@@ -45,6 +45,16 @@ public class Stock {
     private String size;
     @SerializedName("amount")
     private Integer exist;
+
+    @Override
+    public String getName() {
+        return styleNumber;
+    }
+
+    @Override
+    public String getViewName() {
+        return styleNumber;
+    }
 
     public String getStyleNumber() {
         return styleNumber;

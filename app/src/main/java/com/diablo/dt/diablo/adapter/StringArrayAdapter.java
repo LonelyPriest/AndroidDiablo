@@ -12,8 +12,8 @@ import android.widget.TextView;
  * Created by buxianhui on 17/3/8.
  */
 
-public class SpinnerStringAdapter extends ArrayAdapter<String>{
-    public SpinnerStringAdapter(Context context, int resource, String[] items) {
+public class StringArrayAdapter extends ArrayAdapter<String>{
+    public StringArrayAdapter(Context context, int resource, String[] items) {
         super(context, resource, items);
     }
 

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by buxianhui on 17/2/24.
  */
 
-public class DiabloShop {
+public class DiabloShop extends DiabloEntity{
     @SerializedName("func_id")
     private Integer funcId;
     @SerializedName("name")
@@ -26,8 +26,14 @@ public class DiabloShop {
         return this.funcId;
     }
 
+    @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public String getViewName() {
+        return name;
     }
 
     public Integer getRepo() {

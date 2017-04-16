@@ -3,7 +3,7 @@ package com.diablo.dt.diablo.filter;
 import android.content.Context;
 import android.widget.Spinner;
 
-import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
+import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
@@ -30,7 +30,7 @@ public class YearFilter extends DiabloFilter {
 
     @Override
     public void createAdapter() {
-        SpinnerStringAdapter adapter = new SpinnerStringAdapter(
+        StringArrayAdapter adapter = new StringArrayAdapter(
             getContext(),
             android.R.layout.simple_spinner_item,
             Profile.instance().getDiabloYears());

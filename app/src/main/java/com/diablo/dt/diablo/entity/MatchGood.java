@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by buxianhui on 17/4/3.
  */
 
-public class MatchGood {
+public class MatchGood extends DiabloEntity{
     @SerializedName("id")
     private Integer id;
     @SerializedName("style_number")
@@ -65,13 +65,13 @@ public class MatchGood {
     @SerializedName("shop")
     private Integer shopId;
     @SerializedName("o_style_number")
-    private String mOStyleNumber;
+    private String oStyleNumber;
     @SerializedName("o_brand")
-    private Integer mOBrand;
+    private Integer oBrand;
     @SerializedName("o_path")
-    private String mOPath;
+    private String oPath;
     @SerializedName("o_firm")
-    private Integer mOFirm;
+    private Integer oFirm;
 
     public MatchGood() {
 
@@ -265,8 +265,14 @@ public class MatchGood {
         return datetime;
     }
 
+    @Override
     public String getName() {
         return this.styleNumber + "/" + this.brand + "/" + this.type;
+    }
+
+    @Override
+    public String getViewName() {
+        return styleNumber;
     }
 
     /**
@@ -286,34 +292,34 @@ public class MatchGood {
     }
 
 //    public String getOStyleNumber() {
-//        return mOStyleNumber;
+//        return oStyleNumber;
 //    }
 
     public void setOStyleNumber(String oStyleNumber) {
-        this.mOStyleNumber = oStyleNumber;
+        this.oStyleNumber = oStyleNumber;
     }
 
 //    public Integer getOBrand() {
-//        return mOBrand;
+//        return oBrand;
 //    }
 
     public void setOBrand(Integer oBrand) {
-        this.mOBrand = oBrand;
+        this.oBrand = oBrand;
     }
 
 //    public String getOPath() {
-//        return mOPath;
+//        return oPath;
 //    }
 
     public void setOPath(String oPath) {
-        this.mOPath = oPath;
+        this.oPath = oPath;
     }
 
 //    public Integer getOFirm() {
-//        return mOFirm;
+//        return oFirm;
 //    }
 
     public void setOFirm(Integer oFirm) {
-        this.mOFirm = oFirm;
+        this.oFirm = oFirm;
     }
 }

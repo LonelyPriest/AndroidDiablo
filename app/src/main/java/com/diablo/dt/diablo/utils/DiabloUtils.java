@@ -575,5 +575,4 @@ public class DiabloUtils {
         parent.addView(view, index);
         // parent.requestLayout();
     }
-
 }

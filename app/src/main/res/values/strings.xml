@@ -444,6 +444,7 @@
   <string name="add_good_success">新增货品成功</string>
   <string name="add_good_failed">新增货品失败</string>
   <string name="same_good">该货品对应的款号与品牌已存在，请重新输入</string>
+  <string name="brand_not_found">品牌信息不存在，请先增加品牌信息或重新选择</string>
   <string name="good_update_success">货品编辑成功</string>
   <string name="good_update_failed">货品编辑失败</string>
 

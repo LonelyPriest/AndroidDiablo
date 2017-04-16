@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.RetailerAdapter;
 import com.diablo.dt.diablo.client.RetailerClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
@@ -37,14 +35,7 @@ public class MatchRetailerTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... params) {
-        // mMatchedRetailers.clear();
-        // get from server
 
-//        for (Retailer retailer : mOriginRetailers){
-//            if (retailer.getName().contains(params[0])) {
-//                mMatchedRetailers.add(retailer);
-//            }
-//        }
         RetailerInterface face = RetailerClient.getClient().create(RetailerInterface.class);
         Call<List<Retailer>> call = face.matchRetailer(Profile.instance().getToken(), params[0]);
         try {
@@ -64,18 +55,18 @@ public class MatchRetailerTask extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if (null != mMatchedRetailers && mMatchedRetailers.size() > 0) {
-            RetailerAdapter adapter = new RetailerAdapter(
-                mContext,
-                R.layout.typeahead_retailer,
-                R.id.typeahead_select_retailer,
-                mMatchedRetailers);
-
-            mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
-            mCompleteView.setDropDownVerticalOffset(-90);
-
-            mCompleteView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-        }
+//        if (null != mMatchedRetailers && mMatchedRetailers.size() > 0) {
+//            RetailerAdapter adapter = new RetailerAdapter(
+//                mContext,
+//                R.layout.typeahead_retailer,
+//                R.id.typeahead_select_retailer,
+//                mMatchedRetailers);
+//
+//            mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
+//            mCompleteView.setDropDownVerticalOffset(-90);
+//
+//            mCompleteView.setAdapter(adapter);
+//            adapter.notifyDataSetChanged();
+//        }
     }
 }

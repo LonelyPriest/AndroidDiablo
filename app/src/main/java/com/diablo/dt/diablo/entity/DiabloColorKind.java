@@ -8,7 +8,7 @@ import com.diablo.dt.diablo.utils.DiabloEnum;
  * Created by buxianhui on 17/4/10.
  */
 
-public class DiabloColorKind {
+public class DiabloColorKind extends DiabloEntity{
     @SerializedName("id")
     private Integer kindId;
     @SerializedName("name")
@@ -23,7 +23,13 @@ public class DiabloColorKind {
         return kindId;
     }
 
+    @Override
     public String getName() {
+        return kindName;
+    }
+
+    @Override
+    public String getViewName() {
         return kindName;
     }
 }

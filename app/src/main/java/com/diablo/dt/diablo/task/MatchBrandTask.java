@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.MatchBrandAdapter;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 
 import java.util.ArrayList;
@@ -41,20 +39,19 @@ public class MatchBrandTask extends AsyncTask <String, Void, Void>{
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        MatchBrandAdapter adapter = new MatchBrandAdapter(
-            mContext,
-            R.layout.typeahead_firm,
-            R.id.typeahead_select_firm,
-            mMatchedBrands);
-
-        mCompleteView.setAdapter(adapter);
-        mCompleteView.setThreshold(1);
-
-        if (null != mMatchedBrands && mMatchedBrands.size() > 0) {
-            mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
-            mCompleteView.setDropDownVerticalOffset(-90);
-        }
-
-        adapter.notifyDataSetChanged();
+//        MatchBrandAdapter adapter = new MatchBrandAdapter(
+//            mContext,
+//            R.layout.typeahead_firm,
+//            R.id.typeahead_select_firm);
+//
+//        mCompleteView.setAdapter(adapter);
+//        mCompleteView.setThreshold(1);
+//
+//        if (null != mMatchedBrands && mMatchedBrands.size() > 0) {
+//            mCompleteView.setDropDownHorizontalOffset(mCompleteView.getWidth());
+//            mCompleteView.setDropDownVerticalOffset(-90);
+//        }
+//
+//        adapter.notifyDataSetChanged();
     }
 }

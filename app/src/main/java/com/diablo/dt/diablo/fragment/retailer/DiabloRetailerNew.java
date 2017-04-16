@@ -12,8 +12,8 @@ import android.widget.EditText;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloPattern;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 
@@ -86,7 +86,7 @@ public class DiabloRetailerNew extends Fragment {
     }
 
     public void setWatcher() {
-        mNameWatcher = new DiabloTextWatcher() {
+        mNameWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mName = editable.toString().trim();
@@ -105,7 +105,7 @@ public class DiabloRetailerNew extends Fragment {
         };
         mViewName.addTextChangedListener(mNameWatcher);
 
-        mBalanceWatcher = new DiabloTextWatcher() {
+        mBalanceWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mBalance = editable.toString().trim();
@@ -124,7 +124,7 @@ public class DiabloRetailerNew extends Fragment {
         };
         mViewBalance.addTextChangedListener(mBalanceWatcher);
 
-        mPhoneWatcher = new DiabloTextWatcher() {
+        mPhoneWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mPhone = editable.toString().trim();
@@ -143,7 +143,7 @@ public class DiabloRetailerNew extends Fragment {
         };
         mViewPhone.addTextChangedListener(mPhoneWatcher);
 
-        mAddressWatcher = new DiabloTextWatcher() {
+        mAddressWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mAddress = editable.toString().trim();

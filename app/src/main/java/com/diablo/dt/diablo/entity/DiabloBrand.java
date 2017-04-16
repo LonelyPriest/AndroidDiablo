@@ -22,7 +22,7 @@ import retrofit2.Response;
  * Created by buxianhui on 17/3/28.
  */
 
-public class DiabloBrand {
+public class DiabloBrand extends DiabloEntity{
     @SerializedName("id")
     private Integer id;
     @SerializedName("name")
@@ -63,7 +63,13 @@ public class DiabloBrand {
         this.id = id;
     }
 
+    @Override
     public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getViewName() {
         return name;
     }
 

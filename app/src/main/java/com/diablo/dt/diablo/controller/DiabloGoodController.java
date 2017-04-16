@@ -1,7 +1,7 @@
 package com.diablo.dt.diablo.controller;
 
 import android.content.Context;
-import android.text.Editable;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,6 +11,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.adapter.FirmAdapter;
+import com.diablo.dt.diablo.adapter.MatchBrandAdapter;
+import com.diablo.dt.diablo.adapter.MatchGoodTypeAdapter;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
@@ -19,13 +22,10 @@ import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.good.GoodCalc;
-import com.diablo.dt.diablo.task.MatchBrandTask;
-import com.diablo.dt.diablo.task.MatchFirmTask;
-import com.diablo.dt.diablo.task.MatchGoodTypeTask;
-import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
+import com.diablo.dt.diablo.utils.DiabloAutoCompleteTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloPattern;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.good.DiabloGoodCalcView;
 
@@ -44,18 +44,18 @@ public class DiabloGoodController {
     private AdapterView.OnItemSelectedListener mOnSeasonSelectedListener;
 
     // style number
-    private DiabloTextWatcher mOnStyleNumberWatcher;
+    private DiabloEditTextWatcher mStyleNumberWatcher;
 
     // firm
-    private AutoCompleteTextChangeListener  mOnAutoCompletedFirmListener;
+    private DiabloAutoCompleteTextWatcher mFirmWatcher;
     private AdapterView.OnItemClickListener mOnFirmClickListener;
 
     // brand
-    private AutoCompleteTextChangeListener  mOnAutoCompletedBrandListener;
+    private DiabloAutoCompleteTextWatcher mBrandWatcher;
     private AdapterView.OnItemClickListener mOnBrandClickListener;
 
     // type
-    private AutoCompleteTextChangeListener  mOnAutoCompletedGoodTypeListener;
+    private DiabloAutoCompleteTextWatcher mGoodTypeWatcher;
     private AdapterView.OnItemClickListener mOnGoodTypeClickListener;
 
     // interface
@@ -186,14 +186,16 @@ public class DiabloGoodController {
             ((Spinner)mGoodCalcView.getSeason()).setOnItemSelectedListener(null);
         }
 
-        removeFirmWatcher();
-        removeBrandWatcher();
-        removeGoodTypeWatcher();
-
-
-        if (null != mOnStyleNumberWatcher) {
-            ((EditText)mGoodCalcView.getStyleNumber()).removeTextChangedListener(mOnStyleNumberWatcher);
+        /**
+         * clear watcher
+         */
+        if (null != mStyleNumberWatcher) {
+            mStyleNumberWatcher.remove();
         }
+
+        removeFirmListener();
+        removeBrandListener();
+        removeGoodTypeListener();
 
         /**
          * reset view
@@ -202,34 +204,37 @@ public class DiabloGoodController {
     }
 
 
-    public void removeFirmWatcher() {
-        if (null != mOnAutoCompletedFirmListener) {
-            mOnAutoCompletedFirmListener.removeListen();
-            if (null != mOnFirmClickListener) {
-                ((AutoCompleteTextView) mGoodCalcView.getFirm()).setOnItemClickListener(null);
-            }
+    public void removeFirmListener() {
+        if (null != mFirmWatcher) {
+            mFirmWatcher.remove();
+        }
+
+        if (null != mOnFirmClickListener) {
+            ((AutoCompleteTextView) mGoodCalcView.getFirm()).setOnItemClickListener(null);
         }
     }
 
-    public void removeBrandWatcher() {
-        if (null != mOnAutoCompletedBrandListener) {
-            mOnAutoCompletedBrandListener.removeListen();
-            if (null != mOnBrandClickListener) {
-                ((AutoCompleteTextView) mGoodCalcView.getBrand()).setOnItemClickListener(null);
-            }
+    public void removeBrandListener() {
+        if (null != mBrandWatcher) {
+            mBrandWatcher.remove();
+
+        }
+        if (null != mOnBrandClickListener) {
+            ((AutoCompleteTextView) mGoodCalcView.getBrand()).setOnItemClickListener(null);
         }
     }
 
-    public void removeGoodTypeWatcher() {
-        if (null != mOnAutoCompletedGoodTypeListener) {
-            mOnAutoCompletedGoodTypeListener.removeListen();
-            if (null != mOnGoodTypeClickListener) {
-                ((AutoCompleteTextView) mGoodCalcView.getGoodType()).setOnItemClickListener(null);
-            }
+    public void removeGoodTypeListener() {
+        if (null != mGoodTypeWatcher) {
+            mGoodTypeWatcher.remove();
+        }
+
+        if (null != mOnGoodTypeClickListener) {
+            ((AutoCompleteTextView) mGoodCalcView.getGoodType()).setOnItemClickListener(null);
         }
     }
 
-    public void setFirmWatcher(final Context context, final List<Firm> firms, final Firm selectFirm) {
+    public void setFirmWatcher(final Context context, final Firm selectFirm) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getFirm();
 
         if (null != selectFirm) {
@@ -239,26 +244,27 @@ public class DiabloGoodController {
             checkValidAction();
         }
 
-        mOnAutoCompletedFirmListener = new AutoCompleteTextChangeListener(f);
-
-        mOnAutoCompletedFirmListener.addListen(new AutoCompleteTextChangeListener.TextWatch() {
+        mFirmWatcher = new DiabloAutoCompleteTextWatcher(
+            f,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
             @Override
             public void afterTextChanged(String s) {
-                mIsValidFirm = false;
-                checkValidAction();
-
-                if (s.trim().length() > 0) {
-                    new MatchFirmTask(context, f, firms).execute(s);
+                if (null == Profile.instance().getBrand(s)) {
+                    mIsValidFirm = false;
+                    mGoodCalc.setFirm(null);
+                    checkValidAction();
                 }
             }
         });
+
+
+        new FirmAdapter(context, R.layout.typeahead_firm, R.id.typeahead_select_firm, f);
 
         mOnFirmClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Firm selectFirm = (Firm) adapterView.getItemAtPosition(i);
                 mGoodCalc.setFirm(selectFirm);
-
                 mIsValidFirm = true;
                 checkValidAction();
             }
@@ -268,10 +274,10 @@ public class DiabloGoodController {
     }
 
     public void setBrandWatcher(final Context context,
-                                final List<DiabloBrand> brands,
                                 final DiabloBrand selectBrand,
                                 final GoodCalc oldGoodCalc) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getBrand();
+        f.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         if (null != selectBrand) {
             f.setText(selectBrand.getName());
@@ -281,64 +287,44 @@ public class DiabloGoodController {
             checkValidAction();
         }
 
-        mOnAutoCompletedBrandListener = new AutoCompleteTextChangeListener(f);
-
-        mOnAutoCompletedBrandListener.addListen(new AutoCompleteTextChangeListener.TextWatch() {
-            @Override
-            public void afterTextChanged(String s) {
-                mIsValidBrand = false;
-                checkValidAction();
-                mGoodCalc.setBrand(null);
-
-                if (s.trim().length() > 0) {
-                    new MatchBrandTask(context, f, brands).execute(s);
+        mBrandWatcher = new DiabloAutoCompleteTextWatcher(
+            f,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    if (null == Profile.instance().getBrand(s)) {
+                        mIsValidBrand = false;
+                        mGoodCalc.setBrand(null);
+                        checkValidAction();
+                    }
                 }
-            }
-        });
+            });
+
+        new MatchBrandAdapter(context, R.layout.typeahead_firm, R.id.typeahead_select_firm, f);
 
         mOnBrandClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 DiabloBrand brand = (DiabloBrand) adapterView.getItemAtPosition(i);
-
                 mIsValidBrand = true;
 
                 String styleNumber = mGoodCalc.getStyleNumber();
-                if (styleNumber.length() > 0) {
+
+                if (null != styleNumber && styleNumber.length() > 0) {
                     MatchGood good = Profile.instance().getMatchGood(styleNumber, brand.getId());
-                    if (null != good) {
-                        if (null == oldGoodCalc) {
+                    if ( null != good ) {
+                        if (null != oldGoodCalc
+                            && ( !good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
+                            || good.getBrandId().equals(oldGoodCalc.getBrand().getId()))) {
                             mIsValidBrand = false;
-                        }
-                        else {
-                            if (!good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
-                                || !good.getBrandId().equals(oldGoodCalc.getBrand().getId())) {
-                                mIsValidBrand = false;
-                            }
+
+                            DiabloUtils.instance().makeToast(
+                                context,
+                                context.getString(R.string.same_good),
+                                Toast.LENGTH_SHORT);
                         }
                     }
                 }
-
-                if (!mIsValidBrand) {
-                    DiabloUtils.instance().makeToast(
-                        context,
-                        context.getString(R.string.same_good),
-                        Toast.LENGTH_SHORT);
-                }
-                else {
-                    mIsValidStyleNumber = true;
-                }
-//                if (styleNumber.length() > 0
-//                    && null != Profile.instance().getMatchGood(styleNumber, brand.getId())) {
-//                    mIsValidBrand = false;
-//                    DiabloUtils.instance().makeToast(
-//                        context,
-//                        context.getString(R.string.same_good),
-//                        Toast.LENGTH_SHORT);
-//                } else {
-//                    mIsValidStyleNumber = true;
-//                    mIsValidBrand = true;
-//                }
 
                 mGoodCalc.setBrand(brand);
                 checkValidAction();
@@ -349,7 +335,6 @@ public class DiabloGoodController {
     }
 
     public void setGoodTypeWatcher(final Context context,
-                                   final List<DiabloType> goodTypes,
                                    final  DiabloType selectGoodType) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getGoodType();
 
@@ -361,18 +346,20 @@ public class DiabloGoodController {
             checkValidAction();
         }
 
-        mOnAutoCompletedGoodTypeListener = new AutoCompleteTextChangeListener(f);
-        mOnAutoCompletedGoodTypeListener.addListen(new AutoCompleteTextChangeListener.TextWatch() {
-            @Override
-            public void afterTextChanged(String s) {
-                mIsValidGoodType = false;
-                checkValidAction();
-
-                if (s.trim().length() > 0) {
-                    new MatchGoodTypeTask(context, f, goodTypes).execute(s);
+        mGoodTypeWatcher = new DiabloAutoCompleteTextWatcher(
+            f,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    if (null == Profile.instance().getDiabloType(s)) {
+                        mIsValidGoodType = false;
+                        mGoodCalc.setGoodType(null);
+                        checkValidAction();
+                    }
                 }
-            }
-        });
+            });
+
+        new MatchGoodTypeAdapter(context, R.layout.typeahead_firm, R.id.typeahead_select_firm, f);
 
         mOnGoodTypeClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -478,7 +465,7 @@ public class DiabloGoodController {
     /**
      * validate
      */
-    public void checkValidAction() {
+    private void checkValidAction() {
         if (!mIsValidStyleNumber
             || !mIsValidBrand
             || !mIsValidGoodType
@@ -498,7 +485,14 @@ public class DiabloGoodController {
         }
     }
 
-    // style number
+    /**
+     *
+     * @param context
+     * @param lastStyleNumber last style number
+     * @param oldGoodCalc  when success to add a good, the old information remain on the view
+     *                     to convenient to input next good,
+     *                     make sure the error information not appear
+     */
     public void setValidateWatcherOfStyleNumber(
         final Context context,
         final String lastStyleNumber,
@@ -515,10 +509,11 @@ public class DiabloGoodController {
             requestFocusOfStyleNumber();
         }
 
-        mOnStyleNumberWatcher = new DiabloTextWatcher() {
+        mStyleNumberWatcher = new DiabloEditTextWatcher(
+            view,
+            new DiabloEditTextWatcher.DiabloEditTextChangListener() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                String styleNumber = editable.toString().trim();
+            public void afterTextChanged(String styleNumber) {
                 if (styleNumber.length() == 0) {
                     mGoodCalc.setStyleNumber(DiabloEnum.EMPTY_STRING);
                     mIsValidStyleNumber = false;
@@ -528,76 +523,64 @@ public class DiabloGoodController {
                     if (!DiabloPattern.isValidStyleNumber(styleNumber)) {
                         view.setError(context.getResources().getString(R.string.invalid_style_number));
                         mIsValidStyleNumber = false;
-                    }
-                    else {
+                    } else {
                         mIsValidStyleNumber = true;
-
+                        // check brand
                         DiabloBrand brand = mGoodCalc.getBrand();
                         if (null != brand) {
                             MatchGood good = Profile.instance().getMatchGood(styleNumber.toUpperCase(), brand.getId());
                             if (null != good) {
-                                if (null == oldGoodCalc) {
+                                if (null != oldGoodCalc
+                                    &&  (!good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
+                                    || !good.getBrandId().equals(oldGoodCalc.getBrand().getId()))) {
+
                                     mIsValidStyleNumber = false;
-                                }
-                                else {
-                                    if (!good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
-                                        || !good.getBrandId().equals(oldGoodCalc.getBrand().getId())) {
-                                        mIsValidStyleNumber = false;
-                                    }
+                                    DiabloUtils.instance().makeToast(
+                                        context,
+                                        context.getString(R.string.same_good),
+                                        Toast.LENGTH_SHORT);
                                 }
                             }
                         }
-                    }
-
-                    if (!mIsValidStyleNumber) {
-                        DiabloUtils.instance().makeToast(
-                            context,
-                            context.getString(R.string.same_good),
-                            Toast.LENGTH_SHORT);
-                    }
-                    else {
-                        mIsValidBrand = true;
                     }
 
                     mGoodCalc.setStyleNumber(styleNumber.toUpperCase());
                     checkValidAction();
                 }
             }
-        };
-
-        view.addTextChangedListener(mOnStyleNumberWatcher);
+        });
     }
 
     public void setValidateWatcherOfPrice(final Context context, final View view) {
-        ((EditText)view).addTextChangedListener(new DiabloTextWatcher() {
+        final EditText editText = (EditText) view;
+        new DiabloEditTextWatcher(editText, new DiabloEditTextWatcher.DiabloEditTextChangListener() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                String price = editable.toString().trim();
+            public void afterTextChanged(String price) {
                 if (price.length() > 0 && !DiabloPattern.isValidDecimal(price)) {
-                    ((EditText)view).setError(context.getResources().getString(R.string.invalid_price));
-                    if(view.getTag().equals(context.getString(R.string.org_price))) {
+                    editText.setError(context.getResources().getString(R.string.invalid_price));
+                    if(editText.getTag().equals(context.getString(R.string.org_price))) {
                         mIsValidOrgPrice = false;
                         mGoodCalc.setOrgPrice(0f);
                     }
-                    else if (view.getTag().equals(context.getString(R.string.pkg_price))) {
+                    else if (editText.getTag().equals(context.getString(R.string.pkg_price))) {
                         mIsValidPkgPrice = false;
                         mGoodCalc.setPkgPrice(0f);
                     }
-                    else if (view.getTag().equals(context.getString(R.string.tag_price))) {
+                    else if (editText.getTag().equals(context.getString(R.string.tag_price))) {
                         mIsValidTagPrice = false;
                         mGoodCalc.setTagPrice(0f);
                     }
                 }
                 else {
-                    if(view.getTag().equals(context.getString(R.string.org_price))) {
+                    if(editText.getTag().equals(context.getString(R.string.org_price))) {
                         mIsValidOrgPrice = true;
                         mGoodCalc.setOrgPrice(DiabloUtils.instance().toFloat(price));
                     }
-                    else if (view.getTag().equals(context.getString(R.string.pkg_price))) {
+                    else if (editText.getTag().equals(context.getString(R.string.pkg_price))) {
                         mIsValidPkgPrice = true;
                         mGoodCalc.setPkgPrice(DiabloUtils.instance().toFloat(price));
                     }
-                    else if (view.getTag().equals(context.getString(R.string.tag_price))) {
+                    else if (editText.getTag().equals(context.getString(R.string.tag_price))) {
                         mIsValidTagPrice = true;
                         mGoodCalc.setTagPrice(DiabloUtils.instance().toFloat(price));
                     }

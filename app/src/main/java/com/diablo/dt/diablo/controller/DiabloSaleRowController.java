@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -12,15 +11,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.SpinnerStringAdapter;
+import com.diablo.dt.diablo.adapter.MatchStockAdapter;
+import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.model.sale.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
-import com.diablo.dt.diablo.task.MatchAllStockTask;
-import com.diablo.dt.diablo.utils.AutoCompleteTextChangeListener;
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 import com.diablo.dt.diablo.view.DiabloCellView;
@@ -42,17 +40,17 @@ public class DiabloSaleRowController {
      * listener
      */
     // good select
-    private AutoCompleteTextChangeListener.TextWatch mOnAutoCompletedGoodListener;
-    private AdapterView.OnItemClickListener mOnGoodClickListener;
+    // private DiabloAutoCompleteTextWatcher.DiabloTextWatcher mOnAutoCompletedGoodListener;
+    private AdapterView.OnItemClickListener mOnStockClickListener;
 
     // price changed
-    private TextWatcher mPriceListener;
+    private android.text.TextWatcher mPriceListener;
 
     // price type
-    private SpinnerStringAdapter mSelectPriceAdapter;
+    private StringArrayAdapter mSelectPriceAdapter;
 
     // amount changer
-    private TextWatcher mAmountListener;
+    private android.text.TextWatcher mAmountListener;
 
     public DiabloSaleRowController(DiabloRowView rowView, SaleStock stock) {
         this.mSaleStock = stock;
@@ -84,30 +82,22 @@ public class DiabloSaleRowController {
         final OnActionAfterSelectGood listener) {
 
         final DiabloCellView cell = mRowView.getCell(R.string.good);
+        final AutoCompleteTextView cellView = (AutoCompleteTextView)cell.getView();
+
         cell.setCellFocusable(true);
         cell.requestFocus();
 
-        ((AutoCompleteTextView)cell.getView()).setRawInputType(InputType.TYPE_CLASS_NUMBER);
-        ((AutoCompleteTextView)cell.getView()).setDropDownWidth(500);
-        ((AutoCompleteTextView)cell.getView()).setThreshold(1);
+        cellView.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+        cellView.setDropDownWidth(500);
+        cellView.setThreshold(1);
 
-        // final AutoCompleteTextView cell = (AutoCompleteTextView) mRowView.getCell(R.string.good).getView();
-        mOnAutoCompletedGoodListener = new AutoCompleteTextChangeListener.TextWatch() {
-            @Override
-            public void afterTextChanged(String s) {
-                if (s.trim().length() > 0) {
-                    new MatchAllStockTask(
-                        context,
-                        (AutoCompleteTextView) cell.getView(),
-                        stocks,
-                        false).execute(s);
-                }
-            }
-        };
+        new MatchStockAdapter(
+            context,
+            R.layout.typeahead_match_stock_on_sale,
+            R.id.typeahead_select_stock_on_sale,
+            cellView);
 
-        new AutoCompleteTextChangeListener((AutoCompleteTextView)cell.getView()).addListen(mOnAutoCompletedGoodListener);
-
-        mOnGoodClickListener = new AdapterView.OnItemClickListener() {
+        mOnStockClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
                 MatchStock matchedStock = (MatchStock) adapterView.getItemAtPosition(pos);
@@ -143,7 +133,7 @@ public class DiabloSaleRowController {
             }
         };
 
-        ((AutoCompleteTextView)cell.getView()).setOnItemClickListener(mOnGoodClickListener);
+        cellView.setOnItemClickListener(mOnStockClickListener);
     }
 
     public void setRowWatcher() {
@@ -152,7 +142,7 @@ public class DiabloSaleRowController {
     }
 
     public void setFinalPriceWatcher(final OnActionAfterSelectGood listener) {
-        mPriceListener = new DiabloTextWatcher() {
+        mPriceListener = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mSaleStock.setFinalPrice(UTILS.toFloat(editable.toString()));
@@ -167,7 +157,7 @@ public class DiabloSaleRowController {
     }
 
     public void setPriceTypeAdapter(Context context, String [] priceTypes) {
-        mSelectPriceAdapter = new SpinnerStringAdapter(
+        mSelectPriceAdapter = new StringArrayAdapter(
             context,
             android.R.layout.simple_spinner_dropdown_item,
             priceTypes);

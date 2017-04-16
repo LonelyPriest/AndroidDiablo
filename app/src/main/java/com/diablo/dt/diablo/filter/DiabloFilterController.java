@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import com.diablo.dt.diablo.adapter.SpinnerFilterAdapter;
+import com.diablo.dt.diablo.adapter.DiabloFilterAdapter;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ public class DiabloFilterController {
             entityFilters.add(copy);
         }
 
-        SpinnerFilterAdapter adapter = new SpinnerFilterAdapter(
+        DiabloFilterAdapter adapter = new DiabloFilterAdapter(
             mContext,
             android.R.layout.simple_spinner_item,
             entityFilters);

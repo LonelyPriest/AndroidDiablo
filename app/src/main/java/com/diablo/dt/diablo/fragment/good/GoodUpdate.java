@@ -201,11 +201,11 @@ public class GoodUpdate extends Fragment {
 
         mGoodController.setValidateWatcherOfStyleNumber(getContext(), null, mOldGoodCalc);
         // firm
-        mGoodController.setFirmWatcher(getContext(), Profile.instance().getFirms(), null);
+        mGoodController.setFirmWatcher(getContext(),  null);
         // brand
-        mGoodController.setBrandWatcher(getContext(), Profile.instance().getBrands(), null, mOldGoodCalc);
+        mGoodController.setBrandWatcher(getContext(), null, mOldGoodCalc);
         // type
-        mGoodController.setGoodTypeWatcher(getContext(), Profile.instance().getDiabloTypes(), null);
+        mGoodController.setGoodTypeWatcher(getContext(), null);
 
         // price
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getOrgPrice());

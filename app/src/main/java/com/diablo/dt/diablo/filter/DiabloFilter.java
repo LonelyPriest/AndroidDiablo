@@ -7,7 +7,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 
-import com.diablo.dt.diablo.utils.DiabloTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 
 /**
  * Created by buxianhui on 17/4/14.
@@ -69,7 +69,7 @@ public class DiabloFilter {
     }
 
     public void addAutoCompletedTextWatcher() {
-        ((AutoCompleteTextView) mView).addTextChangedListener(new DiabloTextWatcher() {
+        ((AutoCompleteTextView) mView).addTextChangedListener(new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 setSelectFilter(null);

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.RetailerAdapter;
 import com.diablo.dt.diablo.entity.Retailer;
 
 import java.util.ArrayList;
@@ -41,15 +39,14 @@ public class FilterRetailerTask extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        RetailerAdapter adapter = new RetailerAdapter(
-            mContext,
-            R.layout.typeahead_retailer,
-            R.id.typeahead_select_retailer,
-            mMatchedRetailers);
-
-        mCompleteView.setAdapter(adapter);
-        mCompleteView.setThreshold(1);
-        // mCompleteView.setDropDownVerticalOffset(mCompleteView.getHeight());
-        adapter.notifyDataSetChanged();
+//        BackendRetailerAdapter adapter = new BackendRetailerAdapter(
+//            mContext,
+//            R.layout.typeahead_retailer,
+//            R.id.typeahead_select_retailer,
+//            mMatchedRetailers);
+//
+//        mCompleteView.setAdapter(adapter);
+//        mCompleteView.setThreshold(1);
+//        adapter.notifyDataSetChanged();
     }
 }
