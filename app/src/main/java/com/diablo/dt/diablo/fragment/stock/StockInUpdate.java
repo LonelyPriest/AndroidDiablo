@@ -271,8 +271,8 @@ public class StockInUpdate extends Fragment {
 
         // listener when select firm
         mStockCalcController.setFirm(Profile.instance().getFirm(calc.getFirm()));
-        mStockCalcController.removeFirmWatcher();
         mStockCalcController.setFirmWatcher(getContext());
+        mStockCalcController.setOnFirmChangedListener(mFirmChangedListener);
 
         mStockCalcView.setCashValue(calc.getCash());
         mStockCalcView.setCardValue(calc.getCard());
@@ -305,6 +305,21 @@ public class StockInUpdate extends Fragment {
         mStockTableController.addRowControllerAtTop(addEmptyRow());
         calcShouldPay();
     }
+
+
+    /**
+     * should change the adapter when the firm changed by the user
+     */
+    private DiabloStockCalcController.OnDiabloFirmChangedListener mFirmChangedListener =
+        new DiabloStockCalcController.OnDiabloFirmChangedListener() {
+            @Override
+            public void onFirmChanged(StockCalc calc) {
+                if (0 != mStockTableController.getControllers().size()) {
+                    mStockTableController.getControllers().get(0).setAutoCompleteGoodAdapter(
+                        getContext(), calc.getFirm());
+                }
+            }
+        };
 
     private DiabloStockRowController createRowWithStock(EntryStock stock) {
         TableRow row = new TableRow(getContext());
@@ -361,10 +376,9 @@ public class StockInUpdate extends Fragment {
         }
 
         controller.setAmountWatcher(mHandler, controller);
-        controller.setGoodWatcher(
+        controller.setAutoCompleteGoodListener(
             getContext(),
-            mStockCalcController.getStockCalc(),
-            mMatchGoods,
+            mStockCalcController.getStockCalc().getFirm(),
             mLabels,
             mOnActionAfterSelectGood);
 

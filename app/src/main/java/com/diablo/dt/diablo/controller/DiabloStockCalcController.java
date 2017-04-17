@@ -55,10 +55,10 @@ public class DiabloStockCalcController {
     /**
      * interface
      */
-    private OnDiabloFirmSelectedListener mOnFirmSelectedListener;
+    private OnDiabloFirmChangedListener mOnFirmChangedListener;
 
-    public interface OnDiabloFirmSelectedListener {
-        void onFirmSelected(StockCalc calc);
+    public interface OnDiabloFirmChangedListener {
+        void onFirmChanged(StockCalc calc);
     }
 
     public DiabloStockCalcController(StockCalc calc) {
@@ -114,24 +114,14 @@ public class DiabloStockCalcController {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Firm selectFirm = (Firm) adapterView.getItemAtPosition(i);
                 setFirm(selectFirm);
-                if (null != mOnFirmSelectedListener) {
-                    mOnFirmSelectedListener.onFirmSelected(mStockCalc);
+                if (null != mOnFirmChangedListener) {
+                    mOnFirmChangedListener.onFirmChanged(mStockCalc);
                 }
             }
         };
 
         f.setOnItemClickListener(mOnFirmClickListener);
     }
-
-    public void removeFirmWatcher() {
-//        if (null != mOnAutoCompletedFirmListener) {
-//            mOnAutoCompletedFirmListener.remove();
-//        }
-    }
-
-//    public void setRetailerListSelection(Integer position) {
-//        ((AutoCompleteTextView) mSaleCalcView.getViewRetailer()).setListSelection(position);
-//    }
 
     public void setEmployeeWatcher() {
         mOnEmployeeSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -257,8 +247,8 @@ public class DiabloStockCalcController {
         ((Spinner)mStockCalcView.getViewExtraCostType()).setAdapter(adapter);
     }
 
-    public void setDiabloOnFirmSelected(OnDiabloFirmSelectedListener listener) {
-        mOnFirmSelectedListener = listener;
+    public void setOnFirmChangedListener(OnDiabloFirmChangedListener listener) {
+        mOnFirmChangedListener = listener;
     }
 
     public void setDatetime(String s){

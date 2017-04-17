@@ -520,26 +520,6 @@ public class SaleIn extends Fragment{
                     R.id.typeahead_select_stock_on_sale,
                     eCell);
 
-//                new DiabloAutoCompleteTextWatcher(
-//                    eCell,
-//                    new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
-//                    @Override
-//                    public void afterTextChanged(String s) {
-//                        if (s.length() > 0) {
-//                            new MatchAllStockTask(getContext(), eCell).execute(s);
-//                        }
-//                    }
-//                });
-
-//                new DiabloAutoCompleteTextWatcher(eCell).addWatcher(new DiabloAutoCompleteTextWatcher.DiabloTextWatcher() {
-//                    @Override
-//                    public void afterTextChanged(String value) {
-//                        if (value.length() > 0) {
-//                            new MatchAllStockTask(getContext(), eCell, mMatchStocks, false).execute(value);
-//                        }
-//                    }
-//                });
-
                 eCell.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long extra) {

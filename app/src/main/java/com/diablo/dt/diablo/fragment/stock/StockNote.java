@@ -43,6 +43,7 @@ import com.diablo.dt.diablo.filter.GoodTypeFilter;
 import com.diablo.dt.diablo.filter.ShopFilter;
 import com.diablo.dt.diablo.filter.StyleNumberFilter;
 import com.diablo.dt.diablo.filter.YearFilter;
+import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.model.stock.StockUtils;
 import com.diablo.dt.diablo.request.stock.StockNoteRequest;
 import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
@@ -417,6 +418,12 @@ public class StockNote extends Fragment {
                 init();
                 mRefreshDialog.show();
                 pageChanged();
+                break;
+//            case R.id.stock_note_to_stock_detail:
+//                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_DETAIL);
+//                break;
+            case R.id.stock_note_to_stock_store:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_STORE_DETAIL);
                 break;
             default:
                 // return super.onOptionsItemSelected(item);

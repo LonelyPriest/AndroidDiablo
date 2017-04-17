@@ -14,6 +14,12 @@
       app:showAsAction="ifRoom|withText"/>
 
   <item
+      android:id="@+id/stock_detail_to_stock_store"
+      android:icon="@drawable/ic_account_balance_black_24dp"
+      android:title="@string/btn_stock_store"
+      app:showAsAction="ifRoom|withText"/>
+
+  <item
       android:id="@+id/stock_detail_refresh"
       android:icon="@drawable/ic_refresh_black_24dp"
       android:title="@string/btn_refresh"

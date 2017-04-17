@@ -89,7 +89,7 @@ public class DiabloSaleRowController {
 
         cellView.setRawInputType(InputType.TYPE_CLASS_NUMBER);
         cellView.setDropDownWidth(500);
-        cellView.setThreshold(1);
+        // cellView.setThreshold(1);
 
         new MatchStockAdapter(
             context,

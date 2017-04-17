@@ -547,6 +547,9 @@
 
   <string name="btn_stock_in">入库</string>
   <string name="btn_stock_out">退货</string>
+  <string name="btn_stock_detail">记录</string>
+  <string name="btn_stock_note">明细</string>
+  <string name="btn_stock_store">库存</string>
   <string name="btn_good">货品</string>
 
   <string name="select_stock">请选择库存</string>

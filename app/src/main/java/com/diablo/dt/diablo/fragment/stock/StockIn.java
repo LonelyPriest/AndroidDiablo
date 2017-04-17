@@ -28,7 +28,6 @@ import com.diablo.dt.diablo.controller.DiabloStockRowController;
 import com.diablo.dt.diablo.controller.DiabloStockTableController;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.Firm;
-import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
@@ -67,7 +66,6 @@ public class StockIn extends Fragment {
 
     private DiabloStockTableController mStockTableController;
 
-    private List<MatchGood> mMatchGoods;
     private TableRow mCurrentSelectedRow;
 
     private StockInHandler mHandler = new StockInHandler(this);
@@ -133,8 +131,6 @@ public class StockIn extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_stock_in, container, false);
 
-        mMatchGoods = Profile.instance().getMatchGoods();
-
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
@@ -178,8 +174,8 @@ public class StockIn extends Fragment {
 
         // listener
         mStockCalcController.setFirm(Profile.instance().getFirm(firmId));
-        mStockCalcController.removeFirmWatcher();
         mStockCalcController.setFirmWatcher(getContext());
+        mStockCalcController.setOnFirmChangedListener(mFirmChangedListener);
 
         mStockCalcController.setEmployeeWatcher();
         mStockCalcController.setCommentWatcher();
@@ -203,6 +199,19 @@ public class StockIn extends Fragment {
         mButtons.get(R.id.stock_in_save).disable();
     }
 
+    /**
+     * should change the adapter when the firm changed by the user
+     */
+    private DiabloStockCalcController.OnDiabloFirmChangedListener mFirmChangedListener =
+        new DiabloStockCalcController.OnDiabloFirmChangedListener() {
+            @Override
+            public void onFirmChanged(StockCalc calc) {
+                if (0 != mStockTableController.getControllers().size()) {
+                    mStockTableController.getControllers().get(0).setAutoCompleteGoodAdapter(
+                        getContext(), calc.getFirm());
+                }
+            }
+        };
 
     private DiabloStockRowController addEmptyRow() {
         TableRow row = new TableRow(getContext());
@@ -216,10 +225,9 @@ public class StockIn extends Fragment {
         }
 
         controller.setAmountWatcher(mHandler, controller);
-        controller.setGoodWatcher(
+        controller.setAutoCompleteGoodListener(
             getContext(),
-            mStockCalcController.getStockCalc(),
-            mMatchGoods,
+            mStockCalcController.getFirm(),
             mLabels,
             mOnActionAfterSelectGood);
 

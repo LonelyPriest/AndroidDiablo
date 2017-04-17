@@ -11,12 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by buxianhui on 17/4/4.
+ * Created by buxianhui on 17/4/17.
  */
 
-public class MatchGoodAdapter extends DiabloAdapter {
-    public MatchGoodAdapter(Context context, Integer resource, Integer textViewResourceId, AutoCompleteTextView view) {
+public class MatchGoodOfFirmAdapter extends MatchGoodAdapter {
+    private Integer mMatchFirm;
+
+    public MatchGoodOfFirmAdapter(
+        Context context,
+        Integer resource,
+        Integer textViewResourceId,
+        AutoCompleteTextView view,
+        Integer matchFirm) {
         super(context, resource, textViewResourceId, view);
+        this.mMatchFirm = matchFirm;
     }
 
     @Override
@@ -24,22 +32,11 @@ public class MatchGoodAdapter extends DiabloAdapter {
         List<MatchGood> goods = Profile.instance().getMatchGoods();
         List<DiabloEntity> suggestions = new ArrayList<>();
         for (MatchGood good: goods) {
-            if (good.getName().toUpperCase().contains(s.toUpperCase())) {
+            if (good.getFirmId().equals(mMatchFirm)
+                && good.getName().toUpperCase().contains(s.toUpperCase())) {
                 suggestions.add(good);
             }
         }
         return suggestions;
-    }
-
-    @Override
-    public void setDropDownOffset() {
-        getView().setDropDownHorizontalOffset(getView().getWidth());
-
-        if (getCount() > 10){
-            getView().setDropDownVerticalOffset(-9999);
-        }
-        else{
-            getView().setDropDownVerticalOffset(-getView().getHeight());
-        }
     }
 }

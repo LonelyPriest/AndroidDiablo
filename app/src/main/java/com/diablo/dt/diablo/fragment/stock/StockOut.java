@@ -66,7 +66,6 @@ public class StockOut extends Fragment {
 
     private DiabloStockTableController mStockTableController;
 
-    private List<MatchStock> mMatchStocks;
     private TableRow mCurrentSelectedRow;
 
     private StockOutHandler mHandler = new StockOutHandler(this);
@@ -136,7 +135,6 @@ public class StockOut extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_stock_out, container, false);
-        mMatchStocks = Profile.instance().getMatchStocks();
 
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
@@ -182,8 +180,8 @@ public class StockOut extends Fragment {
 
         // listener
         mStockCalcController.setFirm(Profile.instance().getFirm(firmId));
-        mStockCalcController.removeFirmWatcher();
         mStockCalcController.setFirmWatcher(getContext());
+        mStockCalcController.setOnFirmChangedListener(mFirmChangedListener);
 
         mStockCalcController.setEmployeeWatcher();
         mStockCalcController.setCommentWatcher();
@@ -219,16 +217,29 @@ public class StockOut extends Fragment {
         }
 
         controller.setAmountWatcher(mHandler, controller);
-        controller.setStockWatcher(
+        controller.setAutoCompleteStockListener(
             getContext(),
-            mStockCalcController.getStockCalc(),
-            mMatchStocks,
+            mStockCalcController.getFirm(),
             mLabels,
             mOnActionAfterSelectGood);
 
         return controller;
     }
 
+
+    /**
+     * should change the adapter when the firm changed by the user
+     */
+    private DiabloStockCalcController.OnDiabloFirmChangedListener mFirmChangedListener =
+        new DiabloStockCalcController.OnDiabloFirmChangedListener() {
+            @Override
+            public void onFirmChanged(StockCalc calc) {
+                if (0 != mStockTableController.getControllers().size()) {
+                    mStockTableController.getControllers().get(0).setAutoCompleteStockAdapter(
+                        getContext(), calc.getFirm());
+                }
+            }
+        };
 
     private DiabloStockRowController.OnActionAfterSelectGood mOnActionAfterSelectGood =
         new DiabloStockRowController.OnActionAfterSelectGood(){

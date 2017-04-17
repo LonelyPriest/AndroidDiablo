@@ -76,7 +76,6 @@ public class StockOutUpdate extends Fragment {
     private StockCalc mOldStockCalc;
     private List<EntryStock> mOldEntryStocks;
 
-    private List<MatchStock> mMatchStocks;
     private TableRow mCurrentSelectedRow;
     private View mFragment;
 
@@ -196,7 +195,6 @@ public class StockOutUpdate extends Fragment {
 
     private void init() {
         mLastRSN = mRSN;
-        mMatchStocks = Profile.instance().getMatchStocks();
         if (null != mStockTableController) {
             mStockTableController.clear();
         }
@@ -269,8 +267,8 @@ public class StockOutUpdate extends Fragment {
 
         // listener when select firm
         mStockCalcController.setFirm(Profile.instance().getFirm(calc.getFirm()));
-        mStockCalcController.removeFirmWatcher();
         mStockCalcController.setFirmWatcher(getContext());
+        mStockCalcController.setOnFirmChangedListener(mFirmChangedListener);
 
 //        mStockCalcView.setCashValue(calc.getCash());
 //        mStockCalcView.setCardValue(calc.getCard());
@@ -359,15 +357,28 @@ public class StockOutUpdate extends Fragment {
         }
 
         controller.setAmountWatcher(mHandler, controller);
-        controller.setStockWatcher(
+        controller.setAutoCompleteStockListener(
             getContext(),
-            mStockCalcController.getStockCalc(),
-            mMatchStocks,
+            mStockCalcController.getFirm(),
             mLabels,
             mOnActionAfterSelectGood);
 
         return controller;
     }
+
+    /**
+     * should change the adapter when the firm changed by the user
+     */
+    private DiabloStockCalcController.OnDiabloFirmChangedListener mFirmChangedListener =
+        new DiabloStockCalcController.OnDiabloFirmChangedListener() {
+            @Override
+            public void onFirmChanged(StockCalc calc) {
+                if (0 != mStockTableController.getControllers().size()) {
+                    mStockTableController.getControllers().get(0).setAutoCompleteStockAdapter(
+                        getContext(), calc.getFirm());
+                }
+            }
+        };
 
     private DiabloStockRowController.OnActionAfterSelectGood mOnActionAfterSelectGood =
         new DiabloStockRowController.OnActionAfterSelectGood(){
@@ -729,7 +740,7 @@ public class StockOutUpdate extends Fragment {
                         NewStockRequest.DiabloEntryStockAmount saleAmount = new NewStockRequest.DiabloEntryStockAmount();
                         saleAmount.setColorId(a.getColorId());
                         saleAmount.setSize(a.getSize());
-                        saleAmount.setCount(a.getCount());
+                        saleAmount.setCount(-a.getCount());
                         saleAmount.setOperation(a.getOperation());
                         uAmounts.add(saleAmount);
                     }
@@ -812,6 +823,8 @@ public class StockOutUpdate extends Fragment {
                         new DiabloAlertDialog.OnOkClickListener() {
                             @Override
                             public void onOk() {
+                                mLastRSN = DiabloEnum.DIABLO_INVALID_RSN;
+                                init();
                                 SaleUtils.switchToSlideMenu(StockOutUpdate.this, DiabloEnum.TAG_STOCK_DETAIL);
                             }
                         }).create();
