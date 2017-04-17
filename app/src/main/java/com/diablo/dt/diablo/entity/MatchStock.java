@@ -55,6 +55,32 @@ public class MatchStock extends DiabloEntity{
 
     }
 
+    public MatchStock(MatchGood good) {
+        styleNumber = good.getStyleNumber();
+        brandId = good.getBrandId();
+        brand = good.getBrand();
+        typeId = good.getTypeId();
+        type = good.getType();
+
+        sex = good.getSex();
+        season = good.getSeason();
+        firmId = good.getFirmId();
+        sGroup = good.getsGroup();
+        free = good.getFree();
+        year = good.getYear();
+
+        orgPrice = good.getOrgPrice();
+        tagPrice = good.getTagPrice();
+        pkgPrice = good.getPkgPrice();
+        price3 = good.getPrice3();
+        price4 = good.getPrice4();
+        price5 = good.getPrice5();
+        discount = good.getDiscount();
+
+        path = good.getPath();
+        alarmDay = good.getAlarmDay();
+    }
+
     public void setStyleNumber(String styleNumber) {
         this.styleNumber = styleNumber;
     }

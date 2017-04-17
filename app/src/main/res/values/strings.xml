@@ -423,8 +423,8 @@
   <string name="invalid_brand">品名只能是中文或字母，不超过10个字符</string>
   <string name="invalid_good_type">类型只能是中文或字字母，不超过15个字符</string>
   <string name="invalid_price">价格输入错误（dd.dd）</string>
-  <string name="invalid_firm">厂商名称只能是字母或中文，不超过15个字符，不能以横杠开头或结尾</string>
-  <string name="invalid_retailer">客户名称只能是字母或中文，不超过20个字符，不能以横杠开头或结尾</string>
+  <string name="invalid_firm">厂商名称只能是字母或中文，不超过15个字符，不能以数字横杠开头</string>
+  <string name="invalid_retailer">客户名称只能是字母或中文，不超过20个字符，不能以数字或横杠开头</string>
   <string name="invalid_color_name">颜色只能是中文，不超过3个字符</string>
   <string name="invalid_phone">请输入正确的手机号码</string>
   <string name="invalid_address">联系地址只能是字母，数字或横杠，不能以横杠开头或结尾，不超过30个字符</string>
@@ -470,7 +470,7 @@
   <string name="colon">：</string>
 
   <!-- retailer -->
-  <string name="input_retailer_name">请输入客户姓名，不小于二个字符</string>
+  <string name="input_retailer_name">请输入客户姓名，不小于二个字符，不能以数字或横杠开头</string>
   <string name="input_retailer_phone">请输入客户手机，默认为空</string>
   <string name="title_add_retailer">新增客户</string>
   <string name="success_to_add_retailer">新增客户成功</string>
@@ -492,7 +492,7 @@
   <string name="title_add_good_type">新增货品类型</string>
   <string name="success_to_add_good_type">新增货品类型成功</string>
 
-  <string name="input_firm_name">请输入厂商名称，不小于二个字符</string>
+  <string name="input_firm_name">请输入厂商名称，不小于二个字符，不能以数字或横杠开头</string>
   <string name="input_brand_name">请输入品牌名称，不小于二个字符</string>
   <string name="input_good_type_name">请输入货品类型，不小于二个字作</string>
 
@@ -544,6 +544,7 @@
   <string name="btn_add">新增</string>
   <string name="btn_cancel">取消</string>
   <string name="btn_draft_clear">清除草稿</string>
+  <string name="btn_search">模糊</string>
 
   <string name="btn_stock_in">入库</string>
   <string name="btn_stock_out">退货</string>
@@ -551,6 +552,7 @@
   <string name="btn_stock_note">明细</string>
   <string name="btn_stock_store">库存</string>
   <string name="btn_good">货品</string>
+
 
   <string name="select_stock">请选择库存</string>
   <string name="sale_in_update">交易单编辑（销售）</string>

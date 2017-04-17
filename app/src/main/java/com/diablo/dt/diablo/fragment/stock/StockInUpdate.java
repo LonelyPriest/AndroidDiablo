@@ -33,6 +33,7 @@ import com.diablo.dt.diablo.controller.DiabloStockTableController;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.MatchGood;
+import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.model.stock.EntryStock;
@@ -699,6 +700,9 @@ public class StockInUpdate extends Fragment {
     private void startUpdate() {
         List<EntryStock> updateStocks = getUpdateEntryStocks();
 
+        // the stock will be update
+        List<MatchStock> addedMatchStocks = new ArrayList<>();
+
         NewStockRequest stockRequest = new NewStockRequest();
         for (EntryStock u: updateStocks) {
 
@@ -753,6 +757,13 @@ public class StockInUpdate extends Fragment {
                 d.setEntryStockAmounts(uAmounts);
             }
 
+            if (DiabloEnum.ADD_THE_STOCK.equals(u.getOperation())) {
+                MatchGood good = Profile.instance().getMatchGood(u.getStyleNumber(), u.getBrandId());
+                if (null != good) {
+                    addedMatchStocks.add(new MatchStock(good));
+                }
+            }
+
             stockRequest.addEntryStock(d);
         }
 
@@ -803,11 +814,11 @@ public class StockInUpdate extends Fragment {
                 DiabloError.getError(2699)).create();
 
         } else {
-            startRequest(stockRequest);
+            startRequest(stockRequest, addedMatchStocks);
         }
     }
 
-    private void startRequest(NewStockRequest request) {
+    private void startRequest(NewStockRequest request, final List<MatchStock> addedMatchStocks) {
         mButtons.get(R.id.stock_in_update_save).disable();
 
         final StockInterface face = StockClient.getClient().create(StockInterface.class);
@@ -826,6 +837,10 @@ public class StockInUpdate extends Fragment {
                     if (mStockCalcController.getFirm().equals(mOldStockCalc.getFirm())) {
                         Firm oldFirm = Profile.instance().getFirm(mOldStockCalc.getFirm());
                         oldFirm.setBalance(mOldStockCalc.getBalance());
+                    }
+
+                    for (MatchStock stock: addedMatchStocks) {
+                        Profile.instance().addMatchStock(stock);
                     }
 
                     new DiabloAlertDialog(

@@ -37,8 +37,9 @@ import com.diablo.dt.diablo.filter.BrandFilter;
 import com.diablo.dt.diablo.filter.DiabloFilter;
 import com.diablo.dt.diablo.filter.DiabloFilterController;
 import com.diablo.dt.diablo.filter.FirmFilter;
+import com.diablo.dt.diablo.filter.GoodStyleNumberFilter;
 import com.diablo.dt.diablo.filter.GoodTypeFilter;
-import com.diablo.dt.diablo.filter.StyleNumberFilter;
+import com.diablo.dt.diablo.filter.StockStyleNumberFilter;
 import com.diablo.dt.diablo.filter.YearFilter;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.good.GoodDetailRequest;
@@ -78,7 +79,7 @@ public class GoodDetail extends Fragment {
     private Integer mTotalPage;
 
     private DiabloDatePicker mDatePicker;
-    private StyleNumberFilter mStyleNumberFilter;
+    private GoodStyleNumberFilter mGoodStyleNumberFilter;
     private DiabloFilterController mFilterController;
 
     public GoodDetail() {
@@ -199,14 +200,14 @@ public class GoodDetail extends Fragment {
 
 
         View styleNumberView = view.findViewById(R.id.select_style_number);
-        mStyleNumberFilter = new StyleNumberFilter(getContext(), getString(R.string.style_number));
-        mStyleNumberFilter.init(styleNumberView);
+        mGoodStyleNumberFilter = new GoodStyleNumberFilter(getContext(), getString(R.string.style_number));
+        mGoodStyleNumberFilter.init(styleNumberView);
 
         ImageButton btnAdd = (ImageButton) view.findViewById(R.id.btn_add_filter);
         ImageButton btnMinus = (ImageButton) view.findViewById(R.id.btn_minus_filter);
 
         List<DiabloFilter> entities = new ArrayList<>();
-        entities.add(new StyleNumberFilter(getContext(), getString(R.string.style_number)));
+        entities.add(new GoodStyleNumberFilter(getContext(), getString(R.string.style_number)));
         entities.add(new FirmFilter(getContext(), getString(R.string.firm)));
         entities.add(new BrandFilter(getContext(), getString(R.string.brand)));
 
@@ -222,8 +223,8 @@ public class GoodDetail extends Fragment {
         request.setStartTime(mDatePicker.startTime());
         request.setEndTime(mDatePicker.endTime());
 
-        if (null != mStyleNumberFilter.getSelect()) {
-            Object select =  mStyleNumberFilter.getSelect();
+        if (null != mGoodStyleNumberFilter.getSelect()) {
+            Object select =  mGoodStyleNumberFilter.getSelect();
             request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
         }
 
@@ -231,7 +232,7 @@ public class GoodDetail extends Fragment {
             Object select = filter.getSelect();
 
             if (null != select) {
-                if (filter instanceof StyleNumberFilter) {
+                if (filter instanceof StockStyleNumberFilter) {
                     request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
                 }
                 else if (filter instanceof BrandFilter) {

@@ -28,6 +28,7 @@ import com.diablo.dt.diablo.controller.DiabloStockRowController;
 import com.diablo.dt.diablo.controller.DiabloStockTableController;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.Firm;
+import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
@@ -535,30 +536,32 @@ public class StockIn extends Fragment {
                             continue;
                         }
                         EntryStock s = controller.getModel();
-                        MatchStock matchStock = new MatchStock();
-                        matchStock.setStyleNumber(s.getStyleNumber());
-                        matchStock.setBrandId(s.getBrandId());
-                        matchStock.setBrand(s.getBrand());
-                        matchStock.setTypeId(s.getTypeId());
-                        matchStock.setType(s.getType());
+                        MatchGood good = Profile.instance().getMatchGood(s.getStyleNumber(), s.getBrandId());
 
-                        matchStock.setSex(s.getSex());
-                        matchStock.setSeason(s.getSeason());
-                        matchStock.setFirmId(s.getFirmId());
-                        matchStock.setsGroup(s.getsGroup());
-                        matchStock.setFree(s.getFree());
-                        matchStock.setYear(s.getYear());
-
-                        matchStock.setOrgPrice(s.getOrgPrice());
-                        matchStock.setTagPrice(s.getTagPrice());
-                        matchStock.setPkgPrice(s.getPkgPrice());
-                        matchStock.setPrice3(s.getPrice3());
-                        matchStock.setPrice4(s.getPrice4());
-                        matchStock.setPrice5(s.getPrice5());
-                        matchStock.setDiscount(s.getDiscount());
-
-                        matchStock.setPath(s.getPath());
-                        matchStock.setAlarmDay(s.getAlarmDay());
+                        MatchStock matchStock = new MatchStock(good);
+//                        matchStock.setStyleNumber(s.getStyleNumber());
+//                        matchStock.setBrandId(s.getBrandId());
+//                        matchStock.setBrand(s.getBrand());
+//                        matchStock.setTypeId(s.getTypeId());
+//                        matchStock.setType(s.getType());
+//
+//                        matchStock.setSex(s.getSex());
+//                        matchStock.setSeason(s.getSeason());
+//                        matchStock.setFirmId(s.getFirmId());
+//                        matchStock.setsGroup(s.getsGroup());
+//                        matchStock.setFree(s.getFree());
+//                        matchStock.setYear(s.getYear());
+//
+//                        matchStock.setOrgPrice(s.getOrgPrice());
+//                        matchStock.setTagPrice(s.getTagPrice());
+//                        matchStock.setPkgPrice(s.getPkgPrice());
+//                        matchStock.setPrice3(s.getPrice3());
+//                        matchStock.setPrice4(s.getPrice4());
+//                        matchStock.setPrice5(s.getPrice5());
+//                        matchStock.setDiscount(s.getDiscount());
+//
+//                        matchStock.setPath(s.getPath());
+//                        matchStock.setAlarmDay(s.getAlarmDay());
 
                         Profile.instance().addMatchStock(matchStock);
                     }

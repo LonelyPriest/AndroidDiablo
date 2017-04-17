@@ -154,19 +154,19 @@ public class DiabloGoodController {
     public void checkFocusOfFirm() {
         EditText cell = (EditText) mGoodCalcView.getFirm();
         cell.requestFocus();
-        cell.setSelection(cell.length());
+        cell.setSelection(0, cell.length());
     }
 
     public void checkFocusOfBrand() {
         EditText cell = (EditText) mGoodCalcView.getBrand();
         cell.requestFocus();
-        cell.setSelection(cell.length());
+        cell.setSelection(0, cell.length());
     }
 
     public void checkFocusOfType() {
         EditText cell = (EditText) mGoodCalcView.getGoodType();
         cell.requestFocus();
-        cell.setSelection(cell.length());
+        cell.setSelection(0, cell.length());
     }
 
     public void reset() {
@@ -199,7 +199,7 @@ public class DiabloGoodController {
         /**
          * reset view
          */
-        // mGoodCalcView.reset();
+        mGoodCalcView.reset();
     }
 
 

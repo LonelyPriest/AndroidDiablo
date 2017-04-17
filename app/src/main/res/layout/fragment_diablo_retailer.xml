@@ -9,21 +9,25 @@
       android:orientation="horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/search_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.9"
         android:hint="@string/search_retailer"
         android:textSize="@dimen/ampm_label_size"
+        android:completionThreshold="1"
+        android:selectAllOnFocus="true"
         android:textColor="@color/bpDarker_red"
         android:maxLines="1"/>
-    <ImageButton
+    <Button
+        android:id="@+id/btn_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.1"
         android:contentDescription="@string/retailer"
-        android:src="@drawable/ic_search_black_24dp"/>
+        android:drawableEnd="@drawable/ic_search_black_24dp"
+        android:text="@string/btn_search"/>
 
   </LinearLayout>
 

@@ -867,6 +867,7 @@ public class SaleInUpdate extends Fragment {
 
                 final com.diablo.dt.diablo.response.Response res = response.body();
                 if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
+
                     // refresh balance
 //                    Retailer newRetailer = Profile.instance().getRetailerById(mSaleCalcController.getRetailer());
 //                    Retailer oldRetailer = Profile.instance().getRetailerById(mOldSaleCalc.getRetailer());

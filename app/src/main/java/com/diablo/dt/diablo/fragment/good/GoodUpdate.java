@@ -38,6 +38,8 @@ import retrofit2.Response;
 public class GoodUpdate extends Fragment {
     private final static String LOG_TAG = "GoodUpdate:";
 
+    private final static DiabloUtils UTILS = DiabloUtils.instance();
+
     private Integer   mGoodId;
     private Integer   mLastGoodId;
 
@@ -445,11 +447,15 @@ public class GoodUpdate extends Fragment {
                     newGood.setSize(calc.getStringSizeGroups());
                     newGood.setsGroup(calc.getStringSizeGroupIds());
 
-                    if (newGood.getColor().equals(
-                        DiabloUtils.instance().toString(DiabloEnum.DIABLO_FREE_COLOR))
-                        && newGood.getSize().equals(DiabloEnum.DIABLO_FREE_SIZE)) {
+                    if (1 == calc.getColors().size()
+                        && calc.getColors().get(0).getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)
+                        && 1 == calc.getSizeGroups().size()
+                        && calc.getSizeGroups().get(0).getGroupId().equals(DiabloEnum.DIABLO_FREE_SIZE_GROUP)) {
+                        newGood.setColor(UTILS.toString(DiabloEnum.DIABLO_FREE_COLOR));
+                        newGood.setSize(DiabloEnum.DIABLO_FREE_SIZE);
                         newGood.setFree(DiabloEnum.DIABLO_FREE);
-                    }else {
+                    }
+                    else {
                         newGood.setFree(DiabloEnum.DIABLO_NON_FREE);
                     }
 
@@ -464,6 +470,7 @@ public class GoodUpdate extends Fragment {
                             @Override
                             public void onOk() {
                                 SaleUtils.switchToSlideMenu(GoodUpdate.this, DiabloEnum.TAG_GOOD_DETAIL);
+                                mLastGoodId = DiabloEnum.INVALID_INDEX;
 //                                if (!mGoodId.equals(mLastGoodId)) {
 //                                    getGoodFromServer();
 //                                }

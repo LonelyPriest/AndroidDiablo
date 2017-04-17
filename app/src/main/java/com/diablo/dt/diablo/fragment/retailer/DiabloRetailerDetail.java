@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -12,21 +13,27 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.adapter.BackendRetailerAdapter;
 import com.diablo.dt.diablo.client.RetailerClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.rest.RetailerInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloPattern;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -42,10 +49,16 @@ public class DiabloRetailerDetail extends Fragment {
     private SwipyRefreshLayout mTableSwipe;
     private Dialog mRefreshDialog;
 
-    private List<Retailer> mRetailers;
+    // private List<Retailer> mRetailers;
     private Integer mCurrentPage;
     private Integer mTotalPage;
     private Integer mItemsPerPage;
+
+    private AutoCompleteTextView mAutoCompleteSearch;
+    private Button mBtnSearch;
+    private List<Retailer> mMatchedRetailers;
+
+    private Handler mHandler;
 
     public DiabloRetailerDetail() {
         // Required empty public constructor
@@ -66,6 +79,10 @@ public class DiabloRetailerDetail extends Fragment {
 
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
         mTableTitles = getResources().getStringArray(R.array.thead_retailer_detail);
+
+        mMatchedRetailers = new ArrayList<>(Profile.instance().getRetailers());
+
+        mHandler = new Handler();
     }
 
     @Override
@@ -73,6 +90,9 @@ public class DiabloRetailerDetail extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_diablo_retailer, container, false);
+
+        mAutoCompleteSearch = (AutoCompleteTextView) view.findViewById(R.id.search_content);
+        mBtnSearch = (Button) view.findViewById(R.id.btn_search);
 
         TableRow row = new TableRow(this.getContext());
         for (String title: mTableTitles){
@@ -129,18 +149,67 @@ public class DiabloRetailerDetail extends Fragment {
             }
         });
 
+        initSearch();
         init();
         return view;
     }
 
     public void init() {
-        mRetailers = Profile.instance().getRetailers();
-
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mItemsPerPage = DiabloEnum.DEFAULT_ITEMS_PER_PAGE;
-        mTotalPage = UTILS.calcTotalPage(mRetailers.size(), mItemsPerPage);
+        mTotalPage = UTILS.calcTotalPage(mMatchedRetailers.size(), mItemsPerPage);
 
         pageChanged();
+    }
+
+    public void initSearch() {
+        new BackendRetailerAdapter(
+            getContext(),
+            R.layout.typeahead_retailer,
+            R.id.typeahead_select_retailer, mAutoCompleteSearch);
+
+        AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Retailer selectRetailer = (Retailer) adapterView.getItemAtPosition(i);
+                mMatchedRetailers = new ArrayList<>();
+                mMatchedRetailers.add(selectRetailer);
+                init();
+            }
+        };
+
+        mAutoCompleteSearch.setOnItemClickListener(listener);
+
+        mBtnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String searchText = mAutoCompleteSearch.getText().toString().trim().toUpperCase();
+                final boolean isNotStartWithNumber = DiabloPattern.isNotStartWithNumber(searchText);
+                mMatchedRetailers.clear();
+
+                Runnable mPendingRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        for (Retailer r: Profile.instance().getRetailers()) {
+                            if (isNotStartWithNumber) {
+                                if (r.getName().toUpperCase().contains(searchText)) {
+                                    mMatchedRetailers.add(r);
+                                }
+                            } else {
+                                if (r.getMobile().contains(searchText)) {
+                                    mMatchedRetailers.add(r);
+                                }
+                            }
+                        }
+
+                        init();
+                    }
+                };
+                if (searchText.length() != 0) {
+                    mHandler.post(mPendingRunnable);
+                }
+            }
+        });
     }
 
     private void pageChanged() {
@@ -151,42 +220,43 @@ public class DiabloRetailerDetail extends Fragment {
         Integer orderId = startIndex + 1;
         TableRow row = null;
 
-        for (int i=startIndex; i<mCurrentPage * mItemsPerPage && i<mRetailers.size(); i++ ) {
-            Retailer r = mRetailers.get(i);
+        for (int i=startIndex; i<mCurrentPage * mItemsPerPage && i<mMatchedRetailers.size(); i++ ) {
+            Retailer r = mMatchedRetailers.get(i);
 
             row = new TableRow(getContext());
             mRetailerDetailTable.addView(row);
 
             for (String title: mTableTitles) {
                 TableRow.LayoutParams lp = UTILS.createTableRowParams(1f);
-
+                TextView cell = null;
                 if (getString(R.string.order_id).equals(title)) {
                     lp.weight = 0.5f;
-                    TextView cell = UTILS.addCell(getContext(), row, orderId++, lp);
+                    cell = UTILS.addCell(getContext(), row, orderId++, lp);
                     if (cell.getLineHeight() < 100) {
                         cell.setHeight(100);
                     }
                     cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
-                    cell.setGravity(Gravity.CENTER);
                 }
                 else if (getString(R.string.diablo_name).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, r.getName(), lp);
-                    cell.setGravity(Gravity.CENTER);
+                    cell = UTILS.addCell(getContext(), row, r.getName(), lp);
                 }
                 else if (getString(R.string.diablo_arrears).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, r.getBalance(), lp);
-                    cell.setGravity(Gravity.CENTER);
+                    cell = UTILS.addCell(getContext(), row, r.getBalance(), lp);
                 }
                 else if (getString(R.string.diablo_phone).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, r.getMobile(), lp);
-                    cell.setGravity(Gravity.CENTER);
+                    String mobile = null != r.getMobile() ? r.getMobile() : DiabloEnum.EMPTY_STRING;
+                    cell = UTILS.addCell(getContext(), row, mobile, lp);
                 }
                 else if (getString(R.string.diablo_address).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, r.getAddress(), lp);
-                    cell.setGravity(Gravity.CENTER);
+                    String address = null != r.getAddress() ? r.getAddress() : DiabloEnum.EMPTY_STRING;
+                    cell = UTILS.addCell(getContext(), row, address, lp);
                 }
                 else if (getString(R.string.diablo_datetime).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, r.getEntryDate(), lp);
+                    String datetime = null != r.getEntryDate() ? r.getEntryDate() : DiabloEnum.EMPTY_STRING;
+                    cell = UTILS.addCell(getContext(), row, datetime, lp);
+                }
+
+                if (null != cell) {
                     cell.setGravity(Gravity.CENTER);
                 }
             }
@@ -267,6 +337,7 @@ public class DiabloRetailerDetail extends Fragment {
                 Log.d(LOG_TAG, "success to get retailer");
                 Profile.instance().clearRetailers();
                 Profile.instance().setRetailers(response.body());
+                mMatchedRetailers = response.body();
                 init();
                 mRefreshDialog.dismiss();
             }

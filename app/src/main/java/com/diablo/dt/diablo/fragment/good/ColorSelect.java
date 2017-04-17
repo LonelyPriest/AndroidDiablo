@@ -117,11 +117,20 @@ public class ColorSelect extends Fragment {
     void sortColors() {
         mSortedColors = new SparseArray<>();
         for (DiabloColorKind kind: Profile.instance().getColorKinds()) {
-            mSortedColors.put(kind.getId(), new ArrayList<DiabloColor>());
+            if (0 != kind.getId()) {
+                mSortedColors.put(kind.getId(), new ArrayList<DiabloColor>());
+            }
         }
 
         for (DiabloColor color: Profile.instance().getColors()) {
-            mSortedColors.get(color.getTypeId()).add(color);
+            if (!color.getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)) {
+                Integer kindId = color.getTypeId();
+                if (null != kindId && 0 != kindId) {
+                    mSortedColors.get(color.getTypeId()).add(color);
+                }
+
+            }
+
         }
     }
 

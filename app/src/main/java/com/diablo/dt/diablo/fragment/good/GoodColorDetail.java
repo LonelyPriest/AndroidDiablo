@@ -105,7 +105,12 @@ public class GoodColorDetail extends Fragment {
                     cell.setGravity(Gravity.CENTER);
                 }
                 else if (getString(R.string.color_name).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, c.getName(), lp);
+                    TextView cell;
+                    if (null != c.getName()) {
+                        cell = UTILS.addCell(getContext(), row, c.getName(), lp);
+                    } else {
+                        cell = UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
+                    }
                     cell.setGravity(Gravity.CENTER);
                 }
                 else if (getString(R.string.color_type).equals(title)) {

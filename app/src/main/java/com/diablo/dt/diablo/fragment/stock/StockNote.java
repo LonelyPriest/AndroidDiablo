@@ -41,7 +41,7 @@ import com.diablo.dt.diablo.filter.DiabloFilterController;
 import com.diablo.dt.diablo.filter.FirmFilter;
 import com.diablo.dt.diablo.filter.GoodTypeFilter;
 import com.diablo.dt.diablo.filter.ShopFilter;
-import com.diablo.dt.diablo.filter.StyleNumberFilter;
+import com.diablo.dt.diablo.filter.StockStyleNumberFilter;
 import com.diablo.dt.diablo.filter.YearFilter;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.model.stock.StockUtils;
@@ -88,7 +88,7 @@ public class StockNote extends Fragment {
      */
     private StockInterface mStockRest;
     private DiabloDatePicker mDatePicker;
-    private StyleNumberFilter mStyleNumberFilter;
+    private StockStyleNumberFilter mStockStyleNumberFilter;
     private DiabloFilterController mFilterController;
 
     public StockNote() {
@@ -206,14 +206,14 @@ public class StockNote extends Fragment {
 
     private void initFilter(View view) {
         View styleNumberView = view.findViewById(R.id.select_style_number);
-        mStyleNumberFilter = new StyleNumberFilter(getContext(), getString(R.string.style_number));
-        mStyleNumberFilter.init(styleNumberView);
+        mStockStyleNumberFilter = new StockStyleNumberFilter(getContext(), getString(R.string.style_number));
+        mStockStyleNumberFilter.init(styleNumberView);
 
         ImageButton btnAdd = (ImageButton) view.findViewById(R.id.btn_add_filter);
         ImageButton btnMinus = (ImageButton) view.findViewById(R.id.btn_minus_filter);
 
         List<DiabloFilter> entities = new ArrayList<>();
-        entities.add(new StyleNumberFilter(getContext(), getString(R.string.style_number)));
+        entities.add(new StockStyleNumberFilter(getContext(), getString(R.string.style_number)));
         entities.add(new FirmFilter(getContext(), getString(R.string.firm)));
         entities.add(new BrandFilter(getContext(), getString(R.string.brand)));
 
@@ -233,8 +233,8 @@ public class StockNote extends Fragment {
         request.setStartTime(mDatePicker.startTime());
         request.setEndTime(mDatePicker.endTime());
 
-        if (null != mStyleNumberFilter.getSelect()) {
-            Object select =  mStyleNumberFilter.getSelect();
+        if (null != mStockStyleNumberFilter.getSelect()) {
+            Object select =  mStockStyleNumberFilter.getSelect();
             request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
         }
 
@@ -242,7 +242,7 @@ public class StockNote extends Fragment {
             Object select = filter.getSelect();
 
             if (null != select) {
-                if (filter instanceof StyleNumberFilter) {
+                if (filter instanceof StockStyleNumberFilter) {
                     request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
                 }
                 else if (filter instanceof BrandFilter) {

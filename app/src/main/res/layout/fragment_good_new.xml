@@ -69,15 +69,16 @@
                 android:textSize="@dimen/label_font_size"
                 android:textColor="@color/black"/>
 
-      <AutoCompleteTextView android:id="@+id/good_brand"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/please_input_brand"
-                android:inputType="textNoSuggestions"
-                android:layout_weight="0.6"
-                android:textSize="@dimen/ampm_label_size"
-                android:textColor="@color/bpblack"
-                android:textStyle="bold"/>
+      <AutoCompleteTextView
+          android:id="@+id/good_brand"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:hint="@string/please_input_brand"
+          android:inputType="textNoSuggestions"
+          android:layout_weight="0.6"
+          android:textSize="@dimen/ampm_label_size"
+          android:textColor="@color/bpblack"
+          android:textStyle="bold"/>
 
       <ImageButton
           android:id="@+id/btn_add_brand"
@@ -115,14 +116,14 @@
                 android:textColor="@color/black"/>
 
       <AutoCompleteTextView android:id="@+id/good_type"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="textNoSuggestions"
-                android:hint="@string/please_input_type"
-                android:layout_weight="0.6"
-                android:textSize="@dimen/ampm_label_size"
-                android:textColor="@color/bpblack"
-                android:textStyle="bold"/>
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:inputType="textNoSuggestions"
+                            android:hint="@string/please_input_type"
+                            android:layout_weight="0.6"
+                            android:textSize="@dimen/ampm_label_size"
+                            android:textColor="@color/bpblack"
+                            android:textStyle="bold"/>
 
       <ImageButton
           android:id="@+id/btn_add_good_type"
@@ -159,14 +160,14 @@
                 android:textColor="@color/black"/>
 
       <AutoCompleteTextView android:id="@+id/good_firm"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/please_select_firm"
-                android:inputType="textNoSuggestions"
-                android:layout_weight="0.6"
-                android:textSize="@dimen/ampm_label_size"
-                android:textColor="@color/bpblack"
-                android:textStyle="bold"/>
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/please_select_firm"
+                            android:inputType="textNoSuggestions"
+                            android:layout_weight="0.6"
+                            android:textSize="@dimen/ampm_label_size"
+                            android:textColor="@color/bpblack"
+                            android:textStyle="bold"/>
 
       <ImageButton
           android:id="@+id/btn_add_firm"

@@ -6,21 +6,20 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.MatchStockAdapter;
+import com.diablo.dt.diablo.adapter.MatchGoodAdapter;
 
 /**
- * Created by buxianhui on 17/4/15.
+ * Created by buxianhui on 17/4/17.
  */
 
-public class StyleNumberFilter extends DiabloFilter {
-
-    public StyleNumberFilter(Context context, String name) {
+public class GoodStyleNumberFilter extends DiabloFilter {
+    public GoodStyleNumberFilter(Context context, String name) {
         super(context, name);
     }
 
     @Override
     public DiabloFilter copy() {
-        return new StyleNumberFilter(getContext(), getName());
+        return new GoodStyleNumberFilter(getContext(), getName());
     }
 
     @Override
@@ -34,7 +33,7 @@ public class StyleNumberFilter extends DiabloFilter {
         super.init(view);
         setView(view);
 
-        new MatchStockAdapter(getContext(),
+        new MatchGoodAdapter(getContext(),
             R.layout.typeahead_match_stock_on_sale,
             R.id.typeahead_select_stock_on_sale,
             ((AutoCompleteTextView) view));
@@ -46,5 +45,4 @@ public class StyleNumberFilter extends DiabloFilter {
             }
         });
     }
-
 }
