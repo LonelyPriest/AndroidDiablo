@@ -21,8 +21,6 @@ import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.stock.DiabloStockCalcView;
 
-import java.util.List;
-
 /**
  * Created by buxianhui on 17/4/3.
  */
@@ -107,19 +105,8 @@ public class DiabloStockCalcController {
         this.mStockCalcView = view;
     }
 
-    public void setFirmWatcher(final Context context, final List<Firm> firms) {
+    public void setFirmWatcher(final Context context) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mStockCalcView.getViewFirm();
-        // mOnAutoCompletedFirmListener = new DiabloAutoCompleteTextWatcher(f);
-
-//        mOnAutoCompletedFirmListener.addWatcher(new DiabloAutoCompleteTextWatcher.DiabloTextWatcher() {
-//            @Override
-//            public void afterTextChanged(String s) {
-//                if (s.trim().length() > 0) {
-//                    new MatchFirmTask(context, f, firms).execute(s);
-//                }
-//            }
-//        });
-
         new FirmAdapter(context, R.layout.typeahead_firm, R.id.typeahead_select_firm, f);
 
         mOnFirmClickListener = new AdapterView.OnItemClickListener() {
@@ -254,19 +241,11 @@ public class DiabloStockCalcController {
     }
 
     public void setEmployeeAdapter(Context context) {
-//        EmployeeAdapter adapter = new EmployeeAdapter(
-//            context,
-//            android.R.layout.simple_spinner_item,
-//            Profile.instance().getEmployees());
-
-
-        EmployeeAdapter adapter = new EmployeeAdapter(
+        new EmployeeAdapter(
             context,
-            android.R.layout.simple_spinner_item,
-            Profile.instance().getEmployees());
-        ((Spinner)mStockCalcView.getViewEmployee()).setAdapter(adapter);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            (Spinner)mStockCalcView.getViewEmployee(),
+            Profile.instance().getEmployees(),
+            true);
     }
 
     public void setExtraCostTypeAdapter(Context context){

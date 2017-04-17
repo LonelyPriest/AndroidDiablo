@@ -183,7 +183,7 @@ public class StockOut extends Fragment {
         // listener
         mStockCalcController.setFirm(Profile.instance().getFirm(firmId));
         mStockCalcController.removeFirmWatcher();
-        mStockCalcController.setFirmWatcher(getContext(), Profile.instance().getFirms());
+        mStockCalcController.setFirmWatcher(getContext());
 
         mStockCalcController.setEmployeeWatcher();
         mStockCalcController.setCommentWatcher();

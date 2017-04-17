@@ -16,10 +16,6 @@ import java.util.List;
 
 
 public class MatchStockAdapter extends DiabloAdapter {
-    public MatchStockAdapter(Context context, Integer resource, Integer textViewResourceId) {
-        super(context, resource, textViewResourceId);
-    }
-
     public MatchStockAdapter(Context context, Integer resource, Integer textViewResourceId, AutoCompleteTextView view) {
         super(context, resource, textViewResourceId, view);
     }

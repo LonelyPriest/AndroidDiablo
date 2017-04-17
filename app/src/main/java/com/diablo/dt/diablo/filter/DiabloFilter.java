@@ -1,13 +1,7 @@
 package com.diablo.dt.diablo.filter;
 
 import android.content.Context;
-import android.text.Editable;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.Spinner;
-
-import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
 
 /**
  * Created by buxianhui on 17/4/14.
@@ -66,49 +60,6 @@ public class DiabloFilter {
 
     public Object getSelect() {
         return mSelectFilter;
-    }
-
-    public void addAutoCompletedTextWatcher() {
-        ((AutoCompleteTextView) mView).addTextChangedListener(new DiabloEditTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                setSelectFilter(null);
-                String name = editable.toString();
-                startAutoComplete(name);
-            }
-        });
-
-        ((AutoCompleteTextView) mView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                setSelectFilter(parent.getItemAtPosition(position));
-            }
-        });
-    }
-
-    public void startAutoComplete(String name) {
-
-    }
-
-    public void addSpinnerWatcher() {
-        createAdapter();
-
-        setSelectFilter(((Spinner) mView).getSelectedItem());
-        ((Spinner) mView).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                setSelectFilter(parent.getItemAtPosition(position));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                setSelectFilter(null);
-            }
-        });
-    }
-
-    public void createAdapter() {
-
     }
 
 }

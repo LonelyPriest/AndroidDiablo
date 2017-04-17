@@ -509,9 +509,9 @@
   <string name="cost_on_stock">费用</string>
 
   <string name="please_input_style_number">请输入2－15位款号</string>
-  <string name="please_input_brand">请输入品名</string>
-  <string name="please_input_type">请输入类别</string>
-  <string name="please_select_firm">请选择厂商</string>
+  <string name="please_input_brand">请选择品名，品名只能从提示列表中选择</string>
+  <string name="please_input_type">请选择货品类别，类别只能从提示列表中选择</string>
+  <string name="please_select_firm">请选择厂商，厂商只能从提示列表中选择</string>
   <string name="please_input_orgPrice">请输入原价，默认为0</string>
   <string name="please_input_pkgPrice">请输入批发价，默认为0</string>
   <string name="please_input_tagPrice">请输入吊牌价，默认为0</string>

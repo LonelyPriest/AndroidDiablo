@@ -45,14 +45,7 @@ public class BackendRetailerAdapter extends DiabloAdapter {
         catch (IOException e) {
             DiabloUtils.instance().makeToast(getContext(), DiabloError.getError(202), Toast.LENGTH_SHORT);
         }
-
-//        List<Retailer> retailers = Profile.instance().getRetailers();
-//        List<DiabloEntity> suggestions = new ArrayList<>();
-//        for (Retailer retailer: retailers) {
-//            if (retailer.getName().toUpperCase().contains(s.toUpperCase())) {
-//                suggestions.add(retailer);
-//            }
-//        }
+        
         return suggestions;
     }
 }

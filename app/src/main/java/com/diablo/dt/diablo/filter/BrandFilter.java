@@ -1,14 +1,12 @@
 package com.diablo.dt.diablo.filter;
 
 import android.content.Context;
-import android.text.Editable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.task.MatchBrandTask;
-import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
+import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.adapter.MatchBrandAdapter;
 
 /**
  * Created by buxianhui on 17/4/15.
@@ -34,18 +32,11 @@ public class BrandFilter extends DiabloFilter {
     public void init(final View view) {
         ((AutoCompleteTextView)view).setSelectAllOnFocus(true);
         setView(view);
-
-        ((AutoCompleteTextView) view).addTextChangedListener(new DiabloEditTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                setSelectFilter(null);
-                String name = editable.toString();
-                new MatchBrandTask(
-                    getContext(),
-                    ((AutoCompleteTextView) view),
-                    Profile.instance().getBrands()).execute(name);
-            }
-        });
+        
+        new MatchBrandAdapter(getContext(),
+            R.layout.typeahead_firm,
+            R.id.typeahead_select_firm,
+            ((AutoCompleteTextView) view));
 
         ((AutoCompleteTextView) view).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

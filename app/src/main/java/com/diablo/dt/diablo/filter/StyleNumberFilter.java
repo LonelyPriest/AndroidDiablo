@@ -2,9 +2,11 @@ package com.diablo.dt.diablo.filter;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.task.MatchAllStockTask;
+import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.adapter.MatchStockAdapter;
 
 /**
  * Created by buxianhui on 17/4/15.
@@ -30,47 +32,19 @@ public class StyleNumberFilter extends DiabloFilter {
     @Override
     public void init(View view) {
         super.init(view);
+        setView(view);
 
-        ((AutoCompleteTextView)view).setSelectAllOnFocus(true);
-        ((AutoCompleteTextView)view).setMaxLines(1);
-        ((AutoCompleteTextView)view).setThreshold(1);
+        new MatchStockAdapter(getContext(),
+            R.layout.typeahead_match_stock_on_sale,
+            R.id.typeahead_select_stock_on_sale,
+            ((AutoCompleteTextView) view));
 
-        addAutoCompletedTextWatcher();
+        ((AutoCompleteTextView) view).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                setSelectFilter(parent.getItemAtPosition(position));
+            }
+        });
     }
 
-//    @Override
-//    public void init(final View view) {
-//        ((AutoCompleteTextView)view).setSelectAllOnFocus(true);
-//        setView(view);
-//
-//        ((AutoCompleteTextView) view).addTextChangedListener(new DiabloEditTextWatcher() {
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                setSelectFilter(null);
-//                String name = editable.toString();
-//                new MatchAllStockTask(
-//                    getContext(),
-//                    ((AutoCompleteTextView) getView()),
-//                    null,
-//                    Profile.instance().getMatchStocks()).execute(name);
-//            }
-//        });
-//
-//        ((AutoCompleteTextView) view).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View _view, int position, long id) {
-//                MatchStock stock = (MatchStock) parent.getItemAtPosition(position);
-//                // ((AutoCompleteTextView) view).setText(stock.getName());
-//                setSelectFilter(stock);
-//            }
-//        });
-//    }
-
-    @Override
-    public void startAutoComplete(String name) {
-        AutoCompleteTextView view = ((AutoCompleteTextView) getView());
-        new MatchAllStockTask(
-            getContext(),
-            view).execute(name);
-    }
 }

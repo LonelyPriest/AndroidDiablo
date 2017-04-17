@@ -272,7 +272,7 @@ public class StockInUpdate extends Fragment {
         // listener when select firm
         mStockCalcController.setFirm(Profile.instance().getFirm(calc.getFirm()));
         mStockCalcController.removeFirmWatcher();
-        mStockCalcController.setFirmWatcher(getContext(), Profile.instance().getFirms());
+        mStockCalcController.setFirmWatcher(getContext());
 
         mStockCalcView.setCashValue(calc.getCash());
         mStockCalcView.setCardValue(calc.getCard());
@@ -822,6 +822,8 @@ public class StockInUpdate extends Fragment {
                         new DiabloAlertDialog.OnOkClickListener() {
                             @Override
                             public void onOk() {
+                                mLastRSN = DiabloEnum.DIABLO_INVALID_RSN;
+                                init();
                                 SaleUtils.switchToSlideMenu(StockInUpdate.this, DiabloEnum.TAG_STOCK_DETAIL);
                             }
                         }).create();

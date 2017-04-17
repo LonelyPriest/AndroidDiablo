@@ -137,10 +137,6 @@ public class DiabloSaleController {
         }
     }
 
-//    public void setRetailerListSelection(Integer position) {
-//        ((AutoCompleteTextView) mSaleCalcView.getViewRetailer()).setListSelection(position);
-//    }
-
     public void setEmployeeWatcher() {
         mOnEmployeeSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
@@ -250,13 +246,11 @@ public class DiabloSaleController {
     }
 
     public void setEmployeeAdapter(Context context) {
-        EmployeeAdapter adapter = new EmployeeAdapter(
+        new EmployeeAdapter(
             context,
-            android.R.layout.simple_spinner_item,
-            Profile.instance().getEmployees());
-
-        ((Spinner)mSaleCalcView.getViewEmployee()).setAdapter(adapter);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            (Spinner)mSaleCalcView.getViewEmployee(),
+            Profile.instance().getEmployees(),
+            true);
     }
 
     public void setExtraCostTypeAdapter(Context context){
@@ -264,6 +258,7 @@ public class DiabloSaleController {
             context,
             R.array.extra_cost_on_sale,
             android.R.layout.simple_spinner_item);
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ((Spinner)mSaleCalcView.getViewExtraCostType()).setAdapter(adapter);
     }

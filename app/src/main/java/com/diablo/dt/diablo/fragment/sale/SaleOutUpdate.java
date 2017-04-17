@@ -873,6 +873,7 @@ public class SaleOutUpdate extends Fragment {
                             public void onOk() {
                                 // reset again to make sure clear certainly
                                 mLastRSN = DiabloEnum.DIABLO_INVALID_RSN;
+                                init();
                                 SaleUtils.switchToSlideMenu(SaleOutUpdate.this, DiabloEnum.TAG_SALE_DETAIL);
                             }
                         }

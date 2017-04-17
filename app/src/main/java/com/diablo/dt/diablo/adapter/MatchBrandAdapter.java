@@ -15,10 +15,6 @@ import java.util.List;
  */
 
 public class MatchBrandAdapter extends DiabloAdapter{
-    public MatchBrandAdapter(Context context, Integer resource, Integer textViewResourceId) {
-        super(context, resource, textViewResourceId);
-    }
-
     public MatchBrandAdapter(Context context, Integer resource, Integer textViewResourceId, AutoCompleteTextView view) {
         super(context, resource, textViewResourceId, view);
     }

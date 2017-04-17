@@ -270,7 +270,7 @@ public class StockOutUpdate extends Fragment {
         // listener when select firm
         mStockCalcController.setFirm(Profile.instance().getFirm(calc.getFirm()));
         mStockCalcController.removeFirmWatcher();
-        mStockCalcController.setFirmWatcher(getContext(), Profile.instance().getFirms());
+        mStockCalcController.setFirmWatcher(getContext());
 
 //        mStockCalcView.setCashValue(calc.getCash());
 //        mStockCalcView.setCardValue(calc.getCard());

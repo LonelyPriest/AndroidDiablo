@@ -175,10 +175,9 @@ public class GoodNew extends Fragment {
                     firm.addFirm(getContext(), new Firm.OnFirmAddListener() {
                         @Override
                         public void afterAdd(Firm addedFirm) {
-                            mGoodController.clearFocusOfFirm();
                             mGoodController.removeFirmListener();
                             mGoodController.setFirmWatcher(getContext(), addedFirm);
-                            mGoodController.requestFocusOfFirm();
+                            mGoodController.checkFocusOfFirm();
                         }
                     });
                 }
@@ -227,10 +226,11 @@ public class GoodNew extends Fragment {
                     brand.addBrand(getContext(), new DiabloBrand.OnBrandAddListener() {
                         @Override
                         public void afterAdd(DiabloBrand addedBrand) {
-                            mGoodController.clearFocusOfBrand();
+                            // mGoodController.clearFocusOfBrand();
                             mGoodController.removeBrandListener();
                             mGoodController.setBrandWatcher(getContext(), addedBrand, null);
-                            mGoodController.requestFocusOfBrand();
+                            mGoodController.checkFocusOfBrand();
+                            // mGoodController.requestFocusOfBrand();
                         }
                     });
                 }
@@ -278,10 +278,9 @@ public class GoodNew extends Fragment {
                     goodType.addGoodType(getContext(), new DiabloType.OnGoodTypeAddListener() {
                         @Override
                         public void afterAdd(DiabloType addedType) {
-                            mGoodController.clearFocusOfType();
                             mGoodController.removeGoodTypeListener();
                             mGoodController.setGoodTypeWatcher(getContext(), goodType);
-                            mGoodController.requestFocusOfType();
+                            mGoodController.checkFocusOfType();
                         }
                     });
                 }
@@ -361,11 +360,28 @@ public class GoodNew extends Fragment {
         DiabloType lastSelectGoodType = null;
         String lastStyleNumber = null;
 
+        Float lastOrgPrice = null;
+        Float lastPkgPrice = null;
+        Float lastTagPrice = null;
+
+        String lastOrgPriceOfView = null;
+        String lastPkgPriceOfView = null;
+        String lastTagPriceOfView = null;
+
         if (null != mGoodController) {
-            lastStyleNumber = mGoodController.getModel().getStyleNumber();
-            lastSelectBrand = mGoodController.getModel().getBrand();
-            lastSelectFirm = mGoodController.getModel().getFirm();
-            lastSelectGoodType = mGoodController.getModel().getGoodType();
+            GoodCalc oldCalc = mGoodController.getModel();
+            lastStyleNumber = oldCalc.getStyleNumber();
+            lastSelectBrand = oldCalc.getBrand();
+            lastSelectFirm = oldCalc.getFirm();
+            lastSelectGoodType = oldCalc.getGoodType();
+
+            lastOrgPrice = oldCalc.getOrgPrice();
+            lastPkgPrice = oldCalc.getPkgPrice();
+            lastTagPrice = oldCalc.getTagPrice();
+
+            lastOrgPriceOfView = mGoodCalcView.getOrgPriceStringValue();
+            lastPkgPriceOfView = mGoodCalcView.getPkgPriceStringValue();
+            lastTagPriceOfView = mGoodCalcView.getTagPriceStringValue();
 
             mGoodController.reset();
             mGoodController = null;
@@ -373,7 +389,17 @@ public class GoodNew extends Fragment {
 
         GoodCalc calc = new GoodCalc();
         calc.setSex(DiabloEnum.DIABLO_FAMAN);
+
         mGoodController = new DiabloGoodController(calc, mGoodCalcView);
+        if (null != lastOrgPriceOfView && lastOrgPriceOfView.length() != 0) {
+            mGoodController.setOrgPrice(lastOrgPrice);
+        }
+        if (null != lastPkgPriceOfView && lastPkgPriceOfView.length() != 0) {
+            mGoodController.setPkgPrice(lastPkgPrice);
+        }
+        if (null != lastTagPriceOfView && lastTagPriceOfView.length() != 0) {
+            mGoodController.setTagPrice(lastTagPrice);
+        }
 
         mGoodController.setSexAdapter(getContext(), mSexes);
         mGoodController.setYearAdapter(getContext(), mYears, UTILS.currentYear());

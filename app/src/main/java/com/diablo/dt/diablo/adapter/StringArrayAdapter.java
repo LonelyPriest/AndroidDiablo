@@ -13,8 +13,14 @@ import android.widget.TextView;
  */
 
 public class StringArrayAdapter extends ArrayAdapter<String>{
+    private OnAdjustDropDownViewListener mDropDownViewListener;
+
     public StringArrayAdapter(Context context, int resource, String[] items) {
         super(context, resource, items);
+    }
+
+    public void setDropDownViewListener(OnAdjustDropDownViewListener listener) {
+        this.mDropDownViewListener = listener;
     }
 
     @NonNull
@@ -32,6 +38,10 @@ public class StringArrayAdapter extends ArrayAdapter<String>{
         TextView view = (TextView) super.getDropDownView(position, convertView, parent);
         view.setTextSize(18);
         view.setTextColor(Color.BLACK);
+
+        if (null != mDropDownViewListener) {
+            mDropDownViewListener.setDropDownVerticalOffset();
+        }
         return view;
     }
 }

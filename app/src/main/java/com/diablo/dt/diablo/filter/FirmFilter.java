@@ -1,14 +1,12 @@
 package com.diablo.dt.diablo.filter;
 
 import android.content.Context;
-import android.text.Editable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
-import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.task.MatchFirmTask;
-import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
+import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.adapter.FirmAdapter;
 
 /**
  * Created by buxianhui on 17/4/15.
@@ -35,17 +33,11 @@ public class FirmFilter extends DiabloFilter {
         ((AutoCompleteTextView)view).setSelectAllOnFocus(true);
         setView(view);
 
-        ((AutoCompleteTextView) view).addTextChangedListener(new DiabloEditTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                setSelectFilter(null);
-                String name = editable.toString();
-                new MatchFirmTask(
-                    getContext(),
-                    ((AutoCompleteTextView) view),
-                    Profile.instance().getFirms()).execute(name);
-            }
-        });
+        new FirmAdapter(
+            getContext(),
+            R.layout.typeahead_firm,
+            R.id.typeahead_select_firm,
+            ((AutoCompleteTextView) view));
 
         ((AutoCompleteTextView) view).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

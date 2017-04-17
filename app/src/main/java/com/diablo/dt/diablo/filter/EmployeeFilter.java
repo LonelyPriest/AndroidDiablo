@@ -31,15 +31,8 @@ public class EmployeeFilter extends DiabloFilter {
     @Override
     public void init(final View view) {
         setView(view);
-
-        EmployeeAdapter adapter = new EmployeeAdapter(
-            getContext(),
-            android.R.layout.simple_spinner_item,
-            Profile.instance().getEmployees());
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        ((Spinner)view).setAdapter(adapter);
+        
+        new EmployeeAdapter(getContext(), (Spinner) view, Profile.instance().getEmployees(), false);
 
         setSelectFilter( ((Spinner) view).getSelectedItem() );
 

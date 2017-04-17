@@ -6,14 +6,14 @@
         android:icon="@drawable/ic_arrow_back_black_24dp"
         app:showAsAction="ifRoom|withText" />
 
-  <item android:id="@+id/stock_in_save"
-        android:title="@string/btn_save"
-        android:icon="@drawable/ic_file_download_black_24dp"
-        app:showAsAction="ifRoom|withText" />
-
   <item android:id="@+id/stock_in_to_good_new"
         android:title="@string/btn_good"
         android:icon="@drawable/ic_add_black_24dp"
+        app:showAsAction="ifRoom|withText" />
+
+  <item android:id="@+id/stock_in_save"
+        android:title="@string/btn_save"
+        android:icon="@drawable/ic_file_download_black_24dp"
         app:showAsAction="ifRoom|withText" />
 
   <item android:id="@+id/stock_in_next"

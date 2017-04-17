@@ -169,8 +169,16 @@ public class DiabloGoodCalcView {
         this.mOrgPrice = orgPrice;
     }
 
+    public String getOrgPriceStringValue() {
+        return ((EditText)mOrgPrice).getText().toString().trim();
+    }
+
     public View getPkgPrice() {
         return mPkgPrice;
+    }
+
+    public String getPkgPriceStringValue() {
+        return ((EditText)mPkgPrice).getText().toString().trim();
     }
 
     public void setPkgPrice(View pkgPrice) {
@@ -179,6 +187,10 @@ public class DiabloGoodCalcView {
 
     public View getTagPrice() {
         return mTagPrice;
+    }
+
+    public String getTagPriceStringValue() {
+        return ((EditText)mTagPrice).getText().toString().trim();
     }
 
     public void setTagPrice(View tagPrice) {

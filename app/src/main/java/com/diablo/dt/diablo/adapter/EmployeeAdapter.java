@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.diablo.dt.diablo.entity.Employee;
@@ -19,11 +20,18 @@ import java.util.List;
 public class EmployeeAdapter extends ArrayAdapter<Employee> {
     // private Context context;
     private List<Employee> filterItems;
+    private Spinner spinner;
+    private boolean verticalOffset;
 
-    public EmployeeAdapter(Context context, Integer resource, List<Employee> items) {
-        super(context, resource, items);
-        // this.context = context;
+    public EmployeeAdapter(Context context, Spinner spinner, List<Employee> items, boolean verticalOffset) {
+        super(context, android.R.layout.simple_spinner_item, items);
+
         this.filterItems = items;
+        this.spinner = spinner;
+        this.verticalOffset = verticalOffset;
+
+        setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(this);
     }
 
     @NonNull
@@ -37,6 +45,10 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
         Employee employee = filterItems.get(position);
         if (null != employee) {
             view.setText(employee.getName());
+        }
+
+        if (verticalOffset) {
+            spinner.setDropDownVerticalOffset(spinner.getHeight());
         }
         return view;
     }

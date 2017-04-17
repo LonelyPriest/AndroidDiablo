@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.entity.DiabloEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
     private Integer resource;
     private Integer textViewResourceId;
     private AutoCompleteTextView view;
-    private List<DiabloEntity> matchedItems;
+    private List<DiabloEntity> matchedItems = new ArrayList<>();
 
     public DiabloAdapter(Context context, Integer resource, Integer textViewResourceId) {
         this.context = context;
@@ -63,10 +64,6 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
 
     }
 
-    public void setMatchedItems(List<DiabloEntity> items) {
-        matchedItems = items;
-    }
-
     @Override
     public int getCount() {
         return matchedItems.size();
@@ -95,9 +92,8 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
         if (item != null) {
             TextView retailerView = (TextView) view.findViewById(textViewResourceId);
             retailerView.setText(item.getName());
+            setDropDownOffset();
         }
-
-        setDropDownOffset();
         return view;
     }
 

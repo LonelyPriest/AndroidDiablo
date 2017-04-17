@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -14,6 +13,8 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.FirmAdapter;
 import com.diablo.dt.diablo.adapter.MatchBrandAdapter;
 import com.diablo.dt.diablo.adapter.MatchGoodTypeAdapter;
+import com.diablo.dt.diablo.adapter.OnAdjustDropDownViewListener;
+import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloSizeGroup;
@@ -142,32 +143,30 @@ public class DiabloGoodController {
     }
 
     private void requestFocusOfStyleNumber() {
-        mGoodCalcView.getStyleNumber().requestFocus();
+        EditText cell = (EditText) mGoodCalcView.getStyleNumber();
+        cell.requestFocus();
+//        cell.setSelectAllOnFocus(true);
+//        cell.selectAll();
+        cell.setSelection(0, cell.length());
         // mGoodCalcView.getStyleNumber().setSelected(true);
     }
 
-    public void clearFocusOfFirm() {
-        mGoodCalcView.getFirm().clearFocus();
+    public void checkFocusOfFirm() {
+        EditText cell = (EditText) mGoodCalcView.getFirm();
+        cell.requestFocus();
+        cell.setSelection(cell.length());
     }
 
-    public void requestFocusOfFirm() {
-        mGoodCalcView.getFirm().requestFocus();
+    public void checkFocusOfBrand() {
+        EditText cell = (EditText) mGoodCalcView.getBrand();
+        cell.requestFocus();
+        cell.setSelection(cell.length());
     }
 
-    public void clearFocusOfBrand() {
-        mGoodCalcView.getBrand().clearFocus();
-    }
-
-    public void requestFocusOfBrand() {
-        mGoodCalcView.getBrand().requestFocus();
-    }
-
-    public void clearFocusOfType() {
-        mGoodCalcView.getGoodType().clearFocus();
-    }
-
-    public void requestFocusOfType() {
-        mGoodCalcView.getGoodType().requestFocus();
+    public void checkFocusOfType() {
+        EditText cell = (EditText) mGoodCalcView.getGoodType();
+        cell.requestFocus();
+        cell.setSelection(cell.length());
     }
 
     public void reset() {
@@ -200,7 +199,7 @@ public class DiabloGoodController {
         /**
          * reset view
          */
-        mGoodCalcView.reset();
+        // mGoodCalcView.reset();
     }
 
 
@@ -313,16 +312,23 @@ public class DiabloGoodController {
                 if (null != styleNumber && styleNumber.length() > 0) {
                     MatchGood good = Profile.instance().getMatchGood(styleNumber, brand.getId());
                     if ( null != good ) {
-                        if (null != oldGoodCalc
-                            && ( !good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
-                            || good.getBrandId().equals(oldGoodCalc.getBrand().getId()))) {
-                            mIsValidBrand = false;
+                        mIsValidBrand = false;
 
+                        if (null != oldGoodCalc) {
+                            if ( good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
+                                && good.getBrandId().equals(oldGoodCalc.getBrand().getId()) ) {
+                                mIsValidBrand = true;
+                            }
+                        }
+
+                        if (!mIsValidBrand) {
                             DiabloUtils.instance().makeToast(
                                 context,
                                 context.getString(R.string.same_good),
                                 Toast.LENGTH_SHORT);
                         }
+                    } else {
+                        mIsValidStyleNumber = true;
                     }
                 }
 
@@ -376,14 +382,23 @@ public class DiabloGoodController {
     }
 
     public void setSexAdapter(Context context, String[] sexes){
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        final Spinner spinner = (Spinner)mGoodCalcView.getSex();
+
+        StringArrayAdapter adapter = new StringArrayAdapter(
             context,
             R.layout.diablo_spinner_item,
             sexes);
 
+        adapter.setDropDownViewListener(new OnAdjustDropDownViewListener() {
+            @Override
+            public void setDropDownVerticalOffset() {
+                spinner.setDropDownVerticalOffset(spinner.getHeight());
+            }
+        });
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ((Spinner)mGoodCalcView.getSex()).setAdapter(adapter);
-        ((Spinner)mGoodCalcView.getSex()).setSelection(mGoodCalc.getSex());
+        spinner.setAdapter(adapter);
+        spinner.setSelection(mGoodCalc.getSex());
     }
 
     public void setSexSelectedListener() {
@@ -403,16 +418,25 @@ public class DiabloGoodController {
     }
 
     public void setYearAdapter(Context context, String[] years, Integer currentYear) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        final Spinner spinner = (Spinner)mGoodCalcView.getYear();
+
+        StringArrayAdapter adapter = new StringArrayAdapter(
             context,
             R.layout.diablo_spinner_item,
             years);
 
+        adapter.setDropDownViewListener(new OnAdjustDropDownViewListener() {
+            @Override
+            public void setDropDownVerticalOffset() {
+                spinner.setDropDownVerticalOffset(spinner.getHeight());
+            }
+        });
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ((Spinner)mGoodCalcView.getYear()).setAdapter(adapter);
+        spinner.setAdapter(adapter);
 
         Integer position = adapter.getPosition(DiabloUtils.instance().toString(currentYear));
-        ((Spinner)mGoodCalcView.getYear()).setSelection(position);
+        spinner.setSelection(position);
     }
 
     public void setYearSelectedListener() {
@@ -433,17 +457,26 @@ public class DiabloGoodController {
     }
 
     public void setSeasonAdapter(Context context, String[] seasons, Integer currentMonth){
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        final Spinner spinner = (Spinner)mGoodCalcView.getSeason();
+
+        StringArrayAdapter adapter = new StringArrayAdapter(
             context,
             R.layout.diablo_spinner_item,
             seasons);
 
+        adapter.setDropDownViewListener(new OnAdjustDropDownViewListener() {
+            @Override
+            public void setDropDownVerticalOffset() {
+                spinner.setDropDownVerticalOffset(spinner.getHeight());
+            }
+        });
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ((Spinner)mGoodCalcView.getSeason()).setAdapter(adapter);
+        spinner.setAdapter(adapter);
 
         // get season
         Integer season = DiabloUtils.instance().getSeasonByMonth(currentMonth);
-        ((Spinner)mGoodCalcView.getSeason()).setSelection(season);
+        spinner.setSelection(season);
     }
 
     public void setSeasonSelectedListener() {
@@ -498,6 +531,7 @@ public class DiabloGoodController {
         final String lastStyleNumber,
         final GoodCalc oldGoodCalc) {
         final EditText view = (EditText)mGoodCalcView.getStyleNumber();
+        view.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 
         if (null != lastStyleNumber) {
             view.setText(lastStyleNumber);
@@ -530,16 +564,23 @@ public class DiabloGoodController {
                         if (null != brand) {
                             MatchGood good = Profile.instance().getMatchGood(styleNumber.toUpperCase(), brand.getId());
                             if (null != good) {
-                                if (null != oldGoodCalc
-                                    &&  (!good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
-                                    || !good.getBrandId().equals(oldGoodCalc.getBrand().getId()))) {
+                                mIsValidStyleNumber = false;
 
-                                    mIsValidStyleNumber = false;
+                                if (null != oldGoodCalc) {
+                                    if ( good.getStyleNumber().equals(oldGoodCalc.getStyleNumber())
+                                        && good.getBrandId().equals(oldGoodCalc.getBrand().getId()) ) {
+                                        mIsValidStyleNumber = true;
+                                    }
+                                }
+
+                                if (!mIsValidStyleNumber) {
                                     DiabloUtils.instance().makeToast(
                                         context,
                                         context.getString(R.string.same_good),
                                         Toast.LENGTH_SHORT);
                                 }
+                            } else {
+                                mIsValidBrand = true;
                             }
                         }
                     }
@@ -614,5 +655,20 @@ public class DiabloGoodController {
         }
 
         mGoodCalcView.setSizeText(mGoodCalc.getStringSizeGroups());
+    }
+
+    public void setOrgPrice(Float orgPrice) {
+        mGoodCalcView.setOrgPriceText(orgPrice);
+        mGoodCalc.setOrgPrice(orgPrice);
+    }
+
+    public void setPkgPrice(Float pkgPrice) {
+        mGoodCalcView.setPkgPriceText(pkgPrice);
+        mGoodCalc.setPkgPrice(pkgPrice);
+    }
+
+    public void setTagPrice(Float tagPrice) {
+        mGoodCalcView.setTagPriceText(tagPrice);
+        mGoodCalcView.setTagPriceText(tagPrice);
     }
 }
