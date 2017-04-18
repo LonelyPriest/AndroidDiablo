@@ -228,6 +228,7 @@ public class SaleIn extends Fragment{
         @Override
         public void afterAdd(Retailer retailer) {
            resetRetailerWatcher(retailer);
+            focusStyleNumber();
             // mSaleCalcController.setRetailerClickListener(getContext());
         }
 
@@ -236,10 +237,14 @@ public class SaleIn extends Fragment{
             resetRetailerWatcher(retailer);
            //  mSaleCalcController.setRetailerClickListener(getContext());
             if (mIsRecoverFromDraft) {
-                calcShouldPay();
+                // because calculate table start with index 1,
+                // should add empty row first
                 addEmptyRowToTable();
+                calcShouldPay();
                 mIsRecoverFromDraft = false;
             }
+
+            focusStyleNumber();
         }
     };
 
@@ -1172,6 +1177,7 @@ public class SaleIn extends Fragment{
                 if (null != mSaleCalcController) {
                     Retailer retailer = Profile.instance().getRetailerById(mSaleCalcController.getRetailer());
                     Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
+                    focusStyleNumber();
                 }
             }
 

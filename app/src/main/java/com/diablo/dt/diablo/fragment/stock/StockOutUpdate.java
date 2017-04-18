@@ -528,14 +528,22 @@ public class StockOutUpdate extends Fragment {
                     default:
                         break;
                 }
-
-                mBackFrom = R.string.back_from_unknown;
             }
             else {
                 if (!mLastRSN.equals(mRSN)) {
                     init();
+                } else {
+                    focusStyleNumber();
                 }
             }
+
+            mBackFrom = R.string.back_from_unknown;
+        }
+    }
+
+    private void focusStyleNumber() {
+        if (0 != mStockTableController.size()) {
+            mStockTableController.getControllers().get(0).focusStyleNumber();
         }
     }
 

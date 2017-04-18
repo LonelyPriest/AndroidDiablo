@@ -93,28 +93,28 @@ public class MainActivity extends AppCompatActivity {
             return titleIndex;
         }
 
-        private void setTitleIndex(Integer titleIndex) {
-            this.titleIndex = titleIndex;
-        }
+//        private void setTitleIndex(Integer titleIndex) {
+//            this.titleIndex = titleIndex;
+//        }
 
         private String getTag() {
             return tag;
         }
 
-        private void setTag(String tag) {
-            this.tag = tag;
-        }
+//        private void setTag(String tag) {
+//            this.tag = tag;
+//        }
 
-        private Integer getResId() {
-            return resId;
-        }
-
-        private void setResId(Integer resId) {
-            this.resId = resId;
-        }
+//        private Integer getResId() {
+//            return resId;
+//        }
+//
+//        private void setResId(Integer resId) {
+//            this.resId = resId;
+//        }
 
         private MenuItem getMenuItem(){
-            return MainActivity.this.mNavigationView.getMenu().findItem(resId);
+            return mNavigationView.getMenu().findItem(resId);
         }
 
         private String getTitleName(){
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            selectMenuItem(13);
+            selectMenuItem(0);
             loadHomeFragment();
         }
     }

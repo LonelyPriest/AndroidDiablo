@@ -268,6 +268,7 @@ public class SaleDetail extends Fragment {
 
         ImageButton btnAdd = (ImageButton) mViewFragment.findViewById(R.id.btn_add_filter);
         ImageButton btnMinus = (ImageButton) mViewFragment.findViewById(R.id.btn_minus_filter);
+        btnMinus.setEnabled(false);
 
         List<DiabloFilter> entities = new ArrayList<>();
         entities.add(new RetailerFilter(getContext(), getString(R.string.retailer)));

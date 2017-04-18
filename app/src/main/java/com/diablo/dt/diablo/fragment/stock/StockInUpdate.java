@@ -540,8 +540,16 @@ public class StockInUpdate extends Fragment {
             else {
                 if (!mLastRSN.equals(mRSN)) {
                     init();
+                } else {
+                    forcusStyleNumber();
                 }
             }
+        }
+    }
+
+    private void forcusStyleNumber() {
+        if (0 != mStockTableController.getControllers().size()) {
+            mStockTableController.getControllers().get(0).focusStyleNumber();
         }
     }
 

@@ -225,6 +225,7 @@ public class SaleNote extends Fragment {
 
         ImageButton btnAdd = (ImageButton) view.findViewById(R.id.btn_add_filter);
         ImageButton btnMinus = (ImageButton) view.findViewById(R.id.btn_minus_filter);
+        btnMinus.setEnabled(false);
 
         List<DiabloFilter> entities = new ArrayList<>();
         entities.add(new StockStyleNumberFilter(getContext(), getString(R.string.style_number)));

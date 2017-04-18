@@ -260,7 +260,7 @@ public class SaleOutUpdate extends Fragment {
                     @Override
                     public void onRetailerChanged(SaleCalc c, Retailer retailer) {
                         // focus to style number
-                        mSaleTableController.getControllers().get(0).focusStyleNumber();
+                        focusStyleNumber();
                         mSaleCalcController.setBalance(retailer.getBalance());
                     }
                 });
@@ -470,8 +470,16 @@ public class SaleOutUpdate extends Fragment {
             else {
                 if (!mLastRSN.equals(mRSN)) {
                     init();
+                } else {
+                    focusStyleNumber();
                 }
             }
+        }
+    }
+
+    private void focusStyleNumber() {
+        if (0 != mSaleTableController.getControllers().size()) {
+            mSaleTableController.getControllers().get(0).focusStyleNumber();
         }
     }
 
@@ -843,7 +851,8 @@ public class SaleOutUpdate extends Fragment {
         if (0 == updateStocks.size()
             && dCalc.getVerificate().equals(mOldSaleCalc.getVerificate())
             && dCalc.getComment().equals(mOldSaleCalc.getComment())
-            && dCalc.getExtraCost().equals(mOldSaleCalc.getExtraCost())) {
+            && dCalc.getExtraCost().equals(mOldSaleCalc.getExtraCost())
+            && mSaleCalcController.getRetailer().equals(mOldSaleCalc.getRetailer())) {
 
             new DiabloAlertDialog(
                 getContext(),

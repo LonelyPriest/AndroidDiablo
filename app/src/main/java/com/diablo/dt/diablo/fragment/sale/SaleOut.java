@@ -181,7 +181,7 @@ public class SaleOut extends Fragment {
             @Override
             public void onRetailerChanged(SaleCalc c, Retailer retailer) {
                 // focus to style number
-                mSaleTableController.getControllers().get(0).focusStyleNumber();
+                focusStyleNumber();
                 mSaleCalcController.setBalance(retailer.getBalance());
             }
         });
@@ -407,10 +407,17 @@ public class SaleOut extends Fragment {
                 if (null != mSaleCalcController) {
                     Retailer retailer = Profile.instance().getRetailerById(mSaleCalcController.getRetailer());
                     Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
+                    focusStyleNumber();
                 }
             }
 
             mBackFrom = R.string.back_from_unknown;
+        }
+    }
+
+    private void focusStyleNumber() {
+        if (0 != mSaleTableController.getControllers().size()) {
+            mSaleTableController.getControllers().get(0).focusStyleNumber();
         }
     }
 

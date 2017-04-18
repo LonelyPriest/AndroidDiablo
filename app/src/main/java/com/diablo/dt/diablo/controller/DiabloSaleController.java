@@ -126,7 +126,7 @@ public class DiabloSaleController {
             new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
                 @Override
                 public void afterTextChanged(String s) {
-                    Log.d(LOG_TAG, "watcher retailer " + s );
+                    // Log.d(LOG_TAG, "watcher retailer " + s );
                     if (!mSelectRetailerByClick) {
                         setRetailer(null);
                         setBalance(0f);
@@ -148,7 +148,7 @@ public class DiabloSaleController {
                 Retailer selectRetailer = (Retailer) adapterView.getItemAtPosition(i);
                 Log.d(LOG_TAG, "click the retailer:" + selectRetailer.getId());
                 mSelectRetailerByClick = true;
-                
+
                 setRetailer(selectRetailer);
                 if (null != mOnRetailerChangeListener) {
                     mOnRetailerChangeListener.onRetailerChanged(mSaleCalc, selectRetailer);
