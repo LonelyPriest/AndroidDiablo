@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -122,7 +123,7 @@ public class SaleInUpdate extends Fragment {
 //                mSaleCalcController.setRetailer(retailer);
 //            }
 //            mSaleCalcController.removeRetailerWatcher();
-//            mSaleCalcController.setRetailerWatcher(getContext());
+//            mSaleCalcController.setRetailerClickListener(getContext());
 //        }
 //    };
 
@@ -223,13 +224,15 @@ public class SaleInUpdate extends Fragment {
                 // copy the retailer
                 if (retailer.getId().equals(mOldSaleCalc.getRetailer())) {
                     mSaleCalcController.setRetailer(new Retailer(retailer, mOldSaleCalc.getBalance()));
+                    mSaleCalcController.setBalance(mOldSaleCalc.getBalance());
                 }
                 else {
                     mSaleCalcController.setRetailer(retailer);
+                    mSaleCalcController.setBalance(retailer.getBalance());
                 }
 
                 mSaleCalcController.removeRetailerWatcher();
-                mSaleCalcController.setRetailerWatcher(getContext());
+                mSaleCalcController.setRetailerClickListener(getContext());
 
                 mSaleCalcView.setCashValue(calc.getCash());
                 mSaleCalcView.setCardValue(calc.getCard());
@@ -247,9 +250,9 @@ public class SaleInUpdate extends Fragment {
                 mSaleCalcController.setDatetime(calc.getDatetime());
 
                 // listener
-                // mSaleCalcController.setRetailerWatcher(getContext());
+                // mSaleCalcController.setRetailerClickListener(getContext());
                 // Retailer.getRetailer(getContext(), calc.getRetailer(), mOnRetailerChangeListener);
-                mSaleCalcController.setEmployeeWatcher();
+                mSaleCalcController.setEmployeeClickListener();
                 mSaleCalcController.setCommentWatcher();
 
                 mSaleCalcController.setCashWatcher();
@@ -258,7 +261,7 @@ public class SaleInUpdate extends Fragment {
                 mSaleCalcController.setVerificateWatcher();
 
                 mSaleCalcController.setExtraCostWatcher();
-                mSaleCalcController.setExtraCostTypeWatcher();
+                mSaleCalcController.setExtraCostTypeClickListener();
 
                 // adapter
                 mSaleCalcController.setEmployeeAdapter(getContext());
@@ -273,6 +276,15 @@ public class SaleInUpdate extends Fragment {
                 // calculate balance
                 mSaleTableController.addRowControllerAtTop(createEmptyRow());
                 calcShouldPay();
+
+                mSaleCalcController.setRetailerChangeListener(new DiabloSaleController.OnRetailerChangeListener() {
+                    @Override
+                    public void onRetailerChanged(SaleCalc c, Retailer retailer) {
+                        // focus to style number
+                        mSaleTableController.getControllers().get(0).focusStyleNumber();
+                        mSaleCalcController.setBalance(retailer.getBalance());
+                    }
+                });
             }
         });
     }
@@ -446,7 +458,10 @@ public class SaleInUpdate extends Fragment {
 
     private void initTitle() {
         String title = getResources().getString(R.string.sale_in_update);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(title);
+        }
     }
 
     @Override
@@ -589,7 +604,16 @@ public class SaleInUpdate extends Fragment {
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
                 break;
             case R.id.sale_in_update_save:
-                startUpdate();
+                mButtons.get(R.id.sale_in_update_save).disable();
+                if (DiabloEnum.INVALID_INDEX.equals(mSaleCalcController.getRetailer())) {
+                    UTILS.makeToast(
+                        getContext(),
+                        getContext().getString(R.string.retailer_should_comes_from_auto_complete_list),
+                        Toast.LENGTH_SHORT);
+                    mButtons.get(R.id.sale_in_update_save).enable();
+                } else {
+                    startUpdate();
+                }
                 break;
             default:
                 // return super.onOptionsItemSelected(item);
@@ -854,7 +878,7 @@ public class SaleInUpdate extends Fragment {
     }
 
     private void startRequest(NewSaleRequest request) {
-        mButtons.get(R.id.sale_in_update_save).disable();
+        // mButtons.get(R.id.sale_in_update_save).disable();
 
         final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
         Call<com.diablo.dt.diablo.response.Response> call = face.updateSale(Profile.instance().getToken(), request);

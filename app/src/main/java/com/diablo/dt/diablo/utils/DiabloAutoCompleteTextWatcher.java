@@ -23,6 +23,8 @@ public class DiabloAutoCompleteTextWatcher implements TextWatcher{
 
     public interface DiabloAutoCompleteTextChangListener {
         void afterTextChanged(String s);
+        // void afterTextChanged(String s);
+        // void onTextChanged(String s);
     }
 
     public void remove() {

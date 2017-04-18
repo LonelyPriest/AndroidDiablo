@@ -7,6 +7,7 @@ import android.widget.AutoCompleteTextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.MatchBrandAdapter;
+import com.diablo.dt.diablo.utils.DiabloAutoCompleteTextWatcher;
 
 /**
  * Created by buxianhui on 17/4/15.
@@ -30,15 +31,27 @@ public class BrandFilter extends DiabloFilter {
 
     @Override
     public void init(final View view) {
-        ((AutoCompleteTextView)view).setSelectAllOnFocus(true);
         setView(view);
-        
+
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view;
+        autoCompleteTextView.setSelectAllOnFocus(true);
+
+        autoCompleteTextView.addTextChangedListener(new DiabloAutoCompleteTextWatcher(
+            autoCompleteTextView,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    setSelectFilter(null);
+                }
+            }
+        ));
+
         new MatchBrandAdapter(getContext(),
             R.layout.typeahead_firm,
             R.id.typeahead_select_firm,
-            ((AutoCompleteTextView) view));
+            autoCompleteTextView);
 
-        ((AutoCompleteTextView) view).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 setSelectFilter(parent.getItemAtPosition(position));

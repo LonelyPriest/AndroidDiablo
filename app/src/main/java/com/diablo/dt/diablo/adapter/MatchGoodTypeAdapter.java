@@ -15,9 +15,9 @@ import java.util.List;
  */
 
 public class MatchGoodTypeAdapter extends DiabloAdapter {
-    public MatchGoodTypeAdapter(Context context, Integer resource, Integer textViewResourceId) {
-        super(context, resource, textViewResourceId);
-    }
+//    public MatchGoodTypeAdapter(Context context, Integer resource, Integer textViewResourceId) {
+//        super(context, resource, textViewResourceId);
+//    }
 
     public MatchGoodTypeAdapter(Context context, Integer resource, Integer textViewResourceId, AutoCompleteTextView view) {
         super(context, resource, textViewResourceId, view);

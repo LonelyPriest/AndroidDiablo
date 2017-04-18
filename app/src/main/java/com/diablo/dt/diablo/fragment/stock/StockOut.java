@@ -28,7 +28,6 @@ import com.diablo.dt.diablo.controller.DiabloStockRowController;
 import com.diablo.dt.diablo.controller.DiabloStockTableController;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.Firm;
-import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.model.stock.EntryStock;
@@ -179,11 +178,14 @@ public class StockOut extends Fragment {
         mStockCalcController.setDatetime(UTILS.currentDatetime());
 
         // listener
-        mStockCalcController.setFirm(Profile.instance().getFirm(firmId));
-        mStockCalcController.setFirmWatcher(getContext());
+        Firm firm = Profile.instance().getFirm(firmId);
+        mStockCalcController.setFirm(firm);
+        mStockCalcController.setBalance(firm.getBalance());
+        mStockCalcController.setFirmWatcher();
+        mStockCalcController.setFirmClickListener(getContext());
         mStockCalcController.setOnFirmChangedListener(mFirmChangedListener);
 
-        mStockCalcController.setEmployeeWatcher();
+        mStockCalcController.setEmployeeClickListener();
         mStockCalcController.setCommentWatcher();
 
 //        mStockCalcController.setCashWatcher();
@@ -192,7 +194,7 @@ public class StockOut extends Fragment {
         mStockCalcController.setVerificateWatcher();
 
         mStockCalcController.setExtraCostWatcher();
-        mStockCalcController.setExtraCostTypeWatcher();
+        mStockCalcController.setExtraCostTypeListener();
 
         // adapter
         mStockCalcController.setEmployeeAdapter(getContext());
@@ -233,10 +235,15 @@ public class StockOut extends Fragment {
     private DiabloStockCalcController.OnDiabloFirmChangedListener mFirmChangedListener =
         new DiabloStockCalcController.OnDiabloFirmChangedListener() {
             @Override
-            public void onFirmChanged(StockCalc calc) {
+            public void onFirmChanged(Firm selectFirm) {
                 if (0 != mStockTableController.getControllers().size()) {
                     mStockTableController.getControllers().get(0).setAutoCompleteStockAdapter(
-                        getContext(), calc.getFirm());
+                        getContext(), selectFirm.getId());
+
+                    mStockCalcController.setBalance(selectFirm.getBalance());
+
+                    // change focus to input good
+                    mStockTableController.getControllers().get(0).focusStyleNumber();
                 }
             }
         };
@@ -405,7 +412,16 @@ public class StockOut extends Fragment {
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_DETAIL);
                 break;
             case R.id.stock_out_save:
-                startReject();
+                mButtons.get(R.id.stock_out_save).disable();
+                if (DiabloEnum.INVALID_INDEX.equals(mStockCalcController.getFirm())) {
+                    UTILS.makeToast(
+                        getContext(),
+                        getContext().getString(R.string.firm_should_comes_from_auto_complete_list),
+                        Toast.LENGTH_SHORT);
+                    mButtons.get(R.id.stock_out_save).enable();
+                } else {
+                    startReject();
+                }
                 break;
             case R.id.stock_out_next:
                 init(mStockCalcController.getFirm());
@@ -438,9 +454,16 @@ public class StockOut extends Fragment {
                     default:
                         break;
                 }
-
-                mBackFrom = R.string.back_from_unknown;
             }
+            else {
+                // back from other operation, should re-calculate the firm balance
+                if (null != mStockCalcController) {
+                    Firm firm = Profile.instance().getFirm(mStockCalcController.getFirm());
+                    mStockCalcController.setBalance(firm.getBalance());
+                }
+            }
+
+            mBackFrom = R.string.back_from_unknown;
         }
     }
 
@@ -513,7 +536,7 @@ public class StockOut extends Fragment {
     }
 
     private void startRequest(final NewStockRequest request) {
-        mButtons.get(R.id.stock_out_save).disable();
+        // mButtons.get(R.id.stock_out_save).disable();
 
         final StockInterface face = StockClient.getClient().create(StockInterface.class);
         Call<NewStockResponse> call = face.rejectStock(Profile.instance().getToken(), request);
@@ -530,7 +553,7 @@ public class StockOut extends Fragment {
                     firm.setBalance(mStockCalcController.getStockCalc().calcAccBalance());
 
                     // reset the controller
-                    init(mStockCalcController.getFirm());
+                    init(firm.getId());
 
                     new DiabloAlertDialog(
                         getContext(),

@@ -236,6 +236,12 @@ public class DiabloSaleRowController {
         void onActionOfFPrice();
     }
 
+    public void focusStyleNumber() {
+        final DiabloCellView cell = mRowView.getCell(R.string.good);
+        cell.setCellFocusable(true);
+        cell.requestFocus();
+    }
+
     public void replaceSaleStock(final SaleStock stock) {
         mSaleStock.clearAmounts();
         Integer saleTotal = 0;

@@ -77,6 +77,8 @@ public class SaleIn extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String LOG_TAG = "SaleIn:";
+    private static final DiabloUtils UTILS = DiabloUtils.instance();
+
     private StockSelect.OnNoFreeStockSelectListener mNoFreeStockListener;
 
     private Integer mBackFrom;
@@ -213,19 +215,26 @@ public class SaleIn extends Fragment{
     }
 
     private Retailer.OnRetailerChangeListener mOnRetailerChangeListener = new Retailer.OnRetailerChangeListener() {
+        private void resetRetailerWatcher(Retailer retailer) {
+            mSaleCalcController.removeRetailerWatcher();
+
+            mSaleCalcController.setRetailer(retailer);
+            mSaleCalcController.setBalance(retailer.getBalance());
+
+            mSaleCalcController.setRetailerWatcher();
+            mSaleCalcController.setRetailerClickListener(getContext());
+        }
+
         @Override
         public void afterAdd(Retailer retailer) {
-            mSaleCalcController.removeRetailerWatcher();
-            mSaleCalcController.setRetailer(retailer);
-            mSaleCalcController.setRetailerWatcher(getContext());
+           resetRetailerWatcher(retailer);
+            // mSaleCalcController.setRetailerClickListener(getContext());
         }
 
         @Override
         public void afterGet(Retailer retailer) {
-            mSaleCalcController.setRetailer(retailer);
-            mSaleCalcController.removeRetailerWatcher();
-            mSaleCalcController.setRetailerWatcher(getContext());
-
+            resetRetailerWatcher(retailer);
+           //  mSaleCalcController.setRetailerClickListener(getContext());
             if (mIsRecoverFromDraft) {
                 calcShouldPay();
                 addEmptyRowToTable();
@@ -302,16 +311,21 @@ public class SaleIn extends Fragment{
         mSaleCalcController.setShop(shop);
         mSaleCalcController.setDatetime(DiabloUtils.getInstance().currentDatetime());
 
-        mSaleCalcController.setDiabloOnRetailerSelected(new DiabloSaleController.OnDiabloRetailerSelectedListener() {
+        mSaleCalcController.setRetailerChangeListener(new DiabloSaleController.OnRetailerChangeListener() {
             @Override
-            public void onRetailerSelected(SaleCalc c) {
+            public void onRetailerChanged(SaleCalc c, Retailer retailer) {
                 checkRetailerDraft(c);
+
+                // focus to style number
+                focusStyleNumber();
+
+                mSaleCalcController.setBalance(retailer.getBalance());
             }
         });
 
         // listener
-        // mSaleCalcController.setRetailerWatcher(getContext());
-        mSaleCalcController.setEmployeeWatcher();
+        // mSaleCalcController.setRetailerClickListener(getContext());
+        mSaleCalcController.setEmployeeClickListener();
         mSaleCalcController.setCommentWatcher();
 
         mSaleCalcController.setCashWatcher();
@@ -320,7 +334,7 @@ public class SaleIn extends Fragment{
         mSaleCalcController.setVerificateWatcher();
 
         mSaleCalcController.setExtraCostWatcher();
-        mSaleCalcController.setExtraCostTypeWatcher();
+        mSaleCalcController.setExtraCostTypeClickListener();
 
         // adapter
         mSaleCalcController.setEmployeeAdapter(getContext());
@@ -1029,7 +1043,16 @@ public class SaleIn extends Fragment{
                 break;
             case R.id.sale_in_save:
                 mButtons.get(R.id.sale_in_save).disable();
-                startSale();
+                // check retailer
+                if (DiabloEnum.INVALID_INDEX.equals(mSaleCalcController.getRetailer())) {
+                    UTILS.makeToast(
+                        getContext(),
+                        getContext().getString(R.string.retailer_should_comes_from_auto_complete_list),
+                        Toast.LENGTH_SHORT);
+                    mButtons.get(R.id.sale_in_save).enable();
+                } else {
+                    startSale();
+                }
                 break;
             default:
                 // return super.onOptionsItemSelected(item);
@@ -1074,6 +1097,17 @@ public class SaleIn extends Fragment{
         mSaleCalcController.setShouldPay(shouldPay);
         mSaleCalcController.resetAccBalance();
 
+    }
+
+    public void focusStyleNumber() {
+        // get top row
+        TableRow row = (TableRow) mSaleTable.getChildAt(0);
+        View cell = SaleInHandler.getColumn(getContext(), row, R.string.good);
+        if (null != cell) {
+            cell.setFocusableInTouchMode(true);
+            cell.setFocusable(true);
+            cell.requestFocus();
+        }
     }
 
     public void setNoFreeStockSelectListener(StockSelect.OnNoFreeStockSelectListener listener){
@@ -1132,14 +1166,16 @@ public class SaleIn extends Fragment{
                     default:
                         break;
                 }
-
-                mBackFrom = R.string.back_from_unknown;
             }
-//            else {
-//                View cell = ((TableRow) mSaleTable.getChildAt(0)).getChildAt(1);
-//                cell.requestFocus();
-//                utils.openKeyboard(getContext(), cell);
-//            }
+            else {
+                // should re-calculate retailer's balance when the fragment show every time
+                if (null != mSaleCalcController) {
+                    Retailer retailer = Profile.instance().getRetailerById(mSaleCalcController.getRetailer());
+                    Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
+                }
+            }
+
+            mBackFrom = R.string.back_from_unknown;
         }
     }
 
@@ -1282,6 +1318,7 @@ public class SaleIn extends Fragment{
 //                    SaleCalc calc = mSaleCalcController.getSaleCalc();
 //                    Profile.instance().getRetailerById(calc.getRetailer()).setBalance(calc.getAccBalance());
                     // delete draft
+
                     dbInstance.clearRetailerSaleStock(mSaleCalcController.getSaleCalc());
                     init();
 

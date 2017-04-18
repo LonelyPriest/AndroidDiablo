@@ -7,6 +7,7 @@ import android.widget.Spinner;
 
 import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.utils.DiabloUtils;
 
 /**
  * Created by buxianhui on 17/4/15.
@@ -39,12 +40,17 @@ public class YearFilter extends DiabloFilter {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         ((Spinner)view).setAdapter(adapter);
+
+        Integer currentSelectPosition = adapter.getPosition(
+            DiabloUtils.instance().toString(DiabloUtils.instance().currentYear()));
+        ((Spinner)view).setSelection(currentSelectPosition);
+        
         setSelectFilter( ((Spinner) view).getSelectedItemPosition() );
 
         ((Spinner) view).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                setSelectFilter(position);
+                setSelectFilter(parent.getItemAtPosition(position));
             }
 
             @Override

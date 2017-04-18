@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.controller;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,7 @@ import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleCalc;
 import com.diablo.dt.diablo.utils.DiabloAutoCompleteTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
 
@@ -26,6 +28,7 @@ import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
  */
 
 public class DiabloSaleController {
+    private final static String LOG_TAG = "SaleController:";
     private static DiabloUtils UTILS = DiabloUtils.instance();
     private SaleCalc mSaleCalc;
     private DiabloSaleCalcView mSaleCalcView;
@@ -35,13 +38,13 @@ public class DiabloSaleController {
      * listener
      */
     // retailer
-    private DiabloAutoCompleteTextWatcher mOnAutoCompletedRetailerListener;
+    private DiabloAutoCompleteTextWatcher mOnAutoCompletedRetailerWatcher;
     private AdapterView.OnItemClickListener mOnRetailerClickListener;
 
     // employee
-    private AdapterView.OnItemSelectedListener mOnEmployeeSelectedListener;
+    private AdapterView.OnItemSelectedListener mOnEmployeeClickListener;
     // extra type
-    private AdapterView.OnItemSelectedListener mOnExtraCostTypeSelectedListener;
+    private AdapterView.OnItemSelectedListener mOnExtraCostTypeClickListener;
 
     // extra cost
     private android.text.TextWatcher mExtraCostWatcher;
@@ -52,31 +55,32 @@ public class DiabloSaleController {
     private android.text.TextWatcher mWireWatcher;
     private android.text.TextWatcher mVerificateWatcher;
 
+    private boolean mSelectRetailerByClick;
     /**
      * interface
      */
-    private OnDiabloRetailerSelectedListener mOnRetailerSelectedListener;
+    private OnRetailerChangeListener mOnRetailerChangeListener;
 
-    public interface OnDiabloRetailerSelectedListener {
-        void onRetailerSelected(SaleCalc calc);
+    public interface OnRetailerChangeListener {
+        void onRetailerChanged(SaleCalc calc, Retailer retailer);
     }
 
-    public DiabloSaleController(SaleCalc calc) {
-        this.mSaleCalc = calc;
-        this.mSaleCalcView = null;
-
-        mExtraCostWatcher = null;
-        mCommentWatcher = null;
-        mCashWatcher = null;
-        mCardWatcher = null;
-        mWireWatcher = null;
-        mVerificateWatcher = null;
-
-        mOnAutoCompletedRetailerListener = null;
-        mOnRetailerClickListener = null;
-        mOnEmployeeSelectedListener = null;
-        mOnExtraCostTypeSelectedListener = null;
-    }
+//    public DiabloSaleController(SaleCalc calc) {
+//        this.mSaleCalc = calc;
+//        this.mSaleCalcView = null;
+//
+//        mExtraCostWatcher = null;
+//        mCommentWatcher = null;
+//        mCashWatcher = null;
+//        mCardWatcher = null;
+//        mWireWatcher = null;
+//        mVerificateWatcher = null;
+//
+//        mOnAutoCompletedRetailerListener = null;
+//        mOnRetailerClickListener = null;
+//        mOnEmployeeClickListener = null;
+//        mOnExtraCostTypeClickListener = null;
+//    }
 
 
     public DiabloSaleController(SaleCalc calc, DiabloSaleCalcView view) {
@@ -91,10 +95,12 @@ public class DiabloSaleController {
         mWireWatcher = null;
         mVerificateWatcher = null;
 
-        mOnAutoCompletedRetailerListener = null;
+        mOnAutoCompletedRetailerWatcher = null;
         mOnRetailerClickListener = null;
-        mOnEmployeeSelectedListener = null;
-        mOnExtraCostTypeSelectedListener = null;
+        mOnEmployeeClickListener = null;
+        mOnExtraCostTypeClickListener = null;
+
+        mSelectRetailerByClick = false;
     }
 
     public SaleCalc getSaleCalc() {
@@ -113,17 +119,39 @@ public class DiabloSaleController {
         return ((EditText) mSaleCalcView.getViewShop()).getText().toString().trim();
     }
 
-    public void setRetailerWatcher(final Context context) {
+    public void setRetailerWatcher() {
         final AutoCompleteTextView r = (AutoCompleteTextView) mSaleCalcView.getViewRetailer();
+        mOnAutoCompletedRetailerWatcher = new DiabloAutoCompleteTextWatcher(
+            r,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    Log.d(LOG_TAG, "watcher retailer " + s );
+                    if (!mSelectRetailerByClick) {
+                        setRetailer(null);
+                        setBalance(0f);
+                    }
+
+                    mSelectRetailerByClick = false;
+                }
+            });
+    }
+
+    public void setRetailerClickListener(final Context context) {
+        final AutoCompleteTextView r = (AutoCompleteTextView) mSaleCalcView.getViewRetailer();
+
         new BackendRetailerAdapter(context, R.layout.typeahead_retailer, R.id.typeahead_select_retailer, r);
 
         mOnRetailerClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Retailer selectRetailer = (Retailer) adapterView.getItemAtPosition(i);
+                Log.d(LOG_TAG, "click the retailer:" + selectRetailer.getId());
+                mSelectRetailerByClick = true;
+                
                 setRetailer(selectRetailer);
-                if (null != mOnRetailerSelectedListener) {
-                    mOnRetailerSelectedListener.onRetailerSelected(mSaleCalc);
+                if (null != mOnRetailerChangeListener) {
+                    mOnRetailerChangeListener.onRetailerChanged(mSaleCalc, selectRetailer);
                 }
             }
         };
@@ -132,13 +160,13 @@ public class DiabloSaleController {
     }
 
     public void removeRetailerWatcher() {
-        if (null != mOnAutoCompletedRetailerListener) {
-            mOnAutoCompletedRetailerListener.remove();
+        if (null != mOnAutoCompletedRetailerWatcher) {
+            mOnAutoCompletedRetailerWatcher.remove();
         }
     }
 
-    public void setEmployeeWatcher() {
-        mOnEmployeeSelectedListener = new AdapterView.OnItemSelectedListener() {
+    public void setEmployeeClickListener() {
+        mOnEmployeeClickListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Employee employee = (Employee) adapterView.getItemAtPosition(i);
@@ -151,11 +179,11 @@ public class DiabloSaleController {
             }
         };
 
-        ((Spinner)mSaleCalcView.getViewEmployee()).setOnItemSelectedListener(mOnEmployeeSelectedListener);
+        ((Spinner)mSaleCalcView.getViewEmployee()).setOnItemSelectedListener(mOnEmployeeClickListener);
     }
 
-    public void setExtraCostTypeWatcher() {
-        mOnExtraCostTypeSelectedListener = new AdapterView.OnItemSelectedListener() {
+    public void setExtraCostTypeClickListener() {
+        mOnExtraCostTypeClickListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mSaleCalc.setExtraCostType(i);
@@ -167,7 +195,7 @@ public class DiabloSaleController {
             }
         };
         ((Spinner)mSaleCalcView.getViewExtraCostType())
-            .setOnItemSelectedListener(mOnExtraCostTypeSelectedListener);
+            .setOnItemSelectedListener(mOnExtraCostTypeClickListener);
     }
 
     public void setCommentWatcher() {
@@ -263,8 +291,8 @@ public class DiabloSaleController {
         ((Spinner)mSaleCalcView.getViewExtraCostType()).setAdapter(adapter);
     }
 
-    public void setDiabloOnRetailerSelected(OnDiabloRetailerSelectedListener listener) {
-        mOnRetailerSelectedListener = listener;
+    public void setRetailerChangeListener(OnRetailerChangeListener listener) {
+        mOnRetailerChangeListener = listener;
     }
 
     public void setDatetime(String s){
@@ -279,12 +307,25 @@ public class DiabloSaleController {
     }
 
     public void setRetailer(Retailer retailer){
-        mSaleCalc.setRetailer(retailer.getId());
-        mSaleCalcView.setRetailerValue(retailer.getName());
+        if (null == retailer) {
+            Log.d(LOG_TAG, "set retailer with null");
+            mSaleCalc.setRetailer(DiabloEnum.INVALID_INDEX);
+        } else {
+            Log.d(LOG_TAG, "set retailer:" + retailer.getId());
+            mSaleCalc.setRetailer(retailer.getId());
+            mSaleCalcView.setRetailerValue(retailer.getName());
+        }
 
-        mSaleCalc.setBalance(retailer.getBalance());
-        mSaleCalcView.setBalanceValue(retailer.getBalance());
 
+//        mSaleCalc.setBalance(retailer.getBalance());
+//        mSaleCalcView.setBalanceValue(retailer.getBalance());
+//
+//        resetAccBalance();
+    }
+
+    public void setBalance(Float balance) {
+        mSaleCalc.setBalance(balance);
+        mSaleCalcView.setBalanceValue(balance);
         resetAccBalance();
     }
 

@@ -174,11 +174,14 @@ public class StockIn extends Fragment {
         mStockCalcController.setDatetime(UTILS.currentDatetime());
 
         // listener
-        mStockCalcController.setFirm(Profile.instance().getFirm(firmId));
-        mStockCalcController.setFirmWatcher(getContext());
+        Firm firm = Profile.instance().getFirm(firmId);
+        mStockCalcController.setFirm(firm);
+        mStockCalcController.setBalance(firm.getBalance());
+        mStockCalcController.setFirmWatcher();
+        mStockCalcController.setFirmClickListener(getContext());
         mStockCalcController.setOnFirmChangedListener(mFirmChangedListener);
 
-        mStockCalcController.setEmployeeWatcher();
+        mStockCalcController.setEmployeeClickListener();
         mStockCalcController.setCommentWatcher();
 
         mStockCalcController.setCashWatcher();
@@ -187,7 +190,7 @@ public class StockIn extends Fragment {
         mStockCalcController.setVerificateWatcher();
 
         mStockCalcController.setExtraCostWatcher();
-        mStockCalcController.setExtraCostTypeWatcher();
+        mStockCalcController.setExtraCostTypeListener();
 
         // adapter
         mStockCalcController.setEmployeeAdapter(getContext());
@@ -206,10 +209,15 @@ public class StockIn extends Fragment {
     private DiabloStockCalcController.OnDiabloFirmChangedListener mFirmChangedListener =
         new DiabloStockCalcController.OnDiabloFirmChangedListener() {
             @Override
-            public void onFirmChanged(StockCalc calc) {
+            public void onFirmChanged(Firm selectFirm) {
                 if (0 != mStockTableController.getControllers().size()) {
                     mStockTableController.getControllers().get(0).setAutoCompleteGoodAdapter(
-                        getContext(), calc.getFirm());
+                        getContext(), selectFirm.getId());
+
+                    mStockCalcController.setBalance(selectFirm.getBalance());
+
+                    // change focus to input good
+                    mStockTableController.getControllers().get(0).focusStyleNumber();
                 }
             }
         };
@@ -341,7 +349,16 @@ public class StockIn extends Fragment {
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_DETAIL);
                 break;
             case R.id.stock_in_save:
-                startStock();
+                mButtons.get(R.id.stock_in_save).disable();
+                if (DiabloEnum.INVALID_INDEX.equals(mStockCalcController.getFirm())) {
+                    UTILS.makeToast(
+                        getContext(),
+                        getContext().getString(R.string.firm_should_comes_from_auto_complete_list),
+                        Toast.LENGTH_SHORT);
+                    mButtons.get(R.id.stock_in_save).enable();
+                } else {
+                    startStock();
+                }
                 break;
             case R.id.stock_in_to_good_new:
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_GOOD_NEW);
@@ -434,9 +451,14 @@ public class StockIn extends Fragment {
                     default:
                         break;
                 }
-
-                mBackFrom = R.string.back_from_unknown;
             }
+            // back from other operation, should re-calculate the firm balance
+            if (null != mStockCalcController) {
+                Firm firm = Profile.instance().getFirm(mStockCalcController.getFirm());
+                mStockCalcController.setBalance(firm.getBalance());
+            }
+
+            mBackFrom = R.string.back_from_unknown;
         }
     }
 
@@ -514,7 +536,7 @@ public class StockIn extends Fragment {
     }
 
     private void startRequest(final NewStockRequest request) {
-        mButtons.get(R.id.stock_in_save).disable();
+        // mButtons.get(R.id.stock_in_save).disable();
 
         final StockInterface face = StockClient.getClient().create(StockInterface.class);
         Call<NewStockResponse> call = face.addStock(Profile.instance().getToken(), request);

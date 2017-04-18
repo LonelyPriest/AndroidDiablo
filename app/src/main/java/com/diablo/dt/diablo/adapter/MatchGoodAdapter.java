@@ -19,6 +19,16 @@ public class MatchGoodAdapter extends DiabloAdapter {
         super(context, resource, textViewResourceId, view);
     }
 
+    public MatchGoodAdapter(Context context,
+                             Integer resource,
+                             Integer textViewResourceId,
+                             AutoCompleteTextView view,
+                             boolean dropdownEnable) {
+        super(context, resource, textViewResourceId, view);
+
+        setDropDownOffsetEnable(dropdownEnable);
+    }
+
     @Override
     public List<DiabloEntity> findItems(String s) {
         List<MatchGood> goods = Profile.instance().getMatchGoods();

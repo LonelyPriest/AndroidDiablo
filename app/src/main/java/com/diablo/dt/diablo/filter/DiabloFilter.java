@@ -46,10 +46,6 @@ public class DiabloFilter {
         this.mView = view;
     }
 
-//    public View createView() {
-//        return null;
-//    }
-
     public Context getContext() {
         return mContext;
     }
@@ -61,5 +57,4 @@ public class DiabloFilter {
     public Object getSelect() {
         return mSelectFilter;
     }
-
 }

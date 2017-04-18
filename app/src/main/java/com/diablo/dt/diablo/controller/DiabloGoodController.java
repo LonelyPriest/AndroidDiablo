@@ -246,14 +246,14 @@ public class DiabloGoodController {
         mFirmWatcher = new DiabloAutoCompleteTextWatcher(
             f,
             new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
-            @Override
-            public void afterTextChanged(String s) {
-                if (null == Profile.instance().getBrand(s)) {
-                    mIsValidFirm = false;
-                    mGoodCalc.setFirm(null);
-                    checkValidAction();
+                @Override
+                public void afterTextChanged(String s) {
+                    if (null == Profile.instance().getBrand(s)) {
+                        mIsValidFirm = false;
+                        mGoodCalc.setFirm(null);
+                        checkValidAction();
+                    }
                 }
-            }
         });
 
 

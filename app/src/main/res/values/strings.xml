@@ -448,6 +448,9 @@
   <string name="good_update_success">货品编辑成功</string>
   <string name="good_update_failed">货品编辑失败</string>
 
+  <string name="retailer_should_comes_from_auto_complete_list">客户必需从提示列表中选择</string>
+  <string name="firm_should_comes_from_auto_complete_list">厂商必需从提示列表中选择</string>
+
   <!-- toast -->
   <string name="refresh_top">己到达第一页，无需刷新</string>
   <string name="refresh_bottom">已到达最后一页，无需刷新</string>

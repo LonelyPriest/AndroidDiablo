@@ -85,7 +85,7 @@ public class DiabloStockRowController {
         final OnActionAfterSelectGood listener) {
 
         final DiabloCellView cell = mRowView.getCell(R.string.good);
-        final AutoCompleteTextView cellView = (AutoCompleteTextView) cell.getView();
+        // final AutoCompleteTextView cellView = (AutoCompleteTextView) cell.getView();
         cell.setCellFocusable(true);
         cell.requestFocus();
         // cellView.setThreshold(1);
@@ -238,9 +238,9 @@ public class DiabloStockRowController {
         return mEntryStock.getTotal();
     }
 
-    public void setEntryTotal(Integer total) {
-        mEntryStock.setTotal(total);
-    }
+//    public void setEntryTotal(Integer total) {
+//        mEntryStock.setTotal(total);
+//    }
 
     public Integer getOrderId() {
         return mEntryStock.getOrderId();
@@ -248,6 +248,12 @@ public class DiabloStockRowController {
 
     public Float calcStockPrice() {
         return mEntryStock.calcStockPrice();
+    }
+
+    public void focusStyleNumber() {
+        final DiabloCellView cell = mRowView.getCell(R.string.good);
+        cell.setCellFocusable(true);
+        cell.requestFocus();
     }
 
     /**

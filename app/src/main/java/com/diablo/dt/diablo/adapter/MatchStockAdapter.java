@@ -20,6 +20,16 @@ public class MatchStockAdapter extends DiabloAdapter {
         super(context, resource, textViewResourceId, view);
     }
 
+    public MatchStockAdapter(Context context,
+                             Integer resource,
+                             Integer textViewResourceId,
+                             AutoCompleteTextView view,
+                             boolean dropdownEnable) {
+        super(context, resource, textViewResourceId, view);
+
+        setDropDownOffsetEnable(dropdownEnable);
+    }
+
     @Override
     public List<DiabloEntity> findItems(String s) {
         List<MatchStock> stocks = Profile.instance().getMatchStocks();

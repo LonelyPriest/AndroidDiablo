@@ -7,6 +7,7 @@ import android.widget.AutoCompleteTextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.MatchGoodAdapter;
+import com.diablo.dt.diablo.utils.DiabloAutoCompleteTextWatcher;
 
 /**
  * Created by buxianhui on 17/4/17.
@@ -30,15 +31,28 @@ public class GoodStyleNumberFilter extends DiabloFilter {
     }
     @Override
     public void init(View view) {
-        super.init(view);
         setView(view);
+
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view;
+        autoCompleteTextView.setSelectAllOnFocus(true);
+
+        autoCompleteTextView.addTextChangedListener(new DiabloAutoCompleteTextWatcher(
+            autoCompleteTextView,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    setSelectFilter(null);
+                }
+            }
+        ));
 
         new MatchGoodAdapter(getContext(),
             R.layout.typeahead_match_stock_on_sale,
             R.id.typeahead_select_stock_on_sale,
-            ((AutoCompleteTextView) view));
+            autoCompleteTextView,
+            false);
 
-        ((AutoCompleteTextView) view).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 setSelectFilter(parent.getItemAtPosition(position));

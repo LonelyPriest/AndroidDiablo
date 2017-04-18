@@ -1,5 +1,6 @@
 package com.diablo.dt.diablo.fragment.sale;
 
+import static com.diablo.dt.diablo.R.id.sale_out_update_save;
 import static com.diablo.dt.diablo.model.sale.SaleUtils.getSaleStock;
 
 import android.os.Bundle;
@@ -104,7 +105,7 @@ public class SaleOutUpdate extends Fragment {
         mLastRSN = mRSN;
         mMatchStocks = Profile.instance().getMatchStocks();
         mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
-        mButtons.get(R.id.sale_out_update_save).enable();
+        mButtons.get(sale_out_update_save).enable();
         if (null != mSaleTableController) {
             mSaleTableController.clear();
         }
@@ -129,7 +130,7 @@ public class SaleOutUpdate extends Fragment {
 //                mSaleCalcController.setRetailer(retailer);
 //            }
 //            mSaleCalcController.removeRetailerWatcher();
-//            mSaleCalcController.setRetailerWatcher(getContext());
+//            mSaleCalcController.setRetailerClickListener(getContext());
 //        }
 //    };
 
@@ -170,7 +171,7 @@ public class SaleOutUpdate extends Fragment {
             .addView(SaleUtils.createTableHeadFromLabels(getContext(), mLabels));
 
         mButtons = new SparseArray<>();
-        mButtons.put(R.id.sale_out_update_save, new DiabloButton(getContext(), R.id.sale_out_update_save));
+        mButtons.put(sale_out_update_save, new DiabloButton(getContext(), sale_out_update_save));
 
         init();
 
@@ -210,12 +211,14 @@ public class SaleOutUpdate extends Fragment {
                 // copy the retailer
                 if (retailer.getId().equals(mOldSaleCalc.getRetailer())) {
                     mSaleCalcController.setRetailer(new Retailer(retailer, mOldSaleCalc.getBalance()));
+                    mSaleCalcController.setBalance(mOldSaleCalc.getBalance());
                 }
                 else {
                     mSaleCalcController.setRetailer(retailer);
+                    mSaleCalcController.setBalance(retailer.getBalance());
                 }
                 mSaleCalcController.removeRetailerWatcher();
-                mSaleCalcController.setRetailerWatcher(getContext());
+                mSaleCalcController.setRetailerClickListener(getContext());
 
                 mSaleCalcView.setCashValue(calc.getCash());
                 mSaleCalcView.setCardValue(calc.getCard());
@@ -232,13 +235,13 @@ public class SaleOutUpdate extends Fragment {
                 mSaleCalcController.setDatetime(calc.getDatetime());
 
                 // listener
-                // mSaleCalcController.setRetailerWatcher(getContext());
-                mSaleCalcController.setEmployeeWatcher();
+                // mSaleCalcController.setRetailerClickListener(getContext());
+                mSaleCalcController.setEmployeeClickListener();
                 mSaleCalcController.setCommentWatcher();
 
                 mSaleCalcController.setVerificateWatcher();
                 mSaleCalcController.setExtraCostWatcher();
-                mSaleCalcController.setExtraCostTypeWatcher();
+                mSaleCalcController.setExtraCostTypeClickListener();
 
                 // adapter
                 mSaleCalcController.setEmployeeAdapter(getContext());
@@ -252,6 +255,15 @@ public class SaleOutUpdate extends Fragment {
 
                 mSaleTableController.addRowControllerAtTop(createEmptyRow());
                 calcShouldPay();
+
+                mSaleCalcController.setRetailerChangeListener(new DiabloSaleController.OnRetailerChangeListener() {
+                    @Override
+                    public void onRetailerChanged(SaleCalc c, Retailer retailer) {
+                        // focus to style number
+                        mSaleTableController.getControllers().get(0).focusStyleNumber();
+                        mSaleCalcController.setBalance(retailer.getBalance());
+                    }
+                });
             }
         });
     }
@@ -571,8 +583,17 @@ public class SaleOutUpdate extends Fragment {
             case R.id.sale_out_update_back:
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
                 break;
-            case R.id.sale_out_update_save:
-                startUpdate();
+            case sale_out_update_save:
+                mButtons.get(R.id.sale_out_update_save).disable();
+                if (DiabloEnum.INVALID_INDEX.equals(mSaleCalcController.getRetailer())) {
+                    UTILS.makeToast(
+                        getContext(),
+                        getContext().getString(R.string.retailer_should_comes_from_auto_complete_list),
+                        Toast.LENGTH_SHORT);
+                    mButtons.get(R.id.sale_in_update_save).enable();
+                } else {
+                    startUpdate();
+                }
                 break;
             default:
                 // return super.onOptionsItemSelected(item);
@@ -835,7 +856,7 @@ public class SaleOutUpdate extends Fragment {
     }
 
     private void startRequest(NewSaleRequest request) {
-        mButtons.get(R.id.sale_out_update_save).disable();
+        // mButtons.get(R.id.sale_out_update_save).disable();
 
         final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
         Call<com.diablo.dt.diablo.response.Response> call = face.updateSale(Profile.instance().getToken(), request);
@@ -879,7 +900,7 @@ public class SaleOutUpdate extends Fragment {
                         }
                     ).create();
                 } else {
-                    mButtons.get(R.id.sale_out_update_save).enable();
+                    mButtons.get(sale_out_update_save).enable();
                     Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
                     String extraMessage = res == null ? "" : res.getError();
                     new DiabloAlertDialog(
@@ -891,7 +912,7 @@ public class SaleOutUpdate extends Fragment {
 
             @Override
             public void onFailure(Call<com.diablo.dt.diablo.response.Response> call, Throwable t) {
-                mButtons.get(R.id.sale_out_update_save).enable();
+                mButtons.get(sale_out_update_save).enable();
                 new DiabloAlertDialog(
                     getContext(),
                     getResources().getString(R.string.sale_out_update),

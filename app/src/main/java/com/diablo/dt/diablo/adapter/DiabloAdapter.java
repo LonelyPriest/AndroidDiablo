@@ -26,12 +26,15 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
     private Integer textViewResourceId;
     private AutoCompleteTextView view;
     private List<DiabloEntity> matchedItems = new ArrayList<>();
+    private boolean dropDownOffsetEnable;
 
     public DiabloAdapter(Context context, Integer resource, Integer textViewResourceId) {
         this.context = context;
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
         this.view = null;
+
+        dropDownOffsetEnable = true;
     }
 
     public DiabloAdapter(Context context, Integer resource, Integer textViewResourceId, AutoCompleteTextView view) {
@@ -42,6 +45,8 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
 
         view.setAdapter(this);
         view.setThreshold(1);
+
+        dropDownOffsetEnable = true;
     }
 
     public List<DiabloEntity> findItems(String s) {
@@ -58,6 +63,10 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
 
     public AutoCompleteTextView getView() {
         return view;
+    }
+
+    protected void setDropDownOffsetEnable(boolean enable) {
+        dropDownOffsetEnable = enable;
     }
 
     public void setDropDownOffset() {
@@ -92,7 +101,9 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
         if (item != null) {
             TextView retailerView = (TextView) view.findViewById(textViewResourceId);
             retailerView.setText(item.getName());
-            setDropDownOffset();
+            if (dropDownOffsetEnable){
+                setDropDownOffset();
+            }
         }
         return view;
     }

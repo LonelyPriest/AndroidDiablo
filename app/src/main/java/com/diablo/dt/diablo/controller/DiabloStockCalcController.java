@@ -17,7 +17,9 @@ import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.stock.StockCalc;
+import com.diablo.dt.diablo.utils.DiabloAutoCompleteTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.stock.DiabloStockCalcView;
 
@@ -35,7 +37,7 @@ public class DiabloStockCalcController {
      * listener
      */
     // firm
-    // private DiabloAutoCompleteTextWatcher mOnAutoCompletedFirmListener;
+    private DiabloAutoCompleteTextWatcher mFirmWatcher;
     private AdapterView.OnItemClickListener mOnFirmClickListener;
 
     // employee
@@ -58,25 +60,25 @@ public class DiabloStockCalcController {
     private OnDiabloFirmChangedListener mOnFirmChangedListener;
 
     public interface OnDiabloFirmChangedListener {
-        void onFirmChanged(StockCalc calc);
+        void onFirmChanged(Firm firm);
     }
 
-    public DiabloStockCalcController(StockCalc calc) {
-        this.mStockCalc = calc;
-        this.mStockCalcView = null;
-
-        mExtraCostWatcher = null;
-        mCommentWatcher = null;
-        mCashWatcher = null;
-        mCardWatcher = null;
-        mWireWatcher = null;
-        mVerificateWatcher = null;
-
-        // mOnAutoCompletedFirmListener = null;
-        mOnFirmClickListener = null;
-        mOnEmployeeSelectedListener = null;
-        mOnExtraCostTypeSelectedListener = null;
-    }
+//    public DiabloStockCalcController(StockCalc calc) {
+//        this.mStockCalc = calc;
+//        this.mStockCalcView = null;
+//
+//        mExtraCostWatcher = null;
+//        mCommentWatcher = null;
+//        mCashWatcher = null;
+//        mCardWatcher = null;
+//        mWireWatcher = null;
+//        mVerificateWatcher = null;
+//
+//        // mOnAutoCompletedFirmListener = null;
+//        mOnFirmClickListener = null;
+//        mOnEmployeeSelectedListener = null;
+//        mOnExtraCostTypeSelectedListener = null;
+//    }
 
 
     public DiabloStockCalcController(StockCalc calc, DiabloStockCalcView view) {
@@ -97,6 +99,12 @@ public class DiabloStockCalcController {
         mOnExtraCostTypeSelectedListener = null;
     }
 
+    private void removeFirmWatcher() {
+        if (null != mFirmWatcher) {
+            mFirmWatcher.remove();
+        }
+    }
+
     public StockCalc getStockCalc() {
         return mStockCalc;
     }
@@ -105,7 +113,20 @@ public class DiabloStockCalcController {
         this.mStockCalcView = view;
     }
 
-    public void setFirmWatcher(final Context context) {
+    public void setFirmWatcher() {
+        final AutoCompleteTextView f = (AutoCompleteTextView) mStockCalcView.getViewFirm();
+        mFirmWatcher = new DiabloAutoCompleteTextWatcher(
+            f,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    setFirm(null);
+                    setBalance(0f);
+                }
+            });
+    }
+
+    public void setFirmClickListener(final Context context) {
         final AutoCompleteTextView f = (AutoCompleteTextView) mStockCalcView.getViewFirm();
         new FirmAdapter(context, R.layout.typeahead_firm, R.id.typeahead_select_firm, f);
 
@@ -113,9 +134,14 @@ public class DiabloStockCalcController {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Firm selectFirm = (Firm) adapterView.getItemAtPosition(i);
+                removeFirmWatcher();
+
                 setFirm(selectFirm);
+
+                setFirmWatcher();
+                // setBalance(selectFirm.getBalance());
                 if (null != mOnFirmChangedListener) {
-                    mOnFirmChangedListener.onFirmChanged(mStockCalc);
+                    mOnFirmChangedListener.onFirmChanged(selectFirm);
                 }
             }
         };
@@ -123,7 +149,7 @@ public class DiabloStockCalcController {
         f.setOnItemClickListener(mOnFirmClickListener);
     }
 
-    public void setEmployeeWatcher() {
+    public void setEmployeeClickListener() {
         mOnEmployeeSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -140,7 +166,7 @@ public class DiabloStockCalcController {
         ((Spinner)mStockCalcView.getViewEmployee()).setOnItemSelectedListener(mOnEmployeeSelectedListener);
     }
 
-    public void setExtraCostTypeWatcher() {
+    public void setExtraCostTypeListener() {
         mOnExtraCostTypeSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -263,12 +289,18 @@ public class DiabloStockCalcController {
     }
 
     public void setFirm(Firm firm){
-        mStockCalc.setFirm(firm.getId());
-        mStockCalcView.setFirmValue(firm.getName());
+        if (null == firm) {
+            mStockCalc.setFirm(DiabloEnum.INVALID_INDEX);
+        } else {
+            mStockCalc.setFirm(firm.getId());
+            mStockCalcView.setFirmValue(firm.getName());
+        }
+        // setBalance(firm.getBalance());
+    }
 
-        mStockCalc.setBalance(firm.getBalance());
-        mStockCalcView.setBalanceValue(firm.getBalance());
-
+    public void setBalance(Float balance) {
+        mStockCalc.setBalance(balance);
+        mStockCalcView.setBalanceValue(balance);
         resetAccBalance();
     }
 

@@ -171,18 +171,29 @@ public class SaleOut extends Fragment {
 
         Retailer.getRetailer(getContext(), retailerId, mOnRetailerChangeListener);
 
+
         mSaleCalcController = new DiabloSaleController(new SaleCalc(DiabloEnum.SALE_OUT), mSaleCalcView);
         // mSaleCalcController.setRetailer(retailerId);
         mSaleCalcController.setShop(mLoginShop);
         mSaleCalcController.setDatetime(DiabloUtils.getInstance().currentDatetime());
 
+        mSaleCalcController.setRetailerChangeListener(new DiabloSaleController.OnRetailerChangeListener() {
+            @Override
+            public void onRetailerChanged(SaleCalc c, Retailer retailer) {
+                // focus to style number
+                mSaleTableController.getControllers().get(0).focusStyleNumber();
+                mSaleCalcController.setBalance(retailer.getBalance());
+            }
+        });
+
+
         // listener
-        // mSaleCalcController.setRetailerWatcher(getContext());
-        mSaleCalcController.setEmployeeWatcher();
+        // mSaleCalcController.setRetailerClickListener(getContext());
+        mSaleCalcController.setEmployeeClickListener();
         mSaleCalcController.setCommentWatcher();
         mSaleCalcController.setVerificateWatcher();
         mSaleCalcController.setExtraCostWatcher();
-        mSaleCalcController.setExtraCostTypeWatcher();
+        mSaleCalcController.setExtraCostTypeClickListener();
 
         // adapter
         mSaleCalcController.setEmployeeAdapter(getContext());
@@ -203,9 +214,14 @@ public class SaleOut extends Fragment {
 
         @Override
         public void afterGet(Retailer retailer) {
-            mSaleCalcController.setRetailer(retailer);
             mSaleCalcController.removeRetailerWatcher();
-            mSaleCalcController.setRetailerWatcher(getContext());
+
+            mSaleCalcController.setRetailer(retailer);
+            mSaleCalcController.setBalance(retailer.getBalance());
+
+            mSaleCalcController.setRetailerWatcher();
+
+            mSaleCalcController.setRetailerClickListener(getContext());
         }
     };
 
@@ -385,14 +401,16 @@ public class SaleOut extends Fragment {
                     default:
                         break;
                 }
-
-                mBackFrom = R.string.back_from_unknown;
             }
-//            else {
-//                View cell = ((TableRow) mSaleTable.getChildAt(0)).getChildAt(1);
-//                cell.requestFocus();
-//                utils.openKeyboard(getContext(), cell);
-//            }
+            else {
+                // should re-calculate retailer's balance when the fragment show every time
+                if (null != mSaleCalcController) {
+                    Retailer retailer = Profile.instance().getRetailerById(mSaleCalcController.getRetailer());
+                    Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
+                }
+            }
+
+            mBackFrom = R.string.back_from_unknown;
         }
     }
 
@@ -463,7 +481,16 @@ public class SaleOut extends Fragment {
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
                 break;
             case R.id.sale_out_save:
-                startSale();
+                mButtons.get(R.id.sale_out_save).disable();
+                if (DiabloEnum.INVALID_INDEX.equals(mSaleCalcController.getRetailer())) {
+                    UTILS.makeToast(
+                        getContext(),
+                        getContext().getString(R.string.retailer_should_comes_from_auto_complete_list),
+                        Toast.LENGTH_SHORT);
+                    mButtons.get(R.id.sale_in_update_save).enable();
+                } else {
+                    startSale();
+                }
                 break;
             default:
                 // return super.onOptionsItemSelected(item);

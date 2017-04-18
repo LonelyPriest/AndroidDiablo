@@ -7,6 +7,7 @@ import android.widget.AutoCompleteTextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.FirmAdapter;
+import com.diablo.dt.diablo.utils.DiabloAutoCompleteTextWatcher;
 
 /**
  * Created by buxianhui on 17/4/15.
@@ -30,8 +31,20 @@ public class FirmFilter extends DiabloFilter {
 
     @Override
     public void init(final View view) {
-        ((AutoCompleteTextView)view).setSelectAllOnFocus(true);
         setView(view);
+
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view;
+        autoCompleteTextView.setSelectAllOnFocus(true);
+
+        new DiabloAutoCompleteTextWatcher(
+            autoCompleteTextView,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    setSelectFilter(null);
+                }
+            }
+        );
 
         new FirmAdapter(
             getContext(),
