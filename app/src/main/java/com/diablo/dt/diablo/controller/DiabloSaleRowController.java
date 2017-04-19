@@ -44,13 +44,16 @@ public class DiabloSaleRowController {
     private AdapterView.OnItemClickListener mOnStockClickListener;
 
     // price changed
-    private android.text.TextWatcher mPriceListener;
+    private android.text.TextWatcher mPriceWatcher;
 
     // price type
     private StringArrayAdapter mSelectPriceAdapter;
 
     // amount changer
-    private android.text.TextWatcher mAmountListener;
+    private android.text.TextWatcher mAmountWatcher;
+
+    // comment changed
+    private android.text.TextWatcher mCommentWatcher;
 
     public DiabloSaleRowController(DiabloRowView rowView, SaleStock stock) {
         this.mSaleStock = stock;
@@ -123,11 +126,14 @@ public class DiabloSaleRowController {
                     }
                     else if (key.equals(R.string.fprice)){
                         mRowView.setCellText(R.string.fprice, mSaleStock.getFinalPrice());
-                        ((EditText)v).addTextChangedListener(mPriceListener);
+                        ((EditText)v).addTextChangedListener(mPriceWatcher);
                     }
                     else if (key.equals(R.string.amount)) {
                         listener.onActionOfAmount(DiabloSaleRowController.this, mRowView.getCell(key));
-                        ((EditText)v).addTextChangedListener(mAmountListener);
+                        ((EditText)v).addTextChangedListener(mAmountWatcher);
+                    }
+                    else if (key.equals(R.string.comment)) {
+                        setCommentWatcher();
                     }
                 }
             }
@@ -137,12 +143,13 @@ public class DiabloSaleRowController {
     }
 
     public void setRowWatcher() {
-        ((EditText)(mRowView.getCell(R.string.fprice).getView())).addTextChangedListener(mPriceListener);
-        ((EditText)(mRowView.getCell(R.string.amount).getView())).addTextChangedListener(mAmountListener);
+        ((EditText)(mRowView.getCell(R.string.fprice).getView())).addTextChangedListener(mPriceWatcher);
+        ((EditText)(mRowView.getCell(R.string.amount).getView())).addTextChangedListener(mAmountWatcher);
+        setCommentWatcher();
     }
 
     public void setFinalPriceWatcher(final OnActionAfterSelectGood listener) {
-        mPriceListener = new DiabloEditTextWatcher() {
+        mPriceWatcher = new DiabloEditTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mSaleStock.setFinalPrice(UTILS.toFloat(editable.toString()));
@@ -153,7 +160,18 @@ public class DiabloSaleRowController {
     }
 
     public void setAmountWatcher(Handler handler, DiabloSaleRowController controller) {
-        mAmountListener = new DiabloSaleAmountChangeWatcher(handler, controller);
+        mAmountWatcher = new DiabloSaleAmountChangeWatcher(handler, controller);
+    }
+
+    private void setCommentWatcher() {
+        mCommentWatcher = new DiabloEditTextWatcher(
+            mRowView.getCell(R.string.comment).getView(),
+            new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+            @Override
+            public void afterTextChanged(String s) {
+                mSaleStock.setComment(s);
+            }
+        });
     }
 
     public void setPriceTypeAdapter(Context context, String [] priceTypes) {

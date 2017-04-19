@@ -66,9 +66,12 @@ public class DiabloEnum {
     public static final String  START_TIME = "qtime_start";
     public static final String  START_PRICE = "price_type";
     public static final String  START_RETAILER = "s_customer";
+    public static final String START_SHOW_DISCOUNT = "show_discount";
     public static final Integer NON_REPO = 0;
     public static final Integer USE_REPO = 1;
 
+    public static final String DIABLO_YES = "1";
+    public static final String DIABLO_NO = "0";
     public static final String TAG_PRICE = "1";
     public static final String PKG_PRICE = "2";
     public static final String PRICE3    = "3";
@@ -98,8 +101,8 @@ public class DiabloEnum {
     public static final String TAG_STOCK_NOTE = "stockNote";
 
     public static final String TAG_STOCK_SELECT = "stockSelect";
-    public static final String TAG_SALE_IN_UPDATE = "stockInUpdate";
-    public static final String TAG_SALE_OUT_UPDATE = "stockOutUpdate";
+    public static final String TAG_SALE_IN_UPDATE = "saleInUpdate";
+    public static final String TAG_SALE_OUT_UPDATE = "saleOutUpdate";
 
     public static final String TAG_STOCK_STORE_DETAIL = "stockStoreDetail";
     public static final String TAG_GOOD_NEW = "goodNew";

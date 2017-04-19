@@ -41,6 +41,7 @@ import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -168,12 +169,27 @@ public class SaleUtils {
         }
     }
 
-    public static DiabloCellLabel[] createSaleLabelsFromTitle(Context context) {
-        String [] heads = context.getResources().getStringArray(R.array.thead_sale);
+    public static DiabloCellLabel[] createSaleLabelsFromTitle(Context context, Integer shop) {
 
+        String showDiscount = Profile.instance().getConfig(
+            shop,
+            DiabloEnum.START_SHOW_DISCOUNT,
+            DiabloEnum.DIABLO_YES);
+
+        List<String> titles = new ArrayList<>();
+        for(String title: context.getResources().getStringArray(R.array.thead_sale)) {
+            if (title.equals(context.getResources().getString(R.string.discount))
+                && !showDiscount.equals(DiabloEnum.DIABLO_YES)) {
+                continue;
+            }
+            titles.add(title);
+        }
+
+        // String [] heads = context.getResources().getStringArray(R.array.thead_sale);
+        String [] heads = titles.toArray(new String[titles.size()]);
         DiabloCellLabel [] labels = new DiabloCellLabel[heads.length];
-
         DiabloCellLabel label = null;
+
         for (int i=0; i< heads.length; i++) {
             String h = heads[i];
             if (context.getResources().getString(R.string.order_id).equals(h)) {
@@ -244,10 +260,12 @@ public class SaleUtils {
             else if (context.getResources().getString(R.string.comment).equals(h)) {
                 label = new DiabloCellLabel(
                     h,
-                    DiabloEnum.DIABLO_TEXT,
+                    DiabloEnum.DIABLO_EDIT,
                     R.color.black,
                     16,
+                    Gravity.CENTER_VERTICAL,
                     InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS,
+                    true,
                     1.5f);
                 label.setLabelId(R.string.comment);
             }

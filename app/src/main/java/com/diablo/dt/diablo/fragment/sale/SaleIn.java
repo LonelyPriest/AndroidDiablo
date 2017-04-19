@@ -98,7 +98,7 @@ public class SaleIn extends Fragment{
     private Integer mSelectPrice;
     private Integer mSysRetailer;
 
-    private List<MatchStock> mMatchStocks;
+    // private List<MatchStock> mMatchStocks;
     private List<SaleStock> mSaleStocks;
 
     // private Retailer mSelectRetailer;
@@ -109,6 +109,7 @@ public class SaleIn extends Fragment{
     private Integer mRowSize;
 
     private boolean mIsRecoverFromDraft;
+    // private boolean mShowDiscount;
 
     public SaleIn() {
         // Required empty public constructor
@@ -149,7 +150,22 @@ public class SaleIn extends Fragment{
         mSysRetailer = utils.toInteger(
             Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_STRING_ZERO));
 
-        mTitles = getResources().getStringArray(R.array.thead_sale);
+        mLoginShop = Profile.instance().getLoginShop();
+        String showDiscount = Profile.instance().getConfig(
+            mLoginShop,
+            DiabloEnum.START_SHOW_DISCOUNT,
+            DiabloEnum.DIABLO_YES);
+
+        List<String> titles = new ArrayList<>();
+        for(String title: getResources().getStringArray(R.array.thead_sale)) {
+            if (title.equals(getString(R.string.discount))
+                && !showDiscount.equals(DiabloEnum.DIABLO_YES)) {
+                continue;
+            }
+            titles.add(title);
+        }
+        // mTitles = getResources().getStringArray(R.array.thead_sale);
+        mTitles = titles.toArray(new String[titles.size()]);
         mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
 
         mIsRecoverFromDraft = false;
@@ -208,7 +224,7 @@ public class SaleIn extends Fragment{
         mSaleTable = (TableLayout)view.findViewById(R.id.t_sale);
         ((TableLayout)view.findViewById(R.id.t_sale_head)).addView(addHead());
 
-        mMatchStocks = Profile.instance().getMatchStocks();
+        // mMatchStocks = Profile.instance().getMatchStocks();
         init();
 
         return view;
@@ -297,12 +313,12 @@ public class SaleIn extends Fragment{
             mSaleTable.removeAllViews();
         }
 
+        mStartRetailer = retailer;
+
+        // mLoginShop = Profile.instance().getLoginShop();
         mSelectPrice = utils.toInteger(
             Profile.instance().getConfig(
-                mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
-
-        mStartRetailer = retailer;
-        mLoginShop = Profile.instance().getLoginShop();
+                shop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
 
         dbInstance = DiabloDBManager.instance();
         mRowSize = 0;
@@ -353,7 +369,6 @@ public class SaleIn extends Fragment{
         }
 
         mStartRetailer = retailerId;
-        mLoginShop = Profile.instance().getLoginShop();
 
         init(retailerId, mLoginShop, new SaleCalc(), new ArrayList<SaleStock>());
 

@@ -166,7 +166,7 @@ public class SaleOutUpdate extends Fragment {
             Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_STRING_ZERO));
 
         // create head
-        mLabels = SaleUtils.createSaleLabelsFromTitle(getContext());
+        mLabels = SaleUtils.createSaleLabelsFromTitle(getContext(), Profile.instance().getLoginShop());
         ((TableLayout)mFragment.findViewById(R.id.t_sale_out_head))
             .addView(SaleUtils.createTableHeadFromLabels(getContext(), mLabels));
 

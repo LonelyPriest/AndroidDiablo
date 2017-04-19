@@ -106,13 +106,15 @@ public class SaleOut extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mLoginShop = Profile.instance().getLoginShop();
     }
 
     private void initLabel() {
         mPriceTypes = getResources().getStringArray(R.array.price_type_on_sale);
         mButtons = new SparseArray<>();
         mButtons.put(R.id.sale_out_save, new DiabloButton(getContext(), R.id.sale_out_save));
-        mLabels = SaleUtils.createSaleLabelsFromTitle(getContext());
+        mLabels = SaleUtils.createSaleLabelsFromTitle(getContext(), mLoginShop);
     }
 
     public void initCalc(View view) {
@@ -163,8 +165,6 @@ public class SaleOut extends Fragment {
         }
 
         mBackFrom = R.string.back_from_unknown;
-
-        mLoginShop = Profile.instance().getLoginShop();
         mSelectPrice = UTILS.toInteger(
             Profile.instance().getConfig(mLoginShop, DiabloEnum.START_PRICE, DiabloEnum.TAG_PRICE));
 

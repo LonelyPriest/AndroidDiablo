@@ -172,7 +172,7 @@ public class SaleInUpdate extends Fragment {
             Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_STRING_ZERO));
 
         // create head
-        mLabels = SaleUtils.createSaleLabelsFromTitle(getContext());
+        mLabels = SaleUtils.createSaleLabelsFromTitle(getContext(), Profile.instance().getLoginShop());
         ((TableLayout)mFragment.findViewById(R.id.t_sale_head))
             .addView(SaleUtils.createTableHeadFromLabels(getContext(), mLabels));
 
@@ -328,6 +328,7 @@ public class SaleInUpdate extends Fragment {
             }
             else if (R.string.comment == cell.getCellId()) {
                 controller.setCellText(cell.getCellId(), stock.getComment());
+                controller.getView().getCell(R.string.comment).setCellFocusable(true);
             }
         }
 
@@ -567,10 +568,12 @@ public class SaleInUpdate extends Fragment {
             if (null == stock) {
                 MatchStock matchStock = Profile.instance().getMatchStock(styleNumber, brandId);
                 SaleStock s = new SaleStock(matchStock, n.getSelectedPrice());
+
                 orderId++;
                 s.setOrderId(orderId);
                 s.setState(DiabloEnum.FINISHED_SALE);
                 s.setSecond(n.getSecond());
+                s.setComment(n.getComment());
 
                 // s.setSelectedPrice(n.getSelectedPrice());
                 s.setDiscount(n.getDiscount());
