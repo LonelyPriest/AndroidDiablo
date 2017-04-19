@@ -482,6 +482,7 @@ public class SaleIn extends Fragment{
             }
             else if(getResources().getString(R.string.fprice).equals(title)){
                 EditText cell = (EditText) diabloRow.getCell(title);
+                cell.setSelectAllOnFocus(true);
                 utils.setEditTextValue(cell, stock.getFinalPrice());
                 utils.addTextChangedListenerOfPayment(cell, new DiabloUtils.Payment() {
                     @Override
@@ -505,6 +506,7 @@ public class SaleIn extends Fragment{
             }
             else if (getResources().getString(R.string.amount).equals(title)){
                 EditText cell = (EditText) diabloRow.getCell(title);
+                cell.setSelectAllOnFocus(true);
                 utils.setEditTextValue(cell, stock.getSaleTotal());
                 cell.addTextChangedListener(new DiabloSaleAmountChangeWatcher(mHandler, diabloRow.getRow()));
             }
@@ -648,6 +650,7 @@ public class SaleIn extends Fragment{
                 cell.setTextColor(Color.RED);
                 cell.setTextSize(18);
                 cell.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_SIGNED);
+                cell.setSelectAllOnFocus(true);
                 cell.setTag(title);
                 cell.setFocusable(false);
                 row.addView(cell);
@@ -667,6 +670,7 @@ public class SaleIn extends Fragment{
                 cell.setGravity(Gravity.CENTER_VERTICAL);
                 cell.setTextSize(18);
                 cell.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                cell.setSelectAllOnFocus(true);
                 cell.setTag(title);
                 cell.setFocusable(false);
                 row.addView(cell);

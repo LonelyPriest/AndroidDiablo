@@ -31,7 +31,7 @@ import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.DiabloType;
 import com.diablo.dt.diablo.entity.Firm;
-import com.diablo.dt.diablo.entity.MatchStock;
+import com.diablo.dt.diablo.entity.MatchGood;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.filter.BrandFilter;
 import com.diablo.dt.diablo.filter.DiabloFilter;
@@ -226,7 +226,7 @@ public class GoodDetail extends Fragment {
 
         if (null != mGoodStyleNumberFilter.getSelect()) {
             Object select =  mGoodStyleNumberFilter.getSelect();
-            request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
+            request.addStyleNumber( ((MatchGood) select).getStyleNumber() );
         }
 
         for (DiabloFilter filter: mFilterController.getEntityFilters()) {
@@ -234,7 +234,7 @@ public class GoodDetail extends Fragment {
 
             if (null != select) {
                 if (filter instanceof StockStyleNumberFilter) {
-                    request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
+                    request.addStyleNumber( ((MatchGood) select).getStyleNumber() );
                 }
                 else if (filter instanceof BrandFilter) {
                     request.addBrand( ((DiabloBrand)select).getId() );

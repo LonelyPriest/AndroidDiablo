@@ -333,6 +333,7 @@ public class SaleOutUpdate extends Fragment {
         controller.setGoodWatcher(getContext(), mMatchStocks, mSelectPrice, mLabels, mOnActionAfterSelectGood);
         controller.setAmountWatcher(mHandler, controller);
         controller.setPriceTypeAdapter(getContext(), mPriceTypes);
+        // controller.setCommentWatcher();
 
         return controller;
     }

@@ -289,6 +289,7 @@ public class SaleOut extends Fragment {
 
         controller.setFinalPriceWatcher(mOnActionAfterSelectGood);
         controller.setAmountWatcher(mHandler, controller);
+        // controller.setCommentWatcher();
 
         controller.setGoodWatcher(getContext(), mMatchStocks, mSelectPrice, mLabels, mOnActionAfterSelectGood);
         controller.setPriceTypeAdapter(getContext(), mPriceTypes);

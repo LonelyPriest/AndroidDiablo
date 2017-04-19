@@ -163,7 +163,7 @@ public class DiabloSaleRowController {
         mAmountWatcher = new DiabloSaleAmountChangeWatcher(handler, controller);
     }
 
-    private void setCommentWatcher() {
+    public void setCommentWatcher() {
         mCommentWatcher = new DiabloEditTextWatcher(
             mRowView.getCell(R.string.comment).getView(),
             new DiabloEditTextWatcher.DiabloEditTextChangListener() {

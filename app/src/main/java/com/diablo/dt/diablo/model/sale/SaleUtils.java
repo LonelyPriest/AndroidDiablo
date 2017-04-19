@@ -74,6 +74,10 @@ public class SaleUtils {
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_DETAIL, 9);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_NEW, 10);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_COLOR, 11);
+
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_RETAILER_PAGER, 12);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_FIRM_PAGER, 13);
+
     }
 
     public static void switchToSlideMenu(Fragment from, String toTag) {
