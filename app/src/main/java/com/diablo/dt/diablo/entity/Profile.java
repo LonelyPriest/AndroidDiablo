@@ -436,8 +436,28 @@ public class Profile {
         return retailer;
     }
 
+//    private Integer getRetailerIndex(Integer retailerId){
+//        Integer index = null;
+//        for (Integer i=0; i<mRetailers.size(); i++){
+//            if (mRetailers.get(i).getId().equals(retailerId)){
+//                index = i;
+//                break;
+//            }
+//        }
+//
+//        return index;
+//    }
+
     public void addRetailer(Retailer retailer) {
         mRetailers.add(0, retailer);
+    }
+
+    public void replaceRetailer(Retailer newRetailer, Integer oldRetailer) {
+        Retailer old = getRetailerById(oldRetailer);
+        if (null != old) {
+            mRetailers.remove(old);
+        }
+        mRetailers.add(newRetailer);
     }
 
     public void clearRetailers() {
@@ -460,7 +480,7 @@ public class Profile {
 
     public String getConfig(String name, String defaultValue){
         return this.getConfig(DiabloEnum.INVALID_INDEX, name, defaultValue);
-    };
+    }
 
     public String getConfig(Integer shop, String name, String defaultValue){
         String find = defaultValue;
@@ -479,7 +499,7 @@ public class Profile {
         }
 
         return find;
-    };
+    }
 
     /**
      * color

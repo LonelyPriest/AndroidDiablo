@@ -252,6 +252,7 @@ public class MatchStock extends DiabloEntity{
 
     @Override
     public String getViewName() {
-        return this.styleNumber;
+        // return this.styleNumber;
+        return getName();
     }
 }

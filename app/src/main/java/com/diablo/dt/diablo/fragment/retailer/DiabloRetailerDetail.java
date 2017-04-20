@@ -1,16 +1,23 @@
 package com.diablo.dt.diablo.fragment.retailer;
 
 
+import com.google.gson.Gson;
+
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -60,6 +67,10 @@ public class DiabloRetailerDetail extends Fragment {
 
     private Handler mHandler;
 
+    private TableRow mCurrentSelectedRow;
+
+
+
     public DiabloRetailerDetail() {
         // Required empty public constructor
     }
@@ -77,10 +88,9 @@ public class DiabloRetailerDetail extends Fragment {
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
+        mMatchedRetailers = new ArrayList<>(Profile.instance().getRetailers());
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
         mTableTitles = getResources().getStringArray(R.array.thead_retailer_detail);
-
-        mMatchedRetailers = new ArrayList<>(Profile.instance().getRetailers());
 
         mHandler = new Handler();
     }
@@ -157,6 +167,7 @@ public class DiabloRetailerDetail extends Fragment {
     public void init() {
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mItemsPerPage = DiabloEnum.DEFAULT_ITEMS_PER_PAGE;
+
         mTotalPage = UTILS.calcTotalPage(mMatchedRetailers.size(), mItemsPerPage);
 
         pageChanged();
@@ -224,6 +235,16 @@ public class DiabloRetailerDetail extends Fragment {
             Retailer r = mMatchedRetailers.get(i);
 
             row = new TableRow(getContext());
+            row.setTag(r);
+            registerForContextMenu(row);
+            row.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    v.showContextMenu();
+                    return true;
+                }
+            });
+
             mRetailerDetailTable.addView(row);
 
             for (String title: mTableTitles) {
@@ -258,6 +279,7 @@ public class DiabloRetailerDetail extends Fragment {
 
                 if (null != cell) {
                     cell.setGravity(Gravity.CENTER);
+                    cell.setTag(title);
                 }
             }
             row.setBackgroundResource(R.drawable.table_row_bg);
@@ -282,48 +304,38 @@ public class DiabloRetailerDetail extends Fragment {
         }
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        // menu.clear();
-//
-//        menu.add(Menu.NONE, 400, Menu.NONE, getResources().getString(R.string.btn_sale_in))
-//            .setIcon(R.drawable.ic_add_shopping_cart_black_24dp)
-//            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-//
-//        menu.add(Menu.NONE, 401, Menu.NONE, getResources().getString(R.string.btn_add))
-//            .setIcon(R.drawable.ic_add_black_24dp)
-//            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-//
-//        menu.add(Menu.NONE, 402, Menu.NONE, getResources().getString(R.string.btn_refresh))
-//            .setIcon(R.drawable.ic_refresh_black_24dp)
-//            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()){
-//            case 400: // add
-//                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
-//                break;
-//            case 401:
-//                DiabloRetailerPager pager = (DiabloRetailerPager) getFragmentManager()
-//                    .findFragmentByTag(DiabloEnum.TAG_RETAILER_PAGER);
-//                if (null != pager) {
-//                    pager.setPager(1);
-//                }
-//                break;
-//            case 402:
-//                mRefreshDialog.show();
-//                getRetailers();
-//                break;
-//            default:
-//                break;
-//        }
-//        return true;
-//    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
 
-    public void refresh() {
+        menu.add(Menu.NONE, 401, Menu.NONE, getResources().getString(R.string.btn_add))
+            .setIcon(R.drawable.ic_add_black_24dp)
+            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+        menu.add(Menu.NONE, 402, Menu.NONE, getResources().getString(R.string.btn_refresh))
+            .setIcon(R.drawable.ic_refresh_black_24dp)
+            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case 401: // add
+                DiabloUtils.switchToFrame(
+                    this,
+                    "com.diablo.dt.diablo.fragment.retailer.DiabloRetailerNew",
+                    DiabloEnum.TAG_RETAILER_NEW);
+                break;
+            case 402:
+                refresh();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    private void refresh() {
         mRefreshDialog.show();
         getRetailers();
     }
@@ -350,4 +362,94 @@ public class DiabloRetailerDetail extends Fragment {
         });
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        mCurrentSelectedRow = (TableRow) v;
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_on_retailer_detail, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final Retailer retailer = (Retailer) mCurrentSelectedRow.getTag();
+
+        if (getResources().getString(R.string.modify) == item.getTitle()){
+            switchToUpdate(retailer);
+        }
+
+        return true;
+    }
+
+    private void switchToUpdate(Retailer retailer) {
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        // find
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_RETAILER_UPDATE);
+
+        if (null == to){
+            Bundle args = new Bundle();
+            args.putString(DiabloEnum.BUNDLE_PARAM_RETAILER, new Gson().toJson(retailer));
+
+            to = new DiabloRetailerUpdate();
+            to.setArguments(args);
+        } else {
+            ((DiabloRetailerUpdate)to).setUpdateRetailer(new Gson().toJson(retailer));
+        }
+
+        ((DiabloRetailerUpdate)to).setRetailerUpdateListener(new OnRetailerDetailListener() {
+            @Override
+            public void onUpdate(Retailer updatedRetailer) {
+                // init();
+                replaceCurrentSelectRow(updatedRetailer);
+            }
+
+            @Override
+            public void onAdd() {
+
+            }
+        });
+
+        if (!to.isAdded()){
+            transaction.hide(this).add(R.id.frame_container, to, DiabloEnum.TAG_RETAILER_UPDATE).commit();
+        } else {
+            transaction.hide(this).show(to).commit();
+        }
+    }
+
+    private void replaceCurrentSelectRow(Retailer updateRetailer) {
+        for (int i=0; i<mCurrentSelectedRow.getChildCount(); i++) {
+            TextView cell = (TextView) mCurrentSelectedRow.getChildAt(i);
+            String tag = (String) cell.getTag();
+            Retailer oldRetailer = (Retailer) mCurrentSelectedRow.getTag();
+            if (tag.equals(getString(R.string.diablo_name))) {
+                if (!oldRetailer.getName().equals(updateRetailer.getName())) {
+                    cell.setText(updateRetailer.getName());
+                }
+            }
+            else if (tag.equals(getString(R.string.diablo_arrears))) {
+                if (!oldRetailer.getBalance().equals(updateRetailer.getBalance())) {
+                    cell.setText(UTILS.toString(updateRetailer.getBalance()));
+                }
+
+            }
+            else if (tag.equals(getString(R.string.diablo_phone))) {
+                if (!oldRetailer.getMobile().equals(updateRetailer.getMobile())) {
+                    cell.setText(updateRetailer.getMobile());
+                }
+            }
+            else if (tag.equals(getString(R.string.diablo_address))) {
+                if (!oldRetailer.getAddress().equals(updateRetailer.getAddress())) {
+                    cell.setText(updateRetailer.getAddress());
+                }
+            }
+        }
+
+        mCurrentSelectedRow.setTag(updateRetailer);
+    }
+
+    public interface OnRetailerDetailListener {
+        void onAdd();
+        void onUpdate(Retailer updatedRetailer);
+    }
 }

@@ -7,15 +7,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.model.sale.SaleUtils;
-import com.diablo.dt.diablo.utils.DiabloEnum;
 
 public class DiabloRetailerPager extends Fragment {
 
@@ -96,76 +91,76 @@ public class DiabloRetailerPager extends Fragment {
 //        return mFragments;
 //    }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        super.onPrepareOptionsMenu(menu);
+//
+//        Fragment f = mFragments.get(1);
+//        if (null != f) {
+//            boolean disabled = ((DiabloRetailerNew) f).disableSave();
+//            if (null != menu.findItem(301)) {
+//                menu.findItem(301).setEnabled(!disabled);
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        // menu.clear();
+//        if (1 == mRetailerPager.getCurrentItem()) {
+//            menu.add(Menu.NONE, 300, Menu.NONE, getResources().getString(R.string.btn_back))
+//                .setIcon(R.drawable.ic_arrow_back_black_24dp)
+//                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//
+//            menu.add(Menu.NONE, 301, Menu.NONE, getResources().getString(R.string.btn_save))
+//                .setIcon(R.drawable.ic_file_download_black_24dp)
+//                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//        }
+//        else if (0 == mRetailerPager.getCurrentItem()) {
+//            menu.add(Menu.NONE, 400, Menu.NONE, getResources().getString(R.string.btn_sale_in))
+//                .setIcon(R.drawable.ic_add_shopping_cart_black_24dp)
+//                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//
+//            menu.add(Menu.NONE, 401, Menu.NONE, getResources().getString(R.string.btn_add))
+//                .setIcon(R.drawable.ic_add_black_24dp)
+//                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//
+//            menu.add(Menu.NONE, 402, Menu.NONE, getResources().getString(R.string.btn_refresh))
+//                .setIcon(R.drawable.ic_refresh_black_24dp)
+//                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//        }
+//
+//    }
 
-        Fragment f = mFragments.get(1);
-        if (null != f) {
-            boolean disabled = ((DiabloRetailerNew) f).disableSave();
-            if (null != menu.findItem(301)) {
-                menu.findItem(301).setEnabled(!disabled);
-            }
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        // menu.clear();
-        if (1 == mRetailerPager.getCurrentItem()) {
-            menu.add(Menu.NONE, 300, Menu.NONE, getResources().getString(R.string.btn_back))
-                .setIcon(R.drawable.ic_arrow_back_black_24dp)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-            menu.add(Menu.NONE, 301, Menu.NONE, getResources().getString(R.string.btn_save))
-                .setIcon(R.drawable.ic_file_download_black_24dp)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        }
-        else if (0 == mRetailerPager.getCurrentItem()) {
-            menu.add(Menu.NONE, 400, Menu.NONE, getResources().getString(R.string.btn_sale_in))
-                .setIcon(R.drawable.ic_add_shopping_cart_black_24dp)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-            menu.add(Menu.NONE, 401, Menu.NONE, getResources().getString(R.string.btn_add))
-                .setIcon(R.drawable.ic_add_black_24dp)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-            menu.add(Menu.NONE, 402, Menu.NONE, getResources().getString(R.string.btn_refresh))
-                .setIcon(R.drawable.ic_refresh_black_24dp)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        }
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case 300:
-                mRetailerPager.setCurrentItem(0);
-                break;
-            case 301:
-                Fragment f1 = mFragments.get(1);
-                if (null != f1) {
-                    ((DiabloRetailerNew) f1).startAdd((DiabloRetailerDetail) mFragments.get(0));
-                }
-                break;
-            case 400:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
-                break;
-            case 401:
-                mRetailerPager.setCurrentItem(1);
-                break;
-            case 402:
-                Fragment f0 = mFragments.get(0);
-                if (null != f0) {
-                    ((DiabloRetailerDetail) f0).refresh();
-                }
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()){
+//            case 300:
+//                mRetailerPager.setCurrentItem(0);
+//                break;
+//            case 301:
+//                Fragment f1 = mFragments.get(1);
+//                if (null != f1) {
+//                    ((DiabloRetailerNew) f1).startAdd((DiabloRetailerDetail) mFragments.get(0));
+//                }
+//                break;
+//            case 400:
+//                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
+//                break;
+//            case 401:
+//                mRetailerPager.setCurrentItem(1);
+//                break;
+//            case 402:
+//                Fragment f0 = mFragments.get(0);
+//                if (null != f0) {
+//                    ((DiabloRetailerDetail) f0).refresh();
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//        return true;
+//    }
 
 }

@@ -22,6 +22,7 @@
   <string name="nav_good_new">新增货品</string>
   <string name="nav_good_color">颜色</string>
   <string name="nav_retailer_detail">零售商</string>
+  <!--<string name="nav_retailer_new">新增零售商</string>-->
   <string name="nav_firm_detail">厂商</string>
 
   <!-- Toolbar titles when navigation menu item is selected -->
@@ -44,6 +45,7 @@
 
     <item>零售商详情</item>
     <item>厂商详情</item>
+    <!--<item>新增零售商</item>-->
 
   </string-array>
 
@@ -477,7 +479,9 @@
   <string name="input_retailer_name">请输入客户姓名，不小于二个字符，不能以数字或横杠开头</string>
   <string name="input_retailer_phone">请输入客户手机，默认为空</string>
   <string name="title_add_retailer">新增客户</string>
+  <string name="title_update_retailer">客户编辑</string>
   <string name="success_to_add_retailer">新增客户成功</string>
+  <string name="success_to_update_retailer">客户编辑成功</string>
   <string name="title_get_retailer">查找客户</string>
   <string name="diablo_detail">详情</string>
   <string name="diablo_add">新增</string>

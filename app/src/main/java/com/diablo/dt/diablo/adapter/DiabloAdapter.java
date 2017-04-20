@@ -73,6 +73,8 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
 
     }
 
+    // public abstract String getViewName();
+
     @Override
     public int getCount() {
         return matchedItems.size();

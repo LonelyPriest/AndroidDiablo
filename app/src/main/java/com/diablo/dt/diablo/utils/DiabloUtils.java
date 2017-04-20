@@ -575,4 +575,29 @@ public class DiabloUtils {
         parent.addView(view, index);
         // parent.requestLayout();
     }
+
+    public static void switchToFrame(Fragment from, String toClassName, String toTag) {
+
+        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
+        // find
+        Fragment to = from.getFragmentManager().findFragmentByTag(toTag);
+
+        if (null == to){
+            try {
+                Class<?> clazz = Class.forName(toClassName);
+                to = (Fragment) clazz.newInstance();
+            } catch (Exception e) {
+                to = null;
+            }
+
+        }
+
+        if (null != to) {
+            if (!to.isAdded()){
+                transaction.hide(from).add(R.id.frame_container, to, toTag).commit();
+            } else {
+                transaction.hide(from).show(to).commit();
+            }
+        }
+    }
 }

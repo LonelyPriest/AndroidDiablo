@@ -23,7 +23,7 @@ import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
-import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerPager;
+import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -75,8 +75,9 @@ public class SaleUtils {
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_NEW, 10);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_GOOD_COLOR, 11);
 
-        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_RETAILER_PAGER, 12);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_RETAILER_DETAIL, 12);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_FIRM_PAGER, 13);
+//        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_RETAILER_NEW, 14);
 
     }
 
@@ -120,12 +121,15 @@ public class SaleUtils {
                 case DiabloEnum.TAG_GOOD_COLOR:
                     f = new GoodColorDetail();
                     break;
-                case DiabloEnum.TAG_RETAILER_PAGER:
-                    f = new DiabloRetailerPager();
+                case DiabloEnum.TAG_RETAILER_DETAIL:
+                    f = new DiabloRetailerDetail();
                     break;
                 case DiabloEnum.TAG_FIRM_PAGER:
                     f = new DiabloFirmPager();
                     break;
+//                case DiabloEnum.TAG_RETAILER_NEW:
+//                    f = new DiabloRetailerNew();
+//                    break;
                 default:
                     break;
             }

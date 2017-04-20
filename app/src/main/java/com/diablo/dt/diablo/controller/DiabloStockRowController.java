@@ -103,7 +103,8 @@ public class DiabloStockRowController {
                     Integer key = label.getLabelId();
                     View v = mRowView.getCell(key).getView();
                     if (key.equals(R.string.good)) {
-                        mRowView.setCellText(R.string.good, matchedGood.getName());
+                        // mRowView.setCellText(R.string.good, matchedGood.getName());
+                        mRowView.getCell(R.string.good).setCellFocusable(false);
                     }
                     else if (key.equals(R.string.year)) {
                         mRowView.setCellText(R.string.year, matchedGood.getYear());
@@ -169,7 +170,8 @@ public class DiabloStockRowController {
                     Integer key = label.getLabelId();
                     View v = mRowView.getCell(key).getView();
                     if (key.equals(R.string.good)) {
-                        mRowView.setCellText(R.string.good, matchedStock.getName());
+                        // mRowView.setCellText(R.string.good, matchedStock.getName());
+                        mRowView.getCell(R.string.good).setCellFocusable(false);
                     }
                     else if (key.equals(R.string.year)) {
                         mRowView.setCellText(R.string.year, matchedStock.getYear());

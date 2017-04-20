@@ -110,7 +110,9 @@ public class DiabloEnum {
     public static final String TAG_GOOD_COLOR = "goodColor";
     public static final String TAG_GOOD_SIZE = "goodSize";
 
-    public static final String TAG_RETAILER_PAGER = "retailerPager";
+    public static final String TAG_RETAILER_DETAIL = "retailerDetail";
+    public static final String TAG_RETAILER_NEW = "retailerNew";
+    public static final String TAG_RETAILER_UPDATE = "retailerUpdate";
 
     public static final String TAG_FIRM_PAGER = "firmPager";
 

@@ -272,7 +272,7 @@ public class MatchGood extends DiabloEntity{
 
     @Override
     public String getViewName() {
-        return styleNumber;
+        return getName();
     }
 
     /**

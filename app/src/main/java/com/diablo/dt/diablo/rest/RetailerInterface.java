@@ -1,7 +1,8 @@
 package com.diablo.dt.diablo.rest;
 
 import com.diablo.dt.diablo.entity.Retailer;
-import com.diablo.dt.diablo.response.AddRetailerResponse;
+import com.diablo.dt.diablo.response.retailer.AddRetailerResponse;
+import com.diablo.dt.diablo.response.retailer.UpdateRetailerResponse;
 
 import java.util.List;
 
@@ -22,6 +23,12 @@ public interface RetailerInterface {
 
     @POST("new_w_retailer")
     Call<AddRetailerResponse> addRetailer(@Header("cookie") String token, @Body Retailer retailer);
+
+    @POST("update_w_retailer/{id}")
+    Call<UpdateRetailerResponse> updateRetailer(
+        @Header("cookie") String token,
+        @Path("id") Integer retailerId,
+        @Body Retailer retailer);
 
     @POST("match_w_retailer")
     Call<List<Retailer>> matchRetailer(@Header("cookie") String token, @Body String match);
