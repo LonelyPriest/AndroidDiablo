@@ -123,6 +123,7 @@
   <string-array name="sale_type">
     <item>开单</item>
     <item>退货</item>
+    <item>结帐</item>
   </string-array>
 
   <string-array name="stock_type">

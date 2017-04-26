@@ -371,7 +371,20 @@ public class SaleDetail extends Fragment {
                             addCell(row, fs[fs.length - 1], lp);
                         }
                         else if(getResources().getString(R.string.trans).equals(title)){
-                            TextView cell = addCell(row, mSaleTypes[detail.getType()], lp);
+                            String name = DiabloEnum.EMPTY_STRING;
+                            switch (detail.getType()) {
+                                case 0:
+                                    name = mSaleTypes[0];
+                                    break;
+                                case 1:
+                                    name = mSaleTypes[1];
+                                    break;
+                                case 9:
+                                    name = mSaleTypes[2];
+                                    break;
+                            }
+
+                            TextView cell = addCell(row, name, lp);
                             if (detail.getType().equals(DiabloEnum.SALE_OUT)){
                                 cell.setTextColor(getResources().getColor(R.color.red));
                             }
@@ -404,10 +417,12 @@ public class SaleDetail extends Fragment {
                             addCell(row, detail.getTotal(), lp);
                         }
                         else if (getResources().getString(R.string.balance).equals(title)){
-                            addCell(row, detail.getBalance(), lp);
+                            TextView cell = addCell(row, detail.getBalance(), lp);
+                            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.magenta));
                         }
                         else if (getResources().getString(R.string.should_pay).equals(title)){
-                            addCell(row, detail.getShouldPay(), lp);
+                            TextView cell = addCell(row, detail.getShouldPay(), lp);
+                            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.deepPink));
                         }
                         else if (getResources().getString(R.string.has_pay).equals(title)){
                             addCell(row, detail.getHasPay(), lp);
