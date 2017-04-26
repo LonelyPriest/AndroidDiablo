@@ -421,10 +421,13 @@ public class SaleDetail extends Fragment {
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.magenta));
                         }
                         else if (getResources().getString(R.string.should_pay).equals(title)){
-                            TextView cell = addCell(row, detail.getShouldPay(), lp);
+                            addCell(row, detail.getShouldPay(), lp);
                         } else if (getResources().getString(R.string.has_pay).equals(title)){
-                            TextView cell = addCell(row, detail.getHasPay(), lp);
-                            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.deepPink));
+                            Float hasPay = detail.getHasPay();
+                            TextView cell = addCell(row, hasPay, lp);
+                            if (hasPay > 0) {
+                                cell.setTextColor(ContextCompat.getColor(getContext(), R.color.deepPink));
+                            }
                         }
                         else if (getResources().getString(R.string.verificate).equals(title)){
                             addCell(row, detail.getVerificate(), lp);
