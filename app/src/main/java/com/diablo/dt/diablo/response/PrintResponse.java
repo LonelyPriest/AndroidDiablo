@@ -21,11 +21,11 @@ public class PrintResponse extends Response {
 
     }
 
-    public Integer getPcode() {
+    public Integer getPCode() {
         return pcode;
     }
 
-    public List<NewSaleResponse.printResponse> getPinfos() {
+    public List<NewSaleResponse.printResponse> getPInfos() {
         return pinfos;
     }
 }

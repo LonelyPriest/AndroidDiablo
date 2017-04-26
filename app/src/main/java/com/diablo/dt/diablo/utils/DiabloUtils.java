@@ -466,14 +466,14 @@ public class DiabloUtils {
             @Override
             public void onResponse(Call<PrintResponse> call, Response<PrintResponse> response) {
                 PrintResponse pres = response.body();
-                if (pres.getPcode().equals(DiabloEnum.SUCCESS)) {
+                if (pres.getPCode().equals(DiabloEnum.SUCCESS)) {
                     DiabloUtils.instance().makeToast(
                         context,
                         context.getResources().getString(R.string.print_success),
                         Toast.LENGTH_LONG);
                 } else {
                     String eMessage = context.getString(R.string.print_failed);
-                    List<NewSaleResponse.printResponse> pInfos = pres.getPinfos();
+                    List<NewSaleResponse.printResponse> pInfos = pres.getPInfos();
                     if (null == pInfos || 0 == pInfos.size()) {
                         eMessage = DiabloError.getError(pres.getCode());
                     } else {

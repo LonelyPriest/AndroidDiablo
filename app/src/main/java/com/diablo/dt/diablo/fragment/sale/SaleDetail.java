@@ -604,7 +604,7 @@ public class SaleDetail extends Fragment {
 
         }
         else if (getResources().getString(R.string.print) == item.getTitle()){
-            UTILS.startPrint(getContext(), R.id.nav_sale_detail, detail.getRsn());
+            UTILS.startPrint(getContext(), R.string.nav_sale_detail, detail.getRsn());
         }
 
         return true;
