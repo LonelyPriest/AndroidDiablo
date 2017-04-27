@@ -184,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
         if (null != getSupportActionBar()) {
             getSupportActionBar().setTitle(mCurrentNavTag.getTitleName());
         }
+
+        
         unCheckAllMenuItems();
         mCurrentNavTag.getMenuItem().setChecked(true);
     }
