@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
     public void selectMenuItem(Integer menuItemIndex){
         mCurrentNavTag = mNavTagMap.get(menuItemIndex);
         if (null != getSupportActionBar()) {
-            getSupportActionBar().setTitle(mCurrentNavTag.getTitleName ());
+            getSupportActionBar().setTitle(mCurrentNavTag.getTitleName());
         }
         unCheckAllMenuItems();
         mCurrentNavTag.getMenuItem().setChecked(true);
