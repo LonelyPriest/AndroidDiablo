@@ -27,4 +27,8 @@ public class WSaleClient {
         }
         return retrofit;
     }
+
+    public static void resetClient() {
+        retrofit = null;
+    }
 }

@@ -27,4 +27,8 @@ public class EmployeeClient {
         }
         return retrofit;
     }
+
+    public static void resetClient() {
+        retrofit = null;
+    }
 }

@@ -27,4 +27,8 @@ public class WLoginClient {
         }
         return retrofit;
     }
+
+    public static void resetClient() {
+        retrofit = null;
+    }
 }

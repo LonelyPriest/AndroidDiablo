@@ -27,4 +27,8 @@ public class FirmClient {
         }
         return retrofit;
     }
+
+    public static void resetClient() {
+        retrofit = null;
+    }
 }

@@ -27,4 +27,8 @@ public class WGoodClient {
         }
         return retrofit;
     }
+
+    public static void resetClient() {
+        retrofit = null;
+    }
 }

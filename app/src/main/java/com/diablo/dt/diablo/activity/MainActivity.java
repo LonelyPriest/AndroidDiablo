@@ -20,6 +20,14 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.BaseSettingClient;
+import com.diablo.dt.diablo.client.EmployeeClient;
+import com.diablo.dt.diablo.client.FirmClient;
+import com.diablo.dt.diablo.client.RetailerClient;
+import com.diablo.dt.diablo.client.RightClient;
+import com.diablo.dt.diablo.client.StockClient;
+import com.diablo.dt.diablo.client.WGoodClient;
+import com.diablo.dt.diablo.client.WLoginClient;
+import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
@@ -131,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         DiabloDBManager.instance().init(this);
 
         Profile.instance().setResource(getResources());
-        Profile.instance().setServer(getString(R.string.diablo_server));
+        // Profile.instance().setServer(getString(R.string.diablo_server));
         Profile.instance().setDiabloYears(getResources().getStringArray(R.array.years));
         Profile.instance().setSaleTypes(getResources().getStringArray(R.array.sale_types_desc));
         Profile.instance().setStockTypes(getResources().getStringArray(R.array.stock_types_desc));
@@ -550,7 +558,9 @@ public class MainActivity extends AppCompatActivity {
                 // clear information
                 DiabloDBManager.instance().close();
                 Profile.instance().clear();
-
+                // clear client
+                clearClient();
+                
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -568,6 +578,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void clearClient() {
+        BaseSettingClient.resetClient();
+        EmployeeClient.resetClient();
+        FirmClient.resetClient();
+        RetailerClient.resetClient();
+        RightClient.resetClient();
+        StockClient.resetClient();
+        WGoodClient.resetClient();
+        WLoginClient.resetClient();
+        WSaleClient.resetClient();
     }
 
     //    @Override

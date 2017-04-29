@@ -27,4 +27,8 @@ public class RetailerClient {
         }
         return retrofit;
     }
+
+    public static void resetClient() {
+        retrofit = null;
+    }
 }

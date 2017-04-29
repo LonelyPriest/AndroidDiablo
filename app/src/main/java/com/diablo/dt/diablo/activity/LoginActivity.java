@@ -12,11 +12,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.adapter.OnAdjustDropDownViewListener;
+import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.client.BaseSettingClient;
 import com.diablo.dt.diablo.client.EmployeeClient;
 import com.diablo.dt.diablo.client.FirmClient;
@@ -66,11 +70,14 @@ public class LoginActivity extends AppCompatActivity {
     private final static String LOG_TAG = "LOGIN:";
 
     Button mBtnLogin;
-    TextInputLayout mLoginWrap, mPasswordWrap;
+    TextInputLayout mLoginWrap;
+    TextInputLayout mPasswordWrap;
+    Spinner mViewServer;
     Context mContext;
 
     String mName;
     String mPassword;
+    String [] mServers;
 
     private Dialog mLoadingDialog;
 
@@ -118,13 +125,48 @@ public class LoginActivity extends AppCompatActivity {
 
         mContext = this;
 
-        Profile.instance().setServer(getString(R.string.diablo_server));
+        Profile.instance().setServer(getString(R.string.diablo_production_server));
         Profile.instance().setResource(getResources());
-        mFace = WLoginClient.getClient().create(WLoginInterface.class);
+        // mFace = WLoginClient.getClient().create(WLoginInterface.class);
         // Profile.instance().setContext(this.getApplicationContext());
 
         mLoginWrap = (TextInputLayout) findViewById(R.id.login_name_holder);
         mPasswordWrap = (TextInputLayout) findViewById(R.id.login_password_holder);
+        mViewServer = (Spinner)findViewById(R.id.spinner_select_server);
+
+        // default production server
+        mServers = getResources().getStringArray(R.array.servers);
+        StringArrayAdapter adapter = new StringArrayAdapter(
+            mContext,
+            R.layout.diablo_spinner_item,
+            mServers);
+
+        adapter.setDropDownViewListener(new OnAdjustDropDownViewListener() {
+            @Override
+            public void setDropDownVerticalOffset() {
+                mViewServer.setDropDownVerticalOffset(mViewServer.getHeight());
+            }
+        });
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mViewServer.setAdapter(adapter);
+
+        mViewServer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (0 == position) {
+                    Profile.instance().setServer(getString(R.string.diablo_production_server));
+                }
+                else if (1 == position) {
+                    Profile.instance().setServer(getString(R.string.diablo_test_server));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         final DiabloUser user = DiabloDBManager.instance().getFirstLoginUser();
         if (null != user) {
@@ -161,6 +203,8 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     // login
                     mBtnLogin.setClickable(false);
+                    WLoginClient.resetClient();
+                    mFace = WLoginClient.getClient().create(WLoginInterface.class);
                     Call<LoginResponse> call = mFace.login(mName, mPassword, DiabloEnum.TABLET, DiabloEnum.DIABLO_FALSE);
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
@@ -313,6 +357,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getLoginUserInfo(){
+        // RightClient.resetClient();
         RightInterface rightInterface = RightClient.getClient().create(RightInterface.class);
         Call<LoginUserInfoResponse> rightCall = rightInterface.getLoginUserInfo(
                 Profile.instance().getToken());
@@ -345,6 +390,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getRetailer(){
+        // RetailerClient.resetClient();
         RetailerInterface face = RetailerClient.getClient().create(RetailerInterface.class);
         Call<List<Retailer>> call = face.listRetailer(Profile.instance().getToken());
         call.enqueue(new Callback<List<Retailer>>() {
@@ -368,6 +414,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getEmployee(){
+        // EmployeeClient.resetClient();
         EmployeeInterface face = EmployeeClient.getClient().create(EmployeeInterface.class);
         Call<List<Employee>> call = face.listEmployee(Profile.instance().getToken());
         call.enqueue(new Callback<List<Employee>>() {
@@ -390,6 +437,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getBaseSetting(){
+        // BaseSettingClient.resetClient();
         BaseSettingInterface face = BaseSettingClient.getClient().create(BaseSettingInterface.class);
         Call<List<BaseSetting>> call = face.listBaseSetting(Profile.instance().getToken());
         call.enqueue(new Callback<List<BaseSetting>>() {
@@ -412,6 +460,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getColor(){
+        // WGoodClient.resetClient();
         WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloColor>> call = face.listColor(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloColor>>() {
@@ -434,6 +483,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getSizeGroup(){
+        // WGoodClient.resetClient();
         WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloSizeGroup>> call = face.listSizeGroup(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloSizeGroup>>() {
@@ -456,6 +506,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getAllMatchStock(){
+        // StockClient.resetClient();
         StockInterface face = StockClient.getClient().create(StockInterface.class);
         Integer loginShop = Profile.instance().getLoginShop();
         Call<List<MatchStock>> call = face.matchAllStock(
@@ -485,6 +536,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getBrand(){
+        // WGoodClient.resetClient();
         WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloBrand>> call = face.listBrand(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloBrand>>() {
@@ -507,6 +559,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getType(){
+        // WGoodClient.resetClient();
         WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloType>> call = face.listType(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloType>>() {
@@ -529,6 +582,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getFirm() {
+        // FirmClient.resetClient();
         FirmInterface face = FirmClient.getClient().create(FirmInterface.class);
         Call<List<Firm>> call = face.listFirm(Profile.instance().getToken());
         call.enqueue(new Callback<List<Firm>>() {
@@ -551,6 +605,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getAllMatchGood(){
+        // WGoodClient.resetClient();
         WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<MatchGood>> call = face.matchAllGood(
             Profile.instance().getToken(),
@@ -578,6 +633,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getColorKind(){
+        // WGoodClient.resetClient();
         WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
         Call<List<DiabloColorKind>> call = face.listColorKind(Profile.instance().getToken());
         call.enqueue(new Callback<List<DiabloColorKind>>() {

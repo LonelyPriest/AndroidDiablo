@@ -27,4 +27,8 @@ public class StockClient {
         }
         return retrofit;
     }
+
+    public static void resetClient() {
+        retrofit = null;
+    }
 }

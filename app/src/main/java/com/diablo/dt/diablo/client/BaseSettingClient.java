@@ -27,4 +27,8 @@ public class BaseSettingClient {
         }
         return retrofit;
     }
+
+    public static void resetClient() {
+        retrofit = null;
+    }
 }
