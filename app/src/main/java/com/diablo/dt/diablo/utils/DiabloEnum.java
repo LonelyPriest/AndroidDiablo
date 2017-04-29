@@ -66,12 +66,16 @@ public class DiabloEnum {
     public static final String  START_TIME = "qtime_start";
     public static final String  START_PRICE = "price_type";
     public static final String  START_RETAILER = "s_customer";
-    public static final String START_SHOW_DISCOUNT = "show_discount";
+    public static final String  START_SHOW_DISCOUNT = "show_discount";
+    public static final String  START_TRACE_PRICE = "ptrace_price";
+    public static final String  START_SYS_RETAILER = "s_customer";
+    public static final String  START_REJECT_SECOND_ORDER = "reject_pgood";
     public static final Integer NON_REPO = 0;
     public static final Integer USE_REPO = 1;
 
-    public static final String DIABLO_YES = "1";
-    public static final String DIABLO_NO = "0";
+    public static final String DIABLO_CONFIG_YES = "1";
+    public static final String DIABLO_CONFIG_NO  = "0";
+    public static final String DIABLO_CONFIG_INVALID_INDEX = "-1";
     public static final String TAG_PRICE = "1";
     public static final String PKG_PRICE = "2";
     public static final String PRICE3    = "3";

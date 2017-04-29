@@ -16,4 +16,6 @@
     <color name="darkMagenta">#8B008B</color>
     <color name="hotPink">#FF69B4</color>
     <color name="deepPink">#FF1493</color>
+    <color name="yellowLight">#FFFFCC</color>
+    <color name="pinkLight">#FFCCFF</color>
 </resources>

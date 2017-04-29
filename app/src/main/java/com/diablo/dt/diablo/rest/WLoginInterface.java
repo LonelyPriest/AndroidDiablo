@@ -16,5 +16,6 @@ public interface WLoginInterface {
     @POST("login")
     Call<LoginResponse> login(@Field("user_name") String name,
                               @Field("user_password") String password,
-                              @Field("tablet") Integer tablet);
+                              @Field("tablet") Integer tablet,
+                              @Field("force") Integer force);
 }

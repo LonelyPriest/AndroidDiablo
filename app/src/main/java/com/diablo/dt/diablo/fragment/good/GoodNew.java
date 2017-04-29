@@ -643,8 +643,16 @@ public class GoodNew extends Fragment {
                 }
                 else {
                     mButtons.get(R.id.good_new_save).enable();
-                    Integer errorCode = response.code() == 0 ? result.getCode() : response.code();
-                    String extraMessage = result == null ? "" : result.getError();
+                    Integer errorCode;
+                    String extraMessage = DiabloEnum.EMPTY_STRING;
+
+                    if (DiabloEnum.HTTP_OK == response.code()) {
+                        errorCode = result.getCode();
+                        extraMessage = result.getError();
+                    } else {
+                        errorCode = response.code();
+                    }
+                    
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.nav_good_new),

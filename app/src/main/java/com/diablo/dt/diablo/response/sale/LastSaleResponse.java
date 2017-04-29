@@ -13,12 +13,14 @@ public class LastSaleResponse {
     private Integer rid;
     @SerializedName("style_number")
     private String styleNumber;
-    @SerializedName("sell_type")
-    private String sellType;
+    @SerializedName("sell_style")
+    private Integer sellStyle;
     @SerializedName("fdiscount")
     private Float discount;
     @SerializedName("fprice")
     private Float price;
+    @SerializedName("second")
+    private Integer second;
 
     public LastSaleResponse() {
 
@@ -36,8 +38,8 @@ public class LastSaleResponse {
         return styleNumber;
     }
 
-    public String getSellType() {
-        return sellType;
+    public Integer getSellStyle() {
+        return sellStyle;
     }
 
     public Float getDiscount() {
@@ -46,5 +48,9 @@ public class LastSaleResponse {
 
     public Float getPrice() {
         return price;
+    }
+
+    public Integer getSecond() {
+        return second;
     }
 }

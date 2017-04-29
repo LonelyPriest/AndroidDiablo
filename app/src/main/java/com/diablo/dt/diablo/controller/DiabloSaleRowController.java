@@ -2,6 +2,7 @@ package com.diablo.dt.diablo.controller;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.diablo.dt.diablo.model.sale.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.DiabloCellLabel;
 import com.diablo.dt.diablo.view.DiabloCellView;
@@ -122,7 +124,7 @@ public class DiabloSaleRowController {
                         mSaleStock.setFinalPrice(mSaleStock.getValidPrice());
                     }
                     else if (key.equals(R.string.discount)){
-                        mRowView.setCellText(R.string.discount, mSaleStock.getValidPrice());
+                        mRowView.setCellText(R.string.discount, mSaleStock.getDiscount());
                     }
                     else if (key.equals(R.string.fprice)){
                         mRowView.setCellText(R.string.fprice, mSaleStock.getFinalPrice());
@@ -260,7 +262,7 @@ public class DiabloSaleRowController {
         cell.requestFocus();
     }
 
-    public void replaceSaleStock(final SaleStock stock) {
+    public void replaceSaleStock(Context context, final SaleStock stock) {
         mSaleStock.clearAmounts();
         Integer saleTotal = 0;
         Integer exist = 0;
@@ -277,6 +279,19 @@ public class DiabloSaleRowController {
         mSaleStock.setOrderSizes(stock.getOrderSizes());
         mSaleStock.setSaleTotal(saleTotal);
         mSaleStock.setStockExist(exist);
+
+        mSaleStock.setFinalPrice(stock.getFinalPrice());
+        mSaleStock.setDiscount(stock.getDiscount());
+        mSaleStock.setSecond(stock.getSecond());
+        mSaleStock.setSelectedPrice(stock.getSelectedPrice());
+
+        if (mSaleStock.getSecond().equals(DiabloEnum.DIABLO_TRUE)) {
+            mRowView.setCellText(R.string.fprice, mSaleStock.getFinalPrice());
+            mRowView.setCellText(R.string.discount, mSaleStock.getDiscount());
+            ((Spinner) mRowView.getCell(R.string.price_type).getView()).setSelection(mSaleStock.getSelectedPrice() - 1);
+
+            mRowView.getView().setBackgroundColor(ContextCompat.getColor(context, R.color.yellowLight));
+        }
 
         mRowView.setCellText(R.string.amount, saleTotal);
         mRowView.setCellText(R.string.stock, exist);

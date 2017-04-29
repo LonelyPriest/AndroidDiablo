@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -19,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -37,8 +39,10 @@ import com.diablo.dt.diablo.model.sale.SaleCalc;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
+import com.diablo.dt.diablo.request.sale.LastSaleRequest;
 import com.diablo.dt.diablo.request.sale.NewSaleRequest;
 import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
+import com.diablo.dt.diablo.response.sale.LastSaleResponse;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
@@ -75,6 +79,7 @@ public class SaleInUpdate extends Fragment {
     private SparseArray<DiabloButton> mButtons;
     private Integer   mSelectPrice;
     private Integer   mSysRetailer;
+    private Integer   mTracePrice;
     private String    mRSN;
     private String    mLastRSN;
     private Integer   mRSNId;
@@ -170,6 +175,9 @@ public class SaleInUpdate extends Fragment {
 
         mSysRetailer = UTILS.toInteger(
             Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_STRING_ZERO));
+
+        mTracePrice = UTILS.toInteger(
+            Profile.instance().getConfig(DiabloEnum.START_TRACE_PRICE, DiabloEnum.DIABLO_CONFIG_NO));
 
         // create head
         mLabels = SaleUtils.createSaleLabelsFromTitle(getContext(), Profile.instance().getLoginShop());
@@ -291,6 +299,13 @@ public class SaleInUpdate extends Fragment {
 
     private DiabloSaleRowController createRowWithStock(SaleStock stock) {
         TableRow row = new TableRow(getContext());
+        if (stock.getSecond().equals(DiabloEnum.DIABLO_TRUE)) {
+            row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellowLight));
+        }
+
+        if (0 > stock.getSaleTotal()) {
+            row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.pinkLight));
+        }
 
         DiabloSaleRowController controller = new DiabloSaleRowController(new DiabloRowView(row), new SaleStock(stock));
 
@@ -377,12 +392,19 @@ public class SaleInUpdate extends Fragment {
                     DiabloRowView row = controller.getView();
                     row.getCell(R.string.fprice).setCellFocusable(true);
                     if ( DiabloEnum.DIABLO_FREE.equals(stock.getFree()) ){
-                        // enable amount focus
-                        cell.setCellFocusable(true);
-                        cell.requestFocus();
-                        cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
-                        row.getCell(R.string.good).setCellFocusable(false);
-                    } else {
+                        if (mSaleCalcController.getRetailer().equals(mSysRetailer)
+                            || mTracePrice.equals(DiabloEnum.DIABLO_FALSE)) {
+                            // enable amount focus
+                            cell.setCellFocusable(true);
+                            cell.requestFocus();
+                            cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
+                            row.getCell(R.string.good).setCellFocusable(false);
+                        }
+                        else {
+                            getLastTransactionOfRetailer(row, cell, stock);
+                        }
+                    }
+                    else {
                         switchToStockSelectFrame(controller.getModel(), R.string.add);
                     }
                 }
@@ -398,6 +420,48 @@ public class SaleInUpdate extends Fragment {
         Integer shop = mSaleCalcController.getShop();
         Integer retailer = mSaleCalcController.getRetailer();
         SaleUtils.switchToStockSelectFrame(stock, action, DiabloEnum.SALE_IN_UPDATE, retailer, shop, this);
+    }
+
+    private void getLastTransactionOfRetailer(final DiabloRowView row, final DiabloCellView cell, final SaleStock stock){
+        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+        Call<List<LastSaleResponse>> call = face.getLastSale(
+            Profile.instance().getToken(),
+            new LastSaleRequest(
+                stock.getStyleNumber(),
+                stock.getBrandId(),
+                mSaleCalcController.getShop(),
+                mSaleCalcController.getRetailer()));
+
+        call.enqueue(new Callback<List<LastSaleResponse>>() {
+            @Override
+            public void onResponse(Call<List<LastSaleResponse>> call, Response<List<LastSaleResponse>> response) {
+                Log.d(LOG_TAG, "success to get last stock");
+                List<LastSaleResponse> lastStocks = new ArrayList<>(response.body());
+                if (lastStocks.size() > 0) {
+                    LastSaleResponse lastStock = lastStocks.get(0);
+                    stock.setFinalPrice(lastStock.getPrice());
+                    stock.setDiscount(lastStock.getDiscount());
+                    stock.setSelectedPrice(lastStock.getSellStyle());
+                    stock.setSecond(DiabloEnum.DIABLO_TRUE);
+                    row.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellowLight));
+
+                    row.setCellText(R.string.fprice, stock.getFinalPrice());
+                    row.setCellText(R.string.discount, stock.getDiscount());
+                    ((Spinner)row.getCell(R.string.price_type).getView()).setSelection(stock.getSelectedPrice() - 1);
+                }
+
+                cell.setCellFocusable(true);
+                cell.requestFocus();
+                cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
+                row.getCell(R.string.good).setCellFocusable(false);
+            }
+
+            @Override
+            public void onFailure(Call<List<LastSaleResponse>> call, Throwable t) {
+                DiabloUtils.instance().makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_SHORT);
+                // Log.d(LOG_TAG, "fail to get last stock");
+            }
+        });
     }
 
     private static class SaleInUpdateHandler extends Handler {
@@ -443,6 +507,10 @@ public class SaleInUpdate extends Fragment {
                         controller.setOrderId(orderId);
                         row.setOnLongClickListener(f);
 
+                        if (0 > stock.getSaleTotal()) {
+                            row.getView().setBackgroundColor(ContextCompat.getColor(f.getContext(), R.color.pinkLight));
+                        }
+
                         f.mSaleTableController.addRowControllerAtTop(f.createEmptyRow());
                     }
                 }
@@ -476,7 +544,7 @@ public class SaleInUpdate extends Fragment {
 
                 switch (mNoFreeStockListener.getCurrentOperation()){
                     case R.string.action_save:
-                        mSaleTableController.replaceRowController(s);
+                        mSaleTableController.replaceRowController(getContext(), s);
                         break;
                     case R.string.action_cancel:
                         if (s.getOrderId().equals(0)){
@@ -579,6 +647,7 @@ public class SaleInUpdate extends Fragment {
                 // s.setSelectedPrice(n.getSelectedPrice());
                 s.setDiscount(n.getDiscount());
                 s.setFinalPrice(n.getFinalPrice());
+                s.setSecond(n.getSecond());
 
                 SaleStockAmount amount = new SaleStockAmount(n.getColor(), n.getSize());
                 amount.setSellCount(n.getAmount());

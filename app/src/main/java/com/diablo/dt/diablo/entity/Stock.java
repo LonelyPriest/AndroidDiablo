@@ -119,4 +119,24 @@ public class Stock extends DiabloEntity{
     public Integer getExist() {
         return exist;
     }
+
+    public void setTagPrice(Float tagPrice) {
+        this.tagPrice = tagPrice;
+    }
+
+    public void setPkgPrice(Float pkgPrice) {
+        this.pkgPrice = pkgPrice;
+    }
+
+    public void setPrice3(Float price3) {
+        this.price3 = price3;
+    }
+
+    public void setPrice4(Float price4) {
+        this.price4 = price4;
+    }
+
+    public void setPrice5(Float price5) {
+        this.price5 = price5;
+    }
 }

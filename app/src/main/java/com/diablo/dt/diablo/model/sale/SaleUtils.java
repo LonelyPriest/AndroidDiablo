@@ -182,12 +182,12 @@ public class SaleUtils {
         String showDiscount = Profile.instance().getConfig(
             shop,
             DiabloEnum.START_SHOW_DISCOUNT,
-            DiabloEnum.DIABLO_YES);
+            DiabloEnum.DIABLO_CONFIG_YES);
 
         List<String> titles = new ArrayList<>();
         for(String title: context.getResources().getStringArray(R.array.thead_sale)) {
             if (title.equals(context.getResources().getString(R.string.discount))
-                && !showDiscount.equals(DiabloEnum.DIABLO_YES)) {
+                && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
                 continue;
             }
             titles.add(title);

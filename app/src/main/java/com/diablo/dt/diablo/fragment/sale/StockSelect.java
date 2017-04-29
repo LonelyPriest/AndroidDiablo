@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.activity.MainActivity;
@@ -34,8 +35,9 @@ import com.diablo.dt.diablo.request.sale.LastSaleRequest;
 import com.diablo.dt.diablo.response.sale.LastSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.task.MatchSingleStockTask;
-import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloEnum;
+import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class StockSelect extends Fragment {
     private TableLayout mViewTable;
 
     private List<Stock> mStocks;
+
     private List<LastSaleResponse> mLastStocks;
 
     public StockSelect() {
@@ -98,6 +101,8 @@ public class StockSelect extends Fragment {
         if (null != bar) {
             bar.setTitle(getResources().getString(R.string.select_stock));
         }
+
+        //trace last sale
         
         init();
         return view;
@@ -110,7 +115,6 @@ public class StockSelect extends Fragment {
             || DiabloEnum.SALE_OUT.equals(mComeFrom)) {
             if (R.string.add == mActionFrom){
                 getStockFromServer();
-                getLastTransactionOfRetailer();
             }
             else if (R.string.modify == mActionFrom) {
                 startModify();
@@ -134,7 +138,15 @@ public class StockSelect extends Fragment {
             public void onMatchSuccess(List<Stock> stocks) {
                 Log.d(LOG_TAG, "success to get stock");
                 mStocks = stocks;
-                startAdd();
+                String tracePrice = Profile.instance().getConfig(mSelectShop, DiabloEnum.START_TRACE_PRICE, DiabloEnum.DIABLO_CONFIG_NO);
+                String retailer = Profile.instance().getConfig(mSelectShop, DiabloEnum.START_SYS_RETAILER, DiabloEnum.DIABLO_CONFIG_INVALID_INDEX);
+                if (tracePrice.equals(DiabloEnum.DIABLO_CONFIG_NO)
+                    || mSelectRetailer.equals(DiabloUtils.instance().toInteger(retailer))) {
+                    startAdd();
+                } else {
+                    getLastTransactionOfRetailer();
+                }
+
             }
 
             @Override
@@ -161,11 +173,21 @@ public class StockSelect extends Fragment {
             public void onResponse(Call<List<LastSaleResponse>> call, Response<List<LastSaleResponse>> response) {
                 Log.d(LOG_TAG, "success to get last stock");
                 mLastStocks = new ArrayList<>(response.body());
+                if (mLastStocks.size() > 0) {
+                    LastSaleResponse lastStock = mLastStocks.get(0);
+                    mSaleStock.setFinalPrice(lastStock.getPrice());
+                    mSaleStock.setDiscount(lastStock.getDiscount());
+                    mSaleStock.setSelectedPrice(lastStock.getSellStyle());
+                    mSaleStock.setSecond(DiabloEnum.DIABLO_TRUE);
+                }
+
+                startAdd();
             }
 
             @Override
             public void onFailure(Call<List<LastSaleResponse>> call, Throwable t) {
-                Log.d(LOG_TAG, "fail to get last stock");
+                DiabloUtils.instance().makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_SHORT);
+                // Log.d(LOG_TAG, "fail to get last stock");
             }
         });
     }

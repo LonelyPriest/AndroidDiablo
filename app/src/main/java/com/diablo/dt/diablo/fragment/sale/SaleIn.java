@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.fragment.sale;
 
 import static com.diablo.dt.diablo.R.string.amount;
+import static com.diablo.dt.diablo.R.string.stock;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,7 +53,9 @@ import com.diablo.dt.diablo.model.sale.SaleCalc;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
+import com.diablo.dt.diablo.request.sale.LastSaleRequest;
 import com.diablo.dt.diablo.request.sale.NewSaleRequest;
+import com.diablo.dt.diablo.response.sale.LastSaleResponse;
 import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.task.MatchSingleStockTask;
@@ -97,6 +100,7 @@ public class SaleIn extends Fragment{
     private Integer mStartRetailer;
     private Integer mSelectPrice;
     private Integer mSysRetailer;
+    private Integer mTracePrice;
 
     // private List<MatchStock> mMatchStocks;
     private List<SaleStock> mSaleStocks;
@@ -148,18 +152,21 @@ public class SaleIn extends Fragment{
         super.onCreate(savedInstanceState);
 
         mSysRetailer = utils.toInteger(
-            Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_STRING_ZERO));
+            Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_CONFIG_INVALID_INDEX));
+
+        mTracePrice = utils.toInteger(
+            Profile.instance().getConfig(DiabloEnum.START_TRACE_PRICE, DiabloEnum.DIABLO_CONFIG_NO));
 
         mLoginShop = Profile.instance().getLoginShop();
         String showDiscount = Profile.instance().getConfig(
             mLoginShop,
             DiabloEnum.START_SHOW_DISCOUNT,
-            DiabloEnum.DIABLO_YES);
+            DiabloEnum.DIABLO_CONFIG_YES);
 
         List<String> titles = new ArrayList<>();
         for(String title: getResources().getStringArray(R.array.thead_sale)) {
             if (title.equals(getString(R.string.discount))
-                && !showDiscount.equals(DiabloEnum.DIABLO_YES)) {
+                && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
                 continue;
             }
             titles.add(title);
@@ -570,58 +577,19 @@ public class SaleIn extends Fragment{
                                 Toast.LENGTH_LONG);
                         } else {
                             final SaleStock s = new SaleStock(matchedStock, mSelectPrice);
+                            s.setFinalPrice(s.getValidPrice());
+
                             row.setTag(s);
                             mSaleStocks.add(s);
 
-                            for (Integer i=0; i<row.getChildCount(); i++){
-                                final View cell = row.getChildAt(i);
-                                String name = (String)cell.getTag();
-
-                                if (getResources().getString(R.string.good).equals(name)) {
-                                    cell.setFocusable(false);
-                                    // ((AutoCompleteTextView )cell).setText(s.getName());
-                                }
-
-                                if (getResources().getString(R.string.price).equals(name)) {
-                                    DiabloUtils.instance().setTextViewValue((TextView) cell, s.getValidPrice());
-                                    s.setFinalPrice(s.getValidPrice());
-                                }
-                                else if (getResources().getString(R.string.discount).equals(name)){
-                                    DiabloUtils.instance().setTextViewValue((TextView) cell, s.getDiscount());
-                                }
-                                else if (getResources().getString(R.string.fprice).equals(name)){
-                                    cell.setFocusableInTouchMode(true);
-                                    cell.setFocusable(true);
-                                    DiabloUtils.instance().setEditTextValue((EditText)cell, s.getFinalPrice());
-                                    utils.addTextChangedListenerOfPayment((EditText) cell, new DiabloUtils.Payment() {
-                                        @Override
-                                        public void setPayment(String param) {
-                                            SaleStock s = (SaleStock) row.getTag();
-                                            Float price = utils.toFloat(param);
-                                            s.setFinalPrice(price);
-                                            View calCell = SaleInHandler.getColumn(getContext(), row, R.string.calculate);
-                                            utils.setTextViewValue((TextView) calCell, s.getSalePrice());
-                                            calcShouldPay();
-                                            dbInstance.replaceSaleStock(mSaleCalcController.getSaleCalc(), s, mStartRetailer);
-                                        }
-                                    });
-                                }
-
-                                if (getResources().getString(amount).equals(name)){
-                                    // free color, free size
-                                    if ( DiabloEnum.DIABLO_FREE.equals(s.getFree()) ){
-                                        getStockOfSelected(s, row);
-                                        cell.setFocusableInTouchMode(true);
-                                        cell.setFocusable(true);
-                                        cell.requestFocus();
-                                    } else {
-                                        switchToStockSelectFrame(s, R.string.add);
-                                    }
-
-                                    ((EditText)cell).addTextChangedListener(new DiabloSaleAmountChangeWatcher(mHandler, row));
-
-                                }
-
+                            if (mTracePrice.equals(DiabloEnum.DIABLO_FALSE)
+                                || mSaleCalcController.getRetailer().equals(mSysRetailer)
+                                || !s.getFree().equals(DiabloEnum.DIABLO_FREE)) {
+                                startAddStock(row, s);
+                            }
+                            else {
+                                // get last price
+                                getLastTransactionOfRetailer(row, s);
                             }
                         }
                     }
@@ -733,7 +701,7 @@ public class SaleIn extends Fragment{
                     selectStock.setStockExist(s.getExist());
                 }
 
-                View v = SaleInHandler.getColumn(getContext(), row, R.string.stock);
+                View v = SaleInHandler.getColumn(getContext(), row, stock);
                 ((TextView)v).setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                 ((TextView)v).setText(utils.toString(selectStock.getStockExist()));
 
@@ -820,6 +788,10 @@ public class SaleIn extends Fragment{
                                     return true;
                                 }
                             });
+
+                            if (0 > s.getSaleTotal()) {
+                                row.setBackgroundColor(ContextCompat.getColor(f.getContext(), R.color.pinkLight));
+                            }
 
                             f.incRow();
                             f.registerForContextMenu(row);
@@ -1166,12 +1138,32 @@ public class SaleIn extends Fragment{
                                 ms.setSaleTotal(saleTotal);
                                 ms.setStockExist(exist);
 
+                                ms.setSecond(s.getSecond());
+                                ms.setFinalPrice(s.getFinalPrice());
+                                ms.setDiscount(s.getDiscount());
+                                ms.setSelectedPrice(s.getSelectedPrice());
+
                                 TableRow row = getRowByOrderId(s.getOrderId());
                                 View cellAmount = SaleInHandler.getColumn(getContext(), row, R.string.amount);
-                                View cellStock = SaleInHandler.getColumn(getContext(), row, R.string.stock);
+                                View cellStock = SaleInHandler.getColumn(getContext(), row, stock);
 
                                 utils.setEditTextValue((EditText)cellAmount, saleTotal);
                                 utils.setTextViewValue((TextView)cellStock, exist);
+
+                                if (ms.getSecond().equals(DiabloEnum.DIABLO_TRUE)) {
+                                    View cellFPrice = SaleInHandler.getColumn(getContext(), row, R.string.fprice);
+                                    View cellDiscount = SaleInHandler.getColumn(getContext(), row, R.string.discount);
+                                    View cellPriceType = SaleInHandler.getColumn(getContext(), row, R.string.price_type);
+
+                                    utils.setEditTextValue((EditText)cellFPrice, ms.getFinalPrice());
+                                    utils.setTextViewValue((TextView) cellDiscount, ms.getDiscount());
+                                    ((Spinner)cellPriceType).setSelection(ms.getSelectedPrice() - 1);
+
+                                    if (null != row) {
+                                        row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellowLight));
+                                    }
+                                }
+
                                 break;
                             }
                         }
@@ -1229,6 +1221,95 @@ public class SaleIn extends Fragment{
         }
 
         return orderId;
+    }
+
+    private void getLastTransactionOfRetailer(final TableRow row, final SaleStock stock){
+        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+        Call<List<LastSaleResponse>> call = face.getLastSale(
+            Profile.instance().getToken(),
+            new LastSaleRequest(
+                stock.getStyleNumber(),
+                stock.getBrandId(),
+                mSaleCalcController.getShop(),
+                mSaleCalcController.getRetailer()));
+
+        call.enqueue(new Callback<List<LastSaleResponse>>() {
+            @Override
+            public void onResponse(Call<List<LastSaleResponse>> call, Response<List<LastSaleResponse>> response) {
+                Log.d(LOG_TAG, "success to get last stock");
+                List<LastSaleResponse> lastStocks = new ArrayList<>(response.body());
+                if (lastStocks.size() > 0) {
+                    LastSaleResponse lastStock = lastStocks.get(0);
+                    stock.setFinalPrice(lastStock.getPrice());
+                    stock.setDiscount(lastStock.getDiscount());
+                    stock.setSelectedPrice(lastStock.getSellStyle());
+                    stock.setSecond(DiabloEnum.DIABLO_TRUE);
+                    row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellowLight));
+                }
+
+                startAddStock(row, stock);
+            }
+
+            @Override
+            public void onFailure(Call<List<LastSaleResponse>> call, Throwable t) {
+                DiabloUtils.instance().makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_SHORT);
+                // Log.d(LOG_TAG, "fail to get last stock");
+            }
+        });
+    }
+
+    private void startAddStock(final TableRow row, SaleStock s) {
+        for (Integer i=0; i<row.getChildCount(); i++){
+            final View cell = row.getChildAt(i);
+            String name = (String)cell.getTag();
+
+            if (getResources().getString(R.string.good).equals(name)) {
+                cell.setFocusable(false);
+                // ((AutoCompleteTextView )cell).setText(s.getName());
+            }
+
+            if (getResources().getString(R.string.price).equals(name)) {
+                // DiabloUtils.instance().setTextViewValue((TextView) cell, s.getValidPrice());
+                // s.setFinalPrice(s.getValidPrice());
+                DiabloUtils.instance().setTextViewValue((TextView) cell, s.getValidPrice());
+            }
+            else if (getResources().getString(R.string.discount).equals(name)){
+                DiabloUtils.instance().setTextViewValue((TextView) cell, s.getDiscount());
+            }
+            else if (getResources().getString(R.string.fprice).equals(name)){
+                cell.setFocusableInTouchMode(true);
+                cell.setFocusable(true);
+                DiabloUtils.instance().setEditTextValue((EditText)cell, s.getFinalPrice());
+                utils.addTextChangedListenerOfPayment((EditText) cell, new DiabloUtils.Payment() {
+                    @Override
+                    public void setPayment(String param) {
+                        SaleStock s = (SaleStock) row.getTag();
+                        Float price = utils.toFloat(param);
+                        s.setFinalPrice(price);
+                        View calCell = SaleInHandler.getColumn(getContext(), row, R.string.calculate);
+                        utils.setTextViewValue((TextView) calCell, s.getSalePrice());
+                        calcShouldPay();
+                        dbInstance.replaceSaleStock(mSaleCalcController.getSaleCalc(), s, mStartRetailer);
+                    }
+                });
+            }
+
+            if (getResources().getString(amount).equals(name)){
+                // free color, free size
+                if ( DiabloEnum.DIABLO_FREE.equals(s.getFree()) ){
+                    getStockOfSelected(s, row);
+                    cell.setFocusableInTouchMode(true);
+                    cell.setFocusable(true);
+                    cell.requestFocus();
+                } else {
+                    switchToStockSelectFrame(s, R.string.add);
+                }
+
+                ((EditText)cell).addTextChangedListener(new DiabloSaleAmountChangeWatcher(mHandler, row));
+
+            }
+
+        }
     }
 
     private void startSale() {
@@ -1361,8 +1442,21 @@ public class SaleIn extends Fragment{
                             }
                         }).create();
                 } else {
-                    Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
-                    String extraMessage = res == null ? "" : res.getError();
+                    Integer errorCode;
+                    String extraMessage = DiabloEnum.EMPTY_STRING;
+                    if (DiabloEnum.HTTP_OK == response.code()) {
+                        errorCode = res.getCode();
+                        if (errorCode.equals(2705)) {
+                            Float currentBalance = res.getCurrentBalance();
+                            Float lastBalance = res.getLastBalance();
+                            extraMessage = getString(R.string.calc_balance) + utils.toString(lastBalance)
+                                + getString(R.string.real_balance) + utils.toString(currentBalance);
+                        }
+                        extraMessage += res.getError();
+                    } else {
+                        errorCode = response.code();
+                    }
+
                     new DiabloAlertDialog(
                         getContext(),
                         getResources().getString(R.string.nav_sale_in),

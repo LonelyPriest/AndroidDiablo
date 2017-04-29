@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.ContextMenu;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,7 +38,9 @@ import com.diablo.dt.diablo.model.sale.SaleCalc;
 import com.diablo.dt.diablo.model.sale.SaleStock;
 import com.diablo.dt.diablo.model.sale.SaleStockAmount;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
+import com.diablo.dt.diablo.request.sale.LastSaleRequest;
 import com.diablo.dt.diablo.request.sale.NewSaleRequest;
+import com.diablo.dt.diablo.response.sale.LastSaleResponse;
 import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
@@ -75,6 +79,10 @@ public class SaleOut extends Fragment {
     private Integer  mLoginShop;
     private Integer  mSelectPrice;
     private TableRow mCurrentSelectedRow;
+
+    private Integer   mSysRetailer;
+    private Integer   mTracePrice;
+    private Integer   mRejectWithSecond;
 
     private final SaleOutHandler mHandler = new SaleOutHandler(this);
 
@@ -144,6 +152,15 @@ public class SaleOut extends Fragment {
 
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
+
+        mSysRetailer = UTILS.toInteger(
+            Profile.instance().getConfig(DiabloEnum.START_RETAILER, DiabloEnum.DIABLO_CONFIG_INVALID_INDEX));
+
+        mTracePrice = UTILS.toInteger(
+            Profile.instance().getConfig(DiabloEnum.START_TRACE_PRICE, DiabloEnum.DIABLO_CONFIG_NO));
+
+        mRejectWithSecond = UTILS.toInteger(
+            Profile.instance().getConfig(DiabloEnum.START_REJECT_SECOND_ORDER, DiabloEnum.DIABLO_CONFIG_NO));
 
         // base setting
         mMatchStocks = Profile.instance().getMatchStocks();
@@ -259,9 +276,17 @@ public class SaleOut extends Fragment {
                     DiabloRowView row = controller.getView();
                     row.getCell(R.string.fprice).setCellFocusable(true);
                     if ( DiabloEnum.DIABLO_FREE.equals(stock.getFree()) ){
-                        cell.setCellFocusable(true);
-                        cell.requestFocus();
-                        row.getCell(R.string.good).setCellFocusable(false);
+                        if (mSaleCalcController.getRetailer().equals(mSysRetailer)
+                            || mTracePrice.equals(DiabloEnum.DIABLO_FALSE)) {
+                            cell.setCellFocusable(true);
+                            cell.requestFocus();
+                            cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
+                            row.getCell(R.string.good).setCellFocusable(false);
+                        }
+                        else {
+                            getLastTransactionOfRetailer(row, cell, stock);
+                        }
+
                     } else {
                         // switchToStockSelectFrame(s, R.string.
                         // add);
@@ -275,6 +300,66 @@ public class SaleOut extends Fragment {
                 calcShouldPay();
             }
         };
+
+    private void getLastTransactionOfRetailer(final DiabloRowView row, final DiabloCellView cell, final SaleStock stock){
+        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+        Call<List<LastSaleResponse>> call = face.getLastSale(
+            Profile.instance().getToken(),
+            new LastSaleRequest(
+                stock.getStyleNumber(),
+                stock.getBrandId(),
+                mSaleCalcController.getShop(),
+                mSaleCalcController.getRetailer()));
+
+        call.enqueue(new Callback<List<LastSaleResponse>>() {
+            @Override
+            public void onResponse(Call<List<LastSaleResponse>> call, Response<List<LastSaleResponse>> response) {
+                Log.d(LOG_TAG, "success to get last stock");
+                List<LastSaleResponse> lastStocks = new ArrayList<>(response.body());
+
+
+                if (lastStocks.size() > 0) {
+                    LastSaleResponse lastStock = lastStocks.get(0);
+                    if ( DiabloEnum.DIABLO_TRUE.equals(mRejectWithSecond)
+                        && DiabloEnum.DIABLO_TRUE.equals(lastStock.getSecond()) ) {
+                        DiabloUtils.instance().makeToast(getContext(), DiabloError.getError(2799), Toast.LENGTH_SHORT);
+                    } else {
+                        stock.setFinalPrice(lastStock.getPrice());
+                        stock.setDiscount(lastStock.getDiscount());
+                        stock.setSelectedPrice(lastStock.getSellStyle());
+                        // stock.setSecond(DiabloEnum.DIABLO_TRUE);
+
+                        if (DiabloEnum.DIABLO_TRUE.equals(lastStock.getSecond())) {
+                            row.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellowLight));
+                        }
+
+                        row.setCellText(R.string.fprice, stock.getFinalPrice());
+                        row.setCellText(R.string.discount, stock.getDiscount());
+                        ((Spinner)row.getCell(R.string.price_type).getView()).setSelection(stock.getSelectedPrice() - 1);
+
+                        cell.setCellFocusable(true);
+                        cell.requestFocus();
+                        cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
+                        row.getCell(R.string.good).setCellFocusable(false);
+                    }
+
+
+                }
+                else {
+                    cell.setCellFocusable(true);
+                    cell.requestFocus();
+                    cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
+                    row.getCell(R.string.good).setCellFocusable(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<LastSaleResponse>> call, Throwable t) {
+                DiabloUtils.instance().makeToast(getContext(), DiabloError.getError(99), Toast.LENGTH_SHORT);
+                // Log.d(LOG_TAG, "fail to get last stock");
+            }
+        });
+    }
 
     private DiabloSaleRowController addEmptyRow() {
         TableRow row = new TableRow(getContext());
@@ -391,7 +476,10 @@ public class SaleOut extends Fragment {
 
                 switch (mNoFreeStockListener.getCurrentOperation()){
                     case R.string.action_save:
-                        mSaleTableController.replaceRowController(s);
+                        DiabloSaleRowController controller = mSaleTableController.replaceRowController(getContext(), s);
+                        if (null != controller) {
+                            controller.getModel().setSecond(DiabloEnum.DIABLO_FALSE);
+                        }
                         break;
                     case R.string.action_cancel:
                         if (s.getOrderId().equals(0)){

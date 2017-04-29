@@ -52,6 +52,8 @@ public class SaleNoteResponse extends Response {
         private String comment;
         @SerializedName("entry_date")
         private String datetime;
+        @SerializedName("second")
+        private Integer second;
         @SerializedName("shop_id")
         private Integer shopId;
         @SerializedName("retailer_id")
@@ -123,6 +125,10 @@ public class SaleNoteResponse extends Response {
 
         public String getDatetime() {
             return datetime;
+        }
+
+        public Integer getSecond() {
+            return second;
         }
 
         public Integer getShopId() {

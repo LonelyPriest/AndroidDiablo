@@ -342,7 +342,6 @@ public class SaleNote extends Fragment {
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
                     SaleNoteResponse.SaleNote note = notes.get(i);
-
                     for (String title: mTableHeads){
                         TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
                         if (getResources().getString(R.string.order_id).equals(title)) {
@@ -411,6 +410,9 @@ public class SaleNote extends Fragment {
                         }
                         else if (getContext().getString(R.string.amount).equals(title)){
                             UTILS.addCell(getContext(), row, note.getTotal(), lp);
+                            if (0 > note.getTotal()) {
+                                row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.pinkLight));
+                            }
                         }
                         else if (getContext().getString(R.string.calculate).equals(title)){
                             UTILS.addCell(getContext(), row, note.getFdiscount() * note.getFprice() * 0.01f, lp);
@@ -450,6 +452,9 @@ public class SaleNote extends Fragment {
                     registerForContextMenu(row);
 
                     row.setBackgroundResource(R.drawable.table_row_bg);
+//                    if (note.getSecond().equals(DiabloEnum.DIABLO_TRUE)) {
+//                        row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellowLight));
+//                    }
                     row.setTag(note);
                     mSaleNoteTable.addView(row);
                 }

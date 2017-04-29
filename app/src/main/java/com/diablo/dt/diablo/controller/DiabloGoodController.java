@@ -251,7 +251,10 @@ public class DiabloGoodController {
                     if (null == Profile.instance().getBrand(s)) {
                         mIsValidFirm = false;
                         mGoodCalc.setFirm(null);
+                        f.setError(context.getResources().getString(R.string.good_firm_must_select));
+
                         checkValidAction();
+
                     }
                 }
         });
@@ -262,6 +265,8 @@ public class DiabloGoodController {
         mOnFirmClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                f.setError(null);
+
                 Firm selectFirm = (Firm) adapterView.getItemAtPosition(i);
                 mGoodCalc.setFirm(selectFirm);
                 mIsValidFirm = true;
@@ -294,6 +299,7 @@ public class DiabloGoodController {
                     if (null == Profile.instance().getBrand(s)) {
                         mIsValidBrand = false;
                         mGoodCalc.setBrand(null);
+                        f.setError(context.getResources().getString(R.string.good_brand_must_select));
                         checkValidAction();
                     }
                 }
@@ -304,11 +310,12 @@ public class DiabloGoodController {
         mOnBrandClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                f.setError(null);
+
                 DiabloBrand brand = (DiabloBrand) adapterView.getItemAtPosition(i);
                 mIsValidBrand = true;
 
                 String styleNumber = mGoodCalc.getStyleNumber();
-
                 if (null != styleNumber && styleNumber.length() > 0) {
                     MatchGood good = Profile.instance().getMatchGood(styleNumber, brand.getId());
                     if ( null != good ) {
@@ -360,7 +367,9 @@ public class DiabloGoodController {
                     if (null == Profile.instance().getDiabloType(s)) {
                         mIsValidGoodType = false;
                         mGoodCalc.setGoodType(null);
+                        f.setError(context.getResources().getString(R.string.good_type_must_select));
                         checkValidAction();
+
                     }
                 }
             });
@@ -370,11 +379,14 @@ public class DiabloGoodController {
         mOnGoodTypeClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                f.setError(null);
+
                 DiabloType goodType = (DiabloType) adapterView.getItemAtPosition(i);
                 mGoodCalc.setGoodType(goodType);
-
                 mIsValidGoodType = true;
+
                 checkValidAction();
+
             }
         };
 

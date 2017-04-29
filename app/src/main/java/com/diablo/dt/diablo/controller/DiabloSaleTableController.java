@@ -1,5 +1,6 @@
 package com.diablo.dt.diablo.controller;
 
+import android.content.Context;
 import android.widget.TableLayout;
 
 import com.diablo.dt.diablo.model.sale.SaleStock;
@@ -86,12 +87,17 @@ public class DiabloSaleTableController {
         return orderId;
     }
 
-    public void replaceRowController(final SaleStock stock) {
+    public DiabloSaleRowController replaceRowController(Context context, final SaleStock stock) {
+        DiabloSaleRowController controller = null;
         for (DiabloSaleRowController c: mControllers) {
             if (c.getOrderId().equals(stock.getOrderId())) {
-                c.replaceSaleStock(stock);
+                c.replaceSaleStock(context, stock);
+                controller = c;
+                break;
             }
         }
+
+        return controller;
     }
 
     public void calcSaleInShouldPay(DiabloSaleController saleController){

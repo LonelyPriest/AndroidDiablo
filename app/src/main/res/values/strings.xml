@@ -379,12 +379,17 @@
 
   <!-- error -->
   <string name="invalid_name_password">用户名或密码错误</string>
+  <string name="login_user_active">该用户已登录系统，是否继续登录？</string>
+  <string name="login_execced_user">超过在线最大用户数限制，是否强制登录？注意：系统将踢出未在线时间最长用户</string>
+  <string name="login_no_user_fire">没有用户可以踢出！！注意：管理员用户无法踢出，请确认管理员是否在线</string>
+  <string name="login_out_of_service">用户不在服务时间内，请选择其它用户或在服务时间内登录该用户</string>
   <string name="network_unreachable">连接服务器失败，请确认该设备网络连接正常</string>
   <string name="error_style_number">明细未知，请删除后重新添加</string>
   <string name="network_invalid">网络故障，请检查网络连接情况</string>
   <string name="internal_error">系统内部错误，请重试或联系服务人员</string>
   <string name="authen_error">操作鉴权失败</string>
   <string name="database_error">数据库操作失败，请重试或联系服务人员</string>
+  <string name="error_reject_with_second_good">该款号为补单，无法退货，请重新选择款号</string>
 
 
   <string name="failed_to_get_user_info">获取用户权限信息失败</string>
@@ -421,7 +426,16 @@
   <string name="different_good">"货品厂商不一致，请重新选择货品"</string>
 
   <string name="firm_exist">该厂商已存在</string>
+  
+  <string name="good_exist">货品资料已存在</string>
+  <string name="good_in_use">货品资料正在使用</string>
+  <string name="good_firm_must_select">厂商必需从提示列表中选取</string>
+  <string name="good_brand_must_select">品牌必需从提示列表中选取，没有则点击新增按键</string>
+  <string name="good_type_must_select">类型必需从提示列表中选取，没有则点击新增按键</string>
 
+  <string name="invalid_balance_of_retailer">零售商欠款不正确，请核对零售欠款后再操作</string>
+  <string name="calc_balance">计算欠款：</string>
+  <string name="real_balance">实际欠款：</string>
 
   <string name="invalid_style_number">款号只能是字母，数字或横杠，不能以横杠开头或结尾，不超过16个字符</string>
   <string name="invalid_brand">品名只能是中文或字母，不超过10个字符</string>
@@ -532,6 +546,11 @@
 
   <string name="search_retailer">支持名称/手机号码查询</string>
   <string name="search_firm">支持名称/手机号码查询</string>
+
+  <string name="sale_in_color_yellow_hint">黄色表示补货</string>
+  <string name="sale_in_color_pink_hint">粉红色表示退货</string>
+
+  <string name="sale_out_color_yellow_hint">黄色表示补单退货</string>
 
   <!-- button -->
   <string name="add">新增</string>
