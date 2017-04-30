@@ -250,7 +250,7 @@ public class SaleIn extends Fragment{
 
         @Override
         public void afterAdd(Retailer retailer) {
-           resetRetailerWatcher(retailer);
+            resetRetailerWatcher(retailer);
             focusStyleNumber();
             // mSaleCalcController.setRetailerClickListener(getContext());
         }
@@ -866,6 +866,7 @@ public class SaleIn extends Fragment{
 
             incRow();
         }
+
 
         if (mRowSize > 0){
             mButtons.get(R.id.sale_in_next).enable();

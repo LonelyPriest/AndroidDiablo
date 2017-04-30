@@ -434,12 +434,14 @@ public class DiabloRetailerDetail extends Fragment {
 
             }
             else if (tag.equals(getString(R.string.diablo_phone))) {
-                if (!oldRetailer.getMobile().equals(updateRetailer.getMobile())) {
+                if (null == oldRetailer.getMobile()
+                    || !oldRetailer.getMobile().equals(updateRetailer.getMobile())) {
                     cell.setText(updateRetailer.getMobile());
                 }
             }
             else if (tag.equals(getString(R.string.diablo_address))) {
-                if (!oldRetailer.getAddress().equals(updateRetailer.getAddress())) {
+                if (null == oldRetailer.getAddress()
+                    || !oldRetailer.getAddress().equals(updateRetailer.getAddress())) {
                     cell.setText(updateRetailer.getAddress());
                 }
             }

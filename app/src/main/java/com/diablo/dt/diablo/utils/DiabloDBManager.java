@@ -277,8 +277,7 @@ public class DiabloDBManager {
             c.close();
         }
 
-        return saleStocks.size() == 0 ? null : saleStocks;
-
+        return saleStocks;
     }
 
     public void replaceSaleStock(SaleCalc calc, SaleStock stock, Integer startRetailer) {
