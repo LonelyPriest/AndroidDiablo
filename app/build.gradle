@@ -19,7 +19,7 @@ android {
       applicationVariants.all { variant ->
         variant.outputs.each { output ->
           project.ext { appName = '钱掌柜' }
-          def formattedDate = new Date().format('yyyy-MM-dd')
+          def formattedDate = new Date().format('yyyy-MM-dd_HH-mm-ss')
           def newName = output.outputFile.name
           newName = newName.replace("app-", "$project.ext.appName-")
           newName = newName.replace("-release", "-release" + formattedDate)
