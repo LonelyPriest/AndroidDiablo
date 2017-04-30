@@ -246,6 +246,9 @@ public class SaleIn extends Fragment{
 
             mSaleCalcController.setRetailerWatcher();
             mSaleCalcController.setRetailerClickListener(getContext());
+
+            // change start retailer, avoid replace the draft
+            mStartRetailer = retailer.getId();
         }
 
         @Override
@@ -257,6 +260,7 @@ public class SaleIn extends Fragment{
 
         @Override
         public void afterGet(Retailer retailer) {
+
             resetRetailerWatcher(retailer);
            //  mSaleCalcController.setRetailerClickListener(getContext());
             if (mIsRecoverFromDraft) {
@@ -346,7 +350,6 @@ public class SaleIn extends Fragment{
 
                 // focus to style number
                 focusStyleNumber();
-
                 mSaleCalcController.setBalance(retailer.getBalance());
             }
         });
@@ -375,7 +378,7 @@ public class SaleIn extends Fragment{
             retailerId = Profile.instance().getRetailers().get(0).getId();
         }
 
-        mStartRetailer = retailerId;
+        // mStartRetailer = retailerId;
 
         init(retailerId, mLoginShop, new SaleCalc(), new ArrayList<SaleStock>());
 
@@ -568,28 +571,37 @@ public class SaleIn extends Fragment{
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long extra) {
                         MatchStock matchedStock = (MatchStock) adapterView.getItemAtPosition(position);
                         Integer matchedOrderId = findSaleStock(matchedStock);
-                        if (!matchedOrderId.equals(DiabloEnum.INVALID_INDEX)){
+                        if (mSaleCalcController.getRetailer().equals(DiabloEnum.INVALID_INDEX)) {
                             eCell.setText(DiabloEnum.EMPTY_STRING);
                             utils.makeToast(
+                                getContext(),
+                                getContext().getResources().getString(R.string.sale_invalid_retailer),
+                                Toast.LENGTH_LONG);
+                        }
+                        else {
+                            if (!matchedOrderId.equals(DiabloEnum.INVALID_INDEX)){
+                                eCell.setText(DiabloEnum.EMPTY_STRING);
+                                utils.makeToast(
                                     getContext(),
                                     getContext().getResources().getString(R.string.sale_stock_exist)
-                                            + utils.toString(matchedOrderId),
-                                Toast.LENGTH_LONG);
-                        } else {
-                            final SaleStock s = new SaleStock(matchedStock, mSelectPrice);
-                            s.setFinalPrice(s.getValidPrice());
+                                        + utils.toString(matchedOrderId),
+                                    Toast.LENGTH_LONG);
+                            } else {
+                                final SaleStock s = new SaleStock(matchedStock, mSelectPrice);
+                                s.setFinalPrice(s.getValidPrice());
 
-                            row.setTag(s);
-                            mSaleStocks.add(s);
+                                row.setTag(s);
+                                mSaleStocks.add(s);
 
-                            if (mTracePrice.equals(DiabloEnum.DIABLO_FALSE)
-                                || mSaleCalcController.getRetailer().equals(mSysRetailer)
-                                || !s.getFree().equals(DiabloEnum.DIABLO_FREE)) {
-                                startAddStock(row, s);
-                            }
-                            else {
-                                // get last price
-                                getLastTransactionOfRetailer(row, s);
+                                if (mTracePrice.equals(DiabloEnum.DIABLO_FALSE)
+                                    || mSaleCalcController.getRetailer().equals(mSysRetailer)
+                                    || !s.getFree().equals(DiabloEnum.DIABLO_FREE)) {
+                                    startAddStock(row, s);
+                                }
+                                else {
+                                    // get last price
+                                    getLastTransactionOfRetailer(row, s);
+                                }
                             }
                         }
                     }
@@ -803,7 +815,7 @@ public class SaleIn extends Fragment{
                     f.calcShouldPay();
 
                     // save to db
-                    // delete old
+                    // delete old sale of retailer
                     SaleCalc calc = f.mSaleCalcController.getSaleCalc();
                     if (f.mRowSize == 1){
                         f.dbInstance.deleteSaleCalc(calc);
@@ -811,6 +823,7 @@ public class SaleIn extends Fragment{
                         f.dbInstance.addSaleCalc(calc);
                     }
                     f.dbInstance.replaceSaleStock(calc, s, f.mStartRetailer);
+                    f.mStartRetailer = calc.getRetailer();
                 }
             }
         }
@@ -1012,6 +1025,14 @@ public class SaleIn extends Fragment{
                                 // utils.makeToast(getContext(), i);
                                 SaleCalc c = sparseCalcs.get(i);
                                 resetWith(c, recoverFromDB(c));
+
+                                dbInstance.setSaleStockState(mSaleCalcController.getSaleCalc(), DiabloEnum.STARTING_SALE);
+                                // set the finish state of other draft
+                                for (int j=0; j<sparseCalcs.size(); j++) {
+                                    if (j != i) {
+                                        dbInstance.setSaleStockState(sparseCalcs.get(j), DiabloEnum.FINISHED_SALE);
+                                    }
+                                }
                             }
                         });
 
@@ -1029,13 +1050,24 @@ public class SaleIn extends Fragment{
                 }
                 break;
             case R.id.sale_in_clear_draft:
-                dbInstance.clearAll();
-                utils.makeToast(
+                new DiabloAlertDialog(
                     getContext(),
-                    getContext().getResources().getString(R.string.draft_clear_success),
-                    Toast.LENGTH_SHORT);
+                    true,
+                    getResources().getString(R.string.nav_sale_in),
+                    getContext().getString(R.string.sale_clear_draft),
+                    new DiabloAlertDialog.OnOkClickListener() {
+                        @Override
+                        public void onOk() {
+                            dbInstance.clearAll();
+                            utils.makeToast(
+                                getContext(),
+                                getContext().getResources().getString(R.string.draft_clear_success),
+                                Toast.LENGTH_SHORT);
+                        }
+                    }).create();
                 break;
             case R.id.sale_in_next:
+                dbInstance.setSaleStockState(mSaleCalcController.getSaleCalc(), DiabloEnum.FINISHED_SALE);
                 init();
                 break;
             case R.id.sale_in_save:
@@ -1435,7 +1467,7 @@ public class SaleIn extends Fragment{
                         getResources().getString(R.string.nav_sale_in),
                         getContext().getString(R.string.sale_success)
                             + res.getRsn()
-                            + getContext().getString(R.string.sale_start_print_or_not) ,
+                            + getContext().getString(R.string.sale_start_print_or_not),
                         new DiabloAlertDialog.OnOkClickListener() {
                             @Override
                             public void onOk() {

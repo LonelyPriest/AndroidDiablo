@@ -264,33 +264,42 @@ public class SaleOut extends Fragment {
             @Override
             public void onActionOfAmount(DiabloSaleRowController controller, DiabloCellView cell) {
                 Integer orderId = mSaleTableController.contains(controller);
-                if (!DiabloEnum.INVALID_INDEX.equals(orderId)) {
+                if (mSaleCalcController.getRetailer().equals(DiabloEnum.INVALID_INDEX)) {
                     controller.setCellText(R.string.good, DiabloEnum.EMPTY_STRING);
                     UTILS.makeToast(
                         getContext(),
-                        getContext().getResources().getString(R.string.sale_stock_exist)
-                            + UTILS.toString(orderId),
-                        Toast.LENGTH_SHORT);
-                } else {
-                    SaleStock stock = controller.getModel();
-                    DiabloRowView row = controller.getView();
-                    row.getCell(R.string.fprice).setCellFocusable(true);
-                    if ( DiabloEnum.DIABLO_FREE.equals(stock.getFree()) ){
-                        if (mSaleCalcController.getRetailer().equals(mSysRetailer)
-                            || mTracePrice.equals(DiabloEnum.DIABLO_FALSE)) {
-                            cell.setCellFocusable(true);
-                            cell.requestFocus();
-                            cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
-                            row.getCell(R.string.good).setCellFocusable(false);
-                        }
-                        else {
-                            getLastTransactionOfRetailer(row, cell, stock);
-                        }
-
+                        getContext().getResources().getString(R.string.sale_invalid_retailer),
+                        Toast.LENGTH_LONG);
+                }
+                else {
+                    if (!DiabloEnum.INVALID_INDEX.equals(orderId)) {
+                        controller.setCellText(R.string.good, DiabloEnum.EMPTY_STRING);
+                        UTILS.makeToast(
+                            getContext(),
+                            getContext().getResources().getString(R.string.sale_stock_exist)
+                                + UTILS.toString(orderId),
+                            Toast.LENGTH_SHORT);
                     } else {
-                        // switchToStockSelectFrame(s, R.string.
-                        // add);
-                        switchToStockSelectFrame(controller.getModel(), R.string.add);
+                        SaleStock stock = controller.getModel();
+                        DiabloRowView row = controller.getView();
+                        row.getCell(R.string.fprice).setCellFocusable(true);
+                        if ( DiabloEnum.DIABLO_FREE.equals(stock.getFree()) ){
+                            if (mSaleCalcController.getRetailer().equals(mSysRetailer)
+                                || mTracePrice.equals(DiabloEnum.DIABLO_FALSE)) {
+                                cell.setCellFocusable(true);
+                                cell.requestFocus();
+                                cell.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED);
+                                row.getCell(R.string.good).setCellFocusable(false);
+                            }
+                            else {
+                                getLastTransactionOfRetailer(row, cell, stock);
+                            }
+
+                        } else {
+                            // switchToStockSelectFrame(s, R.string.
+                            // add);
+                            switchToStockSelectFrame(controller.getModel(), R.string.add);
+                        }
                     }
                 }
             }

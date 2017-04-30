@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DiabloDBOpenHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "diablo";
-    private static final Integer DB_VERSION = 2;
+    private static final Integer DB_VERSION = 3;
 
     private static DiabloDBOpenHelper diabloDBHelper;
 
@@ -30,11 +30,12 @@ public class DiabloDBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String WSaleCalc = "create table if not exists w_sale ("
-                + "_id integer primary key autoincrement"
-                + ", retailer integer not null"
-                + ", shop integer not null"
-                + ", comment text"
-                + ", unique(retailer, shop) ON CONFLICT REPLACE)";
+            + "_id integer primary key autoincrement"
+            + ", retailer integer not null"
+            + ", shop integer not null"
+            + ", comment text"
+            + ", finish integer default 0"
+            + ", unique(retailer, shop) ON CONFLICT REPLACE)";
 
         String WSaleStock = "create table if not exists w_sale_detail ("
             + "_id integer primary key autoincrement"
@@ -47,6 +48,7 @@ public class DiabloDBOpenHelper extends SQLiteOpenHelper {
             + ", second integer not null"
             + ", discount real not null"
             + ", price real not null"
+            + ", finish integer default 0"
             + ", unique(retailer, shop, style_number, brand) ON CONFLICT REPLACE)";
 
         String WSaleStockAmount = "create table if not exists w_sale_detail_amount ("
@@ -60,6 +62,7 @@ public class DiabloDBOpenHelper extends SQLiteOpenHelper {
             // + ", type integer not null"
             + ", exist integer not null"
             + ", total integer not null"
+            + ", finish integer default 0"
             + ", unique(retailer, shop, style_number, brand, color, size) ON CONFLICT REPLACE)";
 
         String User = "create table if not exists user ("

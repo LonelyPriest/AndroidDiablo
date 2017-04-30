@@ -52,6 +52,7 @@ public class DiabloDBManager {
         v.put("retailer", calc.getRetailer());
         v.put("shop", calc.getShop());
         v.put("comment", calc.getComment());
+        v.put("finish", 0);
         return mSQLiteDB.insert(DiabloEnum.W_SALE, "comment", v);
     }
 
@@ -307,8 +308,8 @@ public class DiabloDBManager {
             s1.clearBindings();
 
             String sql2 = "insert into " + DiabloEnum.W_SALE_DETAIL
-                    + "(retailer, shop, style_number, brand, sell_type, second, discount, price)"
-                    + " values(?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "(retailer, shop, style_number, brand, sell_type, second, discount, price, finish)"
+                    + " values(?, ?, ?, ?, ?, ?, ?, ?, 0)";
             SQLiteStatement s2 = mSQLiteDB.compileStatement(sql2);
             s2.bindString(1, utils.toString(calc.getRetailer()));
             s2.bindString(2, utils.toString(calc.getShop()));
@@ -322,8 +323,8 @@ public class DiabloDBManager {
             s2.clearBindings();
 
             String sql3 = "insert into " + DiabloEnum.W_SALE_DETAIL_AMOUNT
-                    + "(retailer, shop, style_number, brand, color, size, exist, total)"
-                    + " values(?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "(retailer, shop, style_number, brand, color, size, exist, total, finish)"
+                    + " values(?, ?, ?, ?, ?, ?, ?, ?, 0)";
             SQLiteStatement s3 = mSQLiteDB.compileStatement(sql3);
 
             for (SaleStockAmount a : stock.getAmounts()) {
@@ -341,27 +342,65 @@ public class DiabloDBManager {
             }
 
             if (!calc.getRetailer().equals(startRetailer)) {
-                String sql4 = "update " + DiabloEnum.W_SALE + " set retailer=? where retailer=?";
+                String sql4 = "update " + DiabloEnum.W_SALE + " set retailer=? where retailer=? and finish=?";
                 SQLiteStatement s4 = mSQLiteDB.compileStatement(sql4);
                 s4.bindString(1, utils.toString(calc.getRetailer()));
                 s4.bindString(2, utils.toString(startRetailer));
+                s4.bindString(3, utils.toString(DiabloEnum.STARTING_SALE));
                 s4.execute();
                 s4.clearBindings();
 
-                String sql5 = "update " + DiabloEnum.W_SALE_DETAIL + " set retailer=? where retailer=?";
+                String sql5 = "update " + DiabloEnum.W_SALE_DETAIL + " set retailer=? where retailer=? and finish=?";
                 SQLiteStatement s5 = mSQLiteDB.compileStatement(sql5);
                 s5.bindString(1, utils.toString(calc.getRetailer()));
                 s5.bindString(2, utils.toString(startRetailer));
+                s5.bindString(3, utils.toString(DiabloEnum.STARTING_SALE));
                 s5.execute();
                 s5.clearBindings();
 
-                String sql6 = "update " + DiabloEnum.W_SALE_DETAIL_AMOUNT + " set retailer=? where retailer=?";
+                String sql6 = "update " + DiabloEnum.W_SALE_DETAIL_AMOUNT + " set retailer=? where retailer=? and finish=?";
                 SQLiteStatement s6 = mSQLiteDB.compileStatement(sql6);
                 s6.bindString(1, utils.toString(calc.getRetailer()));
                 s6.bindString(2, utils.toString(startRetailer));
+                s6.bindString(3, utils.toString(DiabloEnum.STARTING_SALE));
                 s6.execute();
                 s6.clearBindings();
             }
+            mSQLiteDB.setTransactionSuccessful();
+        } finally {
+            mSQLiteDB.endTransaction();
+        }
+        // mSQLiteDB.endTransaction();
+    }
+
+    public void setSaleStockState(SaleCalc calc, Integer state) {
+        mSQLiteDB.beginTransaction();
+
+        try {
+            String sql4 = "update " + DiabloEnum.W_SALE + " set finish=? where retailer=? and finish!=?";
+            SQLiteStatement s4 = mSQLiteDB.compileStatement(sql4);
+            s4.bindString(1, utils.toString(state));
+            s4.bindString(2, utils.toString(calc.getRetailer()));
+            s4.bindString(3, utils.toString(state));
+            s4.execute();
+            s4.clearBindings();
+
+            String sql5 = "update " + DiabloEnum.W_SALE_DETAIL + " set finish=? where retailer=? and finish!=?";
+            SQLiteStatement s5 = mSQLiteDB.compileStatement(sql5);
+            s5.bindString(1, utils.toString(state));
+            s5.bindString(2, utils.toString(calc.getRetailer()));
+            s5.bindString(3, utils.toString(state));
+            s5.execute();
+            s5.clearBindings();
+
+            String sql6 = "update " + DiabloEnum.W_SALE_DETAIL_AMOUNT + " set finish=? where retailer=? and finish!=?";
+            SQLiteStatement s6 = mSQLiteDB.compileStatement(sql6);
+            s6.bindString(1, utils.toString(state));
+            s6.bindString(2, utils.toString(calc.getRetailer()));
+            s6.bindString(3, utils.toString(state));
+            s6.execute();
+            s6.clearBindings();
+
             mSQLiteDB.setTransactionSuccessful();
         } finally {
             mSQLiteDB.endTransaction();

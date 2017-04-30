@@ -458,6 +458,7 @@
   <string name="print_failed">打印消息发送失败！！</string>
   <string name="sale_success">开单成功，单号：</string>
   <string name="sale_start_print_or_not">，是否打印销售单？</string>
+  <string name="sale_clear_draft">确定清除草篇吗？</string>
   <string name="sale_in_update_success">销售单编辑成功，单号：</string>
   <string name="sale_out_update_success">退货单编辑成功，单号：</string>
   <string name="stock_in_success">入库成功，单号：</string>
@@ -483,6 +484,7 @@
   <string name="draft_other">系统存在其它用户的草稿，请清除草搞后再操作</string>
   <string name="draft_clear_success">清除草稿成功</string>
   <string name="sale_stock_exist">该款号已存在，请重新选择，序号：</string>
+  <string name="sale_invalid_retailer">非法客户，请从提示列表中选择客户或点击新增按键增加客户后再进行操作</string>
   <string name="fail_to_destroy_token">清除用户Token失败，请人工强制退出系统</string>
   <string name="title_logout">用户注销</string>
   <string name="failed_to_fetch_retailers">获取零售商信息失败</string>
