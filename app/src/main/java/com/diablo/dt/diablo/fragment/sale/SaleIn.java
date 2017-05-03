@@ -549,6 +549,7 @@ public class SaleIn extends Fragment{
                 eCell.setRawInputType(InputType.TYPE_CLASS_NUMBER);
                 // eCell.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 eCell.requestFocus();
+                eCell.setSelectAllOnFocus(true);
                 utils.openKeyboard(getContext(), eCell);
                 lp.weight = 2f;
                 eCell.setLayoutParams(lp);
@@ -570,7 +571,6 @@ public class SaleIn extends Fragment{
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long extra) {
                         MatchStock matchedStock = (MatchStock) adapterView.getItemAtPosition(position);
-                        Integer matchedOrderId = findSaleStock(matchedStock);
                         if (mSaleCalcController.getRetailer().equals(DiabloEnum.INVALID_INDEX)) {
                             eCell.setText(DiabloEnum.EMPTY_STRING);
                             utils.makeToast(
@@ -579,6 +579,7 @@ public class SaleIn extends Fragment{
                                 Toast.LENGTH_LONG);
                         }
                         else {
+                            Integer matchedOrderId = findSaleStock(matchedStock);
                             if (!matchedOrderId.equals(DiabloEnum.INVALID_INDEX)){
                                 eCell.setText(DiabloEnum.EMPTY_STRING);
                                 utils.makeToast(
@@ -591,7 +592,16 @@ public class SaleIn extends Fragment{
                                 s.setFinalPrice(s.getValidPrice());
 
                                 row.setTag(s);
-                                mSaleStocks.add(s);
+                                mSaleStocks.add(0, s);
+
+                                row.setOnLongClickListener(new View.OnLongClickListener() {
+                                    @Override
+                                    public boolean onLongClick(View v) {
+                                        v.showContextMenu();
+                                        return true;
+                                    }
+                                });
+                                registerForContextMenu(row);
 
                                 if (mTracePrice.equals(DiabloEnum.DIABLO_FALSE)
                                     || mSaleCalcController.getRetailer().equals(mSysRetailer)
@@ -757,9 +767,11 @@ public class SaleIn extends Fragment{
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == SALE_TOTAL_CHANGED){
+                final SaleIn f = ((SaleIn)mFragment.get());
+
                 TableRow row = (TableRow) msg.obj;
-                View cell = SaleInHandler.getColumn(mFragment.get().getContext(), row, R.string.calculate);
-                if (null != cell){
+                View calcCell = SaleInHandler.getColumn(mFragment.get().getContext(), row, R.string.calculate);
+                if (null != calcCell){
                     SaleStock s = (SaleStock)row.getTag();
                     s.setSaleTotal(msg.arg1);
 
@@ -779,12 +791,13 @@ public class SaleIn extends Fragment{
                         }
                     }
 
-                    final SaleIn f = ((SaleIn)mFragment.get());
                     if (DiabloEnum.STARTING_SALE.equals(s.getState())){
                         if (0 == s.getSaleTotal()){
                             return;
                         } else {
                             s.setState(DiabloEnum.FINISHED_SALE);
+                            // goodCell.setFocusable(false);
+                            // f.mSaleStocks.add(s);
 
                             View orderCell =  SaleInHandler.getColumn(mFragment.get().getContext(), row, R.string.order_id);
                             if (null != orderCell){
@@ -793,6 +806,7 @@ public class SaleIn extends Fragment{
                                 ((TextView)orderCell).setText(utils.toString(rowId));
                             }
 
+                            // row.setOnLongClickListener(null);
                             row.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(View view) {
@@ -811,7 +825,7 @@ public class SaleIn extends Fragment{
                         }
                     }
 
-                    utils.setTextViewValue((TextView)cell, s.getSalePrice());
+                    utils.setTextViewValue((TextView)calcCell, s.getSalePrice());
                     f.calcShouldPay();
 
                     // save to db
@@ -824,6 +838,8 @@ public class SaleIn extends Fragment{
                     }
                     f.dbInstance.replaceSaleStock(calc, s, f.mStartRetailer);
                     f.mStartRetailer = calc.getRetailer();
+
+                    // }
                 }
             }
         }
@@ -905,60 +921,75 @@ public class SaleIn extends Fragment{
         SaleStock stock = (SaleStock)mCurrentSelectRow.getTag();
         Integer orderId = stock.getOrderId();
 
-        if (getResources().getString(R.string.delete) == item.getTitle()){
-            mCurrentSelectRow.removeAllViews();
-            for (int i=1; i<mSaleTable.getChildCount(); i++){
-                View row = mSaleTable.getChildAt(i);
-                if (row instanceof TableRow) {
-                    if (((SaleStock)row.getTag()).getOrderId().equals(orderId)){
-                        mSaleTable.removeView(row);
+        boolean firstRow = orderId == 0;
+        if (firstRow) {
+            if (getResources().getString(R.string.reset) == item.getTitle()) {
+                mCurrentSelectRow.removeAllViews();
+                mSaleTable.removeView(mCurrentSelectRow);
+                mCurrentSelectRow = null;
+
+                // remove old row
+                mSaleStocks.remove(0);
+                // add new
+                addEmptyRowToTable();
+            }
+        } else {
+            if (getResources().getString(R.string.delete) == item.getTitle()){
+                mCurrentSelectRow.removeAllViews();
+                for (int i=1; i<mSaleTable.getChildCount(); i++){
+                    View row = mSaleTable.getChildAt(i);
+                    if (row instanceof TableRow) {
+                        if (((SaleStock)row.getTag()).getOrderId().equals(orderId)){
+                            mSaleTable.removeView(row);
+                            break;
+                        }
+                    }
+                }
+
+                // delete from lists
+                int index = DiabloEnum.INVALID_INDEX;
+                for (int i=0; i<mSaleStocks.size(); i++){
+                    if (mSaleStocks.get(i).getOrderId().equals(orderId)){
+                        index = i;
                         break;
                     }
                 }
+
+                mSaleStocks.remove(index);
+                dbInstance.deleteSaleStock(mSaleCalcController.getSaleCalc(), stock);
+
+                decRow();
+
+                // reorder
+                Integer newOrderId = mSaleTable.getChildCount() - 1;
+                for (int i=1; i<mSaleTable.getChildCount(); i++){
+                    View row = mSaleTable.getChildAt(i);
+                    if (row instanceof TableRow) {
+                        ((SaleStock)row.getTag()).setOrderId(newOrderId);
+                        ((TextView)((TableRow) row).getChildAt(0)).setText(DiabloUtils.instance().toString(newOrderId));
+                        newOrderId--;
+                    }
+                }
+
+                if (mRowSize == 0){
+                    // mButtons.get(R.id.sale_in_save).disable();
+                    // mButtons.get(R.id.sale_in_money_off).disable();
+                    mButtons.get(R.id.sale_in_next).disable();
+                    // mButtons.get(R.id.sale_in_draft).disable();
+                    // getActivity().invalidateOptionsMenu();
+                }
+
+                calcShouldPay();
+                // DiabloUtils.instance().makeToast(getContext(), mSaleTable.getChildCount(), Toast.LENGTH_SHORT);
             }
 
-            // delete from lists
-            int index = DiabloEnum.INVALID_INDEX;
-            for (int i=0; i<mSaleStocks.size(); i++){
-                if (mSaleStocks.get(i).getOrderId().equals(orderId)){
-                    index = i;
-                    break;
+            else if (getResources().getString(R.string.modify) == item.getTitle()){
+                if (!DiabloEnum.DIABLO_FREE.equals(stock.getFree())){
+                    switchToStockSelectFrame(stock, R.string.modify);
                 }
             }
-
-            mSaleStocks.remove(index);
-            dbInstance.deleteSaleStock(mSaleCalcController.getSaleCalc(), stock);
-
-            decRow();
-
-            // reorder
-            Integer newOrderId = mSaleTable.getChildCount() - 1;
-            for (int i=1; i<mSaleTable.getChildCount(); i++){
-                View row = mSaleTable.getChildAt(i);
-                if (row instanceof TableRow) {
-                    ((SaleStock)row.getTag()).setOrderId(newOrderId);
-                    ((TextView)((TableRow) row).getChildAt(0)).setText(DiabloUtils.instance().toString(newOrderId));
-                    newOrderId--;
-                }
-            }
-
-            if (mRowSize == 0){
-                // mButtons.get(R.id.sale_in_save).disable();
-                // mButtons.get(R.id.sale_in_money_off).disable();
-                mButtons.get(R.id.sale_in_next).disable();
-                // mButtons.get(R.id.sale_in_draft).disable();
-                // getActivity().invalidateOptionsMenu();
-            }
-
-            calcShouldPay();
-            // DiabloUtils.instance().makeToast(getContext(), mSaleTable.getChildCount(), Toast.LENGTH_SHORT);
         }
 
-        else if (getResources().getString(R.string.modify) == item.getTitle()){
-            if (!DiabloEnum.DIABLO_FREE.equals(stock.getFree())){
-                switchToStockSelectFrame(stock, R.string.modify);
-            }
-        }
 
         return true;
     }
@@ -1208,6 +1239,7 @@ public class SaleIn extends Fragment{
                             mSaleTable.removeView(row);
                             // remove old row
                             mSaleStocks.remove(0);
+
                             // add new
                             addEmptyRowToTable();
                         }
@@ -1219,8 +1251,11 @@ public class SaleIn extends Fragment{
             else {
                 // should re-calculate retailer's balance when the fragment show every time
                 if (null != mSaleCalcController) {
-                    Retailer retailer = Profile.instance().getRetailerById(mSaleCalcController.getRetailer());
-                    Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
+                    Integer currentRetailerId = mSaleCalcController.getRetailer();
+                    if (!DiabloEnum.INVALID_INDEX.equals(currentRetailerId)) {
+                        Retailer retailer = Profile.instance().getRetailerById(currentRetailerId);
+                        Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
+                    }
                     focusStyleNumber();
                 }
             }

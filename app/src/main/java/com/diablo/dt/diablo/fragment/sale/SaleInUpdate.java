@@ -389,6 +389,8 @@ public class SaleInUpdate extends Fragment {
                 } else {
                     if (!DiabloEnum.INVALID_INDEX.equals(orderId)) {
                         controller.setCellText(R.string.good, DiabloEnum.EMPTY_STRING);
+                        controller.getView().getCell(R.string.good).setCellFocusable(true);
+                        controller.getView().getCell(R.string.good).requestFocus();
                         UTILS.makeToast(
                             getContext(),
                             getContext().getResources().getString(R.string.sale_stock_exist)
@@ -397,6 +399,7 @@ public class SaleInUpdate extends Fragment {
                     } else {
                         SaleStock stock = controller.getModel();
                         DiabloRowView row = controller.getView();
+                        row.setOnLongClickListener(SaleInUpdate.this);
                         row.getCell(R.string.fprice).setCellFocusable(true);
                         if ( DiabloEnum.DIABLO_FREE.equals(stock.getFree()) ){
                             if (mSaleCalcController.getRetailer().equals(mSysRetailer)
@@ -728,20 +731,30 @@ public class SaleInUpdate extends Fragment {
         Integer orderId = stock.getOrderId();
         // DiabloSaleRowController controller = mSaleTableController.getControllerByOrderId(orderId);
 
-        if (getResources().getString(R.string.delete) == item.getTitle()){
-            // delete
-            mSaleTableController.removeByOrderId(orderId);
-            // reorder
-            mSaleTableController.reorder();
+        boolean firstRow = orderId == 0;
 
-            calcShouldPay();
-        }
+        if (firstRow) {
+            if (getResources().getString(R.string.reset) == item.getTitle()) {
+                mSaleTableController.removeRowAtTop();
+                mSaleTableController.addRowControllerAtTop(createEmptyRow());
+            }
+        } else {
+            if (getResources().getString(R.string.delete) == item.getTitle()){
+                // delete
+                mSaleTableController.removeByOrderId(orderId);
+                // reorder
+                mSaleTableController.reorder();
 
-        else if (getResources().getString(R.string.modify) == item.getTitle()){
-            if (!DiabloEnum.DIABLO_FREE.equals(stock.getFree())){
-                switchToStockSelectFrame(stock, R.string.modify);
+                calcShouldPay();
+            }
+
+            else if (getResources().getString(R.string.modify) == item.getTitle()){
+                if (!DiabloEnum.DIABLO_FREE.equals(stock.getFree())){
+                    switchToStockSelectFrame(stock, R.string.modify);
+                }
             }
         }
+
         return true;
     }
 

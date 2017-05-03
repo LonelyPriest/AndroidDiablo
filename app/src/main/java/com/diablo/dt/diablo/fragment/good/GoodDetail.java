@@ -349,7 +349,7 @@ public class GoodDetail extends Fragment {
                             addCell(row, g.getYear(), lp);
                         }
                         else if (res.getString(R.string.org_price).equals(title)) {
-                            TextView cell = addCell(row, g.getTagPrice(), lp);
+                            TextView cell = addCell(row, g.getOrgPrice(), lp);
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.greenDark));
                         }
                         else if (res.getString(R.string.tag_price).equals(title)) {
@@ -364,6 +364,10 @@ public class GoodDetail extends Fragment {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.orangeDark));
                             }
                         }
+                        else if (res.getString(R.string.discount).equals(title)) {
+                            addCell(row, g.getDiscount(), lp);
+                        }
+
                         else if (res.getString(R.string.shelfDate).equals(title)){
                             lp.weight = 0.8f;
                             addCell(row, g.getDatetime(), lp);

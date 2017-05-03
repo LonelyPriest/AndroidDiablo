@@ -19,6 +19,7 @@ import com.diablo.dt.diablo.client.WGoodClient;
 import com.diablo.dt.diablo.controller.DiabloGoodController;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.MatchGood;
+import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.model.good.GoodCalc;
 import com.diablo.dt.diablo.model.good.GoodUtils;
@@ -460,6 +461,14 @@ public class GoodUpdate extends Fragment {
                     }
 
                     Profile.instance().addMatchGood(newGood);
+
+                    // refresh match stock
+                    MatchStock removedStock = Profile.instance().removeMatchStock(
+                        mOldGoodCalc.getStyleNumber(), mOldGoodCalc.getBrand().getId());
+                    if (null != removedStock) {
+                        MatchStock newStock = new MatchStock(newGood);
+                        Profile.instance().addMatchStock(newStock);
+                    }
 
                     new DiabloAlertDialog(
                         getContext(),

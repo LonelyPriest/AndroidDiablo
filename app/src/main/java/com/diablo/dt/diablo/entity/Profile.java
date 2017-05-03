@@ -629,6 +629,15 @@ public class Profile {
         }
     }
 
+    public MatchStock removeMatchStock(String styleNumber, Integer brandId) {
+        MatchStock stock = getMatchStock(styleNumber, brandId);
+        if (null != stock) {
+            mMatchStocks.remove(stock);
+        }
+
+        return stock;
+    }
+
     /**
      * brands
      */

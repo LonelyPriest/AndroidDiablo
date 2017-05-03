@@ -484,6 +484,7 @@
   <string name="draft_other">系统存在其它用户的草稿，请清除草搞后再操作</string>
   <string name="draft_clear_success">清除草稿成功</string>
   <string name="sale_stock_exist">该款号已存在，请重新选择，序号：</string>
+  <string name="style_number_not_exist">该款号系统中不存在，请重新选择款号</string>
   <string name="sale_invalid_retailer">非法客户，请从提示列表中选择客户或点击新增按键增加客户后再进行操作</string>
   <string name="fail_to_destroy_token">清除用户Token失败，请人工强制退出系统</string>
   <string name="title_logout">用户注销</string>
@@ -565,6 +566,7 @@
   <string name="modify">修改</string>
   <string name="print">打印</string>
   <string name="note">详情</string>
+  <string name="reset">重置</string>
 
   <string name="btn_sale_in">开单</string>
   <string name="btn_sale_out">退货</string>

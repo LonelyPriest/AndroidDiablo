@@ -274,6 +274,8 @@ public class SaleOut extends Fragment {
                 else {
                     if (!DiabloEnum.INVALID_INDEX.equals(orderId)) {
                         controller.setCellText(R.string.good, DiabloEnum.EMPTY_STRING);
+                        controller.getView().getCell(R.string.good).setCellFocusable(true);
+                        controller.getView().getCell(R.string.good).requestFocus();
                         UTILS.makeToast(
                             getContext(),
                             getContext().getResources().getString(R.string.sale_stock_exist)
@@ -282,6 +284,7 @@ public class SaleOut extends Fragment {
                     } else {
                         SaleStock stock = controller.getModel();
                         DiabloRowView row = controller.getView();
+                        row.setOnLongClickListener(SaleOut.this);
                         row.getCell(R.string.fprice).setCellFocusable(true);
                         if ( DiabloEnum.DIABLO_FREE.equals(stock.getFree()) ){
                             if (mSaleCalcController.getRetailer().equals(mSysRetailer)
@@ -503,8 +506,11 @@ public class SaleOut extends Fragment {
             else {
                 // should re-calculate retailer's balance when the fragment show every time
                 if (null != mSaleCalcController) {
-                    Retailer retailer = Profile.instance().getRetailerById(mSaleCalcController.getRetailer());
-                    Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
+                    Integer currentRetailerId = mSaleCalcController.getRetailer();
+                    if (!DiabloEnum.INVALID_INDEX.equals(currentRetailerId)) {
+                        Retailer retailer = Profile.instance().getRetailerById(currentRetailerId);
+                        Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
+                    }
                     focusStyleNumber();
                 }
             }
@@ -534,24 +540,34 @@ public class SaleOut extends Fragment {
         Integer orderId = stock.getOrderId();
         // DiabloSaleRowController controller = mSaleTableController.getControllerByOrderId(orderId);
 
-        if (getResources().getString(R.string.delete) == item.getTitle()){
-            // delete
-            mSaleTableController.removeByOrderId(orderId);
-            // reorder
-            mSaleTableController.reorder();
+        boolean firstRow = orderId == 0;
 
-            if (1 == mSaleTableController.size()){
-                mButtons.get(R.id.sale_out_save).disable();
+        if (firstRow) {
+            if (getResources().getString(R.string.reset) == item.getTitle()) {
+                mSaleTableController.removeRowAtTop();
+                mSaleTableController.addRowControllerAtTop(addEmptyRow());
+            }
+        } else {
+            if (getResources().getString(R.string.delete) == item.getTitle()){
+                // delete
+                mSaleTableController.removeByOrderId(orderId);
+                // reorder
+                mSaleTableController.reorder();
+
+                if (1 == mSaleTableController.size()){
+                    mButtons.get(R.id.sale_out_save).disable();
+                }
+
+                calcShouldPay();
             }
 
-            calcShouldPay();
-        }
-
-        else if (getResources().getString(R.string.modify) == item.getTitle()){
-            if (!DiabloEnum.DIABLO_FREE.equals(stock.getFree())){
-                switchToStockSelectFrame(stock, R.string.modify);
+            else if (getResources().getString(R.string.modify) == item.getTitle()){
+                if (!DiabloEnum.DIABLO_FREE.equals(stock.getFree())){
+                    switchToStockSelectFrame(stock, R.string.modify);
+                }
             }
         }
+
         return true;
     }
 

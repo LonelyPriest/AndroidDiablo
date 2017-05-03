@@ -10,8 +10,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.BackendRetailerAdapter;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
+import com.diablo.dt.diablo.adapter.RetailerAdapter;
 import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
@@ -140,7 +140,8 @@ public class DiabloSaleController {
     public void setRetailerClickListener(final Context context) {
         final AutoCompleteTextView r = (AutoCompleteTextView) mSaleCalcView.getViewRetailer();
 
-        new BackendRetailerAdapter(context, R.layout.typeahead_retailer, R.id.typeahead_select_retailer, r);
+        // new BackendRetailerAdapter(context, R.layout.typeahead_retailer, R.id.typeahead_select_retailer, r);
+        new RetailerAdapter(context, R.layout.typeahead_retailer, R.id.typeahead_select_retailer, r);
 
         mOnRetailerClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -149,10 +150,25 @@ public class DiabloSaleController {
                 Log.d(LOG_TAG, "click the retailer:" + selectRetailer.getId());
                 mSelectRetailerByClick = true;
 
-                setRetailer(selectRetailer);
-                if (null != mOnRetailerChangeListener) {
-                    mOnRetailerChangeListener.onRetailerChanged(mSaleCalc, selectRetailer);
-                }
+                Retailer.getRetailer(context, selectRetailer.getId(), new Retailer.OnRetailerChangeListener() {
+                    @Override
+                    public void afterAdd(Retailer retailer) {
+
+                    }
+
+                    @Override
+                    public void afterGet(Retailer retailer) {
+                        setRetailer(retailer);
+                        if (null != mOnRetailerChangeListener) {
+                            mOnRetailerChangeListener.onRetailerChanged(mSaleCalc, retailer);
+                        }
+                    }
+                });
+
+//                setRetailer(selectRetailer);
+//                if (null != mOnRetailerChangeListener) {
+//                    mOnRetailerChangeListener.onRetailerChanged(mSaleCalc, selectRetailer);
+//                }
             }
         };
 
