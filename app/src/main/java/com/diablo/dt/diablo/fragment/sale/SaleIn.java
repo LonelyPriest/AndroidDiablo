@@ -41,12 +41,15 @@ import com.diablo.dt.diablo.adapter.MatchStockAdapter;
 import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.controller.DiabloSaleController;
+import com.diablo.dt.diablo.entity.BlueToothPrinter;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.entity.Stock;
+import com.diablo.dt.diablo.jolimark.Event;
+import com.diablo.dt.diablo.jolimark.PrinterManager;
 import com.diablo.dt.diablo.model.sale.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.model.sale.DiabloSaleRow;
 import com.diablo.dt.diablo.model.sale.SaleCalc;
@@ -67,6 +70,8 @@ import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloPattern;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
+
+import de.greenrobot.event.EventBus;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -115,6 +120,8 @@ public class SaleIn extends Fragment{
     private boolean mIsRecoverFromDraft;
     // private boolean mShowDiscount;
 
+    private Integer mBlueToothPrint;
+
     public SaleIn() {
         // Required empty public constructor
     }
@@ -157,6 +164,9 @@ public class SaleIn extends Fragment{
         mTracePrice = utils.toInteger(
             Profile.instance().getConfig(DiabloEnum.START_TRACE_PRICE, DiabloEnum.DIABLO_CONFIG_NO));
 
+        mBlueToothPrint =
+            utils.toInteger(Profile.instance().getConfig(DiabloEnum.START_BLUETOOTH, DiabloEnum.DIABLO_CONFIG_NO));
+
         mLoginShop = Profile.instance().getLoginShop();
         String showDiscount = Profile.instance().getConfig(
             mLoginShop,
@@ -184,6 +194,8 @@ public class SaleIn extends Fragment{
         mButtons.put(R.id.sale_in_save, new DiabloButton(getContext(), R.id.sale_in_save));
         mButtons.put(R.id.sale_in_next, new DiabloButton(getContext(), R.id.sale_in_next));
         mButtons.put(R.id.sale_in_clear_draft, new DiabloButton(getContext(), R.id.sale_in_clear_draft));
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -1506,7 +1518,12 @@ public class SaleIn extends Fragment{
                         new DiabloAlertDialog.OnOkClickListener() {
                             @Override
                             public void onOk() {
-                                utils.startPrint(getContext(), R.string.nav_sale_in, res.getRsn());
+                                if (mBlueToothPrint.equals(DiabloEnum.DIABLO_TRUE)) {
+                                    BlueToothPrinter printer = dbInstance.getBlueToothPrinter();
+                                    utils.startBlueToothPrint(getContext(), R.string.nav_sale_in, printer, res.getRsn());
+                                } else {
+                                    utils.startPrint(getContext(), R.string.nav_sale_in, res.getRsn());
+                                }
                             }
                         }).create();
                 } else {
@@ -1547,5 +1564,9 @@ public class SaleIn extends Fragment{
     public void onDestroy() {
         super.onDestroy();
         Log.d(LOG_TAG, "onDestroy called");
+    }
+
+    public void onEventMainThread(Event event) {
+        PrinterManager.getInstance().onMessage(getContext(), event.msg);
     }
 }

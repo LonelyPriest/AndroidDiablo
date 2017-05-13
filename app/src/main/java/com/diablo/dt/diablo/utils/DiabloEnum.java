@@ -70,6 +70,7 @@ public class DiabloEnum {
     public static final String  START_TRACE_PRICE = "ptrace_price";
     public static final String  START_SYS_RETAILER = "s_customer";
     public static final String  START_REJECT_SECOND_ORDER = "reject_pgood";
+    public static final String  START_BLUETOOTH = "bluetooth";
     public static final Integer NON_REPO = 0;
     public static final Integer USE_REPO = 1;
 
@@ -120,6 +121,8 @@ public class DiabloEnum {
 
     public static final String TAG_FIRM_PAGER = "firmPager";
 
+    public static final String TAG_PRINT_SETTING = "printSetting";
+
     public static final String TAG_GOOD_SELECT = "goodSelect";
     public static final String TAG_STOCK_IN_UPDATE = "stockInUpdate";
     public static final String TAG_STOCK_OUT_UPDATE = "stockOutUpdate";
@@ -144,12 +147,18 @@ public class DiabloEnum {
     public static final Integer GOOD_UPDATE = 5;
 
     /**
+     * printer
+     */
+    public static final String PRINTER_JOLIMARK = "jolimark";
+
+    /**
      * DB table
      */
     public static final String W_SALE = "w_sale";
     public static final String W_SALE_DETAIL = "w_sale_detail";
     public static final String W_SALE_DETAIL_AMOUNT = "w_sale_detail_amount";
     public static final String W_USER = "user";
+    public static final String BLUETOOTH_PRINTER = "bluetooth_printer";
 
 
     /**

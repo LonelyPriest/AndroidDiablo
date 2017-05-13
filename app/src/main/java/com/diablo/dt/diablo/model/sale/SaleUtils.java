@@ -23,6 +23,7 @@ import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
+import com.diablo.dt.diablo.fragment.print.BlueToothJolimarkFragment;
 import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
@@ -77,6 +78,7 @@ public class SaleUtils {
 
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_RETAILER_DETAIL, 12);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_FIRM_PAGER, 13);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_PRINT_SETTING, 14);
 //        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_RETAILER_NEW, 14);
 
     }
@@ -126,6 +128,9 @@ public class SaleUtils {
                     break;
                 case DiabloEnum.TAG_FIRM_PAGER:
                     f = new DiabloFirmPager();
+                    break;
+                case DiabloEnum.TAG_PRINT_SETTING:
+                    f = new BlueToothJolimarkFragment();
                     break;
 //                case DiabloEnum.TAG_RETAILER_NEW:
 //                    f = new DiabloRetailerNew();

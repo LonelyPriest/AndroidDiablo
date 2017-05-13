@@ -4,12 +4,13 @@ import com.diablo.dt.diablo.request.sale.LastSaleRequest;
 import com.diablo.dt.diablo.request.sale.NewSaleRequest;
 import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
 import com.diablo.dt.diablo.request.sale.SaleNoteRequest;
+import com.diablo.dt.diablo.response.PrintResponse;
 import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
 import com.diablo.dt.diablo.response.sale.LastSaleResponse;
 import com.diablo.dt.diablo.response.sale.NewSaleResponse;
-import com.diablo.dt.diablo.response.PrintResponse;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
 import com.diablo.dt.diablo.response.sale.SaleNoteResponse;
+import com.diablo.dt.diablo.response.sale.SalePrintContentResponse;
 
 import java.util.List;
 
@@ -45,6 +46,9 @@ public interface WSaleInterface {
 
     @POST("print_w_sale")
     Call<PrintResponse> startPrint(@Header("cookie") String token, @Body NewSaleRequest.DiabloRSN rsn);
+
+    @POST("get_w_sale_print_content")
+    Call<SalePrintContentResponse> getPrintContent(@Header("cookie") String token, @Body NewSaleRequest.DiabloRSN rsn);
 
     @GET("get_w_sale_new/{id}")
     Call<GetSaleNewResponse> getSale(@Header("cookie") String token, @Path("id") String rsn);

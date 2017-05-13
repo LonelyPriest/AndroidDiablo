@@ -103,6 +103,16 @@
 
         </item>
 
+        <item android:title="@string/slide_print_manager">
+            <menu>
+                <item
+                    android:id="@+id/nav_print_setting"
+                    android:icon="@drawable/ic_print_black_24dp"
+                    android:title="@string/nav_blue_tooth_setting"/>
+            </menu>
+
+        </item>
+
         <item android:title="@string/slide_user_manager">
             <menu>
                 <item

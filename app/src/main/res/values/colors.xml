@@ -18,4 +18,16 @@
     <color name="deepPink">#FF1493</color>
     <color name="yellowLight">#FFFFCC</color>
     <color name="pinkLight">#FFCCFF</color>
+
+    <!-- print for joli mark -->
+    <color name="color_blue">#199bfc</color>
+    <color name="button_bg">#ffd57d</color>
+    <color name="button_blue">#91cefc</color>
+    <color name="white">#ffffff</color>
+    <color name="zi">#A40182</color>
+    <color name="menu_btn_yellow">#ffd57d</color>
+    <color name="menu_btn_yellow_press">#fecb5f</color>
+    <color name="menu_btn_green">#41d0bd</color>
+    <color name="menu_btn_green_press">#23cdb6</color>
+    <color name="color_gray">#696767</color>
 </resources>

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WSaleClient;
+import com.diablo.dt.diablo.entity.BlueToothPrinter;
 import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
@@ -36,16 +37,21 @@ import com.diablo.dt.diablo.filter.DiabloFilterController;
 import com.diablo.dt.diablo.filter.RSNFilter;
 import com.diablo.dt.diablo.filter.RetailerFilter;
 import com.diablo.dt.diablo.filter.ShopFilter;
+import com.diablo.dt.diablo.jolimark.Event;
+import com.diablo.dt.diablo.jolimark.PrinterManager;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
+import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloDatePicker;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
+
+import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +99,8 @@ public class SaleDetail extends Fragment {
     private DiabloFilterController mFilterController;
     private DiabloDatePicker mDatePicker;
 
+    private Integer mBlueToothPrint;
+
     public SaleDetail() {
         // Required empty public constructor
     }
@@ -130,6 +138,12 @@ public class SaleDetail extends Fragment {
 
         mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
+
+        mBlueToothPrint =
+            UTILS.toInteger(Profile.instance().getConfig(DiabloEnum.START_BLUETOOTH, DiabloEnum.DIABLO_CONFIG_NO));
+
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -621,7 +635,12 @@ public class SaleDetail extends Fragment {
 
         }
         else if (getResources().getString(R.string.print) == item.getTitle()){
-            UTILS.startPrint(getContext(), R.string.nav_sale_detail, detail.getRsn());
+            if (mBlueToothPrint.equals(DiabloEnum.DIABLO_TRUE)) {
+                BlueToothPrinter printer = DiabloDBManager.instance().getBlueToothPrinter();
+                UTILS.startBlueToothPrint(getContext(), R.string.nav_sale_detail, printer, detail.getRsn());
+            } else {
+                UTILS.startPrint(getContext(), R.string.nav_sale_detail, detail.getRsn());
+            }
         }
 
         return true;
@@ -663,5 +682,9 @@ public class SaleDetail extends Fragment {
             }
         }
 
+    }
+
+    public void onEventMainThread(Event event) {
+        PrinterManager.getInstance().onMessage(getContext(), event.msg);
     }
 }

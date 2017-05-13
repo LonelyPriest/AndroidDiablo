@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.diablo.dt.diablo.entity.BlueToothPrinter;
 import com.diablo.dt.diablo.entity.DiabloUser;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
@@ -422,6 +423,56 @@ public class DiabloDBManager {
             String sql2 = "delete from " + DiabloEnum.W_SALE_DETAIL_AMOUNT;
             SQLiteStatement s2 = mSQLiteDB.compileStatement(sql2);
             s2.execute();
+            mSQLiteDB.setTransactionSuccessful();
+        } finally {
+            mSQLiteDB.endTransaction();
+        }
+    }
+
+    public void addBlueToothPrinter(String name, String mac) {
+        ContentValues v = new ContentValues();
+        v.put("name", name);
+        v.put("mac", mac);
+        mSQLiteDB.insert(DiabloEnum.BLUETOOTH_PRINTER, null, v);
+    }
+
+    public BlueToothPrinter getBlueToothPrinter(){
+        String [] fields = {"name", "mac"};
+        String name = DiabloEnum.EMPTY_STRING;
+        String mac = DiabloEnum.EMPTY_STRING;
+        Cursor cursor = mSQLiteDB.query(DiabloEnum.BLUETOOTH_PRINTER, fields, null, null, null, null, null);
+        if (cursor.moveToFirst()){
+            name = cursor.getString(cursor.getColumnIndex("name"));
+            mac = cursor.getString(cursor.getColumnIndex("mac"));
+            cursor.close();
+        }
+        return new BlueToothPrinter(name, mac);
+    }
+
+    public void clearBlueToothPrinter() {
+        mSQLiteDB.beginTransaction();
+        try {
+            String sql = "delete from " + DiabloEnum.BLUETOOTH_PRINTER;
+            SQLiteStatement s = mSQLiteDB.compileStatement(sql);
+            s.execute();
+            s.clearBindings();
+
+            mSQLiteDB.setTransactionSuccessful();
+        } finally {
+            mSQLiteDB.endTransaction();
+        }
+    }
+
+    public void replaceBlueToothPrinter(String name, String mac) {
+        mSQLiteDB.beginTransaction();
+        try {
+            String sql = "update " + DiabloEnum.BLUETOOTH_PRINTER + " set name=?,mac=?";
+            SQLiteStatement s = mSQLiteDB.compileStatement(sql);
+            s.bindString(1, name);
+            s.bindString(2, mac);
+            s.execute();
+            s.clearBindings();
+
             mSQLiteDB.setTransactionSuccessful();
         } finally {
             mSQLiteDB.endTransaction();

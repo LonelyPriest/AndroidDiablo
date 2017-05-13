@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white"
+              android:orientation="vertical" >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="58dp"
+      android:orientation="horizontal"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp" >
+
+    <Button
+        android:id="@+id/btn_bluetooth_search"
+        android:layout_width="160dp"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:background="@drawable/btn_bg_yellow"
+        android:text="@string/bt_Search"
+        android:textColor="@color/white"
+        style="?android:buttonBarButtonStyle"/>
+
+    <Button
+        android:id="@+id/btn_print_test"
+        android:layout_width="160dp"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:background="@drawable/btn_bg_yellow"
+        android:text="@string/bt_print_test"
+        android:textColor="@color/white"
+        style="?android:buttonBarButtonStyle"/>
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/tv_connected_dev"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_marginTop="5dp"
+      android:background="@drawable/view_border_yellow_notfill"
+      android:padding="5dp"
+      android:text="@string/bt_no_connected_device"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:textColor="@color/menu_btn_yellow_press" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp"
+      android:layout_weight="1"
+      android:background="@drawable/view_border_yellow_notfill"
+      android:minHeight="300dip"
+      android:orientation="vertical"
+      android:visibility="visible" >
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/menu_btn_yellow_press"
+        android:padding="3dp"
+        android:text="@string/bt_prepare_device"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white" />
+
+    <ListView
+        android:id="@+id/lv_paired_devices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/menu_btn_yellow"
+        android:dividerHeight="1dp"
+        android:padding="5dp" >
+
+    </ListView>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp"
+      android:layout_weight="1"
+      android:background="@drawable/view_border_yellow_notfill"
+      android:minHeight="400dip"
+      android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_setting_usb_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/menu_btn_yellow_press"
+        android:padding="3dp"
+        android:text="@string/prepare_bt"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white" />
+
+    <ListView
+        android:id="@+id/lv_new_devices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/menu_btn_yellow"
+        android:dividerHeight="1dp"
+        android:padding="5dp" >
+
+    </ListView>
+  </LinearLayout>
+
+</LinearLayout>

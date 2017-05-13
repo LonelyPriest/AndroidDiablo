@@ -33,6 +33,7 @@ import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
+import com.diablo.dt.diablo.fragment.print.BlueToothJolimarkFragment;
 import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         DiabloDBManager.instance().init(this);
+        // PrinterManager.getInstance();
 
         Profile.instance().setResource(getResources());
         // Profile.instance().setServer(getString(R.string.diablo_server));
@@ -175,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
         mNavTagMap.put(12, new NavigationTag(12, DiabloEnum.TAG_RETAILER_DETAIL, R.id.nav_retailer_detail));
 
         mNavTagMap.put(13, new NavigationTag(13, DiabloEnum.TAG_FIRM_PAGER, R.id.nav_firm_pager));
+
+        mNavTagMap.put(14, new NavigationTag(14, DiabloEnum.TAG_PRINT_SETTING, R.id.nav_print_setting));
 
 //        mNavTagMap.put(14, new NavigationTag(14, DiabloEnum.TAG_RETAILER_NEW, R.id.nav_retailer_new));
 
@@ -321,6 +325,9 @@ public class MainActivity extends AppCompatActivity {
             else if (mCurrentNavTag.getTitleIndex().equals(13)) {
                 f = new DiabloFirmPager();
             }
+            else if (mCurrentNavTag.getTitleIndex().equals(14)) {
+                f = new BlueToothJolimarkFragment();
+            }
 //            else if (mCurrentNavTag.getTitleIndex().equals(14)) {
 //                f = new DiabloRetailerNew();
 //            }
@@ -394,6 +401,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_firm_pager:
                         selectMenuItem(13);
+                        break;
+                    case R.id.nav_print_setting:
+                        selectMenuItem(14);
                         break;
 //                    case R.id.nav_retailer_new:
 //                        selectMenuItem(14);
@@ -590,6 +600,10 @@ public class MainActivity extends AppCompatActivity {
         WGoodClient.resetClient();
         WLoginClient.resetClient();
         WSaleClient.resetClient();
+    }
+
+    private void initPrinter() {
+        
     }
 
     //    @Override

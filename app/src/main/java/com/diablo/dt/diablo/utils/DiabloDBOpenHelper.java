@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DiabloDBOpenHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "diablo";
-    private static final Integer DB_VERSION = 3;
+    private static final Integer DB_VERSION = 4;
 
     private static DiabloDBOpenHelper diabloDBHelper;
 
@@ -71,12 +71,17 @@ public class DiabloDBOpenHelper extends SQLiteOpenHelper {
             + ", password text not null"
             + ", unique(name) ON CONFLICT REPLACE)";
 
+        String BlueToothPrinter = "create table if not exists bluetooth_printer("
+            + "_id integer primary key autoincrement"
+            + ", name text default null"
+            + ", mac text not null"
+            + ", unique(mac) ON CONFLICT REPLACE)";
+
         db.execSQL(WSaleCalc);
         db.execSQL(WSaleStock);
         db.execSQL(WSaleStockAmount);
         db.execSQL(User);
-
-
+        db.execSQL(BlueToothPrinter);
     }
 
     @Override
