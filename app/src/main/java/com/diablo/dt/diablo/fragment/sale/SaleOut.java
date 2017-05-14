@@ -29,6 +29,7 @@ import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.controller.DiabloSaleController;
 import com.diablo.dt.diablo.controller.DiabloSaleRowController;
 import com.diablo.dt.diablo.controller.DiabloSaleTableController;
+import com.diablo.dt.diablo.entity.BlueToothPrinter;
 import com.diablo.dt.diablo.entity.DiabloButton;
 import com.diablo.dt.diablo.entity.DiabloColor;
 import com.diablo.dt.diablo.entity.MatchStock;
@@ -44,6 +45,7 @@ import com.diablo.dt.diablo.response.sale.LastSaleResponse;
 import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
+import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -84,6 +86,8 @@ public class SaleOut extends Fragment {
     private Integer   mTracePrice;
     private Integer   mRejectWithSecond;
 
+    private Integer mBlueToothPrint;
+
     private final SaleOutHandler mHandler = new SaleOutHandler(this);
 
     // listener
@@ -116,6 +120,9 @@ public class SaleOut extends Fragment {
         super.onCreate(savedInstanceState);
 
         mLoginShop = Profile.instance().getLoginShop();
+
+        mBlueToothPrint =
+            UTILS.toInteger(Profile.instance().getConfig(DiabloEnum.START_BLUETOOTH, DiabloEnum.DIABLO_CONFIG_NO));
     }
 
     private void initLabel() {
@@ -753,7 +760,12 @@ public class SaleOut extends Fragment {
                         new DiabloAlertDialog.OnOkClickListener() {
                             @Override
                             public void onOk() {
-                                UTILS.startPrint(getContext(), R.string.nav_sale_out, res.getRsn());
+                                if (mBlueToothPrint.equals(DiabloEnum.DIABLO_TRUE)) {
+                                    BlueToothPrinter printer = DiabloDBManager.instance().getBlueToothPrinter();
+                                    UTILS.startBlueToothPrint(getContext(), R.string.nav_sale_out, printer, res.getRsn());
+                                } else {
+                                    UTILS.startPrint(getContext(), R.string.nav_sale_out, res.getRsn());
+                                }
                             }
                         }).create();
                 } else {
@@ -777,5 +789,9 @@ public class SaleOut extends Fragment {
             }
         });
     }
+
+//    public void onEventMainThread(Event event) {
+//        PrinterManager.getInstance().onMessage(getContext(), event.msg);
+//    }
 
 }

@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.jolimark;
+package com.diablo.dt.diablo.jolimark.model;
 
 /**
  * Created by buxianhui on 17/5/7.
@@ -7,12 +7,12 @@ package com.diablo.dt.diablo.jolimark;
 public class ErrorOrMsg {
     // --------manager
     public static final int CONNECTING = 0x122; //正在连接中
-    public static final int CONNECT_SUCCESSED = 0x123;// 连接成功
+    public static final int CONNECT_SUCCESS = 0x123;// 连接成功
     public static final int CONNECT_FAILED = 0x124;// 连接失败
     public static final int CONNECT_EXIST = 0x125;// 已经连接
     public static final int CONFIG_NULL = 0x126;// 参数没设置
 
-    public static final int SEND_SUCCESSED = 0x127;// 发送成功
+    public static final int SEND_SUCCESS = 0x127;// 发送成功
     public static final int SEND_FAILED = 0x128;// 发送失败
 
     public static final int UNCONNECT = 0x129;// 无连接
@@ -32,7 +32,7 @@ public class ErrorOrMsg {
     // --------操作状态
     public static final int DEVICE_FOUND = 0x138; // 发现打印机设备
 
-    public static final int CLOSE_SUCCESSED = 0x139;// 关闭连接成功
+    public static final int CLOSE_SUCCESS = 0x139;// 关闭连接成功
     public static final int CLOSE_FAILED = 0x140;// 关闭连接失败
 
     public static final int BT_CLASSIC = 0x141;// 传统蓝牙
@@ -41,8 +41,8 @@ public class ErrorOrMsg {
     public static final int SEARCH_FINISHED = 0x143;// 搜索完成
     public static final int DATA_EMPTY = 0x144;// 数据为空
 
-    public static final int PRINTERING = 0x145;// 打印中
-    public static final int PRINTERING_WAIT = 0x146;// 打印中,请稍后
+    public static final int PRINTING = 0x145;// 打印中
+    public static final int PRINT_WAIT = 0x146;// 打印中,请稍后
 
     public static final int TASK_CANCEL_SUCCESS = 0x150;//取消任务成功
     public static final int TASK_CANCEL_FAILED = 0x151;//取消任务失败

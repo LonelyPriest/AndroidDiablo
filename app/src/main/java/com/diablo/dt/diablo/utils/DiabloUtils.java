@@ -38,13 +38,11 @@ import com.diablo.dt.diablo.entity.DiabloSizeGroup;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
-import com.diablo.dt.diablo.jolimark.PrinterManager;
+import com.diablo.dt.diablo.jolimark.model.PrinterController;
 import com.diablo.dt.diablo.request.sale.NewSaleRequest;
 import com.diablo.dt.diablo.response.PrintResponse;
 import com.diablo.dt.diablo.response.sale.NewSaleResponse;
-import com.diablo.dt.diablo.response.sale.SalePrintContentResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
-import com.jolimark.printerlib.VAR;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -332,11 +330,11 @@ public class DiabloUtils {
     }
 
     public void makeToast(Context context, int stringId) {
-        Toast.makeText(context, context.getResources().getString(stringId), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getResources().getString(stringId), Toast.LENGTH_SHORT).show();
     }
 
     public void makeToast(Context context, String msg) {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 
     public void makeToast(Context context, Integer value, int lengthLong){
@@ -508,44 +506,48 @@ public class DiabloUtils {
         });
     }
 
-    public void startBlueToothPrint(final Context context, final Integer titleRes, final BlueToothPrinter printer, String rsn) {
-        final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
-        Call<SalePrintContentResponse> call = face.getPrintContent(Profile.instance().getToken(), new NewSaleRequest.DiabloRSN(rsn));
-
-        call.enqueue(new Callback<SalePrintContentResponse>() {
-            @Override
-            public void onResponse(Call<SalePrintContentResponse> call, Response<SalePrintContentResponse> response) {
-                SalePrintContentResponse res = response.body();
-                if (response.code() == DiabloEnum.HTTP_OK) {
-                    if (res.getCode().equals(DiabloEnum.SUCCESS)) {
-                        if (printer.getName().equals(DiabloEnum.PRINTER_JOLIMARK)) {
-                            PrinterManager pManager = PrinterManager.getInstance();
-                            pManager.initRemotePrinter(VAR.TransType.TRANS_BT, printer.getMac());
-                            pManager.sendData(pManager.string2Byte(res.getContent()), context);
-                        }
-                    }
-                    else {
-                        new DiabloAlertDialog(
-                            context,
-                            context.getString(titleRes), DiabloError.getError(res.getCode())).create();
-                    }
-                }
-                else {
-                    new DiabloAlertDialog(
-                        context,
-                        context.getString(titleRes),
-                        DiabloError.getError(99)).create();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SalePrintContentResponse> call, Throwable t) {
-                new DiabloAlertDialog(
-                    context,
-                    context.getString(titleRes),
-                    DiabloError.getError(99)).create();
-            }
-        });
+    public void startBlueToothPrint(final Context context, final Integer resTitle, final BlueToothPrinter printer, String rsn) {
+        PrinterController.PrintProducer producer = new PrinterController.PrintProducer(context, resTitle, rsn);
+        PrinterController.PrintConsumer consumer = new PrinterController.PrintConsumer(printer);
+        new Thread(producer).start();
+        new Thread(consumer).start();
+//        final WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+//        Call<SalePrintContentResponse> call = face.getPrintContent(Profile.instance().getToken(), new NewSaleRequest.DiabloRSN(rsn));
+//
+//        call.enqueue(new Callback<SalePrintContentResponse>() {
+//            @Override
+//            public void onResponse(Call<SalePrintContentResponse> call, Response<SalePrintContentResponse> response) {
+//                SalePrintContentResponse res = response.body();
+//                if (response.code() == DiabloEnum.HTTP_OK) {
+//                    if (res.getCode().equals(DiabloEnum.SUCCESS)) {
+//                        if (printer.getName().equals(DiabloEnum.PRINTER_JOLIMARK)) {
+//                            PrinterManager pManager = PrinterManager.getInstance();
+//                            pManager.initRemotePrinter(VAR.TransType.TRANS_BT, printer.getMac());
+//                            pManager.sendData(pManager.string2Byte(res.getContent()), context);
+//                        }
+//                    }
+//                    else {
+//                        new DiabloAlertDialog(
+//                            context,
+//                            context.getString(titleRes), DiabloError.getError(res.getCode())).create();
+//                    }
+//                }
+//                else {
+//                    new DiabloAlertDialog(
+//                        context,
+//                        context.getString(titleRes),
+//                        DiabloError.getError(99)).create();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<SalePrintContentResponse> call, Throwable t) {
+//                new DiabloAlertDialog(
+//                    context,
+//                    context.getString(titleRes),
+//                    DiabloError.getError(99)).create();
+//            }
+//        });
     }
 
 

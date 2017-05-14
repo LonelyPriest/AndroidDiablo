@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.fragment.print;
+package com.diablo.dt.diablo.fragment.printer;
 
 
 import android.Manifest;
@@ -30,10 +30,10 @@ import android.widget.TextView;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.entity.BlueToothPrinter;
-import com.diablo.dt.diablo.jolimark.ErrorOrMsg;
-import com.diablo.dt.diablo.jolimark.Event;
-import com.diablo.dt.diablo.jolimark.PrintContent;
-import com.diablo.dt.diablo.jolimark.PrinterManager;
+import com.diablo.dt.diablo.jolimark.model.ErrorOrMsg;
+import com.diablo.dt.diablo.jolimark.model.Event;
+import com.diablo.dt.diablo.jolimark.model.PrintContent;
+import com.diablo.dt.diablo.jolimark.model.PrinterManager;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
@@ -284,7 +284,7 @@ public class BlueToothJolimarkFragment extends Fragment implements View.OnClickL
     public void onEventMainThread(Event connectEvent) {
         m_pDialog.dismiss();
         switch (connectEvent.msg) {
-            case ErrorOrMsg.CONNECT_SUCCESSED:
+            case ErrorOrMsg.CONNECT_SUCCESS:
                 Log.d("tag", "-------------------------连接成功");
                 String s = getString(R.string.bt_connected_device)+ btdAddress_all;
                 tv_connected_dev.setText(s);
@@ -302,7 +302,7 @@ public class BlueToothJolimarkFragment extends Fragment implements View.OnClickL
             case ErrorOrMsg.CONNECT_FAILED:
                 Log.d("tag", "-------------------------连接失败");
                 tv_connected_dev.setText(getString(R.string.bt_no_connected_device));
-                UTILS.makeToast(activity, R.string.connect_faile);
+                UTILS.makeToast(activity, R.string.connect_failed);
                 printerManager.resetConfig();
                 break;
             case ErrorOrMsg.CONNECT_EXIST:
@@ -329,7 +329,7 @@ public class BlueToothJolimarkFragment extends Fragment implements View.OnClickL
 //				getBluetoothPermission();
                     Bt_ReadyForScan();// 打开蓝牙开关成功后扫描设备前准备操作
                 } else {
-                    UTILS.makeToast(activity, R.string.open_bt_faile);
+                    UTILS.makeToast(activity, R.string.open_bt_failed);
                 }
         }
     }

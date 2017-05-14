@@ -1,8 +1,5 @@
 package com.diablo.dt.diablo.fragment.sale;
 
-import static com.diablo.dt.diablo.R.string.amount;
-import static com.diablo.dt.diablo.R.string.stock;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -48,8 +45,6 @@ import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.entity.Stock;
-import com.diablo.dt.diablo.jolimark.Event;
-import com.diablo.dt.diablo.jolimark.PrinterManager;
 import com.diablo.dt.diablo.model.sale.DiabloSaleAmountChangeWatcher;
 import com.diablo.dt.diablo.model.sale.DiabloSaleRow;
 import com.diablo.dt.diablo.model.sale.SaleCalc;
@@ -70,8 +65,6 @@ import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloPattern;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.diablo.dt.diablo.view.sale.DiabloSaleCalcView;
-
-import de.greenrobot.event.EventBus;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -195,7 +188,7 @@ public class SaleIn extends Fragment{
         mButtons.put(R.id.sale_in_next, new DiabloButton(getContext(), R.id.sale_in_next));
         mButtons.put(R.id.sale_in_clear_draft, new DiabloButton(getContext(), R.id.sale_in_clear_draft));
 
-        EventBus.getDefault().register(this);
+        // EventBus.getDefault().register(this);
     }
 
     @Override
@@ -644,7 +637,7 @@ public class SaleIn extends Fragment{
                 sCell.setTag(title);
                 row.addView(sCell);
             }
-            else if (getResources().getString(amount).equals(title)){
+            else if (getResources().getString(R.string.amount).equals(title)){
                 final EditText cell = new EditText(this.getContext());
                 cell.setTextColor(Color.BLACK);
                 cell.setLayoutParams(lp);
@@ -735,7 +728,7 @@ public class SaleIn extends Fragment{
                     selectStock.setStockExist(s.getExist());
                 }
 
-                View v = SaleInHandler.getColumn(getContext(), row, stock);
+                View v = SaleInHandler.getColumn(getContext(), row, R.string.stock);
                 ((TextView)v).setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                 ((TextView)v).setText(utils.toString(selectStock.getStockExist()));
 
@@ -1221,7 +1214,7 @@ public class SaleIn extends Fragment{
 
                                 TableRow row = getRowByOrderId(s.getOrderId());
                                 View cellAmount = SaleInHandler.getColumn(getContext(), row, R.string.amount);
-                                View cellStock = SaleInHandler.getColumn(getContext(), row, stock);
+                                View cellStock = SaleInHandler.getColumn(getContext(), row, R.string.stock);
 
                                 utils.setEditTextValue((EditText)cellAmount, saleTotal);
                                 utils.setTextViewValue((TextView)cellStock, exist);
@@ -1374,7 +1367,7 @@ public class SaleIn extends Fragment{
                 });
             }
 
-            if (getResources().getString(amount).equals(name)){
+            if (getResources().getString(R.string.amount).equals(name)){
                 // free color, free size
                 if ( DiabloEnum.DIABLO_FREE.equals(s.getFree()) ){
                     getStockOfSelected(s, row);
@@ -1566,7 +1559,7 @@ public class SaleIn extends Fragment{
         Log.d(LOG_TAG, "onDestroy called");
     }
 
-    public void onEventMainThread(Event event) {
-        PrinterManager.getInstance().onMessage(getContext(), event.msg);
-    }
+//    public void onEventMainThread(Event event) {
+//        PrinterManager.getInstance().onMessage(getContext(), event.msg);
+//    }
 }

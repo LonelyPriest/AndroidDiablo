@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.jolimark;
+package com.diablo.dt.diablo.jolimark.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;

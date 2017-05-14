@@ -37,8 +37,6 @@ import com.diablo.dt.diablo.filter.DiabloFilterController;
 import com.diablo.dt.diablo.filter.RSNFilter;
 import com.diablo.dt.diablo.filter.RetailerFilter;
 import com.diablo.dt.diablo.filter.ShopFilter;
-import com.diablo.dt.diablo.jolimark.Event;
-import com.diablo.dt.diablo.jolimark.PrinterManager;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
@@ -50,8 +48,6 @@ import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
-
-import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +139,7 @@ public class SaleDetail extends Fragment {
             UTILS.toInteger(Profile.instance().getConfig(DiabloEnum.START_BLUETOOTH, DiabloEnum.DIABLO_CONFIG_NO));
 
 
-        EventBus.getDefault().register(this);
+        // EventBus.getDefault().register(this);
     }
 
     @Override
@@ -684,7 +680,7 @@ public class SaleDetail extends Fragment {
 
     }
 
-    public void onEventMainThread(Event event) {
-        PrinterManager.getInstance().onMessage(getContext(), event.msg);
-    }
+//    public void onEventMainThread(Event event) {
+//        PrinterManager.getInstance().onMessage(getContext(), event.msg);
+//    }
 }

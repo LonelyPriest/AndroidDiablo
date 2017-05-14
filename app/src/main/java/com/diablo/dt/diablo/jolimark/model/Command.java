@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.jolimark;
+package com.diablo.dt.diablo.jolimark.model;
 
 /**
  * Created by buxianhui on 17/5/7.
@@ -81,9 +81,9 @@ public class Command {
     public static final byte b12[] = { (byte) 0x1B, (byte) 0x21, (byte) 0x0 };
     // -------------爱普生pos指令--------------------
 
-    //进纸
-    public static byte[] feed(byte feedNum) {
-        byte[] bData2 = { 27, 74, feedNum };// 打印并进纸feedNum个单位，其它指令请参考《映美打印机编程手册》。
-        return bData2;
-    }
+//    //进纸
+//    public static byte[] feed(byte feedNum) {
+//        byte[] bData2 = { 27, 74, feedNum };// 打印并进纸feedNum个单位，其它指令请参考《映美打印机编程手册》。
+//        return bData2;
+//    }
 }

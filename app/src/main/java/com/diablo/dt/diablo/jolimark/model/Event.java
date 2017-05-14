@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.jolimark;
+package com.diablo.dt.diablo.jolimark.model;
 
 /**
  * 事件对象

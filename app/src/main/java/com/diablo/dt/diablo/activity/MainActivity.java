@@ -33,7 +33,7 @@ import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
-import com.diablo.dt.diablo.fragment.print.BlueToothJolimarkFragment;
+import com.diablo.dt.diablo.fragment.printer.BlueToothJolimarkFragment;
 import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
@@ -44,6 +44,8 @@ import com.diablo.dt.diablo.fragment.stock.StockIn;
 import com.diablo.dt.diablo.fragment.stock.StockNote;
 import com.diablo.dt.diablo.fragment.stock.StockOut;
 import com.diablo.dt.diablo.fragment.stock.StockStoreDetail;
+import com.diablo.dt.diablo.jolimark.model.PrinterController;
+import com.diablo.dt.diablo.jolimark.model.PrinterManager;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
@@ -138,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         DiabloDBManager.instance().init(this);
+
+        // init print queue
+        PrinterController.instance();
         // PrinterManager.getInstance();
 
         Profile.instance().setResource(getResources());
@@ -570,6 +575,7 @@ public class MainActivity extends AppCompatActivity {
                 Profile.instance().clear();
                 // clear client
                 clearClient();
+                clearBlueToothPrinter();
                 
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -602,8 +608,8 @@ public class MainActivity extends AppCompatActivity {
         WSaleClient.resetClient();
     }
 
-    private void initPrinter() {
-        
+    private void clearBlueToothPrinter() {
+        PrinterManager.getInstance().close();
     }
 
     //    @Override

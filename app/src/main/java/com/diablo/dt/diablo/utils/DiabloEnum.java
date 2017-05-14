@@ -150,6 +150,10 @@ public class DiabloEnum {
      * printer
      */
     public static final String PRINTER_JOLIMARK = "jolimark";
+    public static final Integer PRINTER_CONNECT_SUCCESS = 0;
+    public static final Integer PRINTER_CONNECT_FAILED = 1;
+    public static final Integer PRINTER_CONNECT_EMPTY_PARAMS = 2;
+    
 
     /**
      * DB table

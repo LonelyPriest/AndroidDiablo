@@ -1,16 +1,18 @@
-package com.diablo.dt.diablo.jolimark;
+package com.diablo.dt.diablo.jolimark.model;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.jolimark.event.ConnectEvent;
 import com.diablo.dt.diablo.jolimark.event.SendEvent;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.jolimark.printerlib.RemotePrinter;
 import com.jolimark.printerlib.UsbPrinter;
@@ -88,13 +90,13 @@ public class PrinterManager {
         @Override
         public void run() {
             //0.先判断连接
-            EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTERING));
+            EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTING));
             if (transType != null && transType.equals(VAR.TransType.TRANS_USB)) {
                 if (!connectUsbPrinter(mContext)) {
                     return;
                 }
             } else {
-                if (!connect()) {
+                if (!DiabloEnum.PRINTER_CONNECT_SUCCESS.equals(connect())) {
                     return;
                 }
             }
@@ -164,7 +166,7 @@ public class PrinterManager {
                         return;
                     }
                     //发送成功
-                    EventBus.getDefault().post(new Event(ErrorOrMsg.SEND_SUCCESSED));
+                    EventBus.getDefault().post(new Event(ErrorOrMsg.SEND_SUCCESS));
 
                 } else {
                     //非防丢单程序:
@@ -205,7 +207,7 @@ public class PrinterManager {
                         }
                     }
                     if (calcDataLength == sendData.length) {
-                        EventBus.getDefault().post(new Event(ErrorOrMsg.SEND_SUCCESSED));
+                        EventBus.getDefault().post(new Event(ErrorOrMsg.SEND_SUCCESS));
                     } else {
                         EventBus.getDefault().post(new Event(ErrorOrMsg.SEND_FAILED));
                     }
@@ -272,7 +274,7 @@ public class PrinterManager {
                         builder.setPositiveButton(mContext.getString(R.string.continue_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTERING));
+                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTING));
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -326,7 +328,7 @@ public class PrinterManager {
                         builder.setPositiveButton(mContext.getString(R.string.continue_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTERING));
+                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTING));
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -438,7 +440,7 @@ public class PrinterManager {
                         builder.setPositiveButton(mContext.getString(R.string.continue_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTERING));
+                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTING));
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -528,7 +530,7 @@ public class PrinterManager {
 //                        builder.setPositiveButton(mContext.getString(R.string.continue_confirm), new DialogInterface.OnClickListener() {
 //                            @Override
 //                            public void onClick(DialogInterface dialog, int which) {
-//                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTERING));
+//                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTING));
 //                                new Thread() {
 //                                    @Override
 //                                    public void run() {
@@ -577,7 +579,7 @@ public class PrinterManager {
 //                        builder.setPositiveButton(mContext.getString(R.string.continue_confirm), new DialogInterface.OnClickListener() {
 //                            @Override
 //                            public void onClick(DialogInterface dialog, int which) {
-//                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTERING));
+//                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTING));
 //                                new Thread() {
 //                                    @Override
 //                                    public void run() {
@@ -684,7 +686,7 @@ public class PrinterManager {
 //                        builder.setPositiveButton(mContext.getString(R.string.continue_confirm), new DialogInterface.OnClickListener() {
 //                            @Override
 //                            public void onClick(DialogInterface dialog, int which) {
-//                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTERING));
+//                                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTING));
 //                                new Thread() {
 //                                    @Override
 //                                    public void run() {
@@ -881,7 +883,7 @@ public class PrinterManager {
     /**
      * 连接
      */
-    public boolean connect() {
+    public Integer connect() {
         if ((!TextUtils.isEmpty(String.valueOf(transType))) && (!TextUtils.isEmpty(devAddress))) { // printer设置参数不为空
             if (myPrinter == null) {// myPrinter 对象不存在
                 // 第一步：创建RemotePrinter对象，传入参数：
@@ -891,9 +893,9 @@ public class PrinterManager {
             }
             if (myPrinter.isConnected()) { // myPrinter 对象已经连接
                 // 已经连接不需要再连接
-                Log.d("connect", "-------已连接，不需要连接");
+                // Log.d("connect", "-------已连接，不需要连接");
                 EventBus.getDefault().post(new Event(ErrorOrMsg.CONNECT_EXIST));
-                return true;
+                return DiabloEnum.PRINTER_CONNECT_SUCCESS;
             } else { // myPrinter 对象没连接，先连接
                 // 第二步：调用open()方法打开连接
                 try {
@@ -903,21 +905,21 @@ public class PrinterManager {
                     Log.d("connect", "-------没连接，需要open：" + ret);
                     if (ret) {
                         printerType = myPrinter.getPrinterType();// 获取打印机类型，在open()调用之后
-                        EventBus.getDefault().post(new Event(ErrorOrMsg.CONNECT_SUCCESSED));
-                        return true;
+                        EventBus.getDefault().post(new Event(ErrorOrMsg.CONNECT_SUCCESS));
+                        return DiabloEnum.PRINTER_CONNECT_SUCCESS;
                     } else {
                         EventBus.getDefault().post(new Event(ErrorOrMsg.CONNECT_FAILED));// 连接失败
-                        return false;
+                        return DiabloEnum.PRINTER_CONNECT_FAILED;
                     }
                 } catch (Exception e) {
                     EventBus.getDefault().post(new Event(ErrorOrMsg.CONNECT_FAILED));// 连接失败
                     e.printStackTrace();
-                    return false;
+                    return DiabloEnum.PRINTER_CONNECT_FAILED;
                 }
             }
         } else {
             EventBus.getDefault().post(new Event(ErrorOrMsg.CONFIG_NULL));// 配置为空
-            return false;
+            return DiabloEnum.PRINTER_CONNECT_EMPTY_PARAMS;
         }
     }
 
@@ -1016,7 +1018,7 @@ public class PrinterManager {
             return;
         }
         if(isSendingData){
-            EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTERING_WAIT));
+            EventBus.getDefault().post(new Event(ErrorOrMsg.PRINT_WAIT));
             return;
         }
         // mContext = context;
@@ -1030,11 +1032,19 @@ public class PrinterManager {
         byte strToByte[] = null;
         strToByte = ByteArrayUtils.twoToOne(strToByte, Command.a17);
         strToByte = ByteArrayUtils.twoToOne(strToByte, Command.a61);
+        int contentLen = content.split("\\r\\n").length;
+        if (contentLen < 38) {
+            strToByte = ByteArrayUtils.twoToOne(strToByte, Command.a60);
+        }
+
+
         // strToByte = ByteArrayUtils.twoToOne(strToByte, Command.feed((byte)20));
         // strToByte = ByteArrayUtils.twoToOne(strToByte, Command.a60);
         strToByte = ByteArrayUtils.twoToOne(strToByte, ByteArrayUtils.stringToByte(content));
         strToByte = ByteArrayUtils.twoToOne(strToByte, ByteArrayUtils.stringToByte("\r\n\r\n\r\n"));
-        // strToByte = ByteArrayUtils.twoToOne(strToByte, Command.a33);
+        if (contentLen < 38) {
+            strToByte = ByteArrayUtils.twoToOne(strToByte, Command.a33);
+        }
         strToByte = ByteArrayUtils.twoToOne(strToByte, Command.a17);
         // strToByte = ByteArrayUtils.twoToOne(strToByte, Command.feed((byte)20));
         // strToByte = ByteArrayUtils.twoToOne(strToByte, strToByte);
@@ -1066,29 +1076,29 @@ public class PrinterManager {
             if (usbPrinter != null){
                 boolean ret = usbPrinter.close();
                 if (ret) {
-                    EventBus.getDefault().post(new Event(ErrorOrMsg.CLOSE_SUCCESSED));
-                    return ErrorOrMsg.CLOSE_SUCCESSED;
+                    // EventBus.getDefault().post(new Event(ErrorOrMsg.CLOSE_SUCCESS));
+                    return ErrorOrMsg.CLOSE_SUCCESS;
                 } else {
-                    EventBus.getDefault().post(new Event(ErrorOrMsg.CLOSE_FAILED));
+                    // EventBus.getDefault().post(new Event(ErrorOrMsg.CLOSE_FAILED));
                     return ErrorOrMsg.CLOSE_FAILED;
                 }
             }else {
-                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTER_NULL));
+                // EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTER_NULL));
                 return ErrorOrMsg.PRINTER_NULL;
             }
-        }else {
+        } else {
             if (myPrinter != null) {
                 // 第四步：调用close()关闭连接
                 boolean ret = myPrinter.close();
                 if (ret) {
-                    EventBus.getDefault().post(new Event(ErrorOrMsg.CLOSE_SUCCESSED));
-                    return ErrorOrMsg.CLOSE_SUCCESSED;
+                    // EventBus.getDefault().post(new Event(ErrorOrMsg.CLOSE_SUCCESS));
+                    return ErrorOrMsg.CLOSE_SUCCESS;
                 } else {
-                    EventBus.getDefault().post(new Event(ErrorOrMsg.CLOSE_FAILED));
+                    // EventBus.getDefault().post(new Event(ErrorOrMsg.CLOSE_FAILED));
                     return ErrorOrMsg.CLOSE_FAILED;
                 }
             } else {
-                EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTER_NULL));
+                // EventBus.getDefault().post(new Event(ErrorOrMsg.PRINTER_NULL));
                 return ErrorOrMsg.PRINTER_NULL;
             }
         }
@@ -1154,18 +1164,25 @@ public class PrinterManager {
         this.openTwoWayFlag = openTwoWayFlag;
     }
 
+    public interface OnPrintListener {
+        void onSuccessToSendData();
+    }
 
     // 接收发送事件信息
-    public void onMessage(Context context, int message) {
+    public void onMessage(Context context, int message, @Nullable OnPrintListener listener) {
         DiabloUtils utils = DiabloUtils.instance();
         switch (message) {
-            case ErrorOrMsg.SEND_SUCCESSED:
+            case ErrorOrMsg.SEND_SUCCESS:
                 Log.d("SEND_SUCCESS", "-------------------------发送成功");
+                if (null != listener) {
+                    listener.onSuccessToSendData();
+                }
+
                 utils.makeToast(context, context.getResources().getString(R.string.send_success));
                 if (printerManager.isConnected()) {
                     new Thread() {
                         public void run() {
-                            // printerManager.close();//打完关闭连接
+                            printerManager.close();//打完关闭连接
                         }
                     }.start();
                     Log.d("发送成功", "---------------- 关闭连接");
@@ -1190,15 +1207,15 @@ public class PrinterManager {
             case ErrorOrMsg.DATA_EMPTY:
                 utils.makeToast(context, R.string.data_empty);
                 break;
-            case ErrorOrMsg.PRINTERING:
+            case ErrorOrMsg.PRINTING:
                 break;
             case ErrorOrMsg.CONNECT_FAILED:
-                utils.makeToast(context, R.string.connect_faile);// 连接失败
+                utils.makeToast(context, R.string.connect_failed);// 连接失败
                 break;
             case ErrorOrMsg.CONNECTING:
                 utils.makeToast(context, R.string.connecting);
                 break;
-            case ErrorOrMsg.PRINTERING_WAIT:
+            case ErrorOrMsg.PRINT_WAIT:
                 utils.makeToast(context, R.string.printing);// 打印中,请稍后
                 break;
 
