@@ -5,7 +5,7 @@ android {
   buildToolsVersion '25'
   defaultConfig {
     applicationId "com.diablo.dt.diablo"
-    minSdkVersion 19
+    minSdkVersion 16
     targetSdkVersion 25
     versionCode 1
     versionName "1.0"
@@ -47,8 +47,8 @@ dependencies {
   compile 'com.afollestad.material-dialogs:core:0.9.3.0'
   compile 'com.github.orangegangsters:swipy:1.2.3@aar'
   compile 'com.code-troopers.betterpickers:library:3.1.0'
-  compile 'com.itextpdf:itextg:5.5.9'
-  compile 'com.github.barteksc:android-pdf-viewer:2.5.1'
+  // compile 'com.itextpdf:itextg:5.5.9'
+  // compile 'com.github.barteksc:android-pdf-viewer:2.5.1'
   // compile 'org.greenrobot:eventbus:3.0.0'
   testCompile 'junit:junit:4.12'
   compile files('libs/eventbus.jar')
