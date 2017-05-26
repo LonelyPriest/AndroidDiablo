@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -205,6 +206,7 @@ public class StockDetail extends Fragment {
         head.addView(row);
 
         mStockDetailTable = (TableLayout) view.findViewById(R.id.t_stock_detail);
+        mStockDetailTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
 
         init();
         initFilter(view);
@@ -298,32 +300,38 @@ public class StockDetail extends Fragment {
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
                     StockDetailResponse.StockDetail detail = details.get(i);
-
+                    TextView cell = null;
                     for (String title: mTableHeads){
-                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
+                        if (i == details.size() - 1) {
+                            lp.setMargins(0, 1, 0, 1);
+                        } else {
+                            lp.setMargins(0, 1, 0, 0);
+                        }
+
                         if (getResources().getString(R.string.order_id).equals(title)) {
                             detail.setOrderId(orderId);
                             lp.weight = 0.8f;
-                            addCell(row, orderId++, lp);
+                            cell = addCell(row, orderId++, lp);
                         }
                         else if (getResources().getString(R.string.rsn).equals(title)){
                             String [] fs = detail.getRsn().split("-");
-                            addCell(row, fs[fs.length - 1], lp);
+                            cell = addCell(row, fs[fs.length - 1], lp);
                         }
                         else if(getResources().getString(R.string.trans).equals(title)){
-                            TextView cell = addCell(row, mStockTypes[detail.getType()], lp);
+                            cell = addCell(row, mStockTypes[detail.getType()], lp);
                             if (detail.getType().equals(DiabloEnum.SALE_OUT)){
                                 cell.setTextColor(getResources().getColor(R.color.red));
                             }
                         }
                         else if(getResources().getString(R.string.shop).equals(title)){
-                            addCell(row,
+                            cell = addCell(row,
                                 DiabloUtils.getInstance().getShop(Profile.instance().getSortShop(),
                                     detail.getShop()).getName(),
                                 lp);
                         }
                         else if (getResources().getString(R.string.employee).equals(title)){
-                            addCell(row,
+                            cell = addCell(row,
                                 DiabloUtils.getInstance().getEmployeeByNumber(
                                     Profile.instance().getEmployees(),
                                     detail.getEmployee()).getName(),
@@ -332,35 +340,36 @@ public class StockDetail extends Fragment {
                         else if (getContext().getString(R.string.firm).equals(title)){
                             Firm f = Profile.instance().getFirm(detail.getFirm());
                             if (null != f) {
-                                addCell(row, f.getName(), lp);
+                                cell = addCell(row, f.getName(), lp);
                             }
                             else {
-                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (getResources().getString(R.string.amount).equals(title)){
-                            addCell(row, detail.getTotal(), lp);
+                            cell = addCell(row, detail.getTotal(), lp);
+                            // cell.setTextColor(Color.MAGENTA);
                         }
                         else if (getResources().getString(R.string.balance).equals(title)){
                             lp.weight = 1.5f;
-                            TextView cell = addCell(row, detail.getBalance(), lp);
+                            cell = addCell(row, detail.getBalance(), lp);
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpBlue));
                         }
                         else if (getResources().getString(R.string.should_pay).equals(title)){
-                            addCell(row, detail.getShouldPay(), lp);
+                            cell = addCell(row, detail.getShouldPay(), lp);
                         }
                         else if (getResources().getString(R.string.has_pay).equals(title)){
-                            addCell(row, detail.getHasPay(), lp);
+                            cell = addCell(row, detail.getHasPay(), lp);
                         }
                         else if (getResources().getString(R.string.verificate).equals(title)){
-                            addCell(row, detail.getVerificate(), lp);
+                            cell = addCell(row, detail.getVerificate(), lp);
                         }
                         else if (getResources().getString(R.string.epay).equals(title)){
-                            addCell(row, detail.getEPay(), lp);
+                            cell = addCell(row, detail.getEPay(), lp);
                         }
                         else if (getResources().getString(R.string.acc_balance).equals(title)){
                             lp.weight = 1.5f;
-                            TextView cell = addCell(
+                            cell = addCell(
                                 row,
                                 detail.getBalance()
                                     + detail.getShouldPay()
@@ -371,18 +380,23 @@ public class StockDetail extends Fragment {
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.blueLight));
                         }
                         else if (getResources().getString(R.string.cash).equals(title)){
-                            addCell(row, detail.getCash(), lp);
+                            cell = addCell(row, detail.getCash(), lp);
                         }
                         else if (getResources().getString(R.string.card).equals(title)){
-                            addCell(row, detail.getCard(), lp);
+                            cell = addCell(row, detail.getCard(), lp);
                         }
                         else if (getResources().getString(R.string.wire).equals(title)){
-                            addCell(row, detail.getWire(), lp);
+                            cell = addCell(row, detail.getWire(), lp);
                         }
                         else if (getResources().getString(R.string.date).equals(title)){
                             String shortDate = detail.getEntryDate().substring(
                                 5, detail.getEntryDate().length() - 3).trim();
-                            addCell(row, shortDate, lp);
+                            cell = addCell(row, shortDate, lp);
+                        }
+
+                        if (null != cell ) {
+                            cell.setGravity(Gravity.CENTER);
+                            cell.setBackgroundResource(R.drawable.table_cell_bg);
                         }
                     }
 
@@ -416,7 +430,8 @@ public class StockDetail extends Fragment {
                         + getResources().getString(R.string.total_page) + mTotalPage.toString()
                         + getResources().getString(R.string.page);
 
-                    UTILS.formatPageInfo(addCell(row, pageInfo, lp));
+                    TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.5f);
+                    UTILS.formatPageInfo(addCell(row, pageInfo, lp2));
                     mStockDetailTable.addView(row);
                 }
             }

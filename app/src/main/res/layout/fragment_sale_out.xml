@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_person_black_24dp"
+        android:drawableLeft="@drawable/ic_person_black_24dp"
         android:text="@string/retailer"/>
     <AutoCompleteTextView
         android:id="@+id/sale_out_select_retailer"
@@ -32,6 +33,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_place_black_24dp"
+        android:drawableLeft="@drawable/ic_place_black_24dp"
         android:layout_weight="0.2"
         android:text="@string/shop"/>
     <EditText
@@ -89,6 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_local_airport_black_24dp"
+        android:drawableLeft="@drawable/ic_local_airport_black_24dp"
         android:text="@string/amount" />
 
     <EditText
@@ -107,6 +110,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
         android:text="@string/retailer_balance" />
     <EditText
         android:id="@+id/sale_out_balance"
@@ -123,6 +127,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
         android:text="@string/should_pay" />
     <EditText
         android:id="@+id/sale_out_should_pay"
@@ -179,6 +184,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
         android:text="@string/retailer_accBalance" />
     <EditText
         android:id="@+id/sale_out_accbalance"
@@ -195,6 +201,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_remove_circle_outline_black_24dp"
+        android:drawableLeft="@drawable/ic_remove_circle_outline_black_24dp"
         android:text="@string/verificate"/>
     <EditText
         android:id="@+id/sale_out_verificate"
@@ -252,6 +259,7 @@
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginStart="20sp"
+              android:layout_marginLeft="20sp"
               android:textSize="18sp"
               android:background="@color/yellowLight"
               android:textColor="@color/black"

@@ -1158,6 +1158,7 @@ public class SaleIn extends Fragment{
             }
         }
 
+        shouldPay = (float)Math.round(shouldPay);
         mSaleCalcController.setSaleInfo(total, sell, reject);
         mSaleCalcController.setShouldPay(shouldPay);
         mSaleCalcController.resetAccBalance();

@@ -73,6 +73,7 @@ public class StockIn extends Fragment {
 
     private GoodSelect.OnNoFreeGoodSelectListener mOnNoFreeGoodSelectListener;
 
+    private Integer mLoginFirm = DiabloEnum.INVALID_INDEX;
     private Integer mBackFrom = R.string.back_from_unknown;
 
     public void setNoFreeGoodSelectListener(GoodSelect.OnNoFreeGoodSelectListener listener){
@@ -141,9 +142,14 @@ public class StockIn extends Fragment {
         initCalc(view);
         mStockTableController = new DiabloStockTableController((TableLayout) view.findViewById(R.id.t_stock));
 
-        Integer firmId = Profile.instance().getFirms().get(0).getId();
 
-        init(firmId);
+        // Integer firmId = Profile.instance().getFirms().get(0).getId();
+        mLoginFirm = Profile.instance().getLoginFirm();
+        if (DiabloEnum.INVALID_INDEX.equals(mLoginFirm)) {
+            mLoginFirm = Profile.instance().getFirms().get(0).getId();
+        }
+
+        init(mLoginFirm);
         return view;
     }
 
@@ -364,7 +370,7 @@ public class StockIn extends Fragment {
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_GOOD_NEW);
                 break;
             case R.id.stock_in_next:
-                init(mStockCalcController.getFirm());
+                init(mLoginFirm);
                 break;
             default:
                 // return super.onOptionsItemSelected(item);
@@ -454,8 +460,13 @@ public class StockIn extends Fragment {
             }
             // back from other operation, should re-calculate the firm balance
             if (null != mStockCalcController) {
-                Firm firm = Profile.instance().getFirm(mStockCalcController.getFirm());
-                mStockCalcController.setBalance(firm.getBalance());
+                Integer firmId = mStockCalcController.getFirm();
+                if (!DiabloEnum.INVALID_INDEX.equals(firmId)) {
+                    Firm firm = Profile.instance().getFirm(firmId);
+                    mStockCalcController.setBalance(firm.getBalance());
+                }
+//                Firm firm = Profile.instance().getFirm(mStockCalcController.getFirm());
+//                mStockCalcController.setBalance(firm.getBalance());
 
                 forcusStyleNumber();
             }
@@ -605,7 +616,7 @@ public class StockIn extends Fragment {
                             @Override
                             public void onOk() {
                                 // reset the controller
-                                init(mStockCalcController.getFirm());
+                                init(mLoginFirm);
                             }
                         }).create();
                 }

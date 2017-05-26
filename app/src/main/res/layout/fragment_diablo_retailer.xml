@@ -27,6 +27,7 @@
         android:layout_weight="0.1"
         android:contentDescription="@string/retailer"
         android:drawableEnd="@drawable/ic_search_black_24dp"
+        android:drawableRight="@drawable/ic_search_black_24dp"
         android:text="@string/btn_search"/>
 
   </LinearLayout>

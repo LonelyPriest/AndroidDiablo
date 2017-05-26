@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_landscape_black_24dp"
+        android:drawableLeft="@drawable/ic_landscape_black_24dp"
         android:text="@string/firm"/>
     <AutoCompleteTextView
         android:id="@+id/stock_select_firm"
@@ -32,6 +33,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_place_black_24dp"
+        android:drawableLeft="@drawable/ic_place_black_24dp"
         android:layout_weight="0.2"
         android:text="@string/shop"/>
     <EditText
@@ -89,6 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_local_airport_black_24dp"
+        android:drawableLeft="@drawable/ic_local_airport_black_24dp"
         android:text="@string/amount" />
     <EditText
         android:id="@+id/stock_total"
@@ -105,6 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
         android:text="@string/firm_balance" />
     <EditText
         android:id="@+id/firm_balance"
@@ -120,6 +124,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
         android:text="@string/should_pay" />
     <EditText
         android:id="@+id/stock_should_pay"
@@ -172,6 +177,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
         android:text="@string/firm_accBalance" />
     <EditText
         android:id="@+id/firm_accBalance"
@@ -187,6 +193,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_remove_circle_outline_black_24dp"
+        android:drawableLeft="@drawable/ic_remove_circle_outline_black_24dp"
         android:text="@string/verificate"/>
     <EditText
         android:id="@+id/stock_verificate"

@@ -122,6 +122,7 @@ public class DiabloSaleTableController {
             }
         }
 
+        shouldPay = (float)Math.round(shouldPay);
         saleController.setSaleInfo(total, sell, reject);
         saleController.setShouldPay(shouldPay);
         saleController.resetAccBalance();

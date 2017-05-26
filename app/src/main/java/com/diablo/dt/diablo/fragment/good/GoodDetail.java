@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -196,6 +197,7 @@ public class GoodDetail extends Fragment {
         head.addView(row);
 
         mTable = (TableLayout) view.findViewById(R.id.t_good_detail);
+        mTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
 
         init();
         initFilter(view);
@@ -302,20 +304,26 @@ public class GoodDetail extends Fragment {
                     GoodDetailResponse.GoodNote g = goodNotes.get(i);
                     Resources res = getResources();
 
+                    TextView cell = null;
                     for (String title: mTableHeads){
-                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
+                        if (i == goodNotes.size() - 1) {
+                            lp.setMargins(0, 1, 0, 1);
+                        } else {
+                            lp.setMargins(0, 1, 0, 0);
+                        }
+
                         if (res.getString(R.string.order_id).equals(title)) {
                             g.setOrderId(orderId);
                             lp.weight = 0.8f;
-                            TextView cell = addCell(row, orderId++, lp);
+                            cell = addCell(row, orderId++, lp);
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
                         }
                         else if (res.getString(R.string.style_number).equals(title)) {
-                            addCell(row, g.getStyleNumber(), lp);
+                            cell = addCell(row, g.getStyleNumber(), lp);
                         }
                         else if (res.getString(R.string.brand).equals(title)) {
                             DiabloBrand brand = Profile.instance().getBrand(g.getBrandId());
-                            TextView cell;
                             if (null != brand) {
                                 cell = addCell(row, brand.getName(), lp);
                             } else {
@@ -329,48 +337,53 @@ public class GoodDetail extends Fragment {
                         else if (res.getString(R.string.good_type).equals(title)) {
                             DiabloType type = Profile.instance().getDiabloType(g.getTypeId());
                             if (null != type) {
-                                addCell(row, type.getName(), lp);
+                                cell = addCell(row, type.getName(), lp);
                             } else {
-                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (res.getString(R.string.firm).equals(title)) {
                             Firm firm = Profile.instance().getFirm(g.getFirmId());
                             if ( null != firm ) {
-                                addCell(row, firm.getName(), lp);
+                                cell = addCell(row, firm.getName(), lp);
                             } else {
-                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (res.getString(R.string.season).equals(title)) {
-                            addCell(row, mSeasons[g.getSeason()], lp);
+                            cell = addCell(row, mSeasons[g.getSeason()], lp);
                         }
                         else if (res.getString(R.string.year).equals(title)) {
-                            addCell(row, g.getYear(), lp);
+                            cell = addCell(row, g.getYear(), lp);
                         }
                         else if (res.getString(R.string.org_price).equals(title)) {
-                            TextView cell = addCell(row, g.getOrgPrice(), lp);
+                            cell = addCell(row, g.getOrgPrice(), lp);
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.greenDark));
                         }
                         else if (res.getString(R.string.tag_price).equals(title)) {
-                            TextView cell = addCell(row, g.getTagPrice(), lp);
+                            cell = addCell(row, g.getTagPrice(), lp);
                             if (g.getTagPrice() > 0f) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.greenDark));
                             }
                         }
                         else if (res.getString(R.string.pkg_price).equals(title)) {
-                            TextView cell = addCell(row, g.getPkgPrice(), lp);
+                            cell = addCell(row, g.getPkgPrice(), lp);
                             if (g.getPkgPrice() > 0f) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.orangeDark));
                             }
                         }
                         else if (res.getString(R.string.discount).equals(title)) {
-                            addCell(row, g.getDiscount(), lp);
+                            cell = addCell(row, g.getDiscount(), lp);
                         }
 
                         else if (res.getString(R.string.shelfDate).equals(title)){
                             lp.weight = 0.8f;
-                            addCell(row, g.getDatetime(), lp);
+                            cell = addCell(row, g.getDatetime(), lp);
+                        }
+
+                        if (null != cell ) {
+                            cell.setGravity(Gravity.CENTER);
+                            cell.setBackgroundResource(R.drawable.table_cell_bg);
                         }
                     }
 

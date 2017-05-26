@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -198,6 +199,7 @@ public class SaleNote extends Fragment {
         head.addView(row);
 
         mSaleNoteTable = (TableLayout) view.findViewById(R.id.t_sale_note);
+        mSaleNoteTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
 
 //        for (Integer i = 0; i<mRows.length; i++){
 //            mRows[i] = new TableRow(this.getContext());
@@ -342,18 +344,25 @@ public class SaleNote extends Fragment {
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
                     SaleNoteResponse.SaleNote note = notes.get(i);
+                    TextView cell = null;
                     for (String title: mTableHeads){
-                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
+                        if (i == notes.size() - 1) {
+                            lp.setMargins(0, 1, 0, 1);
+                        } else {
+                            lp.setMargins(0, 1, 0, 0);
+                        }
+
                         if (getResources().getString(R.string.order_id).equals(title)) {
                             note.setOrderId(orderId);
-                            UTILS.addCell(getContext(), row, orderId++, lp);
+                            cell = UTILS.addCell(getContext(), row, orderId++, lp);
                         }
                         else if (getResources().getString(R.string.rsn).equals(title)){
                             String [] fs = note.getRsn().split("-");
-                            UTILS.addCell(getContext(), row, fs[fs.length - 1], lp);
+                            cell = UTILS.addCell(getContext(), row, fs[fs.length - 1], lp);
                         }
                         else if(getResources().getString(R.string.trans).equals(title)){
-                            TextView cell = UTILS.addCell(getContext(), row, mSaleTypes[note.getSellType()], lp);
+                            cell = UTILS.addCell(getContext(), row, mSaleTypes[note.getSellType()], lp);
                             if (note.getSellType().equals(DiabloEnum.SALE_OUT)){
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                             }
@@ -363,67 +372,67 @@ public class SaleNote extends Fragment {
                                 Profile.instance().getRetailers(), note.getRetailerId());
 
                             if (null != r) {
-                                TextView cell = UTILS.addCell(getContext(), row, r.getName(), lp);
+                                cell = UTILS.addCell(getContext(), row, r.getName(), lp);
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_blue));
                             }
                             else {
-                                UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (getContext().getString(R.string.style_number).equals(title)){
-                            TextView cell = UTILS.addCell(getContext(), row, note.getStyleNumber(), lp);
+                            cell = UTILS.addCell(getContext(), row, note.getStyleNumber(), lp);
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
                         }
                         else if (getContext().getString(R.string.brand).equals(title)){
                             DiabloBrand brand = Profile.instance().getBrand(note.getBrandId());
                             if (null != brand) {
-                                UTILS.addCell(getContext(), row, brand.getName(), lp);
+                                cell = UTILS.addCell(getContext(), row, brand.getName(), lp);
                             }
                             else {
-                                UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
                             }
 
                         }
                         else if (getContext().getString(R.string.good_type).equals(title)){
                             DiabloType type = Profile.instance().getDiabloType(note.getTypeId());
                             if (null != type) {
-                                UTILS.addCell(getContext(), row, type.getName(), lp);
+                                cell = UTILS.addCell(getContext(), row, type.getName(), lp);
                             }
                             else {
-                                UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (getContext().getString(R.string.firm).equals(title)){
                             Firm firm = Profile.instance().getFirm(note.getFirmId());
                             if (null != firm) {
-                                UTILS.addCell(getContext(), row, firm.getName(), lp);
+                                cell = UTILS.addCell(getContext(), row, firm.getName(), lp);
                             } else {
-                                UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
                             }
 
                         }
                         else if (getContext().getString(R.string.price).equals(title)){
-                            UTILS.addCell(getContext(), row, note.getFprice(), lp);
+                            cell = UTILS.addCell(getContext(), row, note.getFprice(), lp);
                         }
                         else if (getContext().getString(R.string.discount).equals(title)){
-                            UTILS.addCell(getContext(), row, note.getFdiscount(), lp);
+                            cell = UTILS.addCell(getContext(), row, note.getFdiscount(), lp);
                         }
                         else if (getContext().getString(R.string.amount).equals(title)){
-                            UTILS.addCell(getContext(), row, note.getTotal(), lp);
+                            cell = UTILS.addCell(getContext(), row, note.getTotal(), lp);
                             if (0 > note.getTotal()) {
                                 row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.pinkLight));
                             }
                         }
                         else if (getContext().getString(R.string.calculate).equals(title)){
-                            UTILS.addCell(getContext(), row, note.getFdiscount() * note.getFprice() * 0.01f, lp);
+                            cell = UTILS.addCell(getContext(), row, note.getFdiscount() * note.getFprice() * 0.01f, lp);
                         }
                         else if (getResources().getString(R.string.date).equals(title)){
                             String shortDate = note.getDatetime().substring(
                                 5, note.getDatetime().length() - 3).trim();
-                            UTILS.addCell(getContext(), row, shortDate, lp);
+                            cell = UTILS.addCell(getContext(), row, shortDate, lp);
                         }
                         else if(getResources().getString(R.string.shop).equals(title)){
-                            UTILS.addCell(
+                            cell = UTILS.addCell(
                                 getContext(),
                                 row,
                                 DiabloUtils.getInstance().getShop(Profile.instance().getSortShop(),
@@ -431,13 +440,20 @@ public class SaleNote extends Fragment {
                                 lp);
                         }
                         else if (getResources().getString(R.string.employee).equals(title)){
-                            UTILS.addCell(
+                            cell = UTILS.addCell(
                                 getContext(),
                                 row,
                                 DiabloUtils.getInstance().getEmployeeByNumber(
                                     Profile.instance().getEmployees(),
                                     note.getEmployeeId()).getName(),
                                 lp);
+                        }
+
+                        if (null != cell ) {
+                            // cell.setPadding(10, 0, 10, 0);
+                            cell.setGravity(Gravity.CENTER);
+                            cell.setBackgroundResource(R.drawable.table_cell_bg);
+                            // cell.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
                         }
                     }
 
@@ -467,7 +483,8 @@ public class SaleNote extends Fragment {
                     row = new TableRow(getContext());
                     TableRow.LayoutParams lp = UTILS.createTableRowParams(1f);
                     UTILS.formatTableStatistic(UTILS.addCell(getContext(), row, mStatistic, lp));
-                    UTILS.formatPageInfo(UTILS.addCell(getContext(), row, mPagination, lp));
+                    TableRow.LayoutParams lp2 = UTILS.createTableRowParams(0.5f);
+                    UTILS.formatPageInfo(UTILS.addCell(getContext(), row, mPagination, lp2));
                     mSaleNoteTable.addView(row);
                 }
             }

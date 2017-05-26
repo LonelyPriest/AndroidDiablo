@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -191,6 +192,7 @@ public class StockNote extends Fragment {
         head.addView(row);
 
         mSaleNoteTable = (TableLayout) view.findViewById(R.id.t_stock_note);
+        mSaleNoteTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
 
         init();
         initFilter(view);
@@ -309,61 +311,73 @@ public class StockNote extends Fragment {
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
                     StockNoteResponse.StockNote note = notes.get(i);
-
+                    TextView cell = null;
                     for (String title: mTableHeads){
-                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
+                        if (i == notes.size() - 1) {
+                            lp.setMargins(0, 1, 0, 1);
+                        } else {
+                            lp.setMargins(0, 1, 0, 0);
+                        }
+
                         if (getResources().getString(R.string.order_id).equals(title)) {
                             note.setOrderId(orderId);
-                            addCell(row, orderId++, lp);
+                            cell = addCell(row, orderId++, lp);
                         }
                         else if (getResources().getString(R.string.rsn).equals(title)){
                             String [] fs = note.getRsn().split("-");
-                            addCell(row, fs[fs.length - 1], lp);
+                            cell = addCell(row, fs[fs.length - 1], lp);
                         }
                         else if(getResources().getString(R.string.trans).equals(title)){
-                            TextView cell = addCell(row, mStockTypes[note.getType()], lp);
+                            cell = addCell(row, mStockTypes[note.getType()], lp);
                             if (note.getType().equals(DiabloEnum.STOCK_OUT)){
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                             }
                         }
                         else if (getContext().getString(R.string.firm).equals(title)){
-                            addCell(row, Profile.instance().getFirm(note.getFirmId()).getName(), lp);
+                            cell = addCell(row, Profile.instance().getFirm(note.getFirmId()).getName(), lp);
                         }
                         else if (getContext().getString(R.string.style_number).equals(title)){
-                            addCell(row, note.getStyleNumber(), lp);
+                            cell = addCell(row, note.getStyleNumber(), lp);
                         }
                         else if (getContext().getString(R.string.brand).equals(title)){
                             DiabloBrand brand = Profile.instance().getBrand(note.getBrandId());
                             if (null != brand) {
-                                addCell(row, brand.getName(), lp);
+                                cell = addCell(row, brand.getName(), lp);
                             }
                             else {
-                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
                             }
 
                         }
                         else if (getContext().getString(R.string.good_type).equals(title)){
                             DiabloType type = Profile.instance().getDiabloType(note.getTypeId());
                             if (null != type) {
-                                addCell(row, type.getName(), lp);
+                                cell = addCell(row, type.getName(), lp);
                             }
                             else {
-                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (getContext().getString(R.string.year).equals(title)) {
-                            addCell(row, note.getYear(), lp);
+                            cell = addCell(row, note.getYear(), lp);
                         }
                         else if (getContext().getString(R.string.discount).equals(title)){
-                            addCell(row, note.getDiscount(), lp);
+                            cell = addCell(row, note.getDiscount(), lp);
                         }
                         else if (getContext().getString(amount).equals(title)){
-                            addCell(row, note.getAmount(), lp);
+                            cell = addCell(row, note.getAmount(), lp);
                         }
                         else if (getResources().getString(R.string.date).equals(title)){
                             String shortDate = note.getDatetime().substring(
                                 5, note.getDatetime().length() - 3).trim();
-                            addCell(row, shortDate, lp);
+                            cell = addCell(row, shortDate, lp);
+                        }
+
+                        if (null != cell ) {
+                            // cell.setTextColor(Color.BLACK);
+                            cell.setGravity(Gravity.CENTER);
+                            cell.setBackgroundResource(R.drawable.table_cell_bg);
                         }
                     }
 

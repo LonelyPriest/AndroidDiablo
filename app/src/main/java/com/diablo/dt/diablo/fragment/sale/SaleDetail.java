@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -257,6 +258,8 @@ public class SaleDetail extends Fragment {
         head.addView(row);
 
         mSaleDetailTable = (TableLayout) mViewFragment.findViewById(R.id.t_sale_detail);
+        mSaleDetailTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+        // mSaleDetailTable.setPadding(16, 16, 16, 16);
 
 //        for (Integer i = 0; i<mRows.length; i++){
 //            mRows[i] = new TableRow(this.getContext());
@@ -365,20 +368,33 @@ public class SaleDetail extends Fragment {
                 mSaleDetailTable.removeAllViews();
                 for (Integer i=0; i<details.size(); i++){
                     row = new TableRow(getContext());
+                    // row.setPadding(5, 5, 5, 5);
+                    // TableRow.LayoutParams lpRow = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
+                    // row.setLayoutParams(lpRow);
+                    row.setBackgroundResource(R.drawable.table_row_bg);
+
                     // TableRow row = new TableRow(mContext);
                     // mSaleDetailTable.addView(row);
                     // row.removeAllViews();
                     SaleDetailResponse.SaleDetail detail = details.get(i);
-
+                    TextView cell = null;
                     for (String title: mTableHeads){
-                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
+                        if (i == details.size() - 1) {
+                            lp.setMargins(0, 1, 0, 1);
+                        } else {
+                            lp.setMargins(0, 1, 0, 0);
+                        }
+
                         if (getResources().getString(R.string.order_id).equals(title)) {
                             detail.setOrderId(orderId);
-                            addCell(row, orderId++, lp);
+                            cell = addCell(row, orderId++, lp);
+                            // cell.setPadding(0, 0, 10, 0);
                         }
                         else if (getResources().getString(R.string.rsn).equals(title)){
                             String [] fs = detail.getRsn().split("-");
-                            addCell(row, fs[fs.length - 1], lp);
+                            cell = addCell(row, fs[fs.length - 1], lp);
+                            // cell.setPadding(10, 0, 10, 0);
                         }
                         else if(getResources().getString(R.string.trans).equals(title)){
                             String name = DiabloEnum.EMPTY_STRING;
@@ -394,19 +410,19 @@ public class SaleDetail extends Fragment {
                                     break;
                             }
 
-                            TextView cell = addCell(row, name, lp);
+                            cell = addCell(row, name, lp);
                             if (detail.getType().equals(DiabloEnum.SALE_OUT)){
                                 cell.setTextColor(getResources().getColor(R.color.red));
                             }
                         }
                         else if(getResources().getString(R.string.shop).equals(title)){
-                            addCell(row,
+                            cell = addCell(row,
                                 DiabloUtils.getInstance().getShop(Profile.instance().getSortShop(),
                                     detail.getShop()).getName(),
                                 lp);
                         }
                         else if (getResources().getString(R.string.employee).equals(title)){
-                            addCell(row,
+                            cell = addCell(row,
                                     DiabloUtils.getInstance().getEmployeeByNumber(
                                         Profile.instance().getEmployees(),
                                         detail.getEmployee()).getName(),
@@ -417,36 +433,37 @@ public class SaleDetail extends Fragment {
                                 Profile.instance().getRetailers(), detail.getRetailer());
 
                             if (null != r) {
-                                addCell(row, r.getName(), lp);
+                                cell = addCell(row, r.getName(), lp);
                             }
                             else {
-                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (getResources().getString(R.string.amount).equals(title)){
-                            addCell(row, detail.getTotal(), lp);
+                            cell = addCell(row, detail.getTotal(), lp);
                         }
                         else if (getResources().getString(R.string.balance).equals(title)){
-                            TextView cell = addCell(row, detail.getBalance(), lp);
+                            cell = addCell(row, detail.getBalance(), lp);
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.magenta));
                         }
                         else if (getResources().getString(R.string.should_pay).equals(title)){
-                            addCell(row, detail.getShouldPay(), lp);
-                        } else if (getResources().getString(R.string.has_pay).equals(title)){
+                            cell = addCell(row, detail.getShouldPay(), lp);
+                        }
+                        else if (getResources().getString(R.string.has_pay).equals(title)){
                             Float hasPay = detail.getHasPay();
-                            TextView cell = addCell(row, hasPay, lp);
+                            cell = addCell(row, hasPay, lp);
                             if (hasPay > 0) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.deepPink));
                             }
                         }
                         else if (getResources().getString(R.string.verificate).equals(title)){
-                            addCell(row, detail.getVerificate(), lp);
+                            cell = addCell(row, detail.getVerificate(), lp);
                         }
                         else if (getResources().getString(R.string.epay).equals(title)){
-                            addCell(row, detail.getEPay(), lp);
+                            cell = addCell(row, detail.getEPay(), lp);
                         }
                         else if (getResources().getString(R.string.acc_balance).equals(title)){
-                            TextView cell = addCell(
+                            cell = addCell(
                                 row,
                                 detail.getBalance()
                                     + detail.getShouldPay()
@@ -457,18 +474,26 @@ public class SaleDetail extends Fragment {
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.blueLight));
                         }
                         else if (getResources().getString(R.string.cash).equals(title)){
-                            addCell(row, detail.getCash(), lp);
+                            cell = addCell(row, detail.getCash(), lp);
                         }
                         else if (getResources().getString(R.string.card).equals(title)){
-                            addCell(row, detail.getCard(), lp);
+                            cell = addCell(row, detail.getCard(), lp);
                         }
                         else if (getResources().getString(R.string.wire).equals(title)){
-                            addCell(row, detail.getWire(), lp);
+                            cell = addCell(row, detail.getWire(), lp);
                         }
                         else if (getResources().getString(R.string.date).equals(title)){
                             String shortDate = detail.getEntryDate().substring(
                                 5, detail.getEntryDate().length() - 3).trim();
-                            addCell(row, shortDate, lp);
+                            cell = addCell(row, shortDate, lp);
+                            // cell.setPadding(10, 0, 0, 0);
+                        }
+
+                        if (null != cell ) {
+                            // cell.setPadding(10, 0, 10, 0);
+                            cell.setGravity(Gravity.CENTER);
+                            cell.setBackgroundResource(R.drawable.table_cell_bg);
+                            // cell.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
                         }
                     }
 //                    final GestureDetectorCompat gesture =
@@ -529,7 +554,8 @@ public class SaleDetail extends Fragment {
                     });
                     registerForContextMenu(row);
 
-                    row.setBackgroundResource(R.drawable.table_row_bg);
+                    // row.setBackgroundResource(R.drawable.table_row_bg);
+                    // row.setBackgroundResource(R.drawable.table_cell_bg);
                     row.setTag(detail);
                     mSaleDetailTable.addView(row);
                 }
@@ -549,7 +575,8 @@ public class SaleDetail extends Fragment {
                         + getResources().getString(R.string.total_page) + mTotalPage.toString()
                         + getResources().getString(R.string.page);
 
-                    UTILS.formatPageInfo(addCell(row, pageInfo, lp));
+                    TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.5f);
+                    UTILS.formatPageInfo(addCell(row, pageInfo, lp2));
                     mSaleDetailTable.addView(row);
                 }
             }

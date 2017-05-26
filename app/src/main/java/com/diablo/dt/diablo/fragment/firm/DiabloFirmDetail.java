@@ -151,7 +151,7 @@ public class DiabloFirmDetail extends Fragment {
         Integer startIndex =  (mCurrentPage - 1) * mItemsPerPage;
         Integer orderId = startIndex + 1;
         TableRow row = null;
-
+        TextView cell = null;
         for (int i=startIndex; i<mCurrentPage * mItemsPerPage && i<mFirms.size(); i++ ) {
             Firm f = mFirms.get(i);
 
@@ -160,35 +160,40 @@ public class DiabloFirmDetail extends Fragment {
 
             for (String title: mTableTitles) {
                 TableRow.LayoutParams lp = UTILS.createTableRowParams(1f);
+                if (i == mCurrentPage * mItemsPerPage - 1 || i == mFirms.size() - 1) {
+                    lp.setMargins(0, 1, 0, 1);
+                } else {
+                    lp.setMargins(0, 1, 0, 0);
+                }
 
                 if (getString(R.string.order_id).equals(title)) {
                     lp.weight = 0.5f;
-                    TextView cell = UTILS.addCell(getContext(), row, orderId++, lp);
+                    cell = UTILS.addCell(getContext(), row, orderId++, lp);
                     if (cell.getLineHeight() < 100) {
                         cell.setHeight(100);
                     }
                     cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
-                    cell.setGravity(Gravity.CENTER);
                 }
                 else if (getString(R.string.diablo_name).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, f.getName(), lp);
-                    cell.setGravity(Gravity.CENTER);
+                    cell = UTILS.addCell(getContext(), row, f.getName(), lp);
                 }
                 else if (getString(R.string.diablo_arrears).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, f.getBalance(), lp);
-                    cell.setGravity(Gravity.CENTER);
+                    cell = UTILS.addCell(getContext(), row, f.getBalance(), lp);
                 }
                 else if (getString(R.string.diablo_phone).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, f.getMobile(), lp);
-                    cell.setGravity(Gravity.CENTER);
+                    cell = UTILS.addCell(getContext(), row, f.getMobile(), lp);
                 }
                 else if (getString(R.string.diablo_address).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, f.getAddress(), lp);
-                    cell.setGravity(Gravity.CENTER);
+                    cell = UTILS.addCell(getContext(), row, f.getAddress(), lp);
                 }
                 else if (getString(R.string.diablo_datetime).equals(title)) {
-                    TextView cell = UTILS.addCell(getContext(), row, f.getDatetime(), lp);
+                    cell = UTILS.addCell(getContext(), row, f.getDatetime(), lp);
+                }
+
+                if (null != cell) {
                     cell.setGravity(Gravity.CENTER);
+                    cell.setBackgroundResource(R.drawable.table_cell_bg);
+                    cell.setTag(title);
                 }
             }
             row.setBackgroundResource(R.drawable.table_row_bg);
@@ -207,7 +212,7 @@ public class DiabloFirmDetail extends Fragment {
                 + getResources().getString(R.string.total_page) + mTotalPage.toString()
                 + getResources().getString(R.string.page);
 
-            TextView cell = UTILS.addCell(getContext(), row, pageInfo, UTILS.createTableRowParams(1f));
+            cell = UTILS.addCell(getContext(), row, pageInfo, UTILS.createTableRowParams(1f));
             UTILS.formatPageInfo(cell);
             mFirmDetailTable.addView(row);
         }

@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -190,6 +191,7 @@ public class StockStoreDetail extends Fragment {
         head.addView(row);
 
         mTable = (TableLayout) view.findViewById(R.id.t_stock_store_detail);
+        mTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
 
         init();
         initFilter(view);
@@ -310,21 +312,26 @@ public class StockStoreDetail extends Fragment {
 
                     InventoryDetailResponse.inventory inv = inventories.get(i);
                     Resources res = getResources();
-
+                    TextView cell = null;
                     for (String title: mTableHeads){
-                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
+                        if (i == inventories.size() - 1) {
+                            lp.setMargins(0, 1, 0, 1);
+                        } else {
+                            lp.setMargins(0, 1, 0, 0);
+                        }
+
                         if (res.getString(R.string.order_id).equals(title)) {
                             inv.setOrderId(orderId);
                             lp.weight = 0.8f;
-                            TextView cell = addCell(row, orderId++, lp);
+                            cell = addCell(row, orderId++, lp);
                             cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
                         }
                         else if (res.getString(R.string.style_number).equals(title)) {
-                            addCell(row, inv.getStyleNumber(), lp);
+                            cell = addCell(row, inv.getStyleNumber(), lp);
                         }
                         else if (res.getString(R.string.brand).equals(title)) {
                             DiabloBrand brand = Profile.instance().getBrand(inv.getBrandId());
-                            TextView cell;
                             if (null != brand) {
                                 cell = addCell(row, brand.getName(), lp);
                             } else {
@@ -338,50 +345,55 @@ public class StockStoreDetail extends Fragment {
                         else if (res.getString(R.string.good_type).equals(title)) {
                             DiabloType type = Profile.instance().getDiabloType(inv.getTypeId());
                             if (null != type) {
-                                addCell(row, type.getName(), lp);
+                                cell = addCell(row, type.getName(), lp);
                             } else {
-                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (res.getString(R.string.firm).equals(title)) {
                             Firm firm = Profile.instance().getFirm(inv.getFirmId());
                             if ( null != firm ) {
-                                addCell(row, firm.getName(), lp);
+                                cell = addCell(row, firm.getName(), lp);
                             } else {
-                                addCell(row, DiabloEnum.EMPTY_STRING, lp);
+                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
                             }
                         }
                         else if (res.getString(R.string.season).equals(title)) {
-                            addCell(row, mSeasons[inv.getSeason()], lp);
+                            cell = addCell(row, mSeasons[inv.getSeason()], lp);
                         }
                         else if (res.getString(R.string.year).equals(title)) {
-                            addCell(row, inv.getYear(), lp);
+                            cell = addCell(row, inv.getYear(), lp);
                         }
                         else if (res.getString(R.string.tag_price).equals(title)) {
-                            TextView cell = addCell(row, inv.getTagPrice(), lp);
+                            cell = addCell(row, inv.getTagPrice(), lp);
                             if (inv.getTagPrice() > 0f) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.greenDark));
                             }
                         }
                         else if (res.getString(R.string.pkg_price).equals(title)) {
-                            TextView cell = addCell(row, inv.getPkgPrice(), lp);
+                            cell = addCell(row, inv.getPkgPrice(), lp);
                             if (inv.getPkgPrice() > 0f) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.orangeDark));
                             }
                         }
                         else if (res.getString(inventory).equals(title)) {
-                            TextView cell = addCell(row, inv.getAmount(), lp);
+                            cell = addCell(row, inv.getAmount(), lp);
                             if (inv.getAmount() > 0) {
                                 cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpBlue));
                             }
                         }
                         else if (res.getString(R.string.sell).equals(title)) {
                             lp.weight = 0.8f;
-                            addCell(row, inv.getSell(), lp);
+                            cell = addCell(row, inv.getSell(), lp);
                         }
                         else if (res.getString(R.string.shelfDate).equals(title)){
                             lp.weight = 0.8f;
-                            addCell(row, inv.getDatetime(), lp);
+                            cell = addCell(row, inv.getDatetime(), lp);
+                        }
+
+                        if (null != cell ) {
+                            cell.setGravity(Gravity.CENTER);
+                            cell.setBackgroundResource(R.drawable.table_cell_bg);
                         }
                     }
 
@@ -415,7 +427,8 @@ public class StockStoreDetail extends Fragment {
                         + getResources().getString(R.string.total_page) + mTotalPage.toString()
                         + getResources().getString(R.string.page);
 
-                    UTILS.formatPageInfo(addCell(row, pageInfo, lp));
+                    TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.5f);
+                    UTILS.formatPageInfo(addCell(row, pageInfo, lp2));
                     mTable.addView(row);
                 }
             }

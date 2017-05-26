@@ -246,10 +246,15 @@ public class DiabloRetailerDetail extends Fragment {
             });
 
             mRetailerDetailTable.addView(row);
-
+            TextView cell = null;
             for (String title: mTableTitles) {
                 TableRow.LayoutParams lp = UTILS.createTableRowParams(1f);
-                TextView cell = null;
+                if (i == mCurrentPage * mItemsPerPage - 1 || i == mMatchedRetailers.size() - 1) {
+                    lp.setMargins(0, 1, 0, 1);
+                } else {
+                    lp.setMargins(0, 1, 0, 0);
+                }
+
                 if (getString(R.string.order_id).equals(title)) {
                     lp.weight = 0.5f;
                     cell = UTILS.addCell(getContext(), row, orderId++, lp);
@@ -279,6 +284,7 @@ public class DiabloRetailerDetail extends Fragment {
 
                 if (null != cell) {
                     cell.setGravity(Gravity.CENTER);
+                    cell.setBackgroundResource(R.drawable.table_cell_bg);
                     cell.setTag(title);
                 }
             }
