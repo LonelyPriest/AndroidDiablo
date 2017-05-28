@@ -40,6 +40,8 @@ public class GoodCalc {
 
     private Integer mFree;
 
+    private String mComment;
+
     public GoodCalc() {
         mOrgPrice = 0f;
         mPkgPrice = 0f;
@@ -53,6 +55,7 @@ public class GoodCalc {
         mAlarmDay = 7;
 
         mFree = DiabloEnum.DIABLO_FREE;
+        mComment = DiabloEnum.EMPTY_STRING;
 
         mColors = new ArrayList<>();
         mSizeGroups = new ArrayList<>();
@@ -80,6 +83,7 @@ public class GoodCalc {
         mAlarmDay = good.getAlarmDay();
         mPath = good.getPath();
         mFree = good.getFree();
+        mComment = good.getComment();
 
         mColors = DiabloUtils.instance().stringColorToArray(good.getColor());
 //        mColors = new ArrayList<>();
@@ -121,6 +125,7 @@ public class GoodCalc {
         mAlarmDay = calc.getAlarmDay();
         mPath = calc.getPath();
         mFree = calc.getFree();
+        mComment = calc.getComment();
 
         mColors = new ArrayList<>(calc.getColors());
         mSizeGroups = new ArrayList<>(calc.getSizeGroups());
@@ -306,6 +311,14 @@ public class GoodCalc {
 
     public void setFree(Integer free) {
         this.mFree = free;
+    }
+
+    public String getComment() {
+        return mComment;
+    }
+
+    public void setComment(String comment) {
+        this.mComment = comment;
     }
 
     public DiabloColor getColor(Integer colorId) {

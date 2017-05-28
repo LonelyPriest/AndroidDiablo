@@ -27,6 +27,7 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
     private AutoCompleteTextView view;
     private List<DiabloEntity> matchedItems = new ArrayList<>();
     private boolean dropDownOffsetEnable;
+    private boolean viewNameEnable;
 
     public DiabloAdapter(Context context, Integer resource, Integer textViewResourceId) {
         this.context = context;
@@ -35,6 +36,7 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
         this.view = null;
 
         dropDownOffsetEnable = true;
+        viewNameEnable = true;
     }
 
     public DiabloAdapter(Context context, Integer resource, Integer textViewResourceId, AutoCompleteTextView view) {
@@ -47,6 +49,7 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
         view.setThreshold(1);
 
         dropDownOffsetEnable = true;
+        viewNameEnable = true;
     }
 
     public List<DiabloEntity> findItems(String s) {
@@ -67,6 +70,10 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
 
     protected void setDropDownOffsetEnable(boolean enable) {
         dropDownOffsetEnable = enable;
+    }
+
+    protected void setViewNameEnable(boolean enable) {
+        viewNameEnable = enable;
     }
 
     public void setDropDownOffset() {
@@ -101,8 +108,8 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
 
         DiabloEntity item = matchedItems.get(position);
         if (item != null) {
-            TextView retailerView = (TextView) view.findViewById(textViewResourceId);
-            retailerView.setText(item.getName());
+            TextView resourceView = (TextView) view.findViewById(textViewResourceId);
+            resourceView.setText(item.getViewName());
             if (dropDownOffsetEnable){
                 setDropDownOffset();
             }
@@ -116,7 +123,11 @@ public abstract class DiabloAdapter extends BaseAdapter implements Filterable {
         return new Filter() {
             @Override
             public CharSequence convertResultToString(Object resultValue) {
-                return ((DiabloEntity)resultValue).getViewName();
+                if (viewNameEnable) {
+                    return ((DiabloEntity)resultValue).getViewName();
+                } else {
+                    return ((DiabloEntity)resultValue).getName();
+                }
             }
 
             @SuppressWarnings("unchecked")

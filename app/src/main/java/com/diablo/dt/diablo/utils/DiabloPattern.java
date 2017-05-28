@@ -23,6 +23,7 @@ public class DiabloPattern {
     private final static String PATTERN_PHONE_HK = "^(5|6|8|9)\\d{7}$";
 
     private final static String PATTERN_ADDRESS = "^(?!-)(?!.*?-$)[\\u4e00-\\u9fa5A-Za-z0-9-]{2,30}$";
+    private final static String PATTERN_COMMENT = "^(?!-)(?!.*?-$)[\\u4e00-\\u9fa5A-Za-z0-9-]{1,10}$";
 
     private final static String PATTERN_NOT_START_WITH_NUBMER = "^(?![0-9]).*$";
 
@@ -77,6 +78,11 @@ public class DiabloPattern {
     public static boolean isValidAddress(String address) {
         Pattern pattern = Pattern.compile(PATTERN_ADDRESS);
         return pattern.matcher(address).matches();
+    }
+
+    public static boolean isValidComment(String comment) {
+        Pattern pattern = Pattern.compile(PATTERN_COMMENT);
+        return pattern.matcher(comment).matches();
     }
 
     public static boolean isNotStartWithNumber(String value) {

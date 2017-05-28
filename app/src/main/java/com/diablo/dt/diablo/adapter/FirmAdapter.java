@@ -30,7 +30,8 @@ public class FirmAdapter extends DiabloAdapter {
         List<Firm> firms = Profile.instance().getFirms();
         List<DiabloEntity> suggestions = new ArrayList<>();
         for (Firm firm: firms) {
-            if (firm.getName().toUpperCase().contains(s.toUpperCase())) {
+            if (firm.getName().toUpperCase().contains(s.toUpperCase())
+                || firm.getPy().contains(s.toUpperCase())) {
                 suggestions.add(firm);
             }
         }

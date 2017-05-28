@@ -177,6 +177,7 @@ public class StockStoreDetail extends Fragment {
             }
 
             cell.setLayoutParams(lp);
+            cell.setGravity(Gravity.CENTER);
             cell.setText(title);
             cell.setTextSize(20);
 

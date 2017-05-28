@@ -99,6 +99,7 @@ public class DiabloEnum {
     public static final String TAG_SALE_OUT = "saleOut";
     public static final String TAG_SALE_DETAIL = "saleDetail";
     public static final String TAG_SALE_NOTE = "saleNote";
+    public static final String TAG_SALE_DETAIL_TO_NOTE = "saleDetailToNote";
 
     public static final String TAG_STOCK_IN = "stockIn";
     public static final String TAG_STOCK_OUT = "stockOut";

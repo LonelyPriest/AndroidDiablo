@@ -191,6 +191,7 @@ public class StockDetail extends Fragment {
             else if (getResources().getString(R.string.acc_balance).equals(title)) {
                 lp.weight = 1.5f;
             }
+            cell.setGravity(Gravity.CENTER);
             cell.setLayoutParams(lp);
             cell.setText(title);
             cell.setTextSize(20);

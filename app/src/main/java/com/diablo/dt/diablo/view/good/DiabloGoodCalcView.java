@@ -27,6 +27,8 @@ public class DiabloGoodCalcView {
     private View mColor;
     private View mSize;
 
+    private View mComment;
+
     public DiabloGoodCalcView() {
 
     }
@@ -67,6 +69,10 @@ public class DiabloGoodCalcView {
         ((EditText)mSize).setText(size);
     }
 
+    public void setCommentText(String comment) {
+        ((EditText)mComment).setText(comment);
+    }
+
     public void reset() {
         if (null != mStyleNumber) {
             ((EditText)mStyleNumber).setText(DiabloEnum.EMPTY_STRING);
@@ -102,6 +108,10 @@ public class DiabloGoodCalcView {
 
         if (null != mSize) {
             ((EditText)mSize).setText(DiabloEnum.EMPTY_STRING);
+        }
+
+        if (null != mComment) {
+            ((EditText)mComment).setText(DiabloEnum.EMPTY_STRING);
         }
     }
 
@@ -211,5 +221,13 @@ public class DiabloGoodCalcView {
 
     public void setSize(View size) {
         this.mSize = size;
+    }
+
+    public View getComment() {
+        return mComment;
+    }
+
+    public void setComment(View comment) {
+        this.mComment = comment;
     }
 }

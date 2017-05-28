@@ -437,7 +437,7 @@ public class StockNote extends Fragment {
 //            case R.id.stock_note_to_stock_detail:
 //                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_DETAIL);
 //                break;
-            case R.id.stock_note_to_stock_store:
+            case R.id.sale_note_to_detail:
                 SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_STORE_DETAIL);
                 break;
             default:

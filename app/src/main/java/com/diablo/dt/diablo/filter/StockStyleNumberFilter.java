@@ -53,6 +53,7 @@ public class StockStyleNumberFilter extends DiabloFilter {
             R.layout.typeahead_match_stock_on_sale,
             R.id.typeahead_select_stock_on_sale,
             autoCompleteTextView,
+            false,
             false);
 
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

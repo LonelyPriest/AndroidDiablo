@@ -75,6 +75,8 @@ public class DiabloError {
             mErrors.put(2703, r.getString(R.string.error_style_number));
             mErrors.put(2799, r.getString(R.string.error_reject_with_second_good));
 
+            mErrors.put(2098, r.getString(R.string.good_has_been_used));
+
             mErrors.put(2411, r.getString(R.string.print_wrong_printer_sn));
             mErrors.put(2412, r.getString(R.string.print_failed_to_deliver_recode));
             mErrors.put(2413, r.getString(R.string.print_long_content));

@@ -43,11 +43,14 @@ public class Retailer extends DiabloEntity{
     private String entryDate;
     @SerializedName("merchant")
     private Integer merchant;
+    @SerializedName("py")
+    private String py;
 
     public Retailer(String name, String phone){
         this.id = DiabloEnum.INVALID_INDEX;
         this.name = name;
         this.mobile = phone;
+        this.py = DiabloEnum.EMPTY_STRING;
     }
 
     public Retailer(Retailer retailer) {
@@ -55,6 +58,7 @@ public class Retailer extends DiabloEntity{
         this.name = retailer.getName();
         this.mobile = retailer.getMobile();
         this.balance = retailer.getBalance();
+        this.py = DiabloEnum.EMPTY_STRING;
     }
 
     public Retailer(Retailer retailer, Float balance) {
@@ -62,6 +66,7 @@ public class Retailer extends DiabloEntity{
         this.name = retailer.getName();
         this.mobile = retailer.getMobile();
         this.balance = balance;
+        this.py = DiabloEnum.EMPTY_STRING;
     }
 
     public Integer getId() {
@@ -140,6 +145,14 @@ public class Retailer extends DiabloEntity{
 
     public void setMerchant(Integer merchant) {
         this.merchant = merchant;
+    }
+
+    public void setPy(String py) {
+        this.py = py;
+    }
+
+    public String getPy() {
+        return py;
     }
 
     public void newRetailer(final Context context, @Nullable final OnRetailerChangeListener listener) {

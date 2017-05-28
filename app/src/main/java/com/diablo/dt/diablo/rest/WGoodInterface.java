@@ -20,6 +20,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -68,4 +69,6 @@ public interface WGoodInterface {
 
     @POST("new_w_color")
     Call<AddColorResponse> addColor(@Header("cookie") String token, @Body DiabloColor color);
+    @DELETE("delete_w_good/{id}")
+    Call<Response> deleteGood(@Header("cookie") String token, @Path("id") Integer goodId);
 }

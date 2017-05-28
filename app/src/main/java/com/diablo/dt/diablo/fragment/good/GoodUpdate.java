@@ -175,6 +175,8 @@ public class GoodUpdate extends Fragment {
 
         mGoodCalcView.setColor(view.findViewById(R.id.good_colors));
         mGoodCalcView.setSize(view.findViewById(R.id.good_sizes));
+
+        mGoodCalcView.setComment(view.findViewById(R.id.good_comment));
     }
 
 
@@ -191,6 +193,7 @@ public class GoodUpdate extends Fragment {
         mGoodController.setValidBrand(true);
         mGoodController.setValidFirm(true);
         mGoodController.setValidGoodType(true);
+        mGoodController.setValidComment(true);
 
         mGoodController.setSexAdapter(getContext(), mSexes);
         mGoodController.setYearAdapter(getContext(), mYears, calc.getYear());
@@ -214,6 +217,9 @@ public class GoodUpdate extends Fragment {
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getOrgPrice());
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getPkgPrice());
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getTagPrice());
+
+        // comment
+        mGoodController.setValidateWatcherOfComment(getContext(), mGoodCalcView.getComment());
 
         // callback
         mGoodController.setOnActionOfGoodValidateListener(mOnActionOfGoodValidate);
@@ -389,6 +395,11 @@ public class GoodUpdate extends Fragment {
             updateGood.setsGroup(calc.getStringSizeGroupIds());
         }
 
+        // comment
+        if (!calc.getComment().equals(mOldGoodCalc.getComment())){
+            updateGood.setComment(calc.getComment());
+        }
+
         updateGood.setGoodId(mGoodId);
         updateGood.setShopId(Profile.instance().getLoginShop());
 
@@ -447,6 +458,8 @@ public class GoodUpdate extends Fragment {
                     newGood.setColor(calc.getStringColorIds());
                     newGood.setSize(calc.getStringSizeGroups());
                     newGood.setsGroup(calc.getStringSizeGroupIds());
+
+                    newGood.setComment(calc.getComment());
 
                     if (1 == calc.getColors().size()
                         && calc.getColors().get(0).getColorId().equals(DiabloEnum.DIABLO_FREE_COLOR)

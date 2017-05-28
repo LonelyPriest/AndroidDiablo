@@ -56,6 +56,8 @@ public class MatchGood extends DiabloEntity{
     private Integer alarmDay;
     @SerializedName("entry_date")
     private String datetime;
+    @SerializedName("comment")
+    private String comment;
 
     /**
      * only use to update, these are the old value
@@ -265,14 +267,23 @@ public class MatchGood extends DiabloEntity{
         return datetime;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public String getName() {
-        return this.styleNumber + "/" + this.brand + "/" + this.type;
+        return this.styleNumber;
+
     }
 
     @Override
     public String getViewName() {
-        return getName();
+        return this.styleNumber + "/" + this.brand + "/" + this.type + "/" + this.comment;
     }
 
     /**

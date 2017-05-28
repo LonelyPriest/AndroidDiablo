@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,9 +13,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
 
 import com.diablo.dt.diablo.R;
+import com.diablo.dt.diablo.adapter.FirmAdapter;
+import com.diablo.dt.diablo.adapter.MatchBrandAdapter;
+import com.diablo.dt.diablo.adapter.MatchGoodTypeAdapter;
 import com.diablo.dt.diablo.client.WGoodClient;
 import com.diablo.dt.diablo.controller.DiabloGoodController;
 import com.diablo.dt.diablo.entity.DiabloBrand;
@@ -33,7 +35,7 @@ import com.diablo.dt.diablo.request.good.GoodNewRequest;
 import com.diablo.dt.diablo.response.good.InventoryNewResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
 import com.diablo.dt.diablo.utils.DiabloAlertDialog;
-import com.diablo.dt.diablo.utils.DiabloEditTextWatcher;
+import com.diablo.dt.diablo.utils.DiabloAutoCompleteTextWatcher;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloPattern;
@@ -164,13 +166,13 @@ public class GoodNew extends Fragment {
 
         final View view = inflater.inflate(
             R.layout.shortcut_create_firm, (ViewGroup) parent.findViewById(R.id.shortcut_create_firm));
+        final AutoCompleteTextView autoFirm = (AutoCompleteTextView) view.findViewById(R.id.firm_name);
 
         final AlertDialog dialog = builder.setView(view)
             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    String name = ((EditText) view.findViewById(R.id.firm_name)).getText().toString().trim();
-
+                    String name = autoFirm.getText().toString().trim();
                     final Firm firm = new Firm(name);
                     firm.addFirm(getContext(), new Firm.OnFirmAddListener() {
                         @Override
@@ -178,6 +180,7 @@ public class GoodNew extends Fragment {
                             mGoodController.removeFirmListener();
                             mGoodController.setFirmWatcher(getContext(), addedFirm);
                             mGoodController.checkFocusOfFirm();
+                            // editTextFirm.setError(null);
                         }
                     });
                 }
@@ -190,23 +193,39 @@ public class GoodNew extends Fragment {
 
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
 
-        final EditText editTextFirm = (EditText) view.findViewById(R.id.firm_name);
-        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String name = editable.toString().trim();
-                if (!DiabloPattern.isValidFirm(name)) {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
-                    editTextFirm.setError(getString(R.string.invalid_firm));
+        new FirmAdapter(getContext(), R.layout.typeahead_firm, R.id.typeahead_select_firm, autoFirm);
+
+        new DiabloAutoCompleteTextWatcher(
+            autoFirm,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    if (!DiabloPattern.isValidFirm(s)) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+                        autoFirm.setError(getString(R.string.invalid_firm));
+                    }
+                    else {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+                        autoFirm.setError(null);
+                    }
                 }
-                else {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
-                }
-            }
-        });
+            });
+
+//        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String name = editable.toString().trim();
+//                if (!DiabloPattern.isValidFirm(name)) {
+//                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+//                    editTextFirm.setError(getString(R.string.invalid_firm));
+//                }
+//                else {
+//                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+//                }
+//            }
+//        });
     }
 
     private void addBrand(LayoutInflater inflater, View parent) {
@@ -215,12 +234,13 @@ public class GoodNew extends Fragment {
         final View view = inflater.inflate(
             R.layout.shortcut_create_brand, (ViewGroup) parent.findViewById(R.id.shortcut_create_brand));
 
+        final AutoCompleteTextView autoBrand = (AutoCompleteTextView) view.findViewById(R.id.brand_name);
+
         final AlertDialog dialog = builder.setView(view)
             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    String name = ((EditText) view.findViewById(R.id.brand_name)).getText().toString().trim();
-
+                    String name = autoBrand.getText().toString().trim();
                     final DiabloBrand brand = new DiabloBrand(name);
 
                     brand.addBrand(getContext(), new DiabloBrand.OnBrandAddListener() {
@@ -230,6 +250,7 @@ public class GoodNew extends Fragment {
                             mGoodController.removeBrandListener();
                             mGoodController.setBrandWatcher(getContext(), addedBrand, null);
                             mGoodController.checkFocusOfBrand();
+                            // autoBrand.setError(null);
                             // mGoodController.requestFocusOfBrand();
                         }
                     });
@@ -246,20 +267,39 @@ public class GoodNew extends Fragment {
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
 
-        final EditText editTextFirm = (EditText) view.findViewById(R.id.brand_name);
-        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String name = editable.toString().trim();
-                if (!DiabloPattern.isValidBrand(name)) {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
-                    editTextFirm.setError(getString(R.string.invalid_brand));
+        /// final EditText editTextFirm = (EditText) view.findViewById(R.id.brand_name);
+        // final AutoCompleteTextView autoBrand = (AutoCompleteTextView) view.findViewById(R.id.brand_name);
+        new MatchBrandAdapter(getContext(), R.layout.typeahead_firm, R.id.typeahead_select_firm, autoBrand);
+
+        new DiabloAutoCompleteTextWatcher(
+            autoBrand,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    if (!DiabloPattern.isValidBrand(s)) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+                        autoBrand.setError(getString(R.string.invalid_brand));
+                    }
+                    else {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+                        autoBrand.setError(null);
+                    }
                 }
-                else {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
-                }
-            }
-        });
+            });
+
+//        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String name = editable.toString().trim();
+//                if (!DiabloPattern.isValidBrand(name)) {
+//                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+//                    editTextFirm.setError(getString(R.string.invalid_brand));
+//                }
+//                else {
+//                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+//                }
+//            }
+//        });
     }
 
     private void addType(LayoutInflater inflater, View parent) {
@@ -268,19 +308,22 @@ public class GoodNew extends Fragment {
         final View view = inflater.inflate(
             R.layout.shortcut_create_good_type, (ViewGroup) parent.findViewById(R.id.shortcut_create_good_type));
 
+        final AutoCompleteTextView autoType = (AutoCompleteTextView) view.findViewById(R.id.good_type_name);
+
         final AlertDialog dialog = builder.setView(view)
             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    String name = ((EditText) view.findViewById(R.id.good_type_name)).getText().toString().trim();
+                    String name = autoType.getText().toString().trim();
 
                     final DiabloType goodType = new DiabloType(name);
                     goodType.addGoodType(getContext(), new DiabloType.OnGoodTypeAddListener() {
                         @Override
                         public void afterAdd(DiabloType addedType) {
                             mGoodController.removeGoodTypeListener();
-                            mGoodController.setGoodTypeWatcher(getContext(), goodType);
+                            mGoodController.setGoodTypeWatcher(getContext(), addedType);
                             mGoodController.checkFocusOfType();
+                            // autoType.setError(null);
                         }
                     });
                 }
@@ -293,23 +336,40 @@ public class GoodNew extends Fragment {
 
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
 
-        final EditText editTextFirm = (EditText) view.findViewById(R.id.good_type_name);
-        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String name = editable.toString().trim();
-                if (!DiabloPattern.isValidGoodType(name)) {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
-                    editTextFirm.setError(getString(R.string.invalid_good_type));
+        new MatchGoodTypeAdapter(getContext(), R.layout.typeahead_firm, R.id.typeahead_select_firm, autoType);
+
+        new DiabloAutoCompleteTextWatcher(
+            autoType,
+            new DiabloAutoCompleteTextWatcher.DiabloAutoCompleteTextChangListener() {
+                @Override
+                public void afterTextChanged(String s) {
+                    if (!DiabloPattern.isValidGoodType(s)) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+                        autoType.setError(getString(R.string.invalid_good_type));
+                    }
+                    else {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+                        autoType.setError(null);
+                    }
                 }
-                else {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
-                }
-            }
-        });
+            });
+
+        // final EditText editTextFirm = (EditText) view.findViewById(R.id.good_type_name);
+//        editTextFirm.addTextChangedListener(new DiabloEditTextWatcher() {
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String name = editable.toString().trim();
+//                if (!DiabloPattern.isValidGoodType(name)) {
+//                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
+//                    editTextFirm.setError(getString(R.string.invalid_good_type));
+//                }
+//                else {
+//                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(true);
+//                }
+//            }
+//        });
     }
 
     private void selectColor() {
@@ -352,6 +412,8 @@ public class GoodNew extends Fragment {
 
         mGoodCalcView.setColor(view.findViewById(R.id.good_colors));
         mGoodCalcView.setSize(view.findViewById(R.id.good_sizes));
+
+        mGoodCalcView.setComment(view.findViewById(R.id.good_comment));
     }
 
     private void init() {
@@ -424,6 +486,9 @@ public class GoodNew extends Fragment {
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getOrgPrice());
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getPkgPrice());
         mGoodController.setValidateWatcherOfPrice(getContext(), mGoodCalcView.getTagPrice());
+
+        // comment
+        mGoodController.setValidateWatcherOfComment(getContext(), mGoodCalcView.getComment());
 
         // callback
         mGoodController.setOnActionOfGoodValidateListener(mOnActionOfGoodValidate);
@@ -566,6 +631,8 @@ public class GoodNew extends Fragment {
         inv.setPath(calc.getPath());
         inv.setAlarmDay(calc.getAlarmDay());
 
+        inv.setComment(calc.getComment());
+
         GoodNewRequest request = new GoodNewRequest(inv);
 
         startRequest(request);
@@ -626,20 +693,24 @@ public class GoodNew extends Fragment {
 
                     good.setPath(calc.getPath());
                     good.setAlarmDay(calc.getAlarmDay());
+                    good.setComment(calc.getComment());
 
                     Profile.instance().addMatchGood(good);
 
-                    new DiabloAlertDialog(
-                        getContext(),
-                        false,
-                        getResources().getString(R.string.nav_good_new),
-                        getContext().getString(R.string.add_good_success),
-                        new DiabloAlertDialog.OnOkClickListener() {
-                            @Override
-                            public void onOk() {
-                                init();
-                            }
-                        }).create();
+                    UTILS.makeToast(getContext(), getContext().getString(R.string.add_good_success));
+                    init();
+
+//                    new DiabloAlertDialog(
+//                        getContext(),
+//                        false,
+//                        getResources().getString(R.string.nav_good_new),
+//                        getContext().getString(R.string.add_good_success),
+//                        new DiabloAlertDialog.OnOkClickListener() {
+//                            @Override
+//                            public void onOk() {
+//                                init();
+//                            }
+//                        }).create();
                 }
                 else {
                     mButtons.get(R.id.good_new_save).enable();

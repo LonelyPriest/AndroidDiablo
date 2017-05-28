@@ -50,6 +50,8 @@ public class MatchStock extends DiabloEntity{
     private String path;
     @SerializedName("alarm_day")
     private Integer alarmDay;
+    @SerializedName("comment")
+    private String comment;
 
     public MatchStock() {
 
@@ -79,6 +81,7 @@ public class MatchStock extends DiabloEntity{
 
         path = good.getPath();
         alarmDay = good.getAlarmDay();
+        comment = good.getComment();
     }
 
     public void setStyleNumber(String styleNumber) {
@@ -165,6 +168,10 @@ public class MatchStock extends DiabloEntity{
         this.alarmDay = alarmDay;
     }
 
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public String getStyleNumber() {
         return styleNumber;
     }
@@ -245,14 +252,20 @@ public class MatchStock extends DiabloEntity{
         return alarmDay;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
     @Override
     public String getName() {
-        return this.styleNumber + "/" + this.brand + "/" + this.type;
+        // return this.styleNumber + "/" + this.brand + "/" + this.type + "/" + this.comment;
+        return this.styleNumber;
     }
 
     @Override
     public String getViewName() {
+        return this.styleNumber + "/" + this.brand + "/" + this.type + "/" + this.comment;
         // return this.styleNumber;
-        return getName();
+        // return getName();
     }
 }

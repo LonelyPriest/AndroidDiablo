@@ -74,6 +74,9 @@ public class GoodNewRequest {
         @SerializedName("alarm_day")
         private Integer alarmDay;
 
+        @SerializedName("comment")
+        private String comment;
+
         public Inventory(final List<DiabloColor> diabloColors,
                          final List<DiabloSizeGroup> diabloSizeGroups) {
             if (0 != diabloColors.size()) {
@@ -162,6 +165,10 @@ public class GoodNewRequest {
 
         public void setAlarmDay(Integer alarmDay) {
             this.alarmDay = alarmDay;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
         }
 
         public String getColorsWithComma() {

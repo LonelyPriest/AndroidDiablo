@@ -9,9 +9,9 @@
       <!--app:showAsAction="ifRoom|withText"/>-->
 
   <item
-      android:id="@+id/stock_note_to_stock_store"
-      android:icon="@drawable/ic_account_balance_black_24dp"
-      android:title="@string/btn_stock_store"
+      android:id="@+id/sale_note_to_detail"
+      android:icon="@drawable/ic_arrow_back_black_24dp"
+      android:title="@string/btn_back"
       app:showAsAction="ifRoom|withText"/>
 
   <item

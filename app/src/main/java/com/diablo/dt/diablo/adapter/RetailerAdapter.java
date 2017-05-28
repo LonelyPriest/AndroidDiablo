@@ -24,7 +24,10 @@ public class RetailerAdapter extends DiabloAdapter{
         List<Retailer> retailers = Profile.instance().getRetailers();
         List<DiabloEntity> suggestions = new ArrayList<>();
         for (Retailer retailer: retailers) {
-            if (retailer.getName().toUpperCase().contains(s.toUpperCase())) {
+            // String py = Pinyin.toPinyin(retailer.getName(), DiabloEnum.EMPTY_STRING);
+            // Log.d("retailer PY:", py);
+            if (retailer.getName().toUpperCase().contains(s.toUpperCase())
+                || retailer.getPy().contains(s.toUpperCase())) {
                 suggestions.add(retailer);
             }
         }

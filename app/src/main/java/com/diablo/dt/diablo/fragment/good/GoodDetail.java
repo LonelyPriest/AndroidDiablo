@@ -46,6 +46,7 @@ import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.good.GoodDetailRequest;
 import com.diablo.dt.diablo.response.good.GoodDetailResponse;
 import com.diablo.dt.diablo.rest.WGoodInterface;
+import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDatePicker;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
@@ -189,6 +190,7 @@ public class GoodDetail extends Fragment {
             cell.setLayoutParams(lp);
             cell.setText(title);
             cell.setTextSize(20);
+            cell.setGravity(Gravity.CENTER);
 
             row.addView(cell);
         }
@@ -441,9 +443,50 @@ public class GoodDetail extends Fragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        GoodDetailResponse.GoodNote detail = ((GoodDetailResponse.GoodNote) mCurrentSelectedRow.getTag());
+        final GoodDetailResponse.GoodNote detail = ((GoodDetailResponse.GoodNote) mCurrentSelectedRow.getTag());
         if (getResources().getString(R.string.modify) == item.getTitle()){
             switchToStockUpdateFrame(detail.getId(), this, DiabloEnum.TAG_GOOD_UPDATE);
+        }
+        else if (getResources().getString(R.string.delete) == item.getTitle()) {
+            new DiabloAlertDialog(
+                getContext(),
+                true,
+                getResources().getString(R.string.nav_good_detail),
+                getContext().getString(R.string.good_do_clear),
+                new DiabloAlertDialog.OnOkClickListener() {
+                    @Override
+                    public void onOk() {
+                        WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
+                        Call<com.diablo.dt.diablo.response.Response> call = face.deleteGood(Profile.instance().getToken(), detail.getId());
+                        call.enqueue(new Callback<com.diablo.dt.diablo.response.Response>() {
+                            @Override
+                            public void onResponse(Call<com.diablo.dt.diablo.response.Response> call, Response<com.diablo.dt.diablo.response.Response> response) {
+                                final com.diablo.dt.diablo.response.Response res = response.body();
+                                if (DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
+                                    UTILS.makeToast(
+                                        getContext(),
+                                        getContext().getResources().getString(R.string.delete_good_success),
+                                        Toast.LENGTH_SHORT);
+                                    pageChanged();
+                                }
+                                else {
+                                    new DiabloAlertDialog(
+                                        getContext(),
+                                        getResources().getString(R.string.nav_good_detail),
+                                        DiabloError.getError(res.getCode())).create();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<com.diablo.dt.diablo.response.Response> call, Throwable t) {
+                                new DiabloAlertDialog(
+                                    getContext(),
+                                    getResources().getString(R.string.nav_good_detail),
+                                    DiabloError.getError(99)).create();
+                            }
+                        });
+                    }
+                }).create();
         }
         else if (getResources().getString(R.string.note) == item.getTitle()) {
             List<DiabloColor> colors = UTILS.stringColorToArray((

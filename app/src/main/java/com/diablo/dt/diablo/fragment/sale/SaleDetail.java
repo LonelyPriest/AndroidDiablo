@@ -246,6 +246,7 @@ public class SaleDetail extends Fragment {
             cell.setLayoutParams(lp);
             cell.setText(title);
             cell.setTextSize(20);
+            cell.setGravity(Gravity.CENTER);
 
             row.addView(cell);
         }
@@ -657,6 +658,9 @@ public class SaleDetail extends Fragment {
             }
 
         }
+        else if (getResources().getString(R.string.note) == item.getTitle()) {
+            switchToSaleUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_SALE_DETAIL_TO_NOTE);
+        }
         else if (getResources().getString(R.string.print) == item.getTitle()){
             if (mBlueToothPrint.equals(DiabloEnum.DIABLO_TRUE)) {
                 BlueToothPrinter printer = DiabloDBManager.instance().getBlueToothPrinter();
@@ -684,6 +688,9 @@ public class SaleDetail extends Fragment {
             else if (DiabloEnum.TAG_SALE_OUT_UPDATE.equals(tag)) {
                 to = new SaleOutUpdate();
             }
+            else if (DiabloEnum.TAG_SALE_DETAIL_TO_NOTE.equals(tag)) {
+                to = new SaleDetailToNote();
+            }
 
             if (null != to ) {
                 to.setArguments(args);
@@ -694,6 +701,9 @@ public class SaleDetail extends Fragment {
             }
             else if (DiabloEnum.TAG_SALE_OUT_UPDATE.equals(tag)) {
                 ((SaleOutUpdate)to).setRSN(rsn);
+            }
+            else if (DiabloEnum.TAG_SALE_DETAIL_TO_NOTE.equals(tag)) {
+                ((SaleDetailToNote)to).setRSN(rsn);
             }
         }
 

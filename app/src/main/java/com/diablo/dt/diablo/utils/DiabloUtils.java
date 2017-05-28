@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.IdRes;
@@ -43,6 +44,7 @@ import com.diablo.dt.diablo.request.sale.NewSaleRequest;
 import com.diablo.dt.diablo.response.PrintResponse;
 import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
+import com.github.promeg.pinyinhelper.Pinyin;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -358,6 +360,23 @@ public class DiabloUtils {
             context.getResources().getString(titleId),
             DiabloError.getError(errorCode)).create();
     }
+
+    public String toPinYinWithFirstCharacter(String chinese) {
+        char [] name = chinese.toCharArray();
+        String py = DiabloEnum.EMPTY_STRING;
+        for (char c: name) {
+            py += Pinyin.toPinyin(c).charAt(0);
+        }
+
+        return py;
+    }
+
+    public boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+            & Configuration.SCREENLAYOUT_SIZE_MASK)
+            >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
 
     public TextView addCell(Context context, TableRow row, String value, TableRow.LayoutParams lp){
         // TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);

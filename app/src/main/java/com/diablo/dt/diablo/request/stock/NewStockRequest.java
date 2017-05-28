@@ -77,6 +77,8 @@ public class NewStockRequest {
 
         @SerializedName("path")
         private String path;
+        @SerializedName("comment")
+        private String comment;
 
         @SerializedName("amount")
         private List<DiabloEntryStockAmount> entryStockAmounts;
@@ -249,6 +251,10 @@ public class NewStockRequest {
 
         public void setPath(String path) {
             this.path = path;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
         }
 
         public void setEntryStockAmounts(List<DiabloEntryStockAmount> entryStockAmounts) {

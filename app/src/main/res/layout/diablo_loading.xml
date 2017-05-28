@@ -14,7 +14,7 @@
              android:id="@+id/diablo_loading_image"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:src="@drawable/ic_refresh_black_24dp"
+             android:src="@drawable/ic_process"
              android:contentDescription="@string/btn_refresh">
 
   </ImageView>

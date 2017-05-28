@@ -1,14 +1,18 @@
 package com.diablo.dt.diablo.fragment.sale;
 
 
+import static com.diablo.dt.diablo.fragment.good.GoodNew.UTILS;
+
 import android.app.Dialog;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,9 +21,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -29,31 +30,15 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
-import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.DiabloType;
-import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Firm;
-import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
-import com.diablo.dt.diablo.filter.BrandFilter;
-import com.diablo.dt.diablo.filter.DiabloFilter;
-import com.diablo.dt.diablo.filter.DiabloFilterController;
-import com.diablo.dt.diablo.filter.EmployeeFilter;
-import com.diablo.dt.diablo.filter.FirmFilter;
-import com.diablo.dt.diablo.filter.GoodTypeFilter;
-import com.diablo.dt.diablo.filter.RSNFilter;
-import com.diablo.dt.diablo.filter.RetailerFilter;
-import com.diablo.dt.diablo.filter.SaleTypeFilter;
-import com.diablo.dt.diablo.filter.ShopFilter;
-import com.diablo.dt.diablo.filter.StockStyleNumberFilter;
-import com.diablo.dt.diablo.filter.YearFilter;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.SaleNoteRequest;
 import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
 import com.diablo.dt.diablo.response.sale.SaleNoteResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
-import com.diablo.dt.diablo.utils.DiabloDatePicker;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
 import com.diablo.dt.diablo.utils.DiabloTableStockNote;
@@ -68,77 +53,68 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class SaleNote extends Fragment {
-    private final static DiabloUtils UTILS = DiabloUtils.instance();
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class SaleDetailToNote extends Fragment {
     private String [] mTableHeads;
     private String[]  mSaleTypes;
+    private String mRSN;
+    private String mLastRSN;
 
-    private String mStatistic;
-    private String mPagination;
-
-
-    private android.widget.TableLayout mSaleNoteTable;
     private SwipyRefreshLayout mSaleNoteTableSwipe;
-    private Dialog mRefreshDialog;
-    // private DiabloTableSwipeRefreshLayout mSaleDetailTableSwipe;
+    private android.widget.TableLayout mSaleNoteTable;
 
+    private Dialog mRefreshDialog;
     private TableRow mCurrentSelectedRow;
 
     private Integer mCurrentPage;
     private Integer mTotalPage;
 
+    private String mStatistic;
 
     /**
      * request
      */
     private WSaleInterface mSaleRest;
 
-    /**
-     * filter condition
-     */
-    private DiabloDatePicker mDatePicker;
-    private StockStyleNumberFilter mStockStyleNumberFilter;
-    private DiabloFilterController mFilterController;
-
-    public SaleNote() {
+    public SaleDetailToNote() {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static SaleNote newInstance(String param1, String param2) {
-        SaleNote fragment = new SaleNote();
+    public static SaleDetailToNote newInstance(String param1, String param2) {
+        SaleDetailToNote fragment = new SaleDetailToNote();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
+    public void setRSN(String rsn) {
+        this.mRSN = rsn;
+    }
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (null != getArguments()) {
+            mRSN = getArguments().getString(DiabloEnum.BUNDLE_PARAM_RSN);
+        }
+
         mTableHeads = getResources().getStringArray(R.array.thead_sale_detail_note);
-        mSaleTypes = getResources().getStringArray(R.array.sale_type);
-        mSaleRest = WSaleClient.getClient().create(WSaleInterface.class);
+        mSaleTypes  = getResources().getStringArray(R.array.sale_type);
+        mSaleRest   = WSaleClient.getClient().create(WSaleInterface.class);
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
+
+        initTitle();
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_sale_note, container, false);
-        // support action bar
-        setHasOptionsMenu(true);
-        getActivity().supportInvalidateOptionsMenu();
-
-        mDatePicker = new DiabloDatePicker(
-            SaleNote.this,
-            view.findViewById(R.id.btn_start_date),
-            view.findViewById(R.id.btn_end_date),
-            (EditText) view.findViewById(R.id.text_start_date),
-            (EditText)view.findViewById(R.id.text_end_date),
-            UTILS.currentDate());
+        View view = inflater.inflate(R.layout.fragment_sale_detail_to_note, container, false);
 
         mSaleNoteTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_sale_note_swipe);
         // mSaleDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
@@ -150,7 +126,6 @@ public class SaleNote extends Fragment {
                 if (direction == SwipyRefreshLayoutDirection.TOP){
                     if (!mCurrentPage.equals(DiabloEnum.DEFAULT_PAGE)){
                         mCurrentPage--;
-                        // mRequest.setPage(mCurrentPage);
                         pageChanged();
                     } else {
                         DiabloUtils.instance().makeToast(
@@ -169,7 +144,6 @@ public class SaleNote extends Fragment {
                         mSaleNoteTableSwipe.setRefreshing(false);
                     } else {
                         mCurrentPage++;
-                        // mRequest.setPage(mCurrentPage);
                         pageChanged();
                     }
 
@@ -177,7 +151,6 @@ public class SaleNote extends Fragment {
             }
         });
 
-        // add table head
         TableRow row = new TableRow(this.getContext());
         for (String title: mTableHeads){
             TableRow.LayoutParams lp = new TableRow.LayoutParams(
@@ -187,7 +160,6 @@ public class SaleNote extends Fragment {
             cell.setTypeface(null, Typeface.BOLD);
             cell.setTextColor(Color.BLACK);
 
-            // right-margin
             cell.setLayoutParams(lp);
             cell.setText(title);
             cell.setTextSize(20);
@@ -201,114 +173,26 @@ public class SaleNote extends Fragment {
         mSaleNoteTable = (TableLayout) view.findViewById(R.id.t_sale_note);
         mSaleNoteTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
 
-//        for (Integer i = 0; i<mRows.length; i++){
-//            mRows[i] = new TableRow(this.getContext());
-//            mSaleDetailTable.addView(mRows[i]);
-//            mRows[i].setBackgroundResource(R.drawable.table_row_bg);
-//        }
-
         init();
-        initFilters(view);
         pageChanged();
-
         return view;
     }
 
     public void init() {
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mTotalPage = 0;
-        // mRequest.setPage(DiabloEnum.DEFAULT_PAGE);
-    }
-
-    private void initFilters(View view) {
-        View styleNumberView = view.findViewById(R.id.select_style_number);
-        mStockStyleNumberFilter = new StockStyleNumberFilter(getContext(), getString(R.string.style_number));
-        mStockStyleNumberFilter.init(styleNumberView);
-
-        ImageButton btnAdd = (ImageButton) view.findViewById(R.id.btn_add_filter);
-        ImageButton btnMinus = (ImageButton) view.findViewById(R.id.btn_minus_filter);
-        btnMinus.setEnabled(false);
-
-        List<DiabloFilter> entities = new ArrayList<>();
-        entities.add(new StockStyleNumberFilter(getContext(), getString(R.string.style_number)));
-        entities.add(new RetailerFilter(getContext(), getString(R.string.retailer)));
-        entities.add(new FirmFilter(getContext(), getString(R.string.firm)));
-        entities.add(new BrandFilter(getContext(), getString(R.string.brand)));
-
-        entities.add(new GoodTypeFilter(getContext(), getString(R.string.good_type)));
-        entities.add(new YearFilter(getContext(), getString(R.string.year)));
-        entities.add(new ShopFilter(getContext(), getString(R.string.shop)));
-        entities.add(new EmployeeFilter(getContext(), getString(R.string.employee)));
-
-        entities.add(new SaleTypeFilter(getContext(), getString(R.string.trans)));
-        entities.add(new RSNFilter(getContext(), getString(R.string.rsn)));
-
-
-        mFilterController = new DiabloFilterController(getContext(), entities, 4);
-        mFilterController.init((LinearLayout)view, R.id.t_sale_note_head, btnAdd, btnMinus);
     }
 
     private void pageChanged(){
-
         final SaleNoteRequest request = new SaleNoteRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-
-        request.setStartTime(mDatePicker.startTime());
-        request.setEndTime(mDatePicker.endTime());
-
-        if (null != mStockStyleNumberFilter.getSelect()) {
-            Object select =  mStockStyleNumberFilter.getSelect();
-            request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
-        }
-
-        for (DiabloFilter filter: mFilterController.getEntityFilters()) {
-            Object select = filter.getSelect();
-
-            if (null != select) {
-                if (filter instanceof StockStyleNumberFilter) {
-                    request.addStyleNumber( ((MatchStock) select).getStyleNumber() );
-                }
-                else if (filter instanceof BrandFilter) {
-                    request.addBrand( ((DiabloBrand)select).getId() );
-                }
-                else if (filter instanceof GoodTypeFilter) {
-                    request.addGoodType( ((DiabloType)select).getId() );
-                }
-                else if (filter instanceof FirmFilter) {
-                    request.addFirm( ((Firm)select).getId() );
-                }
-                else if (filter instanceof YearFilter) {
-                    request.addYear( (String) select );
-                }
-                else if (filter instanceof RetailerFilter) {
-                    request.addRetailer( ((Retailer)select).getId() );
-                }
-                else if (filter instanceof ShopFilter) {
-                    request.addShop( ((DiabloShop)select).getShop() );
-                }
-                else if (filter instanceof EmployeeFilter) {
-                    request.addEmployee( ((Employee)select).getNumber() );
-                }
-                else if (filter instanceof SaleTypeFilter) {
-                    request.addSellType( ((Integer)select) );
-                }
-                else if (filter instanceof RSNFilter) {
-                    request.addRSN( (String) select );
-                }
-            }
-        }
-
-        if (0 == request.getShops().size()) {
-            request.setShops(Profile.instance().getShopIds());
-        }
-
+        request.addRSN(mRSN);
         request.trim();
         Call<SaleNoteResponse> call = mSaleRest.filterSaleNote(Profile.instance().getToken(), request);
 
         call.enqueue(new Callback<SaleNoteResponse>() {
             @Override
             public void onResponse(Call<SaleNoteResponse> call, Response<SaleNoteResponse> response) {
-                Log.d("SALE_DETAIL %s", response.toString());
-
+                mLastRSN = mRSN;
                 mSaleNoteTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
 
@@ -323,28 +207,16 @@ public class SaleNote extends Fragment {
                                 + res.getString(R.string.space_4)
                                 + res.getString(R.string.calculate) + res.getString(R.string.colon)
                                 + UTILS.toString(base.getBalance() * 0.01f);
-
-
-//                        // pagination
-//                        mPagination = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-//                            + getResources().getString(R.string.page)
-//                            + getResources().getString(R.string.space_4)
-//                            + getResources().getString(R.string.total_page) + mTotalPage.toString()
-//                            + getResources().getString(R.string.page);
                     }
                 }
 
                 List<SaleNoteResponse.SaleNote> notes = base.getSaleNotes();
                 Integer orderId = request.getPageStartIndex();
-                // mSaleDetailTable.removeAllViews();
                 mSaleNoteTable.removeAllViews();
                 TableRow row = null;
                 for (Integer i=0; i<notes.size(); i++){
                     row = new TableRow(getContext());
 
-                    // TableRow row = new TableRow(mContext);
-                    // mSaleDetailTable.addView(row);
-                    // row.removeAllViews();
                     SaleNoteResponse.SaleNote note = notes.get(i);
                     TextView cell = null;
                     for (String title: mTableHeads){
@@ -452,17 +324,14 @@ public class SaleNote extends Fragment {
                         }
 
                         if (null != cell ) {
-                            // cell.setPadding(10, 0, 10, 0);
                             cell.setGravity(Gravity.CENTER);
                             cell.setBackgroundResource(R.drawable.table_cell_bg);
-                            // cell.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
                         }
                     }
 
                     row.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
-                            // SaleNoteResponse.SaleNote n = (SaleNoteResponse.SaleNote) view.getTag();
                             view.showContextMenu();
                             return true;
                         }
@@ -470,9 +339,6 @@ public class SaleNote extends Fragment {
                     registerForContextMenu(row);
 
                     row.setBackgroundResource(R.drawable.table_row_bg);
-//                    if (note.getSecond().equals(DiabloEnum.DIABLO_TRUE)) {
-//                        row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellowLight));
-//                    }
                     row.setTag(note);
                     mSaleNoteTable.addView(row);
                 }
@@ -486,15 +352,14 @@ public class SaleNote extends Fragment {
                     TableRow.LayoutParams lp = UTILS.createTableRowParams(1f);
                     UTILS.formatTableStatistic(UTILS.addCell(getContext(), row, mStatistic, lp));
 
-                    // pagination
-                    mPagination = getResources().getString(R.string.current_page) + mCurrentPage.toString()
+                    String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
                         + getResources().getString(R.string.page)
                         + getResources().getString(R.string.space_4)
                         + getResources().getString(R.string.total_page) + mTotalPage.toString()
                         + getResources().getString(R.string.page);
 
                     TableRow.LayoutParams lp2 = UTILS.createTableRowParams(0.5f);
-                    UTILS.formatPageInfo(UTILS.addCell(getContext(), row, mPagination, lp2));
+                    UTILS.formatPageInfo(UTILS.addCell(getContext(), row, pageInfo, lp2));
                     mSaleNoteTable.addView(row);
                 }
             }
@@ -506,33 +371,6 @@ public class SaleNote extends Fragment {
                 mRefreshDialog.dismiss();
             }
         });
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        // menu.clear();
-
-        inflater.inflate(R.menu.action_on_sale_note, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.sale_note_refresh:
-                init();
-                mRefreshDialog.show();
-                pageChanged();
-                break;
-            case R.id.sale_note_to_detail:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
-            default:
-                // return super.onOptionsItemSelected(item);
-                break;
-
-        }
-
-        return true;
     }
 
     @Override
@@ -585,4 +423,52 @@ public class SaleNote extends Fragment {
 
         return true;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        // menu.clear();
+
+        inflater.inflate(R.menu.action_on_sale_note, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.sale_note_refresh:
+                init();
+                mRefreshDialog.show();
+                pageChanged();
+                break;
+            case R.id.sale_note_to_detail:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
+            default:
+                // return super.onOptionsItemSelected(item);
+                break;
+
+        }
+
+        return true;
+    }
+
+    private void initTitle() {
+        String title = getResources().getString(R.string.nav_sale_note);
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(title);
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden){
+            initTitle();
+            if (!mLastRSN.equals(mRSN)) {
+                init();
+                pageChanged();
+            }
+        }
+    }
+
 }

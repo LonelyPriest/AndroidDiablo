@@ -1,5 +1,6 @@
 package com.diablo.dt.diablo.activity;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -52,6 +53,8 @@ import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
+import com.github.promeg.pinyinhelper.Pinyin;
+import com.github.promeg.tinypinyin.lexicons.android.cncity.CnCityDict;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         DiabloEnum.TAG_STOCK_SELECT,
         DiabloEnum.TAG_SALE_IN_UPDATE,
         DiabloEnum.TAG_SALE_OUT_UPDATE,
+        DiabloEnum.TAG_SALE_DETAIL_TO_NOTE,
 
         DiabloEnum.TAG_GOOD_SELECT,
         DiabloEnum.TAG_STOCK_IN_UPDATE,
@@ -79,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         DiabloEnum.TAG_COLOR_SELECT,
         DiabloEnum.TAG_SIZE_SELECT,
 
-        DiabloEnum.TAG_RETAILER_NEW
+        DiabloEnum.TAG_RETAILER_NEW,
     };
 
     private NavigationTag mCurrentNavTag;
@@ -150,6 +154,17 @@ public class MainActivity extends AppCompatActivity {
         Profile.instance().setDiabloYears(getResources().getStringArray(R.array.years));
         Profile.instance().setSaleTypes(getResources().getStringArray(R.array.sale_types_desc));
         Profile.instance().setStockTypes(getResources().getStringArray(R.array.stock_types_desc));
+
+        // PinYin
+        Pinyin.init(Pinyin.newConfig().with(CnCityDict.getInstance(MainActivity.this)));
+
+//        boolean isTablet = (getResources().getConfiguration().screenLayout
+//            & Configuration.SCREENLAYOUT_SIZE_MASK)
+//            >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+//
+//        if (!isTablet) {
+//             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        }
 
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);

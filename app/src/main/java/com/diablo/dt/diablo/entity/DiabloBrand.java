@@ -31,6 +31,8 @@ public class DiabloBrand extends DiabloEntity{
     private Integer firmId;
     @SerializedName("supplier")
     private String firm;
+    @SerializedName("py")
+    private String py;
 
     public DiabloBrand() {
         name = DiabloEnum.EMPTY_STRING;
@@ -47,12 +49,14 @@ public class DiabloBrand extends DiabloEntity{
         this.name = brand.getName();
         this.firmId = brand.getFirmId();
         this.firm = brand.getFirm();
+        this.py = DiabloEnum.EMPTY_STRING;
     }
 
     private void init() {
         id = DiabloEnum.INVALID_INDEX;
         firmId = DiabloEnum.INVALID_INDEX;
         firm = DiabloEnum.EMPTY_STRING;
+        py = DiabloEnum.EMPTY_STRING;
     }
 
     public Integer getId() {
@@ -89,46 +93,60 @@ public class DiabloBrand extends DiabloEntity{
         return firm;
     }
 
+    public String getPy() {
+        return py;
+    }
+
+    public void setPy(String py) {
+        this.py = py;
+    }
+
     public void addBrand(final Context context, final OnBrandAddListener listener) {
-        final WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
-        Call<AddFirmResponse> call = face.addBrand(Profile.instance().getToken(), this);
+        DiabloBrand find = Profile.instance().getBrand(this.getName());
+        if (null != find) {
+            listener.afterAdd(find);
+        }
+        else {
+            final WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
+            Call<AddFirmResponse> call = face.addBrand(Profile.instance().getToken(), this);
 
-        call.enqueue(new Callback<AddFirmResponse>() {
-            @Override
-            public void onResponse(Call<AddFirmResponse> call, Response<AddFirmResponse> response) {
-                // mButtons.get(R.id.sale_out_save).enable();
+            call.enqueue(new Callback<AddFirmResponse>() {
+                @Override
+                public void onResponse(Call<AddFirmResponse> call, Response<AddFirmResponse> response) {
+                    // mButtons.get(R.id.sale_out_save).enable();
 
-                final AddFirmResponse res = response.body();
-                if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
-                    DiabloUtils.instance().makeToast(
-                        context,
-                        context.getResources().getString(R.string.success_to_add_brand),
-                        Toast.LENGTH_LONG);
+                    final AddFirmResponse res = response.body();
+                    if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
+                        DiabloUtils.instance().makeToast(
+                            context,
+                            context.getResources().getString(R.string.success_to_add_brand),
+                            Toast.LENGTH_LONG);
 
-                    DiabloBrand brand = DiabloBrand.this;
-                    brand.id = res.getInsertId();
+                        DiabloBrand brand = DiabloBrand.this;
+                        brand.id = res.getInsertId();
 
-                    Profile.instance().addBrand(brand);
-                    listener.afterAdd(brand);
+                        Profile.instance().addBrand(brand);
+                        listener.afterAdd(brand);
 
-                } else {
-                    Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
-                    String extraMessage = res == null ? "" : res.getError();
+                    } else {
+                        Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
+                        String extraMessage = res == null ? "" : res.getError();
+                        new DiabloAlertDialog(
+                            context,
+                            context.getResources().getString(R.string.title_add_firm),
+                            DiabloError.getError(errorCode) + extraMessage).create();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AddFirmResponse> call, Throwable t) {
                     new DiabloAlertDialog(
                         context,
                         context.getResources().getString(R.string.title_add_firm),
-                        DiabloError.getError(errorCode) + extraMessage).create();
+                        DiabloError.getError(99)).create();
                 }
-            }
-
-            @Override
-            public void onFailure(Call<AddFirmResponse> call, Throwable t) {
-                new DiabloAlertDialog(
-                    context,
-                    context.getResources().getString(R.string.title_add_firm),
-                    DiabloError.getError(99)).create();
-            }
-        });
+            });
+        }
     }
 
     public interface OnBrandAddListener {

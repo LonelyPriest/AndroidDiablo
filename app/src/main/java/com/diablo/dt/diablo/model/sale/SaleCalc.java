@@ -75,6 +75,7 @@ public class SaleCalc {
         cash = 0f;
         card = 0f;
         wire = 0f;
+        // balance = 0f;
         extraCost  = 0f;
         verificate = 0f;
         shouldPay  = 0f;

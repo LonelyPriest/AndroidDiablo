@@ -41,6 +41,7 @@ public class EntryStock {
     private String sGroup;
     private String path;
     private Integer alarmDay;
+    private String comment;
 
     private Integer total;
 
@@ -86,6 +87,7 @@ public class EntryStock {
         sGroup   = stock.getsGroup();
         path     = stock.getPath();
         alarmDay = stock.getAlarmDay();
+        comment  = stock.getComment();
 
         total    = stock.getTotal();
         state    = stock.getState();
@@ -143,6 +145,7 @@ public class EntryStock {
         sGroup   = good.getsGroup();
         path     = good.getPath();
         alarmDay = good.getAlarmDay();
+        comment  = good.getComment();
 
         colors = new ArrayList<>();
         for (String colorId: good.getColor().split(DiabloEnum.SIZE_SEPARATOR)) {
@@ -179,6 +182,7 @@ public class EntryStock {
         sGroup   = stock.getsGroup();
         path     = stock.getPath();
         alarmDay = stock.getAlarmDay();
+        comment  = stock.getComment();
 
         colors = new ArrayList<>();
         orderSizes = Profile.instance().genSortedSizeNamesByGroups(sGroup);
@@ -355,6 +359,14 @@ public class EntryStock {
 
     public void setAlarmDay(Integer alarmDay) {
         this.alarmDay = alarmDay;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Integer getTotal() {

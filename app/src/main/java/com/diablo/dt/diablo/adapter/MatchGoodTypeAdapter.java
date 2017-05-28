@@ -28,7 +28,8 @@ public class MatchGoodTypeAdapter extends DiabloAdapter {
         List<DiabloType> types = Profile.instance().getDiabloTypes();
         List<DiabloEntity> suggestions = new ArrayList<>();
         for (DiabloType type: types) {
-            if (type.getName().toUpperCase().contains(s.toUpperCase())) {
+            if (type.getName().toUpperCase().contains(s.toUpperCase())
+                || type.getPy().contains(s.toUpperCase())) {
                 suggestions.add(type);
             }
         }

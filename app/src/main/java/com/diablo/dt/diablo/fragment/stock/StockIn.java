@@ -511,8 +511,11 @@ public class StockIn extends Fragment {
             d.setDiscount(s.getDiscount());
 
             d.setAlarmDay(s.getAlarmDay());
+
             d.setTotal(s.getTotal());
             d.setPath(s.getPath());
+
+            d.setComment(s.getComment());
 
             List<NewStockRequest.DiabloEntryStockAmount> amounts = new ArrayList<>();
             for (EntryStockAmount a: s.getAmounts()) {

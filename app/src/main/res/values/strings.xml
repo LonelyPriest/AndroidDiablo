@@ -397,6 +397,7 @@
   <string name="authen_error">操作鉴权失败</string>
   <string name="database_error">数据库操作失败，请重试或联系服务人员</string>
   <string name="error_reject_with_second_good">该款号为补单，无法退货，请重新选择款号</string>
+  <string name="good_has_been_used">该货品正在使用，无法删除</string>
 
 
   <string name="failed_to_get_user_info">获取用户权限信息失败</string>
@@ -453,6 +454,7 @@
   <string name="invalid_color_name">颜色只能是中文，不超过3个字符</string>
   <string name="invalid_phone">请输入正确的手机号码</string>
   <string name="invalid_address">联系地址只能是字母，数字或横杠，不能以横杠开头或结尾，不超过30个字符</string>
+  <string name="invalid_comment">联系地址只能是字母，数字或横杠，不能以横杠开头或结尾，不超过10个字符</string>
 
 
   <!-- message -->
@@ -460,7 +462,7 @@
   <string name="print_failed">打印消息发送失败！！</string>
   <string name="sale_success">开单成功，单号：</string>
   <string name="sale_start_print_or_not">，是否打印销售单？</string>
-  <string name="sale_clear_draft">确定清除草篇吗？</string>
+  <string name="sale_clear_draft">确定清除草稿吗？</string>
   <string name="sale_in_update_success">销售单编辑成功，单号：</string>
   <string name="sale_out_update_success">退货单编辑成功，单号：</string>
   <string name="stock_in_success">入库成功，单号：</string>
@@ -469,10 +471,12 @@
   <string name="stock_out_update_success">退货单编辑成功，单号：</string>
   <string name="add_good_success">新增货品成功</string>
   <string name="add_good_failed">新增货品失败</string>
+  <string name="delete_good_success">删除货品资料成功</string>
   <string name="same_good">该货品对应的款号与品牌已存在，请重新输入</string>
   <string name="brand_not_found">品牌信息不存在，请先增加品牌信息或重新选择</string>
   <string name="good_update_success">货品编辑成功</string>
   <string name="good_update_failed">货品编辑失败</string>
+  <string name="good_do_clear">确定删除货品资料吗？</string>
 
   <string name="retailer_should_comes_from_auto_complete_list">客户必需从提示列表中选择</string>
   <string name="firm_should_comes_from_auto_complete_list">厂商必需从提示列表中选择</string>
@@ -527,7 +531,7 @@
 
   <string name="input_firm_name">请输入厂商名称，不小于二个字符，不能以数字或横杠开头</string>
   <string name="input_brand_name">请输入品牌名称，不小于二个字符</string>
-  <string name="input_good_type_name">请输入货品类型，不小于二个字作</string>
+  <string name="input_good_type_name">请输入货品类型，不小于二个字符</string>
 
   <!-- hint -->
   <string name="please_input_retailer">客户</string>
@@ -542,6 +546,7 @@
   <string name="cost_on_stock">费用</string>
 
   <string name="please_input_style_number">请输入2－15位款号</string>
+  <string name="please_input_comment">请输入2－10个字符备注</string>
   <string name="please_input_brand">请选择品名，品名只能从提示列表中选择</string>
   <string name="please_input_type">请选择货品类别，类别只能从提示列表中选择</string>
   <string name="please_select_firm">请选择厂商，厂商只能从提示列表中选择</string>
@@ -659,10 +664,10 @@
   <string name="bt_return">返回</string>
   <string name="bt_print_test">打印测试</string>
 
-  <string name="bt_selected">选择蓝牙打印机: </string>
+  <string name="bt_selected">选择蓝牙打印机:</string>
   <string name="bt_other">其他蓝牙设备</string>
-  <string name="wifi_IP">IP地址: </string>
-  <string name="wifi_port">端口号: </string>
+  <string name="wifi_IP">IP地址:</string>
+  <string name="wifi_port">端口号:</string>
   <string name="wifi_save">保存设置</string>
   <string name="wifi_setting">WIFI 设置</string>
   <string name="wifi_return">返回</string>

@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.activity;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -79,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
     String mPassword;
     String [] mServers;
 
+    // private ProgressDialog mLoadingDialog;
     private Dialog mLoadingDialog;
 
     private WLoginInterface mFace;
@@ -299,6 +301,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }
+
+//        mLoadingDialog = new ProgressDialog(this);
+//        mLoadingDialog.setMessage(getString(R.string.user_login));
+//        mLoadingDialog.setIndeterminate(false);
+//        mLoadingDialog.setCanceledOnTouchOutside(false);
         mLoadingDialog = DiabloUtils.instance().createLoadingDialog(mContext);
         mLoadingDialog.show();
         getLoginUserInfo();

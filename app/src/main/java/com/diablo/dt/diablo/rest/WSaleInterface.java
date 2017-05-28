@@ -52,4 +52,7 @@ public interface WSaleInterface {
 
     @GET("get_w_sale_new/{id}")
     Call<GetSaleNewResponse> getSale(@Header("cookie") String token, @Path("id") String rsn);
+
+    @GET("get_w_sale_note/{rsn}")
+    Call<SaleNoteResponse> getSaleNote(@Header("cookie") String token, @Path("rsn") String rsn);
 }

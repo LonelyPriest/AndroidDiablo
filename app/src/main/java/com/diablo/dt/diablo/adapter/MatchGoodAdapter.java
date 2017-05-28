@@ -19,14 +19,26 @@ public class MatchGoodAdapter extends DiabloAdapter {
         super(context, resource, textViewResourceId, view);
     }
 
+//    public MatchGoodAdapter(Context context,
+//                             Integer resource,
+//                             Integer textViewResourceId,
+//                             AutoCompleteTextView view,
+//                             boolean dropdownEnable) {
+//        super(context, resource, textViewResourceId, view);
+//
+//        setDropDownOffsetEnable(dropdownEnable);
+//    }
+
     public MatchGoodAdapter(Context context,
-                             Integer resource,
-                             Integer textViewResourceId,
-                             AutoCompleteTextView view,
-                             boolean dropdownEnable) {
+                            Integer resource,
+                            Integer textViewResourceId,
+                            AutoCompleteTextView view,
+                            boolean dropdownEnable,
+                            boolean viewNameEnable) {
         super(context, resource, textViewResourceId, view);
 
         setDropDownOffsetEnable(dropdownEnable);
+        setViewNameEnable(viewNameEnable);
     }
 
     @Override

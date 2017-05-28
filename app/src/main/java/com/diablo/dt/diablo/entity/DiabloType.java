@@ -27,10 +27,13 @@ public class DiabloType extends DiabloEntity{
     private Integer id;
     @SerializedName("name")
     private String name;
+    @SerializedName("py")
+    private String py;
 
     public DiabloType() {
         id = DiabloEnum.INVALID_INDEX;
         name = DiabloEnum.EMPTY_STRING;
+        py = DiabloEnum.EMPTY_STRING;
     }
 
     public DiabloType(DiabloType type) {
@@ -39,8 +42,9 @@ public class DiabloType extends DiabloEntity{
     }
 
     public DiabloType(String name) {
-        id = DiabloEnum.INVALID_INDEX;
+        this.id = DiabloEnum.INVALID_INDEX;
         this.name = name;
+        this.py = DiabloEnum.EMPTY_STRING;
     }
 
     public Integer getId() {
@@ -49,6 +53,14 @@ public class DiabloType extends DiabloEntity{
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getPy() {
+        return py;
+    }
+
+    public void setPy(String py) {
+        this.py = py;
     }
 
     @Override
@@ -66,45 +78,50 @@ public class DiabloType extends DiabloEntity{
     }
 
     public void addGoodType(final Context context, final OnGoodTypeAddListener listener) {
-        final WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
-        Call<AddFirmResponse> call = face.addGoodType(Profile.instance().getToken(), this);
+        DiabloType find = Profile.instance().getDiabloType(this.getName());
+        if (null != find) {
+            listener.afterAdd(find);
+        } else {
+            final WGoodInterface face = WGoodClient.getClient().create(WGoodInterface.class);
+            Call<AddFirmResponse> call = face.addGoodType(Profile.instance().getToken(), this);
 
-        call.enqueue(new Callback<AddFirmResponse>() {
-            @Override
-            public void onResponse(Call<AddFirmResponse> call, Response<AddFirmResponse> response) {
-                // mButtons.get(R.id.sale_out_save).enable();
+            call.enqueue(new Callback<AddFirmResponse>() {
+                @Override
+                public void onResponse(Call<AddFirmResponse> call, Response<AddFirmResponse> response) {
+                    // mButtons.get(R.id.sale_out_save).enable();
 
-                final AddFirmResponse res = response.body();
-                if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
-                    DiabloUtils.instance().makeToast(
-                        context,
-                        context.getResources().getString(R.string.success_to_add_good_type),
-                        Toast.LENGTH_LONG);
+                    final AddFirmResponse res = response.body();
+                    if (DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
+                        DiabloUtils.instance().makeToast(
+                            context,
+                            context.getResources().getString(R.string.success_to_add_good_type),
+                            Toast.LENGTH_LONG);
 
-                    DiabloType goodType = DiabloType.this;
-                    goodType.id = res.getInsertId();
+                        DiabloType goodType = DiabloType.this;
+                        goodType.id = res.getInsertId();
 
-                    Profile.instance().addDiabloType(goodType);
-                    listener.afterAdd(goodType);
+                        Profile.instance().addDiabloType(goodType);
+                        listener.afterAdd(goodType);
 
-                } else {
-                    Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
-                    String extraMessage = res == null ? "" : res.getError();
+                    } else {
+                        Integer errorCode = response.code() == 0 ? res.getCode() : response.code();
+                        String extraMessage = res == null ? "" : res.getError();
+                        new DiabloAlertDialog(
+                            context,
+                            context.getResources().getString(R.string.title_add_good_type),
+                            DiabloError.getError(errorCode) + extraMessage).create();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AddFirmResponse> call, Throwable t) {
                     new DiabloAlertDialog(
                         context,
-                        context.getResources().getString(R.string.title_add_firm),
-                        DiabloError.getError(errorCode) + extraMessage).create();
+                        context.getResources().getString(R.string.title_add_good_type),
+                        DiabloError.getError(99)).create();
                 }
-            }
-
-            @Override
-            public void onFailure(Call<AddFirmResponse> call, Throwable t) {
-                new DiabloAlertDialog(
-                    context,
-                    context.getResources().getString(R.string.title_add_firm),
-                    DiabloError.getError(99)).create();
-            }
-        });
+            });
+        }
     }
 
     public interface OnGoodTypeAddListener {

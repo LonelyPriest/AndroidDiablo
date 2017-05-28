@@ -59,6 +59,9 @@ public class DiabloGoodController {
     private DiabloAutoCompleteTextWatcher mGoodTypeWatcher;
     private AdapterView.OnItemClickListener mOnGoodTypeClickListener;
 
+    // comment
+    private DiabloEditTextWatcher mCommentWatcher;
+
     // interface
     private OnActionOfGoodValidate mOnActionOfGoodValidateListener;
 
@@ -76,6 +79,7 @@ public class DiabloGoodController {
     private boolean mIsValidOrgPrice;
     private boolean mIsValidPkgPrice;
     private boolean mIsValidTagPrice;
+    private boolean mIsValidComment;
 
     public interface OnActionOfGoodValidate {
         void actionOfInvalid();
@@ -94,6 +98,7 @@ public class DiabloGoodController {
         mIsValidOrgPrice = true;
         mIsValidPkgPrice = true;
         mIsValidTagPrice = true;
+        mIsValidComment = true;
     }
 
     public void setValidStyleNumber(boolean valid) {
@@ -110,6 +115,10 @@ public class DiabloGoodController {
 
     public void setValidFirm(boolean valid) {
         mIsValidFirm = valid;
+    }
+
+    public void setValidComment(boolean valid) {
+        mIsValidComment = valid;
     }
 
 //    public void setValidOrgPrice(boolean valid) {
@@ -136,6 +145,8 @@ public class DiabloGoodController {
 
         mGoodCalcView.setColorText(mGoodCalc.getStringColors());
         mGoodCalcView.setSizeText(mGoodCalc.getStringSizeGroups());
+
+        mGoodCalcView.setCommentText(mGoodCalc.getComment());
     }
 
     public final GoodCalc getModel() {
@@ -169,6 +180,12 @@ public class DiabloGoodController {
         cell.setSelection(0, cell.length());
     }
 
+    private void requestFocusOfComment() {
+        EditText cell = (EditText) mGoodCalcView.getComment();
+        cell.requestFocus();
+        cell.setSelection(0, cell.length());
+    }
+
     public void reset() {
         /**
          * clear listener
@@ -190,6 +207,10 @@ public class DiabloGoodController {
          */
         if (null != mStyleNumberWatcher) {
             mStyleNumberWatcher.remove();
+        }
+
+        if (null != mCommentWatcher) {
+            mCommentWatcher.remove();
         }
 
         removeFirmListener();
@@ -237,6 +258,7 @@ public class DiabloGoodController {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getFirm();
 
         if (null != selectFirm) {
+            f.setError(null);
             f.setText(selectFirm.getName());
             mGoodCalc.setFirm(selectFirm);
             mIsValidFirm = true;
@@ -284,6 +306,7 @@ public class DiabloGoodController {
         f.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         if (null != selectBrand) {
+            f.setError(null);
             f.setText(selectBrand.getName());
             mGoodCalc.setBrand(selectBrand);
 
@@ -352,6 +375,7 @@ public class DiabloGoodController {
         final AutoCompleteTextView f = (AutoCompleteTextView) mGoodCalcView.getGoodType();
 
         if (null != selectGoodType) {
+            f.setError(null);
             f.setText(selectGoodType.getName());
             mGoodCalc.setGoodType(selectGoodType);
 
@@ -369,7 +393,6 @@ public class DiabloGoodController {
                         mGoodCalc.setGoodType(null);
                         f.setError(context.getResources().getString(R.string.good_type_must_select));
                         checkValidAction();
-
                     }
                 }
             });
@@ -386,7 +409,6 @@ public class DiabloGoodController {
                 mIsValidGoodType = true;
 
                 checkValidAction();
-
             }
         };
 
@@ -518,6 +540,7 @@ public class DiabloGoodController {
             || !mIsValidOrgPrice
             || !mIsValidPkgPrice
             || !mIsValidTagPrice
+            || !mIsValidComment
             ) {
             if (null != mOnActionOfGoodValidateListener) {
                 mOnActionOfGoodValidateListener.actionOfInvalid();
@@ -644,6 +667,29 @@ public class DiabloGoodController {
         });
     }
 
+
+    public void setValidateWatcherOfComment(final Context context, final View view) {
+        final EditText editText = (EditText) view;
+        mCommentWatcher = new DiabloEditTextWatcher(editText, new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+            @Override
+            public void afterTextChanged(String comment) {
+
+                if (comment.length() > 0 && !DiabloPattern.isValidComment(comment)) {
+                    editText.setError(context.getResources().getString(R.string.invalid_comment));
+                    mIsValidComment = false;
+                    mGoodCalc.setComment(DiabloEnum.EMPTY_STRING);
+
+                }
+                else {
+                    mIsValidComment = true;
+                    mGoodCalc.setComment(comment);
+                }
+
+                checkValidAction();
+            }
+        });
+    }
+
     /**
      * adapter model operation
      */
@@ -681,6 +727,6 @@ public class DiabloGoodController {
 
     public void setTagPrice(Float tagPrice) {
         mGoodCalcView.setTagPriceText(tagPrice);
-        mGoodCalcView.setTagPriceText(tagPrice);
+        mGoodCalc.setTagPrice(tagPrice);
     }
 }

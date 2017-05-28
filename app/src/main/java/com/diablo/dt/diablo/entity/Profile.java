@@ -1,5 +1,7 @@
 package com.diablo.dt.diablo.entity;
 
+import static com.jolimark.printerlib.c.f;
+
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -117,13 +119,13 @@ public class Profile {
     private List<MatchStock> mMatchStocks;
 
     // brand
-    private List<DiabloBrand> mBrands;
+    private List<DiabloBrand> mBrands = new ArrayList<>();
 
     // type
-    private List<DiabloType> mDiabloTypes;
+    private List<DiabloType> mDiabloTypes = new ArrayList<>();
 
     // firm
-    private List<Firm> mFirms;
+    private List<Firm> mFirms = new ArrayList<>();
 
     // matched goods
     private List<MatchGood> mMatchGoods;
@@ -416,6 +418,9 @@ public class Profile {
     * */
     public void setRetailers(List<Retailer> retailers){
         for (Retailer r: retailers){
+            String py = DiabloUtils.instance().toPinYinWithFirstCharacter(r.getName());
+            // Log.d(LOG_TAG, r.getName() + ":" + py);
+            r.setPy(py);
             mRetailers.add(r);
         }
     }
@@ -449,6 +454,8 @@ public class Profile {
 //    }
 
     public void addRetailer(Retailer retailer) {
+        String py = DiabloUtils.instance().toPinYinWithFirstCharacter(retailer.getName());
+        retailer.setPy(py);
         mRetailers.add(0, retailer);
     }
 
@@ -642,11 +649,18 @@ public class Profile {
      * brands
      */
     public void  setBrands(List<DiabloBrand> brands) {
-        this.mBrands = new ArrayList<>(brands);
+        for (DiabloBrand brand: brands) {
+            String py = DiabloUtils.instance().toPinYinWithFirstCharacter(brand.getName());
+            brand.setPy(py);
+            mBrands.add(brand);
+        }
+        // this.mBrands = new ArrayList<>(brands);
     }
 
     public void addBrand(DiabloBrand brand) {
         if (null == getBrand(brand.getId())) {
+            String py = DiabloUtils.instance().toPinYinWithFirstCharacter(brand.getName());
+            brand.setPy(py);
             this.mBrands.add(0, brand);
         }
     }
@@ -683,11 +697,18 @@ public class Profile {
      * types
      */
     public void setDiabloTypes(List<DiabloType> types) {
-        this.mDiabloTypes = new ArrayList<>(types);
+        for (DiabloType t: types) {
+            String py = DiabloUtils.instance().toPinYinWithFirstCharacter(t.getName());
+            t.setPy(py);
+            mDiabloTypes.add(t);
+        }
+        // this.mDiabloTypes = new ArrayList<>(types);
     }
 
     public void addDiabloType(DiabloType type) {
         if (null == getDiabloType(type.getId())) {
+            String py = DiabloUtils.instance().toPinYinWithFirstCharacter(type.getName());
+            type.setPy(py);
             this.mDiabloTypes.add(0, type);
         }
     }
@@ -724,7 +745,12 @@ public class Profile {
      * firms
      */
     public void setFirms(List<Firm> firms) {
-        this.mFirms = new ArrayList<>(firms);
+        for (Firm f: firms) {
+            String py = DiabloUtils.instance().toPinYinWithFirstCharacter(f.getName());
+            f.setPy(py);
+            mFirms.add(f);
+        }
+        // this.mFirms = new ArrayList<>(firms);
     }
 
     public void clearFirms() {
@@ -735,6 +761,8 @@ public class Profile {
 
     public void addFirm(Firm firm) {
         if (null == getFirm(firm.getId())){
+            String py = DiabloUtils.instance().toPinYinWithFirstCharacter(firm.getName());
+            firm.setPy(py);
             this.mFirms.add(0, firm);
         }
     }

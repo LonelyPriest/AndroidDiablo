@@ -35,6 +35,8 @@ public class Firm extends DiabloEntity{
     private Float balance;
     @SerializedName("entry_date")
     private String datetime;
+    @SerializedName("py")
+    private String py;
 
     public Firm() {
         init();
@@ -47,6 +49,7 @@ public class Firm extends DiabloEntity{
         this.address = firm.getAddress();
         this.balance = firm.getBalance();
         this.datetime = firm.getDatetime();
+        this.py = firm.getPy();
     }
 
     public Firm(String name) {
@@ -60,13 +63,9 @@ public class Firm extends DiabloEntity{
         mobile = DiabloEnum.EMPTY_STRING;
         address = DiabloEnum.EMPTY_STRING;
         datetime = DiabloEnum.EMPTY_STRING;
+        py = DiabloEnum.EMPTY_STRING;
     }
-
-    @Override
-    public String getViewName() {
-        return name;
-    }
-
+    
     public Integer getId() {
         return id;
     }
@@ -75,10 +74,24 @@ public class Firm extends DiabloEntity{
         this.id = id;
     }
 
+    public String getPy() {
+        return py;
+    }
+
+    public void setPy(String py) {
+        this.py = py;
+    }
+
     @Override
     public String getName() {
         return name;
     }
+
+    @Override
+    public String getViewName() {
+        return name;
+    }
+
 
     public void setName(String name) {
         this.name = name;
@@ -117,53 +130,58 @@ public class Firm extends DiabloEntity{
     }
 
     public void addFirm(final Context context, final OnFirmAddListener listener) {
-        final FirmInterface face = FirmClient.getClient().create(FirmInterface.class);
-        Call<AddFirmResponse> call = face.addFirm(Profile.instance().getToken(), this);
+        Firm find = Profile.instance().getFirm(this.getName());
+        if (null != find) {
+            listener.afterAdd(find);
+        } else {
+            final FirmInterface face = FirmClient.getClient().create(FirmInterface.class);
+            Call<AddFirmResponse> call = face.addFirm(Profile.instance().getToken(), this);
 
-        call.enqueue(new Callback<AddFirmResponse>() {
-            @Override
-            public void onResponse(Call<AddFirmResponse> call, Response<AddFirmResponse> response) {
-                // mButtons.get(R.id.sale_out_save).enable();
+            call.enqueue(new Callback<AddFirmResponse>() {
+                @Override
+                public void onResponse(Call<AddFirmResponse> call, Response<AddFirmResponse> response) {
+                    // mButtons.get(R.id.sale_out_save).enable();
 
-                final AddFirmResponse res = response.body();
-                if ( DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
-                    DiabloUtils.instance().makeToast(
-                        context,
-                        context.getResources().getString(R.string.success_to_add_firm),
-                        Toast.LENGTH_LONG);
+                    final AddFirmResponse res = response.body();
+                    if (DiabloEnum.HTTP_OK == response.code() && res.getCode().equals(DiabloEnum.SUCCESS)) {
+                        DiabloUtils.instance().makeToast(
+                            context,
+                            context.getResources().getString(R.string.success_to_add_firm),
+                            Toast.LENGTH_LONG);
 
-                    Firm f = Firm.this;
-                    f.id = res.getInsertId();
+                        Firm f = Firm.this;
+                        f.id = res.getInsertId();
 
-                    if (null == f.getMobile()) {
-                        f.setMobile(DiabloEnum.EMPTY_STRING);
-                    }
-                    if (null == f.getAddress()) {
-                        f.setAddress(DiabloEnum.EMPTY_STRING);
-                    }
+                        if (null == f.getMobile()) {
+                            f.setMobile(DiabloEnum.EMPTY_STRING);
+                        }
+                        if (null == f.getAddress()) {
+                            f.setAddress(DiabloEnum.EMPTY_STRING);
+                        }
 
-                    f.setDatetime(DiabloUtils.instance().currentDate());
+                        f.setDatetime(DiabloUtils.instance().currentDate());
 
-                    Profile.instance().addFirm(f);
-                    listener.afterAdd(f);
+                        Profile.instance().addFirm(f);
+                        listener.afterAdd(f);
 
-                } else {
-                    if (DiabloEnum.HTTP_OK != response.code()) {
-                        DiabloUtils.instance().setErrorInfo(context, R.string.title_add_firm, response.code());
                     } else {
-                        DiabloUtils.instance().setErrorInfo(context, R.string.title_add_firm, res.getCode());
+                        if (DiabloEnum.HTTP_OK != response.code()) {
+                            DiabloUtils.instance().setErrorInfo(context, R.string.title_add_firm, response.code());
+                        } else {
+                            DiabloUtils.instance().setErrorInfo(context, R.string.title_add_firm, res.getCode());
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<AddFirmResponse> call, Throwable t) {
-                new DiabloAlertDialog(
-                    context,
-                    context.getResources().getString(R.string.title_add_firm),
-                    DiabloError.getError(99)).create();
-            }
-        });
+                @Override
+                public void onFailure(Call<AddFirmResponse> call, Throwable t) {
+                    new DiabloAlertDialog(
+                        context,
+                        context.getResources().getString(R.string.title_add_firm),
+                        DiabloError.getError(99)).create();
+                }
+            });
+        }
     }
 
     public interface OnFirmAddListener {

@@ -24,7 +24,8 @@ public class MatchBrandAdapter extends DiabloAdapter{
         List<DiabloBrand> brands = Profile.instance().getBrands();
         List<DiabloEntity> suggestions = new ArrayList<>();
         for (DiabloBrand brand: brands) {
-            if (brand.getName().toUpperCase().contains(s.toUpperCase())) {
+            if (brand.getName().toUpperCase().contains(s.toUpperCase())
+                || brand.getPy().contains(s.toUpperCase())) {
                 suggestions.add(brand);
             }
         }
