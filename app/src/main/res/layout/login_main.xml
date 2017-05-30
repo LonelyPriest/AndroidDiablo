@@ -88,4 +88,25 @@
             android:text="@string/login" />
     </LinearLayout>
 
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="50sp">
+        <TextView android:id="@+id/update_title"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+                  android:textStyle="bold"
+                  android:textColor="@color/black"
+                  android:textSize="18sp"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/version_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100sp"
+        android:layout_marginLeft="100sp">
+    </ListView>
+
+
 </LinearLayout>

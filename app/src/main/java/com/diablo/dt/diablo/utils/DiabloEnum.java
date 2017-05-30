@@ -124,6 +124,13 @@ public class DiabloEnum {
 
     public static final String TAG_PRINT_SETTING = "printSetting";
 
+    /*
+    * report
+     */
+    public static final String TAG_REPORT_REAL = "ReportReal";
+    public static final String TAG_REPORT_DAILY = "ReportDaily";
+    public static final String TAG_REPORT_MONTH = "ReportMonth";
+
     public static final String TAG_GOOD_SELECT = "goodSelect";
     public static final String TAG_STOCK_IN_UPDATE = "stockInUpdate";
     public static final String TAG_STOCK_OUT_UPDATE = "stockOutUpdate";

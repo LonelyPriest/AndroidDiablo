@@ -103,6 +103,28 @@
 
         </item>
 
+        <item android:title="@string/slide_report_manager">
+            <menu>
+                <item
+                    android:id="@+id/nav_report_real"
+                    android:icon="@drawable/ic_network_check_black_24dp"
+                    android:title="@string/nav_report_real" />
+
+                <item
+                    android:id="@+id/nav_report_daily"
+                    android:icon="@drawable/ic_filter_1_black_24dp"
+                    android:title="@string/nav_report_daily" />
+
+                <item
+                    android:id="@+id/nav_report_month"
+                    android:icon="@drawable/ic_filter_2_black_24dp"
+                    android:title="@string/nav_report_month" />
+            </menu>
+
+        </item>
+
+
+
         <item android:title="@string/slide_print_manager">
             <menu>
                 <item

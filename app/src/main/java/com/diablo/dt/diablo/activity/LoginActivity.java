@@ -1,7 +1,6 @@
 package com.diablo.dt.diablo.activity;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,9 +12,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -283,6 +286,20 @@ public class LoginActivity extends AppCompatActivity {
 //                        }
 //                    });
                 }
+            }
+        });
+
+        TextView title = (TextView) findViewById(R.id.update_title);
+        title.setText(getResources().getString(R.string.update_title));
+        ListView updateList = (ListView) findViewById(R.id.version_update);
+        String [] updates = getResources().getStringArray(R.array.version_update);
+        updateList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, updates) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                TextView textView = (TextView) super.getView(position, convertView, parent);
+                textView.setTextSize(14);
+                return textView;
             }
         });
     }

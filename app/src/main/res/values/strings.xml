@@ -26,6 +26,10 @@
   <string name="nav_firm_detail">厂商</string>
   <string name="nav_blue_tooth_setting">蓝牙设置</string>
 
+  <string name="nav_report_real">实时报表</string>
+  <string name="nav_report_daily">日报表</string>
+  <string name="nav_report_month">月报表</string>
+
   <!-- Toolbar titles when navigation menu item is selected -->
   <string-array name="nav_item_activity_titles">
     <item>销售开单</item>
@@ -46,7 +50,11 @@
 
     <item>零售商详情</item>
     <item>厂商详情</item>
-    <item>打印机蓝牙设置</item>
+    <item>蓝牙打印机设置</item>
+
+    <item>实时报表</item>
+    <item>日报表</item>
+    <item>月报表</item>
     <!--<item>新增零售商</item>-->
 
   </string-array>
@@ -614,6 +622,7 @@
   <string name="slide_user_manager">用户管理</string>
   <string name="slide_retailer_manager">零售商管理</string>
   <string name="slide_firm_manager">厂商管理</string>
+  <string name="slide_report_manager">报表管理</string>
   <string name="slide_print_manager">打印管理</string>
 
   <string name="action_save">保存</string>
@@ -627,6 +636,18 @@
   <string name="back_from_good_select">从选择货品返回</string>
   <string name="back_from_color_select">从选择颜色返回</string>
   <string name="back_from_size_select">从选择尺码返回</string>
+
+  <string name="update_title">2017－06－01日更新</string>
+  <string-array name="version_update">
+    <item>增加实时报表/日报表/月报表统计</item>
+    <item>零售商/厂商/类型/品牌增加拼音首字母联想</item>
+    <item>表格增加边框效果</item>
+    <item>销售增加四舍五入处理</item>
+    <item>货品资料增加备注选项，开单入库可显示该货品备注</item>
+    <item>优化货品资料录入速度</item>
+    <item>销售记录增加可查看交易详情，不需要再从修改中看到</item>
+    <item>款号修为过滤条件时，修改为只显示该款号</item>
+  </string-array>
 
 
   <!-- print for jolimark -->

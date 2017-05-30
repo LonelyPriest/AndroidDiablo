@@ -24,6 +24,9 @@ import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
 import com.diablo.dt.diablo.fragment.printer.BlueToothJolimarkFragment;
+import com.diablo.dt.diablo.fragment.report.ReportDaily;
+import com.diablo.dt.diablo.fragment.report.ReportMonth;
+import com.diablo.dt.diablo.fragment.report.ReportReal;
 import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
@@ -57,7 +60,7 @@ import retrofit2.Response;
  */
 
 public class SaleUtils {
-    public static final Map<String, Integer> SLIDE_MENU_TAGS;
+    private static final Map<String, Integer> SLIDE_MENU_TAGS;
     static {
         SLIDE_MENU_TAGS = new HashMap<>();
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_SALE_IN, 0);
@@ -79,6 +82,10 @@ public class SaleUtils {
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_RETAILER_DETAIL, 12);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_FIRM_PAGER, 13);
         SLIDE_MENU_TAGS.put(DiabloEnum.TAG_PRINT_SETTING, 14);
+
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_REPORT_REAL, 15);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_REPORT_DAILY, 16);
+        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_REPORT_MONTH, 17);
 //        SLIDE_MENU_TAGS.put(DiabloEnum.TAG_RETAILER_NEW, 14);
 
     }
@@ -131,6 +138,15 @@ public class SaleUtils {
                     break;
                 case DiabloEnum.TAG_PRINT_SETTING:
                     f = new BlueToothJolimarkFragment();
+                    break;
+                case DiabloEnum.TAG_REPORT_REAL:
+                    f = new ReportReal();
+                    break;
+                case DiabloEnum.TAG_REPORT_DAILY:
+                    f = new ReportDaily();
+                    break;
+                case DiabloEnum.TAG_REPORT_MONTH:
+                    f = new ReportMonth();
                     break;
 //                case DiabloEnum.TAG_RETAILER_NEW:
 //                    f = new DiabloRetailerNew();

@@ -35,6 +35,9 @@ import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
 import com.diablo.dt.diablo.fragment.printer.BlueToothJolimarkFragment;
+import com.diablo.dt.diablo.fragment.report.ReportDaily;
+import com.diablo.dt.diablo.fragment.report.ReportMonth;
+import com.diablo.dt.diablo.fragment.report.ReportReal;
 import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
@@ -200,6 +203,13 @@ public class MainActivity extends AppCompatActivity {
 
         mNavTagMap.put(14, new NavigationTag(14, DiabloEnum.TAG_PRINT_SETTING, R.id.nav_print_setting));
 
+        /*
+        * report
+         */
+        mNavTagMap.put(15, new NavigationTag(15, DiabloEnum.TAG_REPORT_REAL, R.id.nav_report_real));
+        mNavTagMap.put(16, new NavigationTag(16, DiabloEnum.TAG_REPORT_DAILY, R.id.nav_report_daily));
+        mNavTagMap.put(17, new NavigationTag(17, DiabloEnum.TAG_REPORT_MONTH, R.id.nav_report_month));
+
 //        mNavTagMap.put(14, new NavigationTag(14, DiabloEnum.TAG_RETAILER_NEW, R.id.nav_retailer_new));
 
         // initializing navigation menu
@@ -348,6 +358,15 @@ public class MainActivity extends AppCompatActivity {
             else if (mCurrentNavTag.getTitleIndex().equals(14)) {
                 f = new BlueToothJolimarkFragment();
             }
+            else if (mCurrentNavTag.getTitleIndex().equals(15)) {
+                f = new ReportReal();
+            }
+            else if (mCurrentNavTag.getTitleIndex().equals(16)) {
+                f = new ReportDaily();
+            }
+            else if (mCurrentNavTag.getTitleIndex().equals(17)) {
+                f = new ReportMonth();
+            }
 //            else if (mCurrentNavTag.getTitleIndex().equals(14)) {
 //                f = new DiabloRetailerNew();
 //            }
@@ -424,6 +443,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_print_setting:
                         selectMenuItem(14);
+                        break;
+                    case R.id.nav_report_real:
+                        selectMenuItem(15);
+                        break;
+                    case R.id.nav_report_daily:
+                        selectMenuItem(16);
+                        break;
+                    case R.id.nav_report_month:
+                        selectMenuItem(17);
                         break;
 //                    case R.id.nav_retailer_new:
 //                        selectMenuItem(14);
