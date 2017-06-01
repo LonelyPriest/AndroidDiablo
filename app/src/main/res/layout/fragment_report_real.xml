@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              tools:context="com.diablo.dt.diablo.fragment.report.ReportReal">
+
+  <HorizontalScrollView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:fillViewport="true">
+      <TableLayout
+          android:id="@+id/t_daily_report_real_head"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp">
+      </TableLayout>
+  </HorizontalScrollView>
+
+
+  <HorizontalScrollView
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:fillViewport="true">
+    <TableLayout
+        android:id="@+id/t_daily_report_real"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </TableLayout>
+  </HorizontalScrollView>
+
+</LinearLayout>

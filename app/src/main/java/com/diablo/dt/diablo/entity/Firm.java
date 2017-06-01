@@ -166,9 +166,9 @@ public class Firm extends DiabloEntity{
 
                     } else {
                         if (DiabloEnum.HTTP_OK != response.code()) {
-                            DiabloUtils.instance().setErrorInfo(context, R.string.title_add_firm, response.code());
+                            DiabloUtils.instance().setError(context, R.string.title_add_firm, response.code());
                         } else {
-                            DiabloUtils.instance().setErrorInfo(context, R.string.title_add_firm, res.getCode());
+                            DiabloUtils.instance().setError(context, R.string.title_add_firm, res.getCode());
                         }
                     }
                 }

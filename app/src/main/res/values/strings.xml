@@ -248,6 +248,25 @@
     <item>创建日期</item>
   </string-array>
 
+  <string-array name="thead_daily_report">
+    <item>序号</item>
+    <item>店铺</item>
+    <item>上期库存</item>
+    <item>当前库存</item>
+    <item>入库</item>
+    <item>退货</item>
+    <item>销售</item>
+    <item>营业额</item>
+    <item>实收</item>
+    <item>现金</item>
+    <item>刷卡</item>
+    <item>汇款</item>
+    <item>核销</item>
+    <item>销售成本</item>
+    <item>毛利</item>
+    <item>毛利率</item>
+  </string-array>
+
   <string-array name="sexes">
     <item>女</item>
     <item>男</item>
@@ -360,6 +379,17 @@
   <string name="diablo_phone">联系方式</string>
   <string name="diablo_address">联系地址</string>
   <string name="diablo_datetime">创建日期</string>
+
+  <string name="stock_last">上期库存</string>
+  <string name="stock_current">当前库存</string>
+  <string name="stock_in">入库</string>
+  <string name="stock_out">退货</string>
+  <string name="stock_sell">销售</string>
+  <string name="turnover">营业额</string>
+  <string name="paid">实收</string>
+  <string name="sell_cost">销售成本</string>
+  <string name="gross_profit">毛利</string>
+  <string name="gross_margin">毛利率</string>
 
   <string name="sale_in_fragment">Sale In fragment</string>
 

@@ -28,6 +28,7 @@ import com.diablo.dt.diablo.client.RightClient;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.client.WGoodClient;
 import com.diablo.dt.diablo.client.WLoginClient;
+import com.diablo.dt.diablo.client.WReportClient;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
@@ -649,6 +650,7 @@ public class MainActivity extends AppCompatActivity {
         WGoodClient.resetClient();
         WLoginClient.resetClient();
         WSaleClient.resetClient();
+        WReportClient.resetClient();
     }
 
     private void clearBlueToothPrinter() {

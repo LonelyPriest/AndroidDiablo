@@ -46,6 +46,8 @@ import com.diablo.dt.diablo.response.sale.NewSaleResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.github.promeg.pinyinhelper.Pinyin;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -354,11 +356,27 @@ public class DiabloUtils {
         toast.show();
     }
 
-    public void setErrorInfo(Context context, Integer titleId, Integer errorCode) {
+    public void setError(Context context, Integer titleId, Integer errorCode) {
         new DiabloAlertDialog(
             context,
             context.getResources().getString(titleId),
             DiabloError.getError(errorCode)).create();
+    }
+
+    public void setError(Context context, Integer titleId, Integer errorCode, String extraError) {
+        new DiabloAlertDialog(
+            context,
+            context.getResources().getString(titleId),
+            DiabloError.getError(errorCode) + extraError).create();
+    }
+
+    public Float calcGrossMargin(Float balance, Float cost) {
+        BigDecimal v = new BigDecimal(((balance - cost) / balance) * 100).setScale(2, RoundingMode.HALF_EVEN);
+        return v.floatValue();
+    }
+
+    public Float calcGrossProfit(Float balance, Float cost) {
+        return balance - cost;
     }
 
     public String toPinYinWithFirstCharacter(String chinese) {
