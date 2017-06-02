@@ -248,15 +248,15 @@
     <item>创建日期</item>
   </string-array>
 
-  <string-array name="thead_daily_report">
+  <string-array name="thead_daily_report_real">
     <item>序号</item>
     <item>店铺</item>
     <item>上期库存</item>
     <item>当前库存</item>
     <item>入库</item>
-    <item>退货</item>
+    <item>出库</item>
     <item>销售</item>
-    <item>营业额</item>
+    <item>应付</item>
     <item>实收</item>
     <item>现金</item>
     <item>刷卡</item>
@@ -265,6 +265,40 @@
     <item>销售成本</item>
     <item>毛利</item>
     <item>毛利率</item>
+  </string-array>
+
+  <string-array name="thead_daily_sale_report">
+    <item>序号</item>
+    <item>店铺</item>
+    <item>款号</item>
+    <item>品名</item>
+    <item>数量</item>
+  </string-array>
+
+  <string-array name="thead_daily_report">
+    <item>序号</item>
+    <item>日期</item>
+
+    <item>店铺</item>
+    <item>库存</item>
+    <item>计算库存</item>
+    <item>库存成本</item>
+
+    <item>销售</item>
+    <item>销售成本</item>
+    <item>应付</item>
+    <item>实收</item>
+
+    <item>现金</item>
+    <item>刷卡</item>
+    <item>汇款</item>
+    <item>核销</item>
+
+    <item>入库</item>
+    <item>入库成本</item>
+    <item>出库</item>
+    <item>出库成本</item>
+    <item>生成日期</item>
   </string-array>
 
   <string-array name="sexes">
@@ -383,13 +417,20 @@
   <string name="stock_last">上期库存</string>
   <string name="stock_current">当前库存</string>
   <string name="stock_in">入库</string>
-  <string name="stock_out">退货</string>
+  <string name="stock_out">出库</string>
   <string name="stock_sell">销售</string>
-  <string name="turnover">营业额</string>
+  <string name="turnover">应付</string>
   <string name="paid">实收</string>
   <string name="sell_cost">销售成本</string>
   <string name="gross_profit">毛利</string>
   <string name="gross_margin">毛利率</string>
+
+  <string name="stock_calculate">计算库存</string>
+  <string name="stock_cost">库存成本</string>
+  <string name="stock_in_cost">入库成本</string>
+  <string name="stock_out_cost">出库成本</string>
+  <string name="daily_report_date">日期</string>
+  <string name="daily_report_gen_date">生成日期</string>
 
   <string name="sale_in_fragment">Sale In fragment</string>
 
@@ -627,6 +668,8 @@
   <string name="btn_cancel">取消</string>
   <string name="btn_draft_clear">清除草稿</string>
   <string name="btn_search">模糊</string>
+  <string name="btn_before_date">前一天</string>
+  <string name="btn_next_date">后一天</string>
 
   <string name="btn_stock_in">入库</string>
   <string name="btn_stock_out">退货</string>
@@ -666,6 +709,9 @@
   <string name="back_from_good_select">从选择货品返回</string>
   <string name="back_from_color_select">从选择颜色返回</string>
   <string name="back_from_size_select">从选择尺码返回</string>
+
+  <string name="report_sale_info">销售状况</string>
+  <string name="report_good_sale_info">货品销售状况</string>
 
   <string name="update_title">2017－06－01日更新</string>
   <string-array name="version_update">

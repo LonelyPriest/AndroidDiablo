@@ -3,130 +3,162 @@ package com.diablo.dt.diablo.response.report;
 import com.google.gson.annotations.SerializedName;
 
 import com.diablo.dt.diablo.response.Response;
+import com.diablo.dt.diablo.utils.DiabloEnum;
 
 import java.util.List;
 
 /**
- * Created by buxianhui on 17/5/31.
+ * Created by buxianhui on 17/6/3.
  */
 
 public class DailyReportResponse extends Response {
-    @SerializedName("sale")
-    private List<StockSale> stocksSale;
-    @SerializedName("profit")
-    private List<StockProfit> stockskProfit;
+    /**
+     * statistic
+     */
+    @SerializedName("total")
+    private Integer total;
 
-    @SerializedName("pin")
-    private List<StockStore>  stocksIn;
-    @SerializedName("pout")
-    private List<StockStore>  stocksOut;
+    @SerializedName("sell")
+    private Integer sell;
+    @SerializedName("sell_cost")
+    private Float sellCost;
+    @SerializedName("should_pay")
+    private Float shouldPay;
+    @SerializedName("has_pay")
+    private Float hasPay;
+    @SerializedName("cash")
+    private Float cash;
+    @SerializedName("card")
+    private Float card;
+    @SerializedName("wire")
+    private Float wire;
+    @SerializedName("veri")
+    private Float verificate;
 
-    @SerializedName("rstock")
-    private List<StockStore>   stocksReal;
-    @SerializedName("lstock")
-    private List<StockStore>   stocksLast;
+    @SerializedName("stock_in")
+    private Integer stockIn;
+    @SerializedName("stock_out")
+    private Integer stockOut;
+    @SerializedName("stock_in_cost")
+    private Float stockInCost;
+    @SerializedName("stock_out_cost")
+    private Float stockOutCost;
 
-    public List<StockSale> getStocksSale() {
-        return stocksSale;
+    @SerializedName("t_stock_in")
+    private Integer tStockIn;
+    @SerializedName("t_stock_out")
+    private Integer tStockOut;
+    @SerializedName("t_stock_in_cost")
+    private Float tStockInCost;
+    @SerializedName("t_stock_out_cost")
+    private Float tStockOutCost;
+
+    @SerializedName("stock_fix")
+    private Integer stockFix;
+    @SerializedName("stock_fix_cost")
+    private Float stockFixCost;
+
+
+    @SerializedName("data")
+    private List<DailyDetail> mDailyDetails;
+
+    public DailyReportResponse() {
+        super();
+        total = DiabloEnum.INVALID_INDEX;
     }
 
-    public StockSale getStockSale(Integer shop) {
-        StockSale f = null;
-        for (StockSale s: stocksSale) {
-            if (s.shop.equals(shop)) {
-                f = s;
-                break;
-            }
-        }
-        return f;
+    public List<DailyDetail> getDailyDetails() {
+        return mDailyDetails;
     }
 
-    public List<StockProfit> getStocksProfit() {
-        return stockskProfit;
+    public Integer getTotal() {
+        return total;
     }
 
-    public StockProfit getStockProfit(Integer shop) {
-        StockProfit f = null;
-        for (StockProfit p: stockskProfit) {
-            if (p.shop.equals(shop)) {
-                f = p;
-                break;
-            }
-        }
-        return f;
+    public Integer getSell() {
+        return sell;
     }
 
-    public List<StockStore> getStocksIn() {
-        return stocksIn;
+    public Float getSellCost() {
+        return sellCost;
     }
 
-    public StockStore getStockIn(Integer shop) {
-        StockStore f = null;
-        for (StockStore ss: stocksIn) {
-            if (ss.shop.equals(shop)) {
-                f = ss;
-                break;
-            }
-        }
-        return f;
+    public Float getShouldPay() {
+        return shouldPay;
     }
 
-    public List<StockStore> getStocksOut() {
-        return stocksOut;
+    public Float getHasPay() {
+        return hasPay;
     }
 
-    public StockStore getStockOut(Integer shop) {
-        StockStore f = null;
-        for (StockStore ss: stocksOut) {
-            if (ss.shop.equals(shop)) {
-                f = ss;
-                break;
-            }
-        }
-        return f;
+    public Float getCash() {
+        return cash;
     }
 
-    public List<StockStore> getStocksReal() {
-        return stocksReal;
+    public Float getCard() {
+        return card;
     }
 
-    public StockStore getStockReal(Integer shop) {
-        StockStore f = null;
-        for (StockStore ss: stocksReal) {
-            if (ss.shop.equals(shop)) {
-                f = ss;
-                break;
-            }
-        }
-        return f;
+    public Float getWire() {
+        return wire;
     }
 
-    public List<StockStore> getStocksLast() {
-        return stocksLast;
+    public Float getVerificate() {
+        return verificate;
     }
 
-    public StockStore getStockLast(Integer shop) {
-        StockStore f = null;
-        for (StockStore ss: stocksLast) {
-            if (ss.shop.equals(shop)) {
-                f = ss;
-                break;
-            }
-        }
-        return f;
+    public Integer getStockIn() {
+        return stockIn;
+    }
+
+    public Integer getStockOut() {
+        return stockOut;
+    }
+
+    public Float getStockInCost() {
+        return stockInCost;
+    }
+
+    public Float getStockOutCost() {
+        return stockOutCost;
+    }
+
+    public Integer gettStockIn() {
+        return tStockIn;
+    }
+
+    public Integer gettStockOut() {
+        return tStockOut;
+    }
+
+    public Float gettStockInCost() {
+        return tStockInCost;
+    }
+
+    public Float gettStockOutCost() {
+        return tStockOutCost;
+    }
+
+    public Integer getStockFix() {
+        return stockFix;
+    }
+
+    public Float getStockFixCost() {
+        return stockFixCost;
     }
 
     /**
-     * w_sale
+     * per daily report
      */
-    public static class StockSale {
-        @SerializedName("total")
-        private Integer total;
-        @SerializedName("spay")
+    public static class DailyDetail {
+        @SerializedName("sell")
+        private Integer sell;
+        @SerializedName("sell_cost")
+        private Float sellCost;
+        @SerializedName("should_pay")
         private Float shouldPay;
-        @SerializedName("hpay")
+        @SerializedName("has_pay")
         private Float hasPay;
-
         @SerializedName("cash")
         private Float cash;
         @SerializedName("card")
@@ -135,11 +167,48 @@ public class DailyReportResponse extends Response {
         private Float wire;
         @SerializedName("veri")
         private Float verificate;
-        @SerializedName("shop_id")
-        private Integer shop;
 
-        public Integer getTotal() {
-            return total;
+        @SerializedName("stock")
+        private Integer stock;
+        @SerializedName("stockc")
+        private Integer stockCalc;
+        @SerializedName("stock_cost")
+        private Float stockCost;
+
+        @SerializedName("stock_in")
+        private Integer stockIn;
+        @SerializedName("stock_out")
+        private Integer stockOut;
+        @SerializedName("stock_in_cost")
+        private Float stockInCost;
+        @SerializedName("stock_out_cost")
+        private Float stockOutCost;
+
+        @SerializedName("t_stock_in")
+        private Integer tStockIn;
+        @SerializedName("t_stock_out")
+        private Integer tStockOut;
+        @SerializedName("t_stock_in_cost")
+        private Float tStockInCost;
+        @SerializedName("t_stock_out_cost")
+        private Float tStockOutCost;
+
+        @SerializedName("stock_fix")
+        private Integer stockFix;
+        @SerializedName("stock_fix_cost")
+        private Float stockFixCost;
+
+        @SerializedName("day")
+        private String day;
+        @SerializedName("entry_date")
+        private String genDate;
+
+        public Integer getSell() {
+            return sell;
+        }
+
+        public Float getSellCost() {
+            return sellCost;
         }
 
         public Float getShouldPay() {
@@ -166,74 +235,64 @@ public class DailyReportResponse extends Response {
             return verificate;
         }
 
-        public Integer getShop() {
-            return shop;
+        public Integer getStock() {
+            return stock;
+        }
+
+        public Integer getStockCalc() {
+            return stockCalc;
+        }
+
+        public Float getStockCost() {
+            return stockCost;
+        }
+
+        public Integer getStockIn() {
+            return stockIn;
+        }
+
+        public Integer getStockOut() {
+            return stockOut;
+        }
+
+        public Float getStockInCost() {
+            return stockInCost;
+        }
+
+        public Float getStockOutCost() {
+            return stockOutCost;
+        }
+
+        public Integer gettStockIn() {
+            return tStockIn;
+        }
+
+        public Integer gettStockOut() {
+            return tStockOut;
+        }
+
+        public Float gettStockInCost() {
+            return tStockInCost;
+        }
+
+        public Float gettStockOutCost() {
+            return tStockOutCost;
+        }
+
+        public Integer getStockFix() {
+            return stockFix;
+        }
+
+        public Float getStockFixCost() {
+            return stockFixCost;
+        }
+
+        public String getDay() {
+            return day;
+        }
+
+        public String getGenDate() {
+            return genDate;
         }
     }
-
-    /**
-     * w_sale_detail
-     */
-    public static class StockProfit {
-        @SerializedName("total")
-        private Integer total;
-        @SerializedName("cost")
-        private Float cost;
-        @SerializedName("balance")
-        private Float balance;
-        @SerializedName("shop_id")
-        private Integer shop;
-
-        public Integer getTotal() {
-            return total;
-        }
-
-        public Float getCost() {
-            return cost;
-        }
-
-        public Float getBalance() {
-            return balance;
-        }
-
-        public Integer getShop() {
-            return shop;
-        }
-    }
-
-    /**
-     * stock in, stock out
-     */
-    public static class StockStore {
-        @SerializedName("total")
-        private Integer total;
-        @SerializedName("cost")
-        private Float cost;
-        @SerializedName("shop_id")
-        private Integer shop;
-
-        public Integer getTotal() {
-            return total;
-        }
-
-        public Float getCost() {
-            return cost;
-        }
-
-        public Integer getShop() {
-            return shop;
-        }
-    }
-
-//    /**
-//     * stock of current
-//     */
-//    private static class StockReal {
-//        @SerializedName("total")
-//        private Integer total;
-//        @SerializedName("cost")
-//        private Float cost;
-//        @SerializedName("shop_id")
-//        private Integer shop;
-//    }
 }

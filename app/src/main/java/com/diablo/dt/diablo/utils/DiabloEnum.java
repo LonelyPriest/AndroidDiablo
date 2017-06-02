@@ -11,6 +11,7 @@ public class DiabloEnum {
     public static final String  SIZE_SEPARATOR = ",";
     public static final String  DATE_SEPARATOR = "-";
     public static final String  DAILY_REPORT_BY_SHOP = "by_shop";
+    public static final String  DAILY_REPORT_BY_GOOD = "by_good";
 
     public static final Integer INVALID_INDEX = -1;
     public static final Integer DEFAULT_INDEX = 1;
@@ -57,6 +58,8 @@ public class DiabloEnum {
 
     public static final Integer SWIPE_MIN_DISTANCE = 500;
     public static final Integer SWIPE_THRESHOLD_VELOCITY = 500;
+
+    public static final long DAY_SECONDS = 86400;
 
     // pagination
     public static final Integer DEFAULT_PAGE = 1;

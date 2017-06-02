@@ -121,7 +121,7 @@ public class GoodDetail extends Fragment {
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
     }
 
-    public void init() {
+    private void init() {
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mTotalPage = 0;
     }

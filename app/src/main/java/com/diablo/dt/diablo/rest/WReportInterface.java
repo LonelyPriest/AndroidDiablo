@@ -1,7 +1,10 @@
 package com.diablo.dt.diablo.rest;
 
+import com.diablo.dt.diablo.request.report.DailyReportRealRequest;
 import com.diablo.dt.diablo.request.report.DailyReportRequest;
+import com.diablo.dt.diablo.response.report.DailyReportRealResponse;
 import com.diablo.dt.diablo.response.report.DailyReportResponse;
+import com.diablo.dt.diablo.response.report.DailyReportSaleDetailResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -15,8 +18,17 @@ import retrofit2.http.Path;
 
 public interface WReportInterface {
     @POST("daily_wreport/{type}")
-    Call<DailyReportResponse> dailyReportOfRealTime(
+    Call<DailyReportRealResponse> dailyReportOfRealTime(
         @Header("cookie") String token,
         @Path("type") String type,
-        @Body DailyReportRequest request);
+        @Body DailyReportRealRequest request);
+
+    @POST("daily_wreport/{type}")
+    Call<DailyReportSaleDetailResponse> dailyReportSaleDetailOfRealTime(
+        @Header("cookie") String token,
+        @Path("type") String type,
+        @Body DailyReportRealRequest request);
+
+    @POST("h_daily_wreport")
+    Call<DailyReportResponse> filterDailyReport(@Header("cookie") String token, @Body DailyReportRequest request);
 }

@@ -2,6 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
   <item
+      android:id="@+id/report_real_before_date"
+      android:icon="@drawable/ic_arrow_back_black_24dp"
+      android:title="@string/btn_before_date"
+      app:showAsAction="ifRoom|withText"/>
+
+  <item
+      android:id="@+id/report_real_next_date"
+      android:icon="@drawable/ic_arrow_forward_black_24dp"
+      android:title="@string/btn_next_date"
+      app:showAsAction="ifRoom|withText"/>
+
+  <item
       android:id="@+id/report_real_refresh"
       android:icon="@drawable/ic_refresh_black_24dp"
       android:title="@string/btn_refresh"

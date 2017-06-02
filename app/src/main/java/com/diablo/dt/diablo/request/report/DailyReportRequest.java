@@ -2,56 +2,46 @@ package com.diablo.dt.diablo.request.report;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import com.diablo.dt.diablo.request.PageRequest;
 
 /**
- * Created by buxianhui on 17/5/31.
+ * Created by buxianhui on 17/6/3.
  */
 
-public class DailyReportRequest {
-    @SerializedName("condition")
-    private Condition condition;
+public class DailyReportRequest extends PageRequest {
+    @SerializedName("fields")
+    private Condition mCondition;
 
-    public DailyReportRequest(String startTime, String endTime, List<Integer> shops) {
-        condition = new Condition(startTime, endTime, shops);
+    public DailyReportRequest(Integer currentPage, Integer itemsPerPage){
+        super(currentPage, itemsPerPage);
+        mCondition = new Condition();
     }
 
     public void setStartTime(String startTime) {
-        condition.setStartTime(startTime);
+        mCondition.setStartTime(startTime);
     }
 
     public void setEndTime(String endTime) {
-        condition.setEndTime(endTime);
+        mCondition.setEndTime(endTime);
     }
 
-    public void setShops(List<Integer> shops) {
-        condition.setShops(shops);
-    }
-
-    private static class Condition {
+    private static class Condition{
         @SerializedName("start_time")
-        private String startTime;
+        private String mStartTime;
         @SerializedName("end_time")
-        private String endTime;
-        @SerializedName("shop")
-        private List<Integer> shops;
+        private String mEndTime;
 
-        private Condition(String startTime, String endTime, List<Integer> shops) {
-            this.startTime = startTime;
-            this.endTime = endTime;
-            this.shops = shops;
+
+        private Condition(){
+
         }
 
-        public void setStartTime(String startTime) {
-            this.startTime = startTime;
+        private void setStartTime(String startTime) {
+            this.mStartTime = startTime;
         }
 
-        public void setEndTime(String endTime) {
-            this.endTime = endTime;
-        }
-
-        public void setShops(List<Integer> shops) {
-            this.shops = shops;
+        private void setEndTime(String endTime) {
+            this.mEndTime = endTime;
         }
     }
 }
