@@ -251,10 +251,8 @@ public class ReportReal extends Fragment {
         TableRow row = null;
         Integer orderId = 1;
 
-        int rowCount = mReportContent.getChildCount();
-        for (int j = 1; j < rowCount; j++) {
-            mReportContent.removeViewAt(j);
-        }
+        // remove all views except title
+        mReportContent.removeViews(1, mReportContent.getChildCount() - 1);
 
         for (Integer i=0; i<shops.size(); i++) {
             Integer shop = shops.get(i);

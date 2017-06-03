@@ -25,22 +25,27 @@ public class DailyReportRequest extends PageRequest {
         mCondition.setEndTime(endTime);
     }
 
-    private static class Condition{
+    public static class Condition{
         @SerializedName("start_time")
         private String mStartTime;
         @SerializedName("end_time")
         private String mEndTime;
 
 
-        private Condition(){
+        public Condition(){
 
         }
 
-        private void setStartTime(String startTime) {
+        public Condition(String startTime, String endTime) {
+            this.mStartTime = startTime;
+            this.mEndTime = endTime;
+        }
+
+        public void setStartTime(String startTime) {
             this.mStartTime = startTime;
         }
 
-        private void setEndTime(String endTime) {
+        public void setEndTime(String endTime) {
             this.mEndTime = endTime;
         }
     }

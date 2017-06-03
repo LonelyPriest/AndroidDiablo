@@ -263,19 +263,19 @@ public class DailyReportResponse extends Response {
             return stockOutCost;
         }
 
-        public Integer gettStockIn() {
+        public Integer getTStockIn() {
             return tStockIn;
         }
 
-        public Integer gettStockOut() {
+        public Integer getTStockOut() {
             return tStockOut;
         }
 
-        public Float gettStockInCost() {
+        public Float getTStockInCost() {
             return tStockInCost;
         }
 
-        public Float gettStockOutCost() {
+        public Float getTStockOutCost() {
             return tStockOutCost;
         }
 

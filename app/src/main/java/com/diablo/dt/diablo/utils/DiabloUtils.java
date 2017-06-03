@@ -188,6 +188,12 @@ public class DiabloUtils {
         return mDateFormat.format(calendar.getTime()).trim();
     }
 
+    public String firstDayOfCurrentMonth() {
+        Calendar calendar = Calendar.getInstance();;
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return mDateFormat.format(calendar.getTime()).trim();
+    }
+
     public Integer currentYear() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.YEAR);

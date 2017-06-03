@@ -2,6 +2,7 @@ package com.diablo.dt.diablo.rest;
 
 import com.diablo.dt.diablo.request.report.DailyReportRealRequest;
 import com.diablo.dt.diablo.request.report.DailyReportRequest;
+import com.diablo.dt.diablo.response.Response;
 import com.diablo.dt.diablo.response.report.DailyReportRealResponse;
 import com.diablo.dt.diablo.response.report.DailyReportResponse;
 import com.diablo.dt.diablo.response.report.DailyReportSaleDetailResponse;
@@ -31,4 +32,7 @@ public interface WReportInterface {
 
     @POST("h_daily_wreport")
     Call<DailyReportResponse> filterDailyReport(@Header("cookie") String token, @Body DailyReportRequest request);
+
+    @POST("syn_daily_report")
+    Call<Response> synDailyReport(@Header("cookie") String token, @Body DailyReportRequest.Condition request);
 }

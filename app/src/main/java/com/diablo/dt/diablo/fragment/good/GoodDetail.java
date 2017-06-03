@@ -319,7 +319,7 @@ public class GoodDetail extends Fragment {
                             g.setOrderId(orderId);
                             lp.weight = 0.8f;
                             cell = addCell(row, orderId++, lp);
-                            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
+                            //cell.setTextColor(ContextCompat.getColor(getContext(), R.color.bpDarker_red));
                         }
                         else if (res.getString(R.string.style_number).equals(title)) {
                             cell = addCell(row, g.getStyleNumber(), lp);

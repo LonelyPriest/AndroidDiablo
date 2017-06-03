@@ -48,13 +48,13 @@
         <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
             android:id="@+id/t_daily_report_swipe"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <HorizontalScrollView android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content">
+                                  android:layout_height="match_parent">
                 <ScrollView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
                     <TableLayout
                         android:id="@+id/t_daily_report"
                         android:layout_width="wrap_content"

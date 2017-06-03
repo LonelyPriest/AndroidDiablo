@@ -53,10 +53,8 @@ import com.diablo.dt.diablo.jolimark.model.PrinterController;
 import com.diablo.dt.diablo.jolimark.model.PrinterManager;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.rest.BaseSettingInterface;
-import com.diablo.dt.diablo.utils.DiabloAlertDialog;
 import com.diablo.dt.diablo.utils.DiabloDBManager;
 import com.diablo.dt.diablo.utils.DiabloEnum;
-import com.diablo.dt.diablo.utils.DiabloError;
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.github.promeg.tinypinyin.lexicons.android.cncity.CnCityDict;
 
@@ -614,30 +612,33 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<com.diablo.dt.diablo.response.Response> call,
                                    Response<com.diablo.dt.diablo.response.Response> response) {
                 Log.d(LOG_TAG, "success to destroy session");
-                // clear information
-                DiabloDBManager.instance().close();
-                Profile.instance().clear();
-                // clear client
-                clearClient();
-                clearBlueToothPrinter();
-                
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                forceLogout();
             }
 
             @Override
             public void onFailure(Call<com.diablo.dt.diablo.response.Response> call, Throwable t) {
-                new DiabloAlertDialog(
-                    MainActivity.this,
-                    getResources().getString(R.string.title_logout),
-                    DiabloError.getError(99)).create();
+//                new DiabloAlertDialog(
+//                    MainActivity.this,
+//                    getResources().getString(R.string.title_logout),
+//                    DiabloError.getError(99)).create();
+                forceLogout();
             }
         });
+    }
 
+    private void forceLogout() {
+        // clear information
+        DiabloDBManager.instance().close();
+        Profile.instance().clear();
+        // clear client
+        clearClient();
+        clearBlueToothPrinter();
 
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private void clearClient() {
