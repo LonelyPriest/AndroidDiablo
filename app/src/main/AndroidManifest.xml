@@ -27,7 +27,8 @@
         android:theme="@style/DiabloAppTheme.NoActionBar">
         <activity android:name=".activity.LoginActivity"
                   android:windowSoftInputMode="stateHidden"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+                  android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -45,7 +46,8 @@
 
         <activity android:name=".activity.MainActivity"
                   android:windowSoftInputMode="adjustResize"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+                  android:alwaysRetainTaskState="true">
         </activity>
 
     </application>
