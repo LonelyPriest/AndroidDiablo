@@ -94,6 +94,33 @@ public class MonthReportResponse extends Response {
         @SerializedName("stock_fix_cost")
         private Float stockFixCost;
 
+        public MonthDetail() {
+            shop = -1;
+
+            sell = 0;
+            sellCost = 0f;
+            shouldPay = 0f;
+            hasPay = 0f;
+
+            cash = 0f;
+            card = 0f;
+            wire = 0f;
+            verificate = 0f;
+
+            stockIn = 0;
+            stockOut = 0;
+            stockInCost = 0f;
+            stockOutCost = 0f;
+
+            tStockIn = 0;
+            tStockOut = 0;
+            tStockInCost = 0f;
+            tStockOutCost = 0f;
+
+            stockFix = 0;
+            stockFixCost = 0f;
+        }
+
         public Integer getShop() {
             return shop;
         }
@@ -178,6 +205,12 @@ public class MonthReportResponse extends Response {
         private Integer stockCalc;
         @SerializedName("stock_cost")
         private Float stockCost;
+
+        public StockOfDay () {
+            shop = -1;
+            stockCalc = 0;
+            stockCost = 0f;
+        }
 
         public Integer getShop() {
             return shop;

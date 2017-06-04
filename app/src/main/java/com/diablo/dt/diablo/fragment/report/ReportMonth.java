@@ -197,6 +197,10 @@ public class ReportMonth extends Fragment {
             MonthReportResponse.MonthDetail monthDetail = response.getDetail(shopId);
             MonthReportResponse.StockOfDay stockOfDay = response.getStock(shopId);
 
+            if (null == monthDetail || null == stockOfDay) {
+                continue;
+            }
+
             TableRow row = new TableRow(getContext());
             row.setBackgroundResource(R.drawable.table_row_bg);
             mReportContent.addView(row);
