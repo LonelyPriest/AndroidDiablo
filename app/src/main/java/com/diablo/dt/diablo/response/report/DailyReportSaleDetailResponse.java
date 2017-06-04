@@ -21,6 +21,8 @@ public class DailyReportSaleDetailResponse extends Response {
     public static class ReportSaleDetail {
         @SerializedName("style_number")
         private String styleNumber;
+        @SerializedName("type_id")
+        private Integer type;
         @SerializedName("brand_id")
         private Integer brand;
         @SerializedName("firm_id")
@@ -32,6 +34,10 @@ public class DailyReportSaleDetailResponse extends Response {
 
         public String getStyleNumber() {
             return styleNumber;
+        }
+
+        public Integer getType() {
+            return type;
         }
 
         public Integer getBrand() {

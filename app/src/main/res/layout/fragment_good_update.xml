@@ -260,7 +260,7 @@
                    android:scaleY="0.5"
                    android:layout_gravity="center"
                    android:tint="@color/bpRed"
-                   android:contentDescription="@string/firm"
+                   android:contentDescription="@string/org_price"
                    android:layout_weight="0.1"/>
         <TextView android:layout_width="0dp"
                   android:layout_height="wrap_content"
@@ -280,7 +280,8 @@
                   android:selectAllOnFocus="true"
                   android:textSize="@dimen/ampm_label_size"
                   android:textColor="@color/bpblack"
-                  android:textStyle="bold"/>
+                  android:textStyle="bold"
+                  android:enabled="false"/>
         <TextView android:layout_width="0dp"
                   android:layout_height="wrap_content"
                   android:layout_weight="0.1"/>

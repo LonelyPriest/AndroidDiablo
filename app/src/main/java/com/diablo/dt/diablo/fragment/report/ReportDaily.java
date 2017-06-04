@@ -292,7 +292,6 @@ public class ReportDaily extends Fragment {
                     TableRow row = new TableRow(getContext());
                     DailyReportResponse.DailyDetail d = details.get(i);
 
-                    TextView cell = null;
                     for (String title: mReportHeaders) {
                         if (getResources().getString(R.string.shop).equals(title)) {
                             continue;
@@ -305,6 +304,7 @@ public class ReportDaily extends Fragment {
                             lp.setMargins(0, 1, 0, 0);
                         }
 
+                        TextView cell = null;
                         if (getResources().getString(R.string.order_id).equals(title)) {
                             lp.width = 100;
                             cell = UTILS.addCell(getContext(), row, orderId++, lp);
@@ -503,6 +503,20 @@ public class ReportDaily extends Fragment {
         }
 
         return true;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UTILS.hiddenKeyboard(getContext(), getView());
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            UTILS.hiddenKeyboard(getContext(), getView());
+        }
     }
 
 }

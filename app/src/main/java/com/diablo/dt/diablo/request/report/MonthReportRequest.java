@@ -2,20 +2,18 @@ package com.diablo.dt.diablo.request.report;
 
 import com.google.gson.annotations.SerializedName;
 
-import com.diablo.dt.diablo.request.PageRequest;
-
 import java.util.List;
 
 /**
- * Created by buxianhui on 17/6/3.
+ * Created by buxianhui on 17/6/4.
  */
 
-public class DailyReportRequest extends PageRequest {
-    @SerializedName("fields")
+public class MonthReportRequest {
+
+    @SerializedName("condition")
     private Condition mCondition;
 
-    public DailyReportRequest(Integer currentPage, Integer itemsPerPage){
-        super(currentPage, itemsPerPage);
+    public MonthReportRequest(){
         mCondition = new Condition();
     }
 
@@ -25,6 +23,10 @@ public class DailyReportRequest extends PageRequest {
 
     public void setEndTime(String endTime) {
         mCondition.setEndTime(endTime);
+    }
+
+    public void setShops(List<Integer> shops) {
+        mCondition.setShops(shops);
     }
 
     public static class Condition{

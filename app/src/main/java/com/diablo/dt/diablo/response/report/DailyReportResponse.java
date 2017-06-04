@@ -3,7 +3,6 @@ package com.diablo.dt.diablo.response.report;
 import com.google.gson.annotations.SerializedName;
 
 import com.diablo.dt.diablo.response.Response;
-import com.diablo.dt.diablo.utils.DiabloEnum;
 
 import java.util.List;
 
@@ -64,7 +63,6 @@ public class DailyReportResponse extends Response {
 
     public DailyReportResponse() {
         super();
-        total = DiabloEnum.INVALID_INDEX;
     }
 
     public List<DailyDetail> getDailyDetails() {
@@ -151,6 +149,9 @@ public class DailyReportResponse extends Response {
      * per daily report
      */
     public static class DailyDetail {
+        @SerializedName("shop_ie")
+        private Integer shop;
+
         @SerializedName("sell")
         private Integer sell;
         @SerializedName("sell_cost")
@@ -203,6 +204,10 @@ public class DailyReportResponse extends Response {
         @SerializedName("entry_date")
         private String genDate;
 
+        public Integer getShop() {
+            return shop;
+        }
+        
         public Integer getSell() {
             return sell;
         }

@@ -2,10 +2,12 @@ package com.diablo.dt.diablo.rest;
 
 import com.diablo.dt.diablo.request.report.DailyReportRealRequest;
 import com.diablo.dt.diablo.request.report.DailyReportRequest;
+import com.diablo.dt.diablo.request.report.MonthReportRequest;
 import com.diablo.dt.diablo.response.Response;
 import com.diablo.dt.diablo.response.report.DailyReportRealResponse;
 import com.diablo.dt.diablo.response.report.DailyReportResponse;
 import com.diablo.dt.diablo.response.report.DailyReportSaleDetailResponse;
+import com.diablo.dt.diablo.response.report.MonthReportResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -32,6 +34,9 @@ public interface WReportInterface {
 
     @POST("h_daily_wreport")
     Call<DailyReportResponse> filterDailyReport(@Header("cookie") String token, @Body DailyReportRequest request);
+
+    @POST("h_month_wreport")
+    Call<MonthReportResponse> filterMonthReport(@Header("cookie") String token, @Body MonthReportRequest request);
 
     @POST("syn_daily_report")
     Call<Response> synDailyReport(@Header("cookie") String token, @Body DailyReportRequest.Condition request);

@@ -2,6 +2,7 @@ package com.diablo.dt.diablo.fragment.report;
 
 
 import static android.graphics.Typeface.BOLD;
+import static com.diablo.dt.diablo.R.string.firm;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -24,6 +25,8 @@ import android.widget.TextView;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WReportClient;
 import com.diablo.dt.diablo.entity.DiabloBrand;
+import com.diablo.dt.diablo.entity.DiabloType;
+import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.request.report.DailyReportRealRequest;
 import com.diablo.dt.diablo.response.report.DailyReportRealResponse;
@@ -34,6 +37,8 @@ import com.diablo.dt.diablo.utils.DiabloUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -179,11 +184,7 @@ public class ReportReal extends Fragment {
         mReportDate.setText(mCurrentDate);
 
         final List<Integer> shopIds = Profile.instance().getShopIds();
-        DailyReportRealRequest request = new DailyReportRealRequest(
-            mCurrentDate,
-            mNextDate,
-            shopIds);
-
+        DailyReportRealRequest request = new DailyReportRealRequest(mCurrentDate, mNextDate, shopIds);
         Call<DailyReportRealResponse> call = mReportClient.dailyReportOfRealTime(
             Profile.instance().getToken(),
             DiabloEnum.DAILY_REPORT_BY_SHOP,
@@ -265,8 +266,6 @@ public class ReportReal extends Fragment {
             DailyReportRealResponse.StockStore stockLast = response.getStockLast(shop);
 
             row = new TableRow(getContext());
-            TextView cell = null;
-
             for (String title: mReportHeaders){
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(120, TableRow.LayoutParams.MATCH_PARENT);
                 if (i == shops.size() - 1) {
@@ -274,6 +273,8 @@ public class ReportReal extends Fragment {
                 } else {
                     lp.setMargins(0, 1, 0, 0);
                 }
+
+                TextView cell = null;
 
                 if (getResources().getString(R.string.order_id).equals(title)) {
                     lp.width = 100;
@@ -410,38 +411,57 @@ public class ReportReal extends Fragment {
 
     private void genReportSaleDetailContent( DailyReportSaleDetailResponse response) {
         List<DailyReportSaleDetailResponse.ReportSaleDetail> details = response.getSaleDetails();
-        SparseArray< List<DailyReportSaleDetailResponse.ReportSaleDetail> > firmDetails = new SparseArray<>();
+        SparseArray< List<DailyReportSaleDetailResponse.ReportSaleDetail> > brandDetails = new SparseArray<>();
         mReportSaleContent.removeAllViews();
 
         for (DailyReportSaleDetailResponse.ReportSaleDetail d: details) {
-            if (null == firmDetails.get(d.getFirm())) {
+            if (null == brandDetails.get(d.getBrand())) {
                 List<DailyReportSaleDetailResponse.ReportSaleDetail> sparseDetails = new ArrayList<>();
                 sparseDetails.add(d);
-                firmDetails.put(d.getFirm(), sparseDetails);
+                brandDetails.put(d.getBrand(), sparseDetails);
             }
             else {
-                List<DailyReportSaleDetailResponse.ReportSaleDetail> sparseDetails = firmDetails.get(d.getFirm());
+                List<DailyReportSaleDetailResponse.ReportSaleDetail> sparseDetails = brandDetails.get(d.getBrand());
                 sparseDetails.add(d);
-                firmDetails.setValueAt(firmDetails.indexOfKey(d.getFirm()), sparseDetails);
+                Collections.sort(sparseDetails, new Comparator<DailyReportSaleDetailResponse.ReportSaleDetail>() {
+                    @Override
+                    public int compare(DailyReportSaleDetailResponse.ReportSaleDetail o1, DailyReportSaleDetailResponse.ReportSaleDetail o2) {
+                        if (o1.getTotal() > o2.getTotal()) {
+                            return -1;
+                        }
+                        else if (o1.getTotal() < o2.getTotal()) {
+                            return 1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    }
+                });
+                brandDetails.setValueAt(brandDetails.indexOfKey(d.getBrand()), sparseDetails);
             }
         }
 
-        for (int i=0; i<firmDetails.size(); i++) {
-            Integer key = firmDetails.keyAt(i);
-            // firm
+        for (int i=0; i<brandDetails.size(); i++) {
+            Integer key = brandDetails.keyAt(i);
+            // brand
             TableRow row = new TableRow(getContext());
             row.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.menu_btn_yellow));
             // row.setBackgroundResource(R.drawable.table_row_bg);
             mReportSaleContent.addView(row);
 
             TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
-            TextView firmView = UTILS.addCell(getContext(), row, Profile.instance().getFirm(key).getName(), lp);
-            firmView.setGravity(Gravity.CENTER);
-            firmView.setTextSize(18);
-            firmView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-            firmView.setTypeface(null, Typeface.BOLD);
+            DiabloBrand brand = Profile.instance().getBrand(key);
+            TextView brandView = UTILS.addCell(
+                getContext(),
+                row,
+                null == brand ? UTILS.toString(key) : brand.getName(),
+                lp);
+            brandView.setGravity(Gravity.CENTER);
+            brandView.setTextSize(18);
+            brandView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+            brandView.setTypeface(null, Typeface.BOLD);
 
-            List<DailyReportSaleDetailResponse.ReportSaleDetail> sparseDetails = firmDetails.get(key);
+            List<DailyReportSaleDetailResponse.ReportSaleDetail> sparseDetails = brandDetails.get(key);
             Integer orderId = 1;
 
             TableRow row2 = null;
@@ -474,16 +494,25 @@ public class ReportReal extends Fragment {
                     else if (getString(R.string.style_number).equals(title)) {
                         cell = UTILS.addCell(getContext(), row2, detail.getStyleNumber(), lp2);
                     }
-                    else if (getString(R.string.brand).equals(title)) {
-                        DiabloBrand brand = Profile.instance().getBrand(detail.getBrand());
+                    else if (getString(R.string.good_type).equals(title)) {
+                        DiabloType type = Profile.instance().getDiabloType(detail.getType());
                         cell = UTILS.addCell(
                             getContext(),
                             row2,
-                            null == brand ? DiabloEnum.EMPTY_STRING : brand.getName(),
+                            null == type ? DiabloEnum.EMPTY_STRING : type.getName(),
+                            lp2);
+                    }
+                    else if (getString(firm).equals(title)) {
+                        Firm firm = Profile.instance().getFirm(detail.getFirm());
+                        cell = UTILS.addCell(
+                            getContext(),
+                            row2,
+                            null == firm ? DiabloEnum.EMPTY_STRING : firm.getName(),
                             lp2);
                     }
                     else if (getString(R.string.amount).equals(title)) {
                         cell = UTILS.addCell(getContext(), row2, detail.getTotal(), lp2);
+                        cell.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                     }
 
                     if (null != cell ) {
@@ -560,6 +589,20 @@ public class ReportReal extends Fragment {
         }
 
         return true;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UTILS.hiddenKeyboard(getContext(), getView());
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            UTILS.hiddenKeyboard(getContext(), getView());
+        }
     }
 
 }

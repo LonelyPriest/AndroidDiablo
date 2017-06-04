@@ -266,7 +266,11 @@ public class SaleOutUpdate extends Fragment {
                     mSaleTableController.addRowControllerAtTop(controller);
                 }
 
-                mSaleTableController.addRowControllerAtTop(createEmptyRow());
+                DiabloSaleRowController emptyRow = createEmptyRow();
+                View view = emptyRow.getView().getCell(R.string.good).getView();
+                UTILS.showKeyboard(getContext(), view);
+
+                mSaleTableController.addRowControllerAtTop(emptyRow);
                 calcShouldPay();
 
                 mSaleCalcController.setRetailerChangeListener(new DiabloSaleController.OnRetailerChangeListener() {

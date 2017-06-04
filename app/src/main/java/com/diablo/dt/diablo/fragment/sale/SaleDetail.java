@@ -717,7 +717,22 @@ public class SaleDetail extends Fragment {
 
     }
 
-//    public void onEventMainThread(Event event) {
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UTILS.hiddenKeyboard(getContext(), getView());
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            UTILS.hiddenKeyboard(getContext(), getView());
+        }
+    }
+
+    //    public void onEventMainThread(Event event) {
 //        PrinterManager.getInstance().onMessage(getContext(), event.msg);
 //    }
 }

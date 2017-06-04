@@ -282,7 +282,11 @@ public class SaleInUpdate extends Fragment {
                 }
 
                 // calculate balance
-                mSaleTableController.addRowControllerAtTop(createEmptyRow());
+                DiabloSaleRowController emptyRow = createEmptyRow();
+                mSaleTableController.addRowControllerAtTop(emptyRow);
+                View view = emptyRow.getView().getCell(R.string.good).getView();
+                UTILS.showKeyboard(getContext(), view);
+
                 calcShouldPay();
 
                 mSaleCalcController.setRetailerChangeListener(new DiabloSaleController.OnRetailerChangeListener() {
@@ -573,16 +577,21 @@ public class SaleInUpdate extends Fragment {
                 if (!mLastRSN.equals(mRSN)) {
                     init();
                 } else {
-                    focusStyleNumber();
+                    View view = focusStyleNumber();
+                    if (null != view) {
+                        UTILS.showKeyboard(getContext(), view);
+                    }
                 }
             }
         }
     }
 
-    private void focusStyleNumber() {
+    private View focusStyleNumber() {
         if (0 != mSaleTableController.getControllers().size()) {
-            mSaleTableController.getControllers().get(0).focusStyleNumber();
+            return mSaleTableController.getControllers().get(0).focusStyleNumber();
         }
+
+        return null;
     }
 
     private void getSaleInfoFromServer(){

@@ -573,4 +573,18 @@ public class GoodDetail extends Fragment {
         return UTILS.addCell(getContext(), row, value, lp);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UTILS.hiddenKeyboard(getContext(), getView());
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            UTILS.hiddenKeyboard(getContext(), getView());
+        }
+    }
+
 }

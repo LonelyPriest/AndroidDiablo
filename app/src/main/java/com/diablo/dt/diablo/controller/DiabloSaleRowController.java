@@ -256,10 +256,11 @@ public class DiabloSaleRowController {
         void onActionOfFPrice();
     }
 
-    public void focusStyleNumber() {
+    public View focusStyleNumber() {
         final DiabloCellView cell = mRowView.getCell(R.string.good);
         cell.setCellFocusable(true);
         cell.requestFocus();
+        return cell.getView();
     }
 
     public void replaceSaleStock(Context context, final SaleStock stock) {

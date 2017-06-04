@@ -2,7 +2,6 @@ package com.diablo.dt.diablo.utils;
 
 import static java.lang.String.format;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -315,28 +314,17 @@ public class DiabloUtils {
         // imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    public void hiddenKeyboard(Context context){
+    public void hiddenKeyboard(Context context, View view){
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         // ((Activity)context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        imm.hideSoftInputFromWindow(((Activity)context).getCurrentFocus().getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public void focusAndShowKeyboard(Context context, final View view){
-        view.requestFocus();
-//        view.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                final InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-//                view.requestFocus(); // needed if you have more then one input
-//            }
-//        }, 200);
+    public void showKeyboard(Context context, final View view){
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-//        view.requestFocus();
-        // imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        // imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        view.requestFocus();
+        imm.showSoftInput(view, 0);
     }
 
     public void makeToast(Context context, int stringId) {

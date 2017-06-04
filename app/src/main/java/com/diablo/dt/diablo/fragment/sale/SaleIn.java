@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -352,9 +353,9 @@ public class SaleIn extends Fragment{
             @Override
             public void onRetailerChanged(SaleCalc c, Retailer retailer) {
                 checkRetailerDraft(c);
-
                 // focus to style number
-                focusStyleNumber();
+                View view = focusStyleNumber();
+                UTILS.showKeyboard(getContext(), view);
                 mSaleCalcController.setBalance(retailer.getBalance());
             }
         });
@@ -1178,7 +1179,7 @@ public class SaleIn extends Fragment{
 
     }
 
-    public void focusStyleNumber() {
+    public View focusStyleNumber() {
         // get top row
         TableRow row = (TableRow) mSaleTable.getChildAt(0);
         View cell = SaleInHandler.getColumn(getContext(), row, R.string.good);
@@ -1187,6 +1188,8 @@ public class SaleIn extends Fragment{
             cell.setFocusable(true);
             cell.requestFocus();
         }
+
+        return cell;
     }
 
     public void setNoFreeStockSelectListener(StockSelect.OnNoFreeStockSelectListener listener){
@@ -1275,7 +1278,9 @@ public class SaleIn extends Fragment{
                         Retailer retailer = Profile.instance().getRetailerById(currentRetailerId);
                         Retailer.getRetailer(getContext(), retailer.getId(), mOnRetailerChangeListener);
                     }
-                    focusStyleNumber();
+
+                    View view = focusStyleNumber();
+                    UTILS.showKeyboard(getContext(), view);
                 }
             }
 
@@ -1418,6 +1423,7 @@ public class SaleIn extends Fragment{
 
             d.setFdiscount(s.getDiscount());
             d.setFprice(s.getFinalPrice());
+            d.setOrgPrice(s.getOrgPrice());
 
             d.setPath(s.getPath());
             d.setSecond(s.getSecond() );
@@ -1573,7 +1579,13 @@ public class SaleIn extends Fragment{
         Log.d(LOG_TAG, "onDestroy called");
     }
 
-//    public void onEventMainThread(Event event) {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UTILS.showKeyboard(getContext(), getView());
+    }
+
+    //    public void onEventMainThread(Event event) {
 //        PrinterManager.getInstance().onMessage(getContext(), event.msg);
 //    }
 }
