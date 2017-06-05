@@ -393,6 +393,7 @@ public class LoginActivity extends AppCompatActivity {
                 LoginUserInfoResponse user = response.body();
                 Profile.instance().setLoginEmployee(user.getLoginEmployee());
                 Profile.instance().setLoginFirm(user.getLoginFirm());
+                Profile.instance().setLoginType(user.getLoginType());
                 Profile.instance().setLoginRetailer(user.getLoginRetailer());
                 Profile.instance().setLoginShop(user.getLoginShop());
                 Profile.instance().setLoginShops(user.getShops());

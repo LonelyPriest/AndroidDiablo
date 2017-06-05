@@ -93,6 +93,14 @@ public class ReportMonth extends Fragment {
                 continue;
             }
 
+            if ( (getResources().getString(R.string.stock_cost).equals(title)
+                || getResources().getString(R.string.sell_cost).equals(title)
+                || getResources().getString(R.string.stock_in_cost).equals(title)
+                || getResources().getString(R.string.stock_out_cost).equals(title))
+                && !Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER) ) {
+                continue;
+            }
+
             TextView cell = new TextView(this.getContext());
             cell.setTypeface(null, Typeface.BOLD);
             cell.setTextColor(Color.BLACK);
@@ -213,9 +221,19 @@ public class ReportMonth extends Fragment {
                     continue;
                 }
 
+                if ( (getResources().getString(R.string.stock_cost).equals(title)
+                    || getResources().getString(R.string.sell_cost).equals(title)
+                    || getResources().getString(R.string.stock_in_cost).equals(title)
+                    || getResources().getString(R.string.stock_out_cost).equals(title))
+                    && !Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER) ) {
+                    continue;
+                }
+
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(120, TableRow.LayoutParams.MATCH_PARENT);
+                // last row
                 if (i == mShopIds.size() - 1) {
                     lp.setMargins(0, 1, 0, 1);
+                    row.setBackgroundResource(R.drawable.table_row_last_bg);
                 } else {
                     lp.setMargins(0, 1, 0, 0);
                 }

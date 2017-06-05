@@ -1,10 +1,9 @@
 package com.diablo.dt.diablo.fragment.report;
 
 
-import static android.graphics.Typeface.BOLD;
-
 import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -146,8 +145,16 @@ public class ReportDaily extends Fragment {
                 continue;
             }
 
+            if ( (getResources().getString(R.string.stock_cost).equals(title)
+                || getResources().getString(R.string.sell_cost).equals(title)
+                || getResources().getString(R.string.stock_in_cost).equals(title)
+                || getResources().getString(R.string.stock_out_cost).equals(title))
+                && !Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER) ) {
+                continue;
+            }
+
             TextView cell = new TextView(this.getContext());
-            cell.setTypeface(null, BOLD);
+            cell.setTypeface(null, Typeface.BOLD);
             cell.setTextColor(Color.BLACK);
 
             TableRow.LayoutParams lp = new TableRow.LayoutParams(120, TableRow.LayoutParams.MATCH_PARENT);
@@ -297,6 +304,14 @@ public class ReportDaily extends Fragment {
                             continue;
                         }
 
+                        if ( (getResources().getString(R.string.stock_cost).equals(title)
+                            || getResources().getString(R.string.sell_cost).equals(title)
+                            || getResources().getString(R.string.stock_in_cost).equals(title)
+                            || getResources().getString(R.string.stock_out_cost).equals(title))
+                            && !Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER) ) {
+                            continue;
+                        }
+
                         TableRow.LayoutParams lp = new TableRow.LayoutParams(120, TableRow.LayoutParams.MATCH_PARENT);
                         if (i == details.size() - 1) {
                             lp.setMargins(0, 1, 0, 1);
@@ -384,7 +399,12 @@ public class ReportDaily extends Fragment {
 
                     // cell
                     TableRow.LayoutParams lp = new TableRow.LayoutParams();
-                    lp.span = 5;
+                    if (Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER)) {
+                        lp.span = 5;
+                    } else {
+                        lp.span = 4;
+                    }
+
                     lp.setMargins(0, 1, 0, 1);
                     // addCell(row, mStatistic, lp);
 
@@ -401,6 +421,14 @@ public class ReportDaily extends Fragment {
 
                     if ( 1 < mTotal) {
                         for (String title: mReportHeaders) {
+                            if ( (getResources().getString(R.string.stock_cost).equals(title)
+                                || getResources().getString(R.string.sell_cost).equals(title)
+                                || getResources().getString(R.string.stock_in_cost).equals(title)
+                                || getResources().getString(R.string.stock_out_cost).equals(title))
+                                && !Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER) ) {
+                                continue;
+                            }
+
                             TableRow.LayoutParams lp2 = new TableRow.LayoutParams();
                             lp2.setMargins(0, 1, 0, 1);
                             if (getResources().getString(R.string.stock_sell).equals(title)) {

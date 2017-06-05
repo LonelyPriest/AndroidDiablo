@@ -47,7 +47,7 @@ public class MatchStockAdapter extends DiabloAdapter {
         List<MatchStock> stocks = Profile.instance().getMatchStocks();
         List<DiabloEntity> suggestions = new ArrayList<>();
         for (MatchStock stock: stocks) {
-            if (stock.getName().toUpperCase().contains(s.toUpperCase())) {
+            if (stock.getViewName().toUpperCase().contains(s.toUpperCase())) {
                 suggestions.add(stock);
             }
         }

@@ -716,8 +716,9 @@
   <string name="report_sale_info">销售状况</string>
   <string name="report_good_sale_info">货品销售状况</string>
 
-  <string name="update_title">2017－06－01日更新</string>
+  <string name="update_title">2017－06－05日更新</string>
   <string-array name="version_update">
+    <item>增加与成本有关的报表统计项只允许主帐号在权限查看</item>
     <item>增加日报表利润率统计</item>
     <item>增加实时报表/日报表/月报表统计</item>
     <item>增加每晚凌晨2点系统自动生成前一天日报表能力</item>

@@ -60,6 +60,8 @@ public class ReportReal extends Fragment {
 
     private WReportInterface mReportClient;
 
+    private boolean mIsMaster;
+
     public ReportReal() {
         // Required empty public constructor
     }
@@ -93,6 +95,13 @@ public class ReportReal extends Fragment {
         TableRow row = new TableRow(this.getContext());
 
         for (String title: mReportHeaders){
+            if ( (getResources().getString(R.string.sell_cost).equals(title)
+                || getResources().getString(R.string.gross_profit).equals(title)
+                || getResources().getString(R.string.gross_margin).equals(title))
+                && !Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER)) {
+                continue;
+            }
+
             TextView cell = new TextView(this.getContext());
             cell.setTypeface(null, BOLD);
             cell.setTextColor(Color.BLACK);
@@ -272,6 +281,13 @@ public class ReportReal extends Fragment {
                     lp.setMargins(0, 1, 0, 1);
                 } else {
                     lp.setMargins(0, 1, 0, 0);
+                }
+
+                if ( (getResources().getString(R.string.sell_cost).equals(title)
+                    || getResources().getString(R.string.gross_profit).equals(title)
+                    || getResources().getString(R.string.gross_margin).equals(title))
+                    && !Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER)) {
+                    continue;
                 }
 
                 TextView cell = null;

@@ -110,6 +110,10 @@ public class GoodDetail extends Fragment {
                 && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
                 continue;
             }
+            if (title.equals(getString(R.string.org_price))
+                && !Profile.instance().getLoginType().equals(DiabloEnum.DIABLO_MASTER)) {
+                continue;
+            }
             titles.add(title);
         }
 

@@ -22,6 +22,8 @@ public class DiabloEnum {
     public static final Integer DIABLO_FREE_COLOR = 0;
     public static final String  DIABLO_FREE_SIZE = "0";
     public static final Integer DIABLO_FREE_SIZE_GROUP = 0;
+    public static final Integer DIABLO_MASTER = 1;
+    public static final Integer DIABLO_USER = 2;
 
     public static final Integer DIABLO_FAMAN = 0;
     public static final Integer DIABLO_MAN = 1;
