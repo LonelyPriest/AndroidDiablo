@@ -83,9 +83,9 @@ public class DiabloRetailerUpdate extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         if (mController.invalid()) {
-            menu.findItem(601).setEnabled(false);
+            menu.findItem(801).setEnabled(false);
         } else {
-            menu.findItem(601).setEnabled(true);
+            menu.findItem(801).setEnabled(true);
         }
 
         getActivity().invalidateOptionsMenu();
@@ -95,10 +95,10 @@ public class DiabloRetailerUpdate extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        menu.add(Menu.NONE, 600, Menu.NONE, getResources().getString(R.string.btn_cancel)).setIcon(R.drawable.ic_close_black_24dp)
+        menu.add(Menu.NONE, 800, Menu.NONE, getResources().getString(R.string.btn_cancel)).setIcon(R.drawable.ic_close_black_24dp)
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
-        menu.add(Menu.NONE, 601, Menu.NONE, getResources().getString(R.string.btn_save))
+        menu.add(Menu.NONE, 801, Menu.NONE, getResources().getString(R.string.btn_save))
             .setIcon(R.drawable.ic_check_black_24dp)
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }
@@ -106,10 +106,10 @@ public class DiabloRetailerUpdate extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case 600: // cancel
-                switchToRetailerDetailFragment(600, mRetailer);
+            case 800: // cancel
+                switchToRetailerDetailFragment(800, mRetailer);
                 break;
-            case 601: // save
+            case 801: // save
                 startUpdate();
                 break;
             default:
@@ -172,7 +172,7 @@ public class DiabloRetailerUpdate extends Fragment {
         r.updateRetailer(getContext(), mRetailer, new Retailer.OnRetailerChangeListener() {
             @Override
             public void afterAdd(Retailer retailer) {
-                switchToRetailerDetailFragment(601, retailer);
+                switchToRetailerDetailFragment(801, retailer);
             }
 
             @Override
@@ -189,9 +189,9 @@ public class DiabloRetailerUpdate extends Fragment {
         }
 
         switch (operation){
-            case 600:
+            case 800:
                 break;
-            case 601:
+            case 801:
                 if (null != mOnRetailerUpdateListener) {
                     mOnRetailerUpdateListener.onUpdate(updatedRetailer);
                 }

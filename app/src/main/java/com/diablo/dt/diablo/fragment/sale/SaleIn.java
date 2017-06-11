@@ -167,8 +167,20 @@ public class SaleIn extends Fragment{
             DiabloEnum.START_SHOW_DISCOUNT,
             DiabloEnum.DIABLO_CONFIG_YES);
 
+        String reverseSaleTitle = Profile.instance().getConfig(
+            mLoginShop,
+            DiabloEnum.START_REVERSE_SALE_TITLE,
+            DiabloEnum.DIABLO_CONFIG_NO);
+
+        String [] theadSale;
+        if (reverseSaleTitle.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
+            theadSale = getResources().getStringArray(R.array.thead_sale_reverse);
+        } else {
+            theadSale = getResources().getStringArray(R.array.thead_sale);
+        }
+
         List<String> titles = new ArrayList<>();
-        for(String title: getResources().getStringArray(R.array.thead_sale)) {
+        for(String title: theadSale) {
             if (title.equals(getString(R.string.discount))
                 && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
                 continue;
@@ -1230,18 +1242,22 @@ public class SaleIn extends Fragment{
                                 ms.setSelectedPrice(s.getSelectedPrice());
 
                                 TableRow row = getRowByOrderId(s.getOrderId());
+
                                 View cellAmount = SaleInHandler.getColumn(getContext(), row, R.string.amount);
                                 View cellStock = SaleInHandler.getColumn(getContext(), row, R.string.stock);
+                                View cellFPrice = SaleInHandler.getColumn(getContext(), row, R.string.fprice);
+
 
                                 utils.setEditTextValue((EditText)cellAmount, saleTotal);
                                 utils.setTextViewValue((TextView)cellStock, exist);
+                                utils.setEditTextValue((EditText)cellFPrice, ms.getFinalPrice());
 
                                 if (ms.getSecond().equals(DiabloEnum.DIABLO_TRUE)) {
-                                    View cellFPrice = SaleInHandler.getColumn(getContext(), row, R.string.fprice);
+                                    // View cellFPrice = SaleInHandler.getColumn(getContext(), row, R.string.fprice);
                                     View cellDiscount = SaleInHandler.getColumn(getContext(), row, R.string.discount);
                                     View cellPriceType = SaleInHandler.getColumn(getContext(), row, R.string.price_type);
 
-                                    utils.setEditTextValue((EditText)cellFPrice, ms.getFinalPrice());
+                                    // utils.setEditTextValue((EditText)cellFPrice, ms.getFinalPrice());
                                     utils.setTextViewValue((TextView) cellDiscount, ms.getDiscount());
                                     ((Spinner)cellPriceType).setSelection(ms.getSelectedPrice() - 1);
 

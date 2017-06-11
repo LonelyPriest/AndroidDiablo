@@ -59,6 +59,7 @@ public class StockSelect extends Fragment {
 
     private Integer   mOperation;
 
+    private EditText mViewFPrice;
     private TableLayout mViewTable;
 
     private List<Stock> mStocks;
@@ -95,6 +96,7 @@ public class StockSelect extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_stock_select, container, false);
+        mViewFPrice = (EditText) view.findViewById(R.id.final_price);
         mViewTable = (TableLayout) view.findViewById(R.id.stock_select);
 
         ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -109,6 +111,15 @@ public class StockSelect extends Fragment {
     }
 
     private void init(){
+        mViewFPrice.setText(DiabloUtils.instance().toString(mSaleStock.getFinalPrice()));
+        new DiabloEditTextWatcher(mViewFPrice, new DiabloEditTextWatcher.DiabloEditTextChangListener() {
+            @Override
+            public void afterTextChanged(String s) {
+                mSaleStock.setFinalPrice(DiabloUtils.instance().toFloat(s));
+                Log.d(LOG_TAG, "set final price:" + s);
+            }
+        });
+
         mViewTable.removeAllViews();
 
         if (DiabloEnum.SALE_IN.equals(mComeFrom)
@@ -179,6 +190,9 @@ public class StockSelect extends Fragment {
                     mSaleStock.setDiscount(lastStock.getDiscount());
                     mSaleStock.setSelectedPrice(lastStock.getSellStyle());
                     mSaleStock.setSecond(DiabloEnum.DIABLO_TRUE);
+
+                    // reset view
+                    mViewFPrice.setText(DiabloUtils.instance().toString(lastStock.getPrice()));
                 }
 
                 startAdd();

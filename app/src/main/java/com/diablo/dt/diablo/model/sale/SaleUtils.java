@@ -205,8 +205,20 @@ public class SaleUtils {
             DiabloEnum.START_SHOW_DISCOUNT,
             DiabloEnum.DIABLO_CONFIG_YES);
 
+        String reverseSaleTitle = Profile.instance().getConfig(
+            shop,
+            DiabloEnum.START_REVERSE_SALE_TITLE,
+            DiabloEnum.DIABLO_CONFIG_NO);
+
+        String [] saleTitles;
+        if (reverseSaleTitle.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
+            saleTitles = context.getResources().getStringArray(R.array.thead_sale_reverse);
+        } else {
+            saleTitles = context.getResources().getStringArray(R.array.thead_sale);
+        }
+
         List<String> titles = new ArrayList<>();
-        for(String title: context.getResources().getStringArray(R.array.thead_sale)) {
+        for(String title: saleTitles) {
             if (title.equals(context.getResources().getString(R.string.discount))
                 && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
                 continue;

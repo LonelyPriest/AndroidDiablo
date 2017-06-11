@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:drawableStart="@drawable/ic_person_black_24dp"
+        android:drawableLeft="@drawable/ic_person_black_24dp"
         android:text="@string/retailer"/>
     <AutoCompleteTextView
         android:id="@+id/sale_select_retailer"
@@ -41,6 +42,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:hint="@string/shop"
+        android:lines="1"
         android:layout_weight="0.8" />
 
 

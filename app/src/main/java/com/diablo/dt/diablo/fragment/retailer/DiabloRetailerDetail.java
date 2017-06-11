@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
-import com.diablo.dt.diablo.adapter.BackendRetailerAdapter;
+import com.diablo.dt.diablo.adapter.RetailerAdapter;
 import com.diablo.dt.diablo.client.RetailerClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
@@ -174,18 +174,39 @@ public class DiabloRetailerDetail extends Fragment {
     }
 
     public void initSearch() {
-        new BackendRetailerAdapter(
+//        new BackendRetailerAdapter(
+//            getContext(),
+//            R.layout.typeahead_retailer,
+//            R.id.typeahead_select_retailer, mAutoCompleteSearch);
+
+        new RetailerAdapter(
             getContext(),
             R.layout.typeahead_retailer,
-            R.id.typeahead_select_retailer, mAutoCompleteSearch);
+            R.id.typeahead_select_retailer,
+            mAutoCompleteSearch);
 
         AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Retailer selectRetailer = (Retailer) adapterView.getItemAtPosition(i);
-                mMatchedRetailers = new ArrayList<>();
-                mMatchedRetailers.add(selectRetailer);
-                init();
+
+                Retailer.getRetailer(getContext(), selectRetailer.getId(), new Retailer.OnRetailerChangeListener() {
+                    @Override
+                    public void afterAdd(Retailer retailer) {
+
+                    }
+
+                    @Override
+                    public void afterGet(Retailer retailer) {
+                        mMatchedRetailers = new ArrayList<>();
+                        mMatchedRetailers.add(retailer);
+                        init();
+                    }
+                });
+
+//                mMatchedRetailers = new ArrayList<>();
+//                mMatchedRetailers.add(selectRetailer);
+//                init();
             }
         };
 
@@ -203,7 +224,8 @@ public class DiabloRetailerDetail extends Fragment {
                     public void run() {
                         for (Retailer r: Profile.instance().getRetailers()) {
                             if (isNotStartWithNumber) {
-                                if (r.getName().toUpperCase().contains(searchText)) {
+                                if (r.getName().toUpperCase().contains(searchText)
+                                    || r.getPy().contains(searchText.toUpperCase())) {
                                     mMatchedRetailers.add(r);
                                 }
                             } else {

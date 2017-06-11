@@ -287,7 +287,7 @@ public class DiabloSaleRowController {
         mSaleStock.setSelectedPrice(stock.getSelectedPrice());
 
         if (mSaleStock.getSecond().equals(DiabloEnum.DIABLO_TRUE)) {
-            mRowView.setCellText(R.string.fprice, mSaleStock.getFinalPrice());
+            // mRowView.setCellText(R.string.fprice, mSaleStock.getFinalPrice());
             mRowView.setCellText(R.string.discount, mSaleStock.getDiscount());
             ((Spinner) mRowView.getCell(R.string.price_type).getView()).setSelection(mSaleStock.getSelectedPrice() - 1);
 
@@ -296,6 +296,7 @@ public class DiabloSaleRowController {
 
         mRowView.setCellText(R.string.amount, saleTotal);
         mRowView.setCellText(R.string.stock, exist);
+        mRowView.setCellText(R.string.fprice, mSaleStock.getFinalPrice());
     }
 
 }

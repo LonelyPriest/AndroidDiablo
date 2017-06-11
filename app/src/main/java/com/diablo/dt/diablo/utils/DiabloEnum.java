@@ -77,6 +77,7 @@ public class DiabloEnum {
     public static final String  START_SYS_RETAILER = "s_customer";
     public static final String  START_REJECT_SECOND_ORDER = "reject_pgood";
     public static final String  START_BLUETOOTH = "bluetooth";
+    public static final String  START_REVERSE_SALE_TITLE = "head_amount";
     public static final Integer NON_REPO = 0;
     public static final Integer USE_REPO = 1;
 

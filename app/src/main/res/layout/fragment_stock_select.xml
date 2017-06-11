@@ -1,14 +1,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.diablo.dt.diablo.fragment.sale.StockSelect">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@color/white"
+              tools:context="com.diablo.dt.diablo.fragment.sale.StockSelect">
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/fprice"
+                  android:textSize="20sp"
+                  android:textStyle="bold"
+                  android:gravity="end"
+                  android:textColor="@color/black"/>
+        <EditText android:id="@+id/final_price"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:inputType="numberDecimal"
+                  android:selectAllOnFocus="true"
+                  android:gravity="center"
+                  android:textSize="20sp"
+                  android:textColor="@color/black"
+                  android:textStyle="bold"/>
+    </LinearLayout>
 
     <TableLayout
         android:id="@+id/stock_select"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50sp">
 
     </TableLayout>
 
