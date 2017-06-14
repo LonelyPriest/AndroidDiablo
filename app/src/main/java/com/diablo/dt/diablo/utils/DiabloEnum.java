@@ -126,6 +126,7 @@ public class DiabloEnum {
     public static final String TAG_RETAILER_DETAIL = "retailerDetail";
     public static final String TAG_RETAILER_NEW = "retailerNew";
     public static final String TAG_RETAILER_UPDATE = "retailerUpdate";
+    public static final String TAG_RETAILER_CHECK_SALE_TRANS = "retailerCheckSaleTrans";
 
     public static final String TAG_FIRM_PAGER = "firmPager";
 

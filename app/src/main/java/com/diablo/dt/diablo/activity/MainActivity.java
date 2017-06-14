@@ -1,6 +1,8 @@
 package com.diablo.dt.diablo.activity;
 
 
+import static com.diablo.dt.diablo.utils.DiabloEnum.TAG_RETAILER_CHECK_SALE_TRANS;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -86,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         DiabloEnum.TAG_SIZE_SELECT,
 
         DiabloEnum.TAG_RETAILER_NEW,
+
+        DiabloEnum.TAG_RETAILER_CHECK_SALE_TRANS
     };
 
     private NavigationTag mCurrentNavTag;

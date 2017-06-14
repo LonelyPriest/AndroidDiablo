@@ -405,6 +405,9 @@ public class DiabloRetailerDetail extends Fragment {
         if (getResources().getString(R.string.modify) == item.getTitle()){
             switchToUpdate(retailer);
         }
+        else if (getResources().getString(R.string.check_trans) == item.getTitle()) {
+            switchToCheckSaleTrans(retailer);
+        }
 
         return true;
     }
@@ -432,14 +435,36 @@ public class DiabloRetailerDetail extends Fragment {
                 replaceCurrentSelectRow(updatedRetailer);
             }
 
-            @Override
-            public void onAdd() {
-
-            }
+//            @Override
+//            public void onAdd() {
+//
+//            }
         });
 
         if (!to.isAdded()){
             transaction.hide(this).add(R.id.frame_container, to, DiabloEnum.TAG_RETAILER_UPDATE).commit();
+        } else {
+            transaction.hide(this).show(to).commit();
+        }
+    }
+
+    private void switchToCheckSaleTrans(Retailer retailer) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        // find
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_RETAILER_CHECK_SALE_TRANS);
+
+        if (null == to){
+            Bundle args = new Bundle();
+            args.putInt(DiabloEnum.BUNDLE_PARAM_RETAILER, retailer.getId());
+
+            to = new DiabloRetailerSaleCheck();
+            to.setArguments(args);
+        } else {
+            ((DiabloRetailerSaleCheck)to).setStartRetailer(retailer.getId());
+        }
+
+        if (!to.isAdded()){
+            transaction.hide(this).add(R.id.frame_container, to, DiabloEnum.TAG_RETAILER_CHECK_SALE_TRANS).commit();
         } else {
             transaction.hide(this).show(to).commit();
         }
@@ -478,8 +503,23 @@ public class DiabloRetailerDetail extends Fragment {
         mCurrentSelectedRow.setTag(updateRetailer);
     }
 
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UTILS.hiddenKeyboard(getContext(), getView());
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            UTILS.hiddenKeyboard(getContext(), getView());
+        }
+    }
+
     public interface OnRetailerDetailListener {
-        void onAdd();
+        // void onAdd();
         void onUpdate(Retailer updatedRetailer);
     }
 }

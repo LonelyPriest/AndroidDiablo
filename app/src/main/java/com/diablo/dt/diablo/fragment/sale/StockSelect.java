@@ -99,18 +99,26 @@ public class StockSelect extends Fragment {
         mViewFPrice = (EditText) view.findViewById(R.id.final_price);
         mViewTable = (TableLayout) view.findViewById(R.id.stock_select);
 
-        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        if (null != bar) {
-            bar.setTitle(getResources().getString(R.string.select_stock));
-        }
+//        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+//        if (null != bar) {
+//            bar.setTitle(getResources().getString(R.string.select_stock));
+//        }
 
         //trace last sale
-        
         init();
         return view;
     }
 
+    private void initTitle() {
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(getResources().getString(R.string.select_stock));
+        }
+    }
+
     private void init(){
+        initTitle();
+        
         mViewFPrice.setText(DiabloUtils.instance().toString(mSaleStock.getFinalPrice()));
         new DiabloEditTextWatcher(mViewFPrice, new DiabloEditTextWatcher.DiabloEditTextChangListener() {
             @Override
