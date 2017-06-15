@@ -27,7 +27,7 @@ public class StringArrayAdapter extends ArrayAdapter<String>{
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         TextView view = (TextView) super.getView(position, convertView, parent);
-        view.setTextSize(18);
+        view.setTextSize(21);
         view.setTextColor(Color.BLACK);
         return view;
     }

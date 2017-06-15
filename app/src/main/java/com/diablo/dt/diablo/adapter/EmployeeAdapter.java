@@ -39,8 +39,9 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         TextView view = (TextView) super.getView(position, convertView, parent);
-        view.setTextSize(18);
+        view.setTextSize(21);
         view.setTextColor(Color.MAGENTA);
+        // view.setGravity(Gravity.CENTER_HORIZONTAL);
 
         Employee employee = filterItems.get(position);
         if (null != employee) {
@@ -56,7 +57,7 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
     @Override
     public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
         TextView view = (TextView) super.getDropDownView(position, convertView, parent);
-        view.setTextSize(18);
+        view.setTextSize(21);
         view.setTextColor(Color.BLACK);
 
         Employee employee = filterItems.get(position);

@@ -703,6 +703,7 @@ public class SaleDetail extends Fragment {
             }
             else if (DiabloEnum.TAG_SALE_DETAIL_TO_NOTE.equals(tag)) {
                 to = new SaleDetailToNote();
+                // args.putInt(DiabloEnum.BUNDLE_PARAM_COME_FORM, R.string.come_from_unknown);
             }
 
             if (null != to ) {
@@ -717,6 +718,7 @@ public class SaleDetail extends Fragment {
             }
             else if (DiabloEnum.TAG_SALE_DETAIL_TO_NOTE.equals(tag)) {
                 ((SaleDetailToNote)to).setRSN(rsn);
+                // ((SaleDetailToNote)to).setComesFrom(R.string.come_from_unknown);
             }
         }
 

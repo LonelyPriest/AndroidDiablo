@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -12,6 +11,7 @@ import android.widget.Spinner;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.adapter.EmployeeAdapter;
 import com.diablo.dt.diablo.adapter.FirmAdapter;
+import com.diablo.dt.diablo.adapter.StringArrayAdapter;
 import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Employee;
 import com.diablo.dt.diablo.entity.Firm;
@@ -265,10 +265,14 @@ public class DiabloStockCalcController {
     }
 
     public void setExtraCostTypeAdapter(Context context){
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+        StringArrayAdapter adapter = new StringArrayAdapter(
             context,
-            R.array.extra_cost_on_sale,
-            android.R.layout.simple_spinner_item);
+            android.R.layout.simple_spinner_item,
+            context.getResources().getStringArray(R.array.extra_cost_on_sale));
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+//            context,
+//            R.array.extra_cost_on_sale,
+//            android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ((Spinner)mStockCalcView.getViewExtraCostType()).setAdapter(adapter);
     }

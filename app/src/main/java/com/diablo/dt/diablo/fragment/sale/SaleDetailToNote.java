@@ -72,6 +72,7 @@ public class SaleDetailToNote extends Fragment {
     private Integer mTotalPage;
 
     private String mStatistic;
+    private Integer mComesFrom;
 
     /**
      * request
@@ -92,13 +93,17 @@ public class SaleDetailToNote extends Fragment {
     public void setRSN(String rsn) {
         this.mRSN = rsn;
     }
+    public void setComesFrom(Integer comesFrom) {
+        this.mComesFrom = comesFrom;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // mComesFrom = R.string.back_from_unknown;
         if (null != getArguments()) {
             mRSN = getArguments().getString(DiabloEnum.BUNDLE_PARAM_RSN);
+            mComesFrom = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_COME_FORM, R.string.back_from_unknown);
         }
 
         mTableHeads = getResources().getStringArray(R.array.thead_sale_detail_note);
@@ -440,8 +445,22 @@ public class SaleDetailToNote extends Fragment {
                 mRefreshDialog.show();
                 pageChanged();
                 break;
-            case R.id.sale_note_to_detail:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
+            case R.id.sale_note_to_detail: {
+                switch (mComesFrom) {
+                    case R.string.come_from_retailer_sale_check:
+                        DiabloUtils.switchToFrame(
+                            this,
+                            "com.diablo.dt.diablo.fragment.retailer.RetailerSaleCheck",
+                            DiabloEnum.TAG_RETAILER_CHECK_SALE_TRANS);
+                        break;
+                    case R.string.come_from_unknown:
+                        SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
+                        break;
+                    default:
+                        SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_DETAIL);
+                        break;
+                }
+            }
             default:
                 // return super.onOptionsItemSelected(item);
                 break;
@@ -468,6 +487,8 @@ public class SaleDetailToNote extends Fragment {
                 init();
                 pageChanged();
             }
+        } else {
+            mComesFrom = R.string.back_from_unknown;
         }
     }
 

@@ -1,8 +1,6 @@
 package com.diablo.dt.diablo.activity;
 
 
-import static com.diablo.dt.diablo.utils.DiabloEnum.TAG_RETAILER_CHECK_SALE_TRANS;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -41,7 +39,7 @@ import com.diablo.dt.diablo.fragment.printer.BlueToothJolimarkFragment;
 import com.diablo.dt.diablo.fragment.report.ReportDaily;
 import com.diablo.dt.diablo.fragment.report.ReportMonth;
 import com.diablo.dt.diablo.fragment.report.ReportReal;
-import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
+import com.diablo.dt.diablo.fragment.retailer.RetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -88,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         DiabloEnum.TAG_SIZE_SELECT,
 
         DiabloEnum.TAG_RETAILER_NEW,
-
+        DiabloEnum.TAG_RETAILER_UPDATE,
         DiabloEnum.TAG_RETAILER_CHECK_SALE_TRANS
     };
 
@@ -353,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 f = new GoodColorDetail();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(12)) {
-                f = new DiabloRetailerDetail();
+                f = new RetailerDetail();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(13)) {
                 f = new DiabloFirmPager();
@@ -371,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
                 f = new ReportMonth();
             }
 //            else if (mCurrentNavTag.getTitleIndex().equals(14)) {
-//                f = new DiabloRetailerNew();
+//                f = new RetailerNew();
 //            }
             else {
                 f = new SaleDetail();

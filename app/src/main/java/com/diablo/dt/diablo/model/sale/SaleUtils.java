@@ -27,7 +27,7 @@ import com.diablo.dt.diablo.fragment.printer.BlueToothJolimarkFragment;
 import com.diablo.dt.diablo.fragment.report.ReportDaily;
 import com.diablo.dt.diablo.fragment.report.ReportMonth;
 import com.diablo.dt.diablo.fragment.report.ReportReal;
-import com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail;
+import com.diablo.dt.diablo.fragment.retailer.RetailerDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleDetail;
 import com.diablo.dt.diablo.fragment.sale.SaleIn;
 import com.diablo.dt.diablo.fragment.sale.SaleNote;
@@ -131,7 +131,7 @@ public class SaleUtils {
                     f = new GoodColorDetail();
                     break;
                 case DiabloEnum.TAG_RETAILER_DETAIL:
-                    f = new DiabloRetailerDetail();
+                    f = new RetailerDetail();
                     break;
                 case DiabloEnum.TAG_FIRM_PAGER:
                     f = new DiabloFirmPager();
@@ -148,9 +148,7 @@ public class SaleUtils {
                 case DiabloEnum.TAG_REPORT_MONTH:
                     f = new ReportMonth();
                     break;
-//                case DiabloEnum.TAG_RETAILER_NEW:
-//                    f = new DiabloRetailerNew();
-//                    break;
+                
                 default:
                     break;
             }

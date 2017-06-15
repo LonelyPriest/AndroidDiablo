@@ -41,13 +41,15 @@ import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DiabloRetailerDetail extends Fragment {
+public class RetailerDetail extends Fragment {
     private final static String LOG_TAG = "RetailerDetail:";
     private final static DiabloUtils UTILS = DiabloUtils.instance();
 
@@ -60,6 +62,7 @@ public class DiabloRetailerDetail extends Fragment {
     private Integer mCurrentPage;
     private Integer mTotalPage;
     private Integer mItemsPerPage;
+    private Float mTotalBalance;
 
     private AutoCompleteTextView mAutoCompleteSearch;
     private Button mBtnSearch;
@@ -71,12 +74,12 @@ public class DiabloRetailerDetail extends Fragment {
 
 
 
-    public DiabloRetailerDetail() {
+    public RetailerDetail() {
         // Required empty public constructor
     }
 
-    public static DiabloRetailerDetail newInstance(String param1, String param2) {
-        DiabloRetailerDetail fragment = new DiabloRetailerDetail();
+    public static RetailerDetail newInstance(String param1, String param2) {
+        RetailerDetail fragment = new RetailerDetail();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -113,6 +116,9 @@ public class DiabloRetailerDetail extends Fragment {
 
             if (getResources().getString(R.string.order_id).equals(title)) {
                 lp.weight = 0.5f;
+            }
+            if (getString(R.string.diablo_arrears).equals(title)) {
+                lp.weight = 1.5f;
             }
             cell.setLayoutParams(lp);
             cell.setText(title);
@@ -167,7 +173,9 @@ public class DiabloRetailerDetail extends Fragment {
     public void init() {
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mItemsPerPage = DiabloEnum.DEFAULT_ITEMS_PER_PAGE;
+        mTotalBalance = 0f;
 
+        sortMatchedRetailers();
         mTotalPage = UTILS.calcTotalPage(mMatchedRetailers.size(), mItemsPerPage);
 
         pageChanged();
@@ -251,7 +259,7 @@ public class DiabloRetailerDetail extends Fragment {
 
         Integer startIndex =  (mCurrentPage - 1) * mItemsPerPage;
         Integer orderId = startIndex + 1;
-        TableRow row = null;
+        TableRow row;
 
         for (int i=startIndex; i<mCurrentPage * mItemsPerPage && i<mMatchedRetailers.size(); i++ ) {
             Retailer r = mMatchedRetailers.get(i);
@@ -271,6 +279,7 @@ public class DiabloRetailerDetail extends Fragment {
             TextView cell = null;
             for (String title: mTableTitles) {
                 TableRow.LayoutParams lp = UTILS.createTableRowParams(1f);
+                lp.setMargins(0, 1, 0, 1);
                 if (i == mCurrentPage * mItemsPerPage - 1 || i == mMatchedRetailers.size() - 1) {
                     lp.setMargins(0, 1, 0, 1);
                 } else {
@@ -289,6 +298,7 @@ public class DiabloRetailerDetail extends Fragment {
                     cell = UTILS.addCell(getContext(), row, r.getName(), lp);
                 }
                 else if (getString(R.string.diablo_arrears).equals(title)) {
+                    lp.weight = 1.5f;
                     cell = UTILS.addCell(getContext(), row, r.getBalance(), lp);
                 }
                 else if (getString(R.string.diablo_phone).equals(title)) {
@@ -313,21 +323,33 @@ public class DiabloRetailerDetail extends Fragment {
             row.setBackgroundResource(R.drawable.table_row_bg);
         }
 
-        if (null != row) {
-            row.setBackgroundResource(R.drawable.table_row_last_bg);
-        }
+//        if (null != row) {
+//            row.setBackgroundResource(R.drawable.table_row_last_bg);
+//        }
 
         if (0 < mTotalPage ) {
             row = new TableRow(getContext());
 
-            String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-                + getResources().getString(R.string.page)
-                + getResources().getString(R.string.space_4)
-                + getResources().getString(R.string.total_page) + mTotalPage.toString()
-                + getResources().getString(R.string.page);
+            TableRow.LayoutParams lp = UTILS.createTableRowParams(1.5f);
+            TextView cell = UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
+            lp.setMargins(0, 1, 0, 1);
+            cell.setBackgroundResource(R.drawable.table_cell_bg);
 
-            TextView cell = UTILS.addCell(getContext(), row, pageInfo, UTILS.createTableRowParams(1f));
+            cell = UTILS.addCell(getContext(), row, mTotalBalance, lp);
+            cell.setBackgroundResource(R.drawable.table_cell_bg);
+            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+            cell.setTypeface(null, Typeface.BOLD);
+            cell.setGravity(Gravity.CENTER);
+
+            String pageInfo = mCurrentPage.toString() + "/" + mTotalPage.toString();
+            lp = UTILS.createTableRowParams(3f);
+            cell = UTILS.addCell(getContext(), row, pageInfo, lp);
+            lp.setMargins(0, 1, 0, 1);
+            cell.setBackgroundResource(R.drawable.table_cell_bg);
             UTILS.formatPageInfo(cell);
+
+            // row.setBackgroundResource(R.drawable.table_row_bg);
+            row.setBackgroundResource(R.drawable.table_row_last_bg);
             mRetailerDetailTable.addView(row);
         }
     }
@@ -351,7 +373,7 @@ public class DiabloRetailerDetail extends Fragment {
             case 401: // add
                 DiabloUtils.switchToFrame(
                     this,
-                    "com.diablo.dt.diablo.fragment.retailer.DiabloRetailerNew",
+                    "com.diablo.dt.diablo.fragment.retailer.RetailerNew",
                     DiabloEnum.TAG_RETAILER_NEW);
                 break;
             case 402:
@@ -366,6 +388,28 @@ public class DiabloRetailerDetail extends Fragment {
     private void refresh() {
         mRefreshDialog.show();
         getRetailers();
+    }
+
+    private void sortMatchedRetailers() {
+        Collections.sort(mMatchedRetailers, new Comparator<Retailer>() {
+            @Override
+            public int compare(Retailer o1, Retailer o2) {
+                if (o1.getBalance() > o2.getBalance()) {
+                    return -1;
+                }
+                else if (o1.getBalance() < o2.getBalance()) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            }
+        });
+
+        mTotalBalance = 0f;
+        for (Retailer r: mMatchedRetailers) {
+            mTotalBalance += r.getBalance();
+        }
     }
 
     private void getRetailers(){
@@ -422,13 +466,13 @@ public class DiabloRetailerDetail extends Fragment {
             Bundle args = new Bundle();
             args.putString(DiabloEnum.BUNDLE_PARAM_RETAILER, new Gson().toJson(retailer));
 
-            to = new DiabloRetailerUpdate();
+            to = new RetailerUpdate();
             to.setArguments(args);
         } else {
-            ((DiabloRetailerUpdate)to).setUpdateRetailer(new Gson().toJson(retailer));
+            ((RetailerUpdate)to).setUpdateRetailer(new Gson().toJson(retailer));
         }
 
-        ((DiabloRetailerUpdate)to).setRetailerUpdateListener(new OnRetailerDetailListener() {
+        ((RetailerUpdate)to).setRetailerUpdateListener(new OnRetailerDetailListener() {
             @Override
             public void onUpdate(Retailer updatedRetailer) {
                 // init();
@@ -457,10 +501,10 @@ public class DiabloRetailerDetail extends Fragment {
             Bundle args = new Bundle();
             args.putInt(DiabloEnum.BUNDLE_PARAM_RETAILER, retailer.getId());
 
-            to = new DiabloRetailerSaleCheck();
+            to = new RetailerSaleCheck();
             to.setArguments(args);
         } else {
-            ((DiabloRetailerSaleCheck)to).setStartRetailer(retailer.getId());
+            ((RetailerSaleCheck)to).setStartRetailer(retailer.getId());
         }
 
         if (!to.isAdded()){

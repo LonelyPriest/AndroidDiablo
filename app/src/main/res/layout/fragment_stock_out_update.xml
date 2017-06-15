@@ -68,7 +68,7 @@
         android:layout_weight="0.2"
         android:src="@drawable/ic_person_black_24dp"
         android:contentDescription="@string/employee"/>
-    <Spinner
+    <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/stock_select_employee"
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:layout_width="0dp"
@@ -141,10 +141,9 @@
         android:layout_weight="0.2"
         android:src="@drawable/ic_directions_subway_black_24dp"
         android:contentDescription="@string/cost_on_stock"/>
-    <Spinner
+    <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/stock_select_extra_cost"
         android:layout_width="0dp"
-        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:spinnerMode="dropdown"

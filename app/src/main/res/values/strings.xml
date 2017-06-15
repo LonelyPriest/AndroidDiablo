@@ -30,6 +30,9 @@
   <string name="nav_report_daily">日报表</string>
   <string name="nav_report_month">月报表</string>
 
+  <string name="title_retailer_edit">零售商编辑</string>
+  <string name="title_retailer_new">新增零售商</string>
+
   <!-- Toolbar titles when navigation menu item is selected -->
   <string-array name="nav_item_activity_titles">
     <item>销售开单</item>
@@ -725,6 +728,7 @@
   <string name="back_from_stock_select">从库存选择返回</string>
   <string name="back_from_unknown">从火星返回</string>
   <string name="come_from_unknown">来自火星</string>
+  <string name="come_from_retailer_sale_check">来自零售商对帐</string>
 
   <string name="back_from_good_select">从选择货品返回</string>
   <string name="back_from_color_select">从选择颜色返回</string>

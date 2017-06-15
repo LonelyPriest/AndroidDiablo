@@ -5,7 +5,8 @@ import com.google.gson.Gson;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,32 +17,40 @@ import android.view.ViewGroup;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.controller.DiabloRetailerController;
 import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
-public class DiabloRetailerUpdate extends Fragment {
+public class RetailerUpdate extends Fragment {
     private Retailer mRetailer;
     private DiabloRetailerController mController;
 
-    private DiabloRetailerDetail.OnRetailerDetailListener mOnRetailerUpdateListener;
+    private RetailerDetail.OnRetailerDetailListener mOnRetailerUpdateListener;
 
-    public void setRetailerUpdateListener(DiabloRetailerDetail.OnRetailerDetailListener listener) {
+    public void setRetailerUpdateListener(RetailerDetail.OnRetailerDetailListener listener) {
         mOnRetailerUpdateListener = listener;
     }
 
-    public static DiabloRetailerUpdate newInstance(String param1, String param2) {
-        DiabloRetailerUpdate fragment = new DiabloRetailerUpdate();
+    public static RetailerUpdate newInstance(String param1, String param2) {
+        RetailerUpdate fragment = new RetailerUpdate();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public DiabloRetailerUpdate() {
+    public RetailerUpdate() {
         // Required empty public constructor
     }
 
     public void setUpdateRetailer(String retailerJson) {
         mRetailer = new Gson().fromJson(retailerJson, Retailer.class);
+    }
+
+    private void initTitle() {
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(getResources().getString(R.string.title_retailer_edit));
+        }
     }
 
     @Override
@@ -53,6 +62,8 @@ public class DiabloRetailerUpdate extends Fragment {
 
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
+
+        initTitle();
     }
 
     @Override
@@ -183,10 +194,10 @@ public class DiabloRetailerUpdate extends Fragment {
     }
 
     private void switchToRetailerDetailFragment(final Integer operation, Retailer updatedRetailer) {
-        Fragment to= getFragmentManager().findFragmentByTag(DiabloEnum.TAG_RETAILER_DETAIL);
-        if (null == to) {
-            to = new DiabloRetailerDetail();
-        }
+//        Fragment to= getFragmentManager().findFragmentByTag(DiabloEnum.TAG_RETAILER_DETAIL);
+//        if (null == to) {
+//            to = new RetailerDetail();
+//        }
 
         switch (operation){
             case 800:
@@ -200,20 +211,28 @@ public class DiabloRetailerUpdate extends Fragment {
                 break;
         }
 
-
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if (!to.isAdded()){
-            transaction.remove(this);
-            transaction.add(R.id.frame_container, to, DiabloEnum.TAG_RETAILER_DETAIL);
-        } else {
-            transaction.remove(this);
-            transaction.show(to);
-        }
-
-        transaction.commit();
+        SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_RETAILER_DETAIL);
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//        if (!to.isAdded()){
+//            transaction.remove(this);
+//            transaction.add(R.id.frame_container, to, DiabloEnum.TAG_RETAILER_DETAIL);
+//        } else {
+//            transaction.remove(this);
+//            transaction.show(to);
+//        }
+//
+//        transaction.commit();
     }
 
-//    public interface OnRetailerUpdateListener {
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            initTitle();
+        }
+    }
+
+    //    public interface OnRetailerUpdateListener {
 //        void onRetailerUpdate(Retailer updatedRetailer);
 //    }
 }

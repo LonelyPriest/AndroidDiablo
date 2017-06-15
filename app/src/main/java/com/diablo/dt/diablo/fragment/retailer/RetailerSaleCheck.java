@@ -1,5 +1,8 @@
 package com.diablo.dt.diablo.fragment.retailer;
 
+import static com.diablo.dt.diablo.R.string.retailer;
+import static com.diablo.dt.diablo.R.string.shop;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +33,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.fragment.sale.SaleDetailToNote;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.sale.SaleDetailRequest;
 import com.diablo.dt.diablo.response.sale.SaleDetailResponse;
@@ -47,7 +52,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class DiabloRetailerSaleCheck extends Fragment {
+public class RetailerSaleCheck extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
 
     private final static DiabloUtils UTILS = DiabloUtils.instance();
@@ -83,7 +88,7 @@ public class DiabloRetailerSaleCheck extends Fragment {
 
     private Integer mStartRetailer;
 
-    public DiabloRetailerSaleCheck() {
+    public RetailerSaleCheck() {
 
     }
 
@@ -100,7 +105,7 @@ public class DiabloRetailerSaleCheck extends Fragment {
 
     private void initPickerDate() {
         mDatePicker = new DiabloDatePicker(
-            DiabloRetailerSaleCheck.this,
+            RetailerSaleCheck.this,
             mViewFragment.findViewById(R.id.btn_start_date),
             mViewFragment.findViewById(R.id.btn_end_date),
             (EditText)mViewFragment.findViewById(R.id.text_start_date),
@@ -115,8 +120,8 @@ public class DiabloRetailerSaleCheck extends Fragment {
         mTotalPage = 0;
     }
 
-    public static DiabloRetailerSaleCheck newInstance(String param1, String param2) {
-        DiabloRetailerSaleCheck fragment = new DiabloRetailerSaleCheck();
+    public static RetailerSaleCheck newInstance(String param1, String param2) {
+        RetailerSaleCheck fragment = new RetailerSaleCheck();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -146,7 +151,7 @@ public class DiabloRetailerSaleCheck extends Fragment {
         mViewFragment = inflater.inflate(R.layout.fragment_diablo_retailer_sale_check, container, false);
 
 //        mDatePicker = new DiabloDatePicker(
-//            DiabloRetailerSaleCheck.this,
+//            RetailerSaleCheck.this,
 //            view.findViewById(R.id.btn_start_date),
 //            view.findViewById(R.id.btn_end_date),
 //            (EditText)view.findViewById(R.id.text_start_date),
@@ -199,7 +204,7 @@ public class DiabloRetailerSaleCheck extends Fragment {
 
         TableRow row = new TableRow(this.getContext());
         for (String title: mTableHeads){
-            if (title.equals(getResources().getString(R.string.retailer))) {
+            if (title.equals(getResources().getString(retailer))) {
                 continue;
             }
             TableRow.LayoutParams lp = new TableRow.LayoutParams(
@@ -290,7 +295,7 @@ public class DiabloRetailerSaleCheck extends Fragment {
                     SaleDetailResponse.SaleDetail detail = details.get(i);
                     TextView cell = null;
                     for (String title: mTableHeads){
-                        if (title.equals(getResources().getString(R.string.retailer))) {
+                        if (title.equals(getResources().getString(retailer))) {
                             continue;
                         }
 
@@ -330,7 +335,7 @@ public class DiabloRetailerSaleCheck extends Fragment {
                                 cell.setTextColor(getResources().getColor(R.color.red));
                             }
                         }
-                        else if(getResources().getString(R.string.shop).equals(title)){
+                        else if(getResources().getString(shop).equals(title)){
                             cell = addCell(row,
                                 DiabloUtils.getInstance().getShop(Profile.instance().getSortShop(),
                                     detail.getShop()).getName(),
@@ -343,7 +348,7 @@ public class DiabloRetailerSaleCheck extends Fragment {
                                     detail.getEmployee()).getName(),
                                 lp);
                         }
-                        else if (getContext().getString(R.string.retailer).equals(title)){
+                        else if (getContext().getString(retailer).equals(title)){
                             Retailer r = DiabloUtils.getInstance().getRetailer(
                                 Profile.instance().getRetailers(), detail.getRetailer());
 
@@ -504,14 +509,36 @@ public class DiabloRetailerSaleCheck extends Fragment {
 
         mCurrentSelectedRow = (TableRow) v;
         MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_on_sale_detail, menu);
+        inflater.inflate(R.menu.context_on_check_retailer_sale, menu);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         SaleDetailResponse.SaleDetail detail = ((SaleDetailResponse.SaleDetail) mCurrentSelectedRow.getTag());
         if (getResources().getString(R.string.note) == item.getTitle()) {
+            // SaleDetail.switchToSaleUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_SALE_DETAIL_TO_NOTE);
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            // find
+            Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_SALE_DETAIL_TO_NOTE);
 
+            if (null == to){
+                Bundle args = new Bundle();
+                args.putString(DiabloEnum.BUNDLE_PARAM_RSN, detail.getRsn());
+                args.putInt(DiabloEnum.BUNDLE_PARAM_COME_FORM, R.string.come_from_retailer_sale_check);
+
+                to = new SaleDetailToNote();
+                to.setArguments(args);
+            } else {
+                ((SaleDetailToNote)to).setRSN(detail.getRsn());
+                ((SaleDetailToNote)to).setComesFrom(R.string.come_from_retailer_sale_check);
+            }
+
+
+            if (!to.isAdded()){
+                transaction.hide(this).add(R.id.frame_container, to, DiabloEnum.TAG_SALE_DETAIL_TO_NOTE).commit();
+            } else {
+                transaction.hide(this).show(to).commit();
+            }
         }
         return true;
     }

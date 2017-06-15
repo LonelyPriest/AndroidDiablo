@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.diablo.dt.diablo.R;
 
-public class DiabloRetailerPager extends Fragment {
+public class RetailerPager extends Fragment {
 
     // private TabLayout mRetailerTab;
     private ViewPager mRetailerPager;
@@ -20,13 +20,13 @@ public class DiabloRetailerPager extends Fragment {
 
     private SparseArray<Fragment> mFragments;
 
-    public DiabloRetailerPager() {
+    public RetailerPager() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static DiabloRetailerPager newInstance(String param1, String param2) {
-        DiabloRetailerPager fragment = new DiabloRetailerPager();
+    public static RetailerPager newInstance(String param1, String param2) {
+        RetailerPager fragment = new RetailerPager();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -56,10 +56,10 @@ public class DiabloRetailerPager extends Fragment {
                 Fragment fragment = null;
                 switch (position) {
                     case 0:
-                        fragment = new DiabloRetailerDetail();
+                        fragment = new RetailerDetail();
                         break;
                     case 1:
-                        fragment = new DiabloRetailerNew();
+                        fragment = new RetailerNew();
                     default:
                         break;
                 }
@@ -97,7 +97,7 @@ public class DiabloRetailerPager extends Fragment {
 //
 //        Fragment f = mFragments.get(1);
 //        if (null != f) {
-//            boolean disabled = ((DiabloRetailerNew) f).disableSave();
+//            boolean disabled = ((RetailerNew) f).disableSave();
 //            if (null != menu.findItem(301)) {
 //                menu.findItem(301).setEnabled(!disabled);
 //            }
@@ -142,7 +142,7 @@ public class DiabloRetailerPager extends Fragment {
 //            case 301:
 //                Fragment f1 = mFragments.get(1);
 //                if (null != f1) {
-//                    ((DiabloRetailerNew) f1).startAdd((DiabloRetailerDetail) mFragments.get(0));
+//                    ((RetailerNew) f1).startAdd((RetailerDetail) mFragments.get(0));
 //                }
 //                break;
 //            case 400:
@@ -154,7 +154,7 @@ public class DiabloRetailerPager extends Fragment {
 //            case 402:
 //                Fragment f0 = mFragments.get(0);
 //                if (null != f0) {
-//                    ((DiabloRetailerDetail) f0).refresh();
+//                    ((RetailerDetail) f0).refresh();
 //                }
 //                break;
 //            default:

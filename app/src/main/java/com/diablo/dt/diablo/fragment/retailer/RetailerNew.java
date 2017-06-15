@@ -3,6 +3,8 @@ package com.diablo.dt.diablo.fragment.retailer;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,28 +15,36 @@ import android.view.ViewGroup;
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.controller.DiabloRetailerController;
 import com.diablo.dt.diablo.entity.Retailer;
+import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloUtils;
 
 
-public class DiabloRetailerNew extends Fragment {
+public class RetailerNew extends Fragment {
     private DiabloRetailerController mController;
 
-    // private DiabloRetailerDetail.OnRetailerDetailListener mOnRetailerAddListener;
+    // private RetailerDetail.OnRetailerDetailListener mOnRetailerAddListener;
 
-//    public void setRetailerAddListener(DiabloRetailerDetail.OnRetailerDetailListener listener) {
+//    public void setRetailerAddListener(RetailerDetail.OnRetailerDetailListener listener) {
 //        mOnRetailerAddListener = listener;
 //    }
 
-    public DiabloRetailerNew() {
+    public RetailerNew() {
         // Required empty public constructor
     }
 
-    public static DiabloRetailerNew newInstance(String param1, String param2) {
-        DiabloRetailerNew fragment = new DiabloRetailerNew();
+    public static RetailerNew newInstance(String param1, String param2) {
+        RetailerNew fragment = new RetailerNew();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private void initTitle() {
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(getResources().getString(R.string.title_retailer_new));
+        }
     }
 
     @Override
@@ -42,6 +52,8 @@ public class DiabloRetailerNew extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
+
+        initTitle();
     }
 
     @Override
@@ -138,15 +150,24 @@ public class DiabloRetailerNew extends Fragment {
                 startAdd();
                 break;
             case 300:
-                DiabloUtils.switchToFrame(
-                    this,
-                    "com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail",
-                    DiabloEnum.TAG_RETAILER_DETAIL);
+//                DiabloUtils.switchToFrame(
+//                    this,
+//                    "com.diablo.dt.diablo.fragment.retailer.RetailerDetail",
+//                    DiabloEnum.TAG_RETAILER_DETAIL);
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_RETAILER_DETAIL);
                 break;
             default:
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            initTitle();
+        }
     }
 
 }

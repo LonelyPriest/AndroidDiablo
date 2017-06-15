@@ -1,19 +1,19 @@
 package com.diablo.dt.diablo.utils;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 /**
- * Created by buxianhui on 17/4/18.
+ * Created by buxianhui on 17/6/16.
  */
 
-public class DiabloVerticalButton extends AppCompatButton {
-    public DiabloVerticalButton(Context context, AttributeSet attrs) {
+public class DiabloVerticalTextView extends AppCompatTextView {
+    public DiabloVerticalTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public DiabloVerticalButton(Context context) {
+    public DiabloVerticalTextView(Context context) {
         super(context);
     }
 

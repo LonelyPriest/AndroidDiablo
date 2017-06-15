@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              tools:context="com.diablo.dt.diablo.fragment.retailer.DiabloRetailerDetail">
+              tools:context="com.diablo.dt.diablo.fragment.retailer.RetailerDetail">
 
   <LinearLayout
       android:orientation="horizontal"
@@ -12,23 +12,24 @@
     <AutoCompleteTextView
         android:id="@+id/search_content"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
+        android:layout_height="match_parent"
+        android:layout_weight="0.9"
         android:hint="@string/search_retailer"
         android:textSize="@dimen/ampm_label_size"
         android:completionThreshold="1"
         android:selectAllOnFocus="true"
         android:textColor="@color/bpDarker_red"
         android:maxLines="1"/>
-    <Button
+    <com.diablo.dt.diablo.utils.DiabloVerticalButton
         android:id="@+id/btn_search"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.2"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
         android:contentDescription="@string/retailer"
-        android:drawableEnd="@drawable/ic_search_black_24dp"
-        android:drawableRight="@drawable/ic_search_black_24dp"
-        android:text="@string/btn_search"/>
+        android:drawableStart="@drawable/ic_search_black_24dp"
+        android:drawableLeft="@drawable/ic_search_black_24dp"
+        android:text="@string/btn_search"
+        android:textSize="14sp"/>
 
   </LinearLayout>
 
