@@ -1,4 +1,4 @@
-package com.diablo.dt.diablo.fragment.stock;
+package com.diablo.dt.diablo.fragment.firm;
 
 
 import android.app.Dialog;
@@ -6,12 +6,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,8 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -30,15 +25,8 @@ import android.widget.Toast;
 
 import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.StockClient;
-import com.diablo.dt.diablo.entity.DiabloShop;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.filter.DiabloFilter;
-import com.diablo.dt.diablo.filter.DiabloFilterController;
-import com.diablo.dt.diablo.filter.FirmFilter;
-import com.diablo.dt.diablo.filter.ShopFilter;
-import com.diablo.dt.diablo.filter.StockTypeFilter;
-import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.stock.StockDetailRequest;
 import com.diablo.dt.diablo.response.stock.StockDetailResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
@@ -49,7 +37,6 @@ import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -58,10 +45,10 @@ import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link StockDetail#newInstance} factory method to
+ * Use the {@link FirmStockCheck#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StockDetail extends Fragment {
+public class FirmStockCheck extends Fragment {
     private final static DiabloUtils UTILS = DiabloUtils.instance();
     private String [] mTableHeads;
     private String[]  mStockTypes;
@@ -85,18 +72,16 @@ public class StockDetail extends Fragment {
     private Integer mCurrentPage;
     private Integer mTotalPage;
 
-    private DiabloFilter mFirmFilter;
-    private DiabloFilterController mFilterController;
     private DiabloDatePicker mDatePicker;
 
-    public StockDetail() {
+    public FirmStockCheck() {
         // Required empty public constructor
     }
 
 
     // TODO: Rename and change types and number of parameters
-    public static StockDetail newInstance(String param1, String param2) {
-        return new StockDetail();
+    public static FirmStockCheck newInstance(String param1, String param2) {
+        return new FirmStockCheck();
     }
 
     public void init() {
@@ -111,10 +96,6 @@ public class StockDetail extends Fragment {
         mTableHeads = getResources().getStringArray(R.array.thead_stock_detail);
         mStockTypes  = getResources().getStringArray(R.array.stock_type);
 
-//        mRequest     = new StockDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
-//        mRequestCondition = new StockDetailRequest.Condition();
-//        mRequest.setCondition(mRequestCondition);
-
         mStockRest = StockClient.getClient().create(StockInterface.class);
         mRefreshDialog = UTILS.createLoadingDialog(getContext());
     }
@@ -126,7 +107,7 @@ public class StockDetail extends Fragment {
         final View view =  inflater.inflate(R.layout.fragment_stock_detail, container, false);
 
         mDatePicker = new DiabloDatePicker(
-            StockDetail.this,
+            FirmStockCheck.this,
             view.findViewById(R.id.btn_start_date),
             view.findViewById(R.id.btn_end_date),
             (EditText) view.findViewById(R.id.text_start_date),
@@ -210,28 +191,9 @@ public class StockDetail extends Fragment {
         mStockDetailTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
 
         init();
-        initFilter(view);
         pageChanged();
 
         return view;
-    }
-
-    private void initFilter(View view) {
-        View firmView = view.findViewById(R.id.select_firm);
-        mFirmFilter = new FirmFilter(getContext(), getString(R.string.style_number));
-        mFirmFilter.init(firmView);
-
-        ImageButton btnAdd = (ImageButton) view.findViewById(R.id.btn_add_filter);
-        ImageButton btnMinus = (ImageButton) view.findViewById(R.id.btn_minus_filter);
-        btnMinus.setEnabled(false);
-
-        List<DiabloFilter> entities = new ArrayList<>();
-        entities.add(new FirmFilter(getContext(), getString(R.string.firm)));
-        entities.add(new StockTypeFilter(getContext(), getString(R.string.trans)));
-        entities.add(new ShopFilter(getContext(), getString(R.string.shop)));
-
-        mFilterController = new DiabloFilterController(getContext(), entities, 1);
-        mFilterController.init((LinearLayout)view, R.id.t_stock_detail_head, btnAdd, btnMinus);
     }
 
     private void pageChanged(){
@@ -239,26 +201,6 @@ public class StockDetail extends Fragment {
         final StockDetailRequest request   = new StockDetailRequest(mCurrentPage, DiabloEnum.DEFAULT_ITEMS_PER_PAGE);
         request.setStartTime(mDatePicker.startTime());
         request.setEndTime(mDatePicker.endTime());
-
-        if (null != mFirmFilter.getSelect()) {
-            Object select = mFirmFilter.getSelect();
-            request.addFirm(((Firm)select).getId());
-        }
-
-        for (DiabloFilter filter: mFilterController.getEntityFilters()) {
-            Object select = filter.getSelect();
-            if (null != select) {
-                if (filter instanceof FirmFilter) {
-                    request.addFirm(((Firm)select).getId());
-                }
-                else if (filter instanceof ShopFilter) {
-                    request.addShop(((DiabloShop)select).getShop());
-                }
-                else if (filter instanceof StockTypeFilter) {
-                    request.addStockType((Integer) select);
-                }
-            }
-        }
 
         if (0 == request.getShops().size()) {
             request.setShops(Profile.instance().getShopIds());
@@ -271,8 +213,6 @@ public class StockDetail extends Fragment {
         call.enqueue(new Callback<StockDetailResponse>() {
             @Override
             public void onResponse(Call<StockDetailResponse> call, Response<StockDetailResponse> response) {
-                Log.d("SALE_DETAIL %s", response.toString());
-
                 mStockDetailTableSwipe.setRefreshing(false);
                 mRefreshDialog.dismiss();
 
@@ -297,9 +237,6 @@ public class StockDetail extends Fragment {
                 TableRow row = null;
                 for (Integer i=0; i<details.size(); i++){
                     row = new TableRow(getContext());
-                    // TableRow row = new TableRow(mContext);
-                    // mSaleDetailTable.addView(row);
-                    // row.removeAllViews();
                     StockDetailResponse.StockDetail detail = details.get(i);
                     TextView cell = null;
                     for (String title: mTableHeads){
@@ -426,12 +363,6 @@ public class StockDetail extends Fragment {
                     UTILS.formatTableStatistic(addCell(row, mStatistic, lp));
 
                     String pageInfo = mCurrentPage.toString() + "/" + mTotalPage.toString();
-//                    String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-//                        + getResources().getString(R.string.page)
-//                        + getResources().getString(R.string.space_4)
-//                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
-//                        + getResources().getString(R.string.page);
-
                     TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.5f);
                     UTILS.formatPageInfo(addCell(row, pageInfo, lp2));
                     mStockDetailTable.addView(row);
@@ -458,21 +389,6 @@ public class StockDetail extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-//            case R.id.sale_detail_to_sale_in:
-//                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_IN);
-//                break;
-//            case R.id.sale_detail_to_sale_out:
-//                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_SALE_OUT);
-//                break;
-            case R.id.stock_detail_to_stock_in:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_IN);
-                break;
-            case R.id.stock_detail_to_stock_out:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_OUT);
-                break;
-            case R.id.stock_detail_to_stock_store:
-                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_STOCK_STORE_DETAIL);
-                break;
             case R.id.stock_detail_refresh:
                 init();
                 mRefreshDialog.show();
@@ -486,12 +402,7 @@ public class StockDetail extends Fragment {
 
         return true;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-
-    }
-
+    
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -515,55 +426,17 @@ public class StockDetail extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         StockDetailResponse.StockDetail detail = ((StockDetailResponse.StockDetail) mCurrentSelectedRow.getTag());
         if (getResources().getString(R.string.modify) == item.getTitle()){
-            if (detail.getType().equals(DiabloEnum.STOCK_IN)){
-                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_IN_UPDATE);
-            }
-            else if (detail.getType().equals(DiabloEnum.STOCK_OUT)) {
-                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_OUT_UPDATE);
-            }
+//            if (detail.getType().equals(DiabloEnum.STOCK_IN)){
+//                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_IN_UPDATE);
+//            }
+//            else if (detail.getType().equals(DiabloEnum.STOCK_OUT)) {
+//                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_OUT_UPDATE);
+//            }
 
         }
-
         return true;
     }
 
-    public void switchToStockUpdateFrame(String rsn, Fragment from, String tag) {
-
-        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
-        // find
-        Fragment to = from.getFragmentManager().findFragmentByTag(tag);
-
-        if (null == to){
-            Bundle args = new Bundle();
-            args.putString(DiabloEnum.BUNDLE_PARAM_RSN, rsn);
-            if (DiabloEnum.TAG_STOCK_IN_UPDATE.equals(tag)) {
-                to = new StockInUpdate();
-            }
-            else if (DiabloEnum.TAG_STOCK_OUT_UPDATE.equals(tag)) {
-                 to = new StockOutUpdate();
-            }
-
-            if (null != to ) {
-                to.setArguments(args);
-            }
-        } else {
-            if (DiabloEnum.TAG_STOCK_IN_UPDATE.equals(tag)) {
-                ((StockInUpdate)to).setRSN(rsn);
-            }
-            else if (DiabloEnum.TAG_STOCK_OUT_UPDATE.equals(tag)) {
-                ((StockOutUpdate)to).setRSN(rsn);
-            }
-        }
-
-        if (null != to) {
-            if (!to.isAdded()){
-                transaction.hide(from).add(R.id.frame_container, to, tag).commit();
-            } else {
-                transaction.hide(from).show(to).commit();
-            }
-        }
-
-    }
 
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){

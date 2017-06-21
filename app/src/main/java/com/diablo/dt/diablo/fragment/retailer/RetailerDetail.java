@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -65,7 +66,7 @@ public class RetailerDetail extends Fragment {
     private Float mTotalBalance;
 
     private AutoCompleteTextView mAutoCompleteSearch;
-    private Button mBtnSearch;
+    private ImageButton mBtnSearch;
     private List<Retailer> mMatchedRetailers;
 
     private Handler mHandler;
@@ -105,7 +106,7 @@ public class RetailerDetail extends Fragment {
         View view = inflater.inflate(R.layout.fragment_diablo_retailer, container, false);
 
         mAutoCompleteSearch = (AutoCompleteTextView) view.findViewById(R.id.search_content);
-        mBtnSearch = (Button) view.findViewById(R.id.btn_search);
+        mBtnSearch = (ImageButton) view.findViewById(R.id.btn_search);
 
         TableRow row = new TableRow(this.getContext());
         for (String title: mTableTitles){

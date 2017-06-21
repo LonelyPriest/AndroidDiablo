@@ -18,7 +18,7 @@ import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 
 
-public class DiabloFirmPager extends Fragment {
+public class FirmPager extends Fragment {
 
     // private TabLayout mRetailerTab;
     private ViewPager mFirmPager;
@@ -26,13 +26,13 @@ public class DiabloFirmPager extends Fragment {
 
     private SparseArray<Fragment> mFragments;
 
-    public DiabloFirmPager() {
+    public FirmPager() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static DiabloFirmPager newInstance(String param1, String param2) {
-        DiabloFirmPager fragment = new DiabloFirmPager();
+    public static FirmPager newInstance(String param1, String param2) {
+        FirmPager fragment = new FirmPager();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -62,10 +62,10 @@ public class DiabloFirmPager extends Fragment {
                 Fragment fragment = null;
                 switch (position) {
                     case 0:
-                        fragment = new DiabloFirmDetail();
+                        fragment = new FirmDetail();
                         break;
                     case 1:
-                        fragment = new DiabloFirmNew();
+                        fragment = new FirmNew();
                     default:
                         break;
                 }
@@ -84,8 +84,37 @@ public class DiabloFirmPager extends Fragment {
         };
 
         mFirmPager.setAdapter(mPagerAdapter);
-        return view;
 
+        mFirmPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Fragment f = mFragments.get(position);
+                switch (position) {
+                    case 0:
+                        ((FirmDetail) f).initTitle();
+                        break;
+                    case 1:
+                        ((FirmNew) f).initTitle();
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        // mFirmPager.setCurrentItem(0);
+        return view;
     }
 
     @Override
@@ -94,7 +123,7 @@ public class DiabloFirmPager extends Fragment {
 
         Fragment f = mFragments.get(1);
         if (null != f) {
-            boolean disabled = ((DiabloFirmNew) f).disableSave();
+            boolean disabled = ((FirmNew) f).disableSave();
             if (null != menu.findItem(601)) {
                 menu.findItem(601).setEnabled(!disabled);
             }
@@ -144,7 +173,7 @@ public class DiabloFirmPager extends Fragment {
             case 502:
                 Fragment f0 = mFragments.get(0);
                 if (null != f0) {
-                    ((DiabloFirmDetail) f0).refresh();
+                    ((FirmDetail) f0).refresh();
                 }
                 break;
             case 600:
@@ -153,7 +182,7 @@ public class DiabloFirmPager extends Fragment {
             case 601:
                 Fragment f1 = mFragments.get(1);
                 if (null != f1) {
-                    ((DiabloFirmNew) f1).startAdd((DiabloFirmDetail) mFragments.get(0));
+                    ((FirmNew) f1).startAdd((FirmDetail) mFragments.get(0));
                 }
                 break;
             default:

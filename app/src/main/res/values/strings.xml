@@ -32,6 +32,8 @@
 
   <string name="title_retailer_edit">零售商编辑</string>
   <string name="title_retailer_new">新增零售商</string>
+  <string name="title_firm_new">新增厂商</string>
+  <string name="title_firm_detail">厂商详情</string>
 
   <!-- Toolbar titles when navigation menu item is selected -->
   <string-array name="nav_item_activity_titles">

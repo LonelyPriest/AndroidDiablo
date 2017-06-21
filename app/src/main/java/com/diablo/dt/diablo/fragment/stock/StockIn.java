@@ -223,7 +223,7 @@ public class StockIn extends Fragment {
                     mStockCalcController.setBalance(selectFirm.getBalance());
 
                     // change focus to input good
-                    forcusStyleNumber();
+                    focusStyleNumber();
                 }
             }
         };
@@ -468,14 +468,14 @@ public class StockIn extends Fragment {
 //                Firm firm = Profile.instance().getFirm(mStockCalcController.getFirm());
 //                mStockCalcController.setBalance(firm.getBalance());
 
-                forcusStyleNumber();
+                focusStyleNumber();
             }
 
             mBackFrom = R.string.back_from_unknown;
         }
     }
 
-    private void forcusStyleNumber() {
+    private void focusStyleNumber() {
         if (0 != mStockTableController.getControllers().size()) {
             mStockTableController.getControllers().get(0).focusStyleNumber();
         }

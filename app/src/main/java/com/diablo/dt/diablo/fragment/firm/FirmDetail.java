@@ -7,9 +7,14 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -27,13 +32,16 @@ import com.diablo.dt.diablo.utils.DiabloUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DiabloFirmDetail extends Fragment {
+public class FirmDetail extends Fragment {
     private final static String LOG_TAG = "RetailerDetail:";
     private final static DiabloUtils UTILS = DiabloUtils.instance();
 
@@ -47,12 +55,16 @@ public class DiabloFirmDetail extends Fragment {
     private Integer mTotalPage;
     private Integer mItemsPerPage;
 
-    public DiabloFirmDetail() {
+    private Float mTotalBalance;
+
+    private TableRow mCurrentSelectedRow;
+
+    public FirmDetail() {
         // Required empty public constructor
     }
 
-    public static DiabloFirmDetail newInstance(String param1, String param2) {
-        DiabloFirmDetail fragment = new DiabloFirmDetail();
+    public static FirmDetail newInstance(String param1, String param2) {
+        FirmDetail fragment = new FirmDetail();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -84,6 +96,11 @@ public class DiabloFirmDetail extends Fragment {
             if (getResources().getString(R.string.order_id).equals(title)) {
                 lp.weight = 0.5f;
             }
+
+            if (getString(R.string.diablo_arrears).equals(title)) {
+                lp.weight = 1.5f;
+            }
+
             cell.setLayoutParams(lp);
             cell.setText(title);
             cell.setTextSize(20);
@@ -129,13 +146,21 @@ public class DiabloFirmDetail extends Fragment {
             }
         });
 
+        // initTitle();
         init();
 
         return view;
     }
 
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        initTitle();
+//    }
+
     public void init() {
-        mFirms = Profile.instance().getFirms();
+        mFirms = new ArrayList<>(Profile.instance().getFirms());
+        sortFirms();
 
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mItemsPerPage = DiabloEnum.DEFAULT_ITEMS_PER_PAGE;
@@ -144,18 +169,57 @@ public class DiabloFirmDetail extends Fragment {
         pageChanged();
     }
 
+    public void initTitle() {
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(getResources().getString(R.string.title_firm_detail));
+        }
+    }
+
+    private void sortFirms() {
+        Collections.sort(mFirms, new Comparator<Firm>() {
+            @Override
+            public int compare(Firm o1, Firm o2) {
+                if (o1.getBalance() > o2.getBalance()) {
+                    return -1;
+                }
+                else if (o1.getBalance() < o2.getBalance()) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            }
+        });
+
+        mTotalBalance = 0f;
+        for (Firm r: mFirms) {
+            mTotalBalance += r.getBalance();
+        }
+    }
+
     private void pageChanged() {
         mFirmDetailTable.removeAllViews();
         mTableSwipe.setRefreshing(false);
 
         Integer startIndex =  (mCurrentPage - 1) * mItemsPerPage;
         Integer orderId = startIndex + 1;
-        TableRow row = null;
+        TableRow row;
         TextView cell = null;
         for (int i=startIndex; i<mCurrentPage * mItemsPerPage && i<mFirms.size(); i++ ) {
             Firm f = mFirms.get(i);
 
             row = new TableRow(getContext());
+            row.setTag(f);
+            registerForContextMenu(row);
+            row.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    v.showContextMenu();
+                    return true;
+                }
+            });
+
             mFirmDetailTable.addView(row);
 
             for (String title: mTableTitles) {
@@ -178,6 +242,7 @@ public class DiabloFirmDetail extends Fragment {
                     cell = UTILS.addCell(getContext(), row, f.getName(), lp);
                 }
                 else if (getString(R.string.diablo_arrears).equals(title)) {
+                    lp.weight = 1.5f;
                     cell = UTILS.addCell(getContext(), row, f.getBalance(), lp);
                 }
                 else if (getString(R.string.diablo_phone).equals(title)) {
@@ -199,21 +264,38 @@ public class DiabloFirmDetail extends Fragment {
             row.setBackgroundResource(R.drawable.table_row_bg);
         }
 
-        if (null != row) {
-            row.setBackgroundResource(R.drawable.table_row_last_bg);
-        }
+//        if (null != row) {
+//            row.setBackgroundResource(R.drawable.table_row_last_bg);
+//        }
 
         if (0 < mTotalPage ) {
             row = new TableRow(getContext());
 
-            String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-                + getResources().getString(R.string.page)
-                + getResources().getString(R.string.space_4)
-                + getResources().getString(R.string.total_page) + mTotalPage.toString()
-                + getResources().getString(R.string.page);
+            TableRow.LayoutParams lp = UTILS.createTableRowParams(1.5f);
+            cell = UTILS.addCell(getContext(), row, DiabloEnum.EMPTY_STRING, lp);
+            lp.setMargins(0, 1, 0, 1);
+            cell.setBackgroundResource(R.drawable.table_cell_bg);
 
-            cell = UTILS.addCell(getContext(), row, pageInfo, UTILS.createTableRowParams(1f));
+            cell = UTILS.addCell(getContext(), row, mTotalBalance, lp);
+            cell.setBackgroundResource(R.drawable.table_cell_bg);
+            cell.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+            cell.setTypeface(null, Typeface.BOLD);
+            cell.setGravity(Gravity.CENTER);
+
+//            String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
+//                + getResources().getString(R.string.page)
+//                + getResources().getString(R.string.space_4)
+//                + getResources().getString(R.string.total_page) + mTotalPage.toString()
+//                + getResources().getString(R.string.page);
+
+            String pageInfo = mCurrentPage.toString() + "/" + mTotalPage.toString();
+            lp = UTILS.createTableRowParams(3f);
+            cell = UTILS.addCell(getContext(), row, pageInfo, lp);
+            lp.setMargins(0, 1, 0, 1);
+            cell.setBackgroundResource(R.drawable.table_cell_bg);
             UTILS.formatPageInfo(cell);
+
+            row.setBackgroundResource(R.drawable.table_row_last_bg);
             mFirmDetailTable.addView(row);
         }
     }
@@ -242,5 +324,29 @@ public class DiabloFirmDetail extends Fragment {
                 UTILS.makeToast(getContext(), getString(R.string.failed_to_fetch_firms), Toast.LENGTH_LONG);
             }
         });
+    }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        mCurrentSelectedRow = (TableRow) v;
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_on_firm_detail, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final Firm firm = (Firm) mCurrentSelectedRow.getTag();
+
+        if (getResources().getString(R.string.check_trans) == item.getTitle()) {
+            switchToCheckStockTrans(firm);
+        }
+
+        return true;
+    }
+
+    private void switchToCheckStockTrans(Firm firm) {
+
     }
 }

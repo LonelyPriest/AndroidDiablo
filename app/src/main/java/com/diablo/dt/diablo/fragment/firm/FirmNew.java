@@ -1,8 +1,11 @@
 package com.diablo.dt.diablo.fragment.firm;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,10 +21,10 @@ import com.diablo.dt.diablo.utils.DiabloUtils;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DiabloFirmNew#newInstance} factory method to
+ * Use the {@link FirmNew#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DiabloFirmNew extends Fragment {
+public class FirmNew extends Fragment {
     private String mName;
     private String mBalance;
     private String mPhone;
@@ -42,12 +45,12 @@ public class DiabloFirmNew extends Fragment {
     private boolean isValidPhone;
     private boolean isValidAddress;
 
-    public DiabloFirmNew() {
+    public FirmNew() {
         // Required empty public constructor
     }
 
-    public static DiabloFirmNew newInstance(String param1, String param2) {
-        DiabloFirmNew fragment = new DiabloFirmNew();
+    public static FirmNew newInstance(String param1, String param2) {
+        FirmNew fragment = new FirmNew();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -60,6 +63,7 @@ public class DiabloFirmNew extends Fragment {
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
+        // initTitle();
         init();
     }
 
@@ -74,8 +78,21 @@ public class DiabloFirmNew extends Fragment {
         mViewPhone = (EditText) view.findViewById(R.id.firm_phone);
         mViewAddress = (EditText) view.findViewById(R.id.firm_address);
 
+        // initTitle();
         setWatcher();
         return view;
+    }
+
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        initTitle();
+//    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     public void init() {
@@ -88,6 +105,13 @@ public class DiabloFirmNew extends Fragment {
         isValidBalance = true;
         isValidPhone   = true;
         isValidAddress = true;
+    }
+
+    public void initTitle() {
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            bar.setTitle(getResources().getString(R.string.title_firm_new));
+        }
     }
 
     public void setWatcher() {
@@ -180,7 +204,7 @@ public class DiabloFirmNew extends Fragment {
         mViewAddress.setText(null);
     }
 
-    public void startAdd(final DiabloFirmDetail fragment) {
+    public void startAdd(final FirmDetail fragment) {
         Firm f = new Firm(mName);
 
         if (null != mBalance && mBalance.length() > 0) {
@@ -221,4 +245,11 @@ public class DiabloFirmNew extends Fragment {
             || (!isValidAddress && null != mAddress && mAddress.length() > 0);
     }
 
+    //    @Override
+//    public void onHiddenChanged(boolean hidden) {
+//        super.onHiddenChanged(hidden);
+//        if (!hidden) {
+//            initTitle();
+//        }
+//    }
 }

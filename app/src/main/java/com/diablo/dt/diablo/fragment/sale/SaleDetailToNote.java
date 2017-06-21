@@ -354,14 +354,16 @@ public class SaleDetailToNote extends Fragment {
 
                 if (0 < mTotalPage ) {
                     row = new TableRow(getContext());
-                    TableRow.LayoutParams lp = UTILS.createTableRowParams(1f);
+                    TableRow.LayoutParams lp = UTILS.createTableRowParams(2f);
                     UTILS.formatTableStatistic(UTILS.addCell(getContext(), row, mStatistic, lp));
+//
+//                    String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
+//                        + getResources().getString(R.string.page)
+//                        + getResources().getString(R.string.space_4)
+//                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
+//                        + getResources().getString(R.string.page);
 
-                    String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-                        + getResources().getString(R.string.page)
-                        + getResources().getString(R.string.space_4)
-                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
-                        + getResources().getString(R.string.page);
+                    String pageInfo = mCurrentPage.toString() + "/" + mTotalPage.toString();
 
                     TableRow.LayoutParams lp2 = UTILS.createTableRowParams(0.5f);
                     UTILS.formatPageInfo(UTILS.addCell(getContext(), row, pageInfo, lp2));

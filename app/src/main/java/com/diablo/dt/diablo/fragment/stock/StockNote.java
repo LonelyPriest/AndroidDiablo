@@ -293,11 +293,12 @@ public class StockNote extends Fragment {
                             + UTILS.toString(base.getAmount());
 
                     // pagination
-                    mPagination = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-                        + getResources().getString(R.string.page)
-                        + getResources().getString(R.string.space_4)
-                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
-                        + getResources().getString(R.string.page);
+                    mPagination = mCurrentPage.toString() + "/" + mTotalPage.toString();
+//                    mPagination = getResources().getString(R.string.current_page) + mCurrentPage.toString()
+//                        + getResources().getString(R.string.page)
+//                        + getResources().getString(R.string.space_4)
+//                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
+//                        + getResources().getString(R.string.page);
                 }
 
                 List<StockNoteResponse.StockNote> notes = base.getStockNotes();
@@ -402,9 +403,8 @@ public class StockNote extends Fragment {
 
                 if (0 < mTotalPage ) {
                     row = new TableRow(getContext());
-                    TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-                    UTILS.formatTableStatistic(addCell(row, mStatistic, lp));
-                    UTILS.formatPageInfo(addCell(row, mPagination, lp));
+                    UTILS.formatTableStatistic(addCell(row, mStatistic, UTILS.createTableRowParams(2.0f)));
+                    UTILS.formatPageInfo(addCell(row, mPagination, UTILS.createTableRowParams(0.5f)));
                     mSaleNoteTable.addView(row);
                 }
             }

@@ -417,12 +417,13 @@ public class GoodDetail extends Fragment {
                     TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
                     // addCell(row, mStatistic, lp);
 
-                    String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
-                        + getResources().getString(R.string.page)
-                        + getResources().getString(R.string.space_4)
-                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
-                        + getResources().getString(R.string.page);
+//                    String pageInfo = getResources().getString(R.string.current_page) + mCurrentPage.toString()
+//                        + getResources().getString(R.string.page)
+//                        + getResources().getString(R.string.space_4)
+//                        + getResources().getString(R.string.total_page) + mTotalPage.toString()
+//                        + getResources().getString(R.string.page);
 
+                    String pageInfo = mCurrentPage.toString() + "/" + mTotalPage.toString();
                     UTILS.formatPageInfo(addCell(row, pageInfo, lp));
                     mTable.addView(row);
                 }

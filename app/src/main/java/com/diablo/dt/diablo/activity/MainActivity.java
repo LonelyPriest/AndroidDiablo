@@ -31,7 +31,7 @@ import com.diablo.dt.diablo.client.WLoginClient;
 import com.diablo.dt.diablo.client.WReportClient;
 import com.diablo.dt.diablo.client.WSaleClient;
 import com.diablo.dt.diablo.entity.Profile;
-import com.diablo.dt.diablo.fragment.firm.DiabloFirmPager;
+import com.diablo.dt.diablo.fragment.firm.FirmPager;
 import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
                 f = new RetailerDetail();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(13)) {
-                f = new DiabloFirmPager();
+                f = new FirmPager();
             }
             else if (mCurrentNavTag.getTitleIndex().equals(14)) {
                 f = new BlueToothJolimarkFragment();
