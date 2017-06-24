@@ -206,7 +206,7 @@ public class StockIn extends Fragment {
         mStockTableController.clear();
         mStockTableController.addRowControllerAtTop(addEmptyRow());
 
-        mButtons.get(R.id.stock_in_save).disable();
+        // mButtons.get(R.id.stock_in_save).disable();
     }
 
     /**
@@ -312,9 +312,9 @@ public class StockIn extends Fragment {
             // reorder
             mStockTableController.reorder();
 
-            if (1 == mStockTableController.size()){
-                mButtons.get(R.id.stock_in_save).disable();
-            }
+//            if (1 == mStockTableController.size()){
+//                mButtons.get(R.id.stock_in_save).disable();
+//            }
 
             calcShouldPay();
         }
@@ -423,9 +423,9 @@ public class StockIn extends Fragment {
                         controller.setOrderId(orderId);
                         row.setOnLongClickListener(f);
 
-                        if (1 == f.mStockTableController.size()){
-                            f.mButtons.get(R.id.stock_in_save).enable();
-                        }
+//                        if (1 == f.mStockTableController.size()){
+//                            f.mButtons.get(R.id.stock_in_save).enable();
+//                        }
 
                         f.mStockTableController.addRowControllerAtTop(f.addEmptyRow());
                     }

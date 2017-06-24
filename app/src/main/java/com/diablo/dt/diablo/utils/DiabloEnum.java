@@ -37,6 +37,7 @@ public class DiabloEnum {
     public static final String BUNDLE_PARAM_ACTION     = "ACTION";
     public static final String BUNDLE_PARAM_COME_FORM  = "COME_FROM";
     public static final String BUNDLE_PARAM_RSN        = "RSN";
+    public static final String BUNDLE_PARAM_FIRM       = "FIRM";
 
     public static final String BUNDLE_PARAM_GOOD       = "GOOD";
     public static final String BUNDLE_PARAM_ID         = "ID";
@@ -73,6 +74,7 @@ public class DiabloEnum {
     public static final String  START_PRICE = "price_type";
     public static final String  START_RETAILER = "s_customer";
     public static final String  START_SHOW_DISCOUNT = "show_discount";
+    public static final String  START_SHOW_PRICE_TYPE = "show_price_type";
     public static final String  START_TRACE_PRICE = "ptrace_price";
     public static final String  START_SYS_RETAILER = "s_customer";
     public static final String  START_REJECT_SECOND_ORDER = "reject_pgood";
@@ -129,7 +131,7 @@ public class DiabloEnum {
     public static final String TAG_RETAILER_CHECK_SALE_TRANS = "retailerCheckSaleTrans";
 
     public static final String TAG_FIRM_PAGER = "firmPager";
-
+    public static final String TAG_FIRM_CHECK_STOCK_TRANS = "firmCheckStockTrans";
     public static final String TAG_PRINT_SETTING = "printSetting";
 
     /*

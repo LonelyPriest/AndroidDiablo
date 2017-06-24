@@ -203,6 +203,11 @@ public class SaleUtils {
             DiabloEnum.START_SHOW_DISCOUNT,
             DiabloEnum.DIABLO_CONFIG_YES);
 
+        String showPriceTYpe = Profile.instance().getConfig(
+            shop,
+            DiabloEnum.START_SHOW_PRICE_TYPE,
+            DiabloEnum.DIABLO_CONFIG_NO);
+
         String reverseSaleTitle = Profile.instance().getConfig(
             shop,
             DiabloEnum.START_REVERSE_SALE_TITLE,
@@ -221,6 +226,11 @@ public class SaleUtils {
                 && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
                 continue;
             }
+            else if (title.equals(context.getResources().getString(R.string.price_type))
+                && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
+                continue;
+            }
+
             titles.add(title);
         }
 

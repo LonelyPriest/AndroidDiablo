@@ -167,6 +167,11 @@ public class SaleIn extends Fragment{
             DiabloEnum.START_SHOW_DISCOUNT,
             DiabloEnum.DIABLO_CONFIG_YES);
 
+        String showPriceType = Profile.instance().getConfig(
+            mLoginShop,
+            DiabloEnum.START_SHOW_DISCOUNT,
+            DiabloEnum.DIABLO_CONFIG_NO);
+
         String reverseSaleTitle = Profile.instance().getConfig(
             mLoginShop,
             DiabloEnum.START_REVERSE_SALE_TITLE,
@@ -183,6 +188,10 @@ public class SaleIn extends Fragment{
         for(String title: theadSale) {
             if (title.equals(getString(R.string.discount))
                 && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
+                continue;
+            }
+            else if (title.equals(getResources().getString(R.string.price_type))
+                && !showPriceType.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
                 continue;
             }
             titles.add(title);

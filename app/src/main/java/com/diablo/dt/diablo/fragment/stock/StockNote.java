@@ -500,6 +500,20 @@ public class StockNote extends Fragment {
         return true;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UTILS.hiddenKeyboard(getContext(), getView());
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            UTILS.hiddenKeyboard(getContext(), getView());
+        }
+    }
+
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
         return UTILS.addCell(getContext(), row, value, lp);
     }

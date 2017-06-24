@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -342,11 +343,29 @@ public class FirmDetail extends Fragment {
         if (getResources().getString(R.string.check_trans) == item.getTitle()) {
             switchToCheckStockTrans(firm);
         }
-
         return true;
     }
 
     private void switchToCheckStockTrans(Firm firm) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        // find
+        Fragment to = getFragmentManager().findFragmentByTag(DiabloEnum.TAG_FIRM_CHECK_STOCK_TRANS);
 
+        if (null == to){
+            Bundle args = new Bundle();
+            args.putInt(DiabloEnum.BUNDLE_PARAM_FIRM, firm.getId());
+
+            to = new FirmStockCheck();
+            to.setArguments(args);
+        } else {
+            ((FirmStockCheck)to).setStartFirm(firm.getId());
+        }
+
+        FirmPager pager = (FirmPager) getFragmentManager().findFragmentByTag(DiabloEnum.TAG_FIRM_PAGER);
+        if (!to.isAdded()){
+            transaction.hide(pager).add(R.id.frame_container, to, DiabloEnum.TAG_FIRM_CHECK_STOCK_TRANS).commit();
+        } else {
+            transaction.hide(pager).show(to).commit();
+        }
     }
 }

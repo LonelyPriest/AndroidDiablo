@@ -9,7 +9,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.view.ContextMenu;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +28,7 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
+import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.request.stock.StockDetailRequest;
 import com.diablo.dt.diablo.response.stock.StockDetailResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
@@ -74,6 +76,10 @@ public class FirmStockCheck extends Fragment {
 
     private DiabloDatePicker mDatePicker;
 
+
+    private Integer mStartFirm;
+    private View mViewFragment;
+
     public FirmStockCheck() {
         // Required empty public constructor
     }
@@ -84,14 +90,43 @@ public class FirmStockCheck extends Fragment {
         return new FirmStockCheck();
     }
 
+    public void setStartFirm(Integer firm) {
+        this.mStartFirm = firm;
+    }
+
     public void init() {
+        initTitle();
         mCurrentPage = DiabloEnum.DEFAULT_PAGE;
         mTotalPage = 0;
+    }
+
+    private void initTitle() {
+        ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (null != bar) {
+            Firm f = Profile.instance().getFirm(mStartFirm);
+            bar.setTitle((getResources().getString(R.string.check_trans))
+                + "(" + (null == f ? DiabloEnum.EMPTY_STRING : f.getName()) + ")");
+        }
+    }
+
+    private void initPickerDate() {
+        mDatePicker = new DiabloDatePicker(
+            FirmStockCheck.this,
+            mViewFragment.findViewById(R.id.btn_start_date),
+            mViewFragment.findViewById(R.id.btn_end_date),
+            (EditText)mViewFragment.findViewById(R.id.text_start_date),
+            (EditText)mViewFragment.findViewById(R.id.text_end_date),
+            UTILS.firstDayOfCurrentMonth());
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mStartFirm = DiabloEnum.INVALID_INDEX;
+        if (getArguments() != null) {
+            mStartFirm = getArguments().getInt(DiabloEnum.BUNDLE_PARAM_FIRM);
+        }
 
         mTableHeads = getResources().getStringArray(R.array.thead_stock_detail);
         mStockTypes  = getResources().getStringArray(R.array.stock_type);
@@ -104,21 +139,22 @@ public class FirmStockCheck extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view =  inflater.inflate(R.layout.fragment_stock_detail, container, false);
+        mViewFragment =  inflater.inflate(R.layout.fragment_firm_stock_check, container, false);
 
-        mDatePicker = new DiabloDatePicker(
-            FirmStockCheck.this,
-            view.findViewById(R.id.btn_start_date),
-            view.findViewById(R.id.btn_end_date),
-            (EditText) view.findViewById(R.id.text_start_date),
-            (EditText)view.findViewById(R.id.text_end_date),
-            UTILS.currentDate());
+//        mDatePicker = new DiabloDatePicker(
+//            FirmStockCheck.this,
+//            mViewFragment.findViewById(R.id.btn_start_date),
+//            mViewFragment.findViewById(R.id.btn_end_date),
+//            (EditText) mViewFragment.findViewById(R.id.text_start_date),
+//            (EditText)mViewFragment.findViewById(R.id.text_end_date),
+//            UTILS.currentDate());
+        initPickerDate();
 
         // support action bar
         setHasOptionsMenu(true);
         getActivity().supportInvalidateOptionsMenu();
 
-        mStockDetailTableSwipe = (SwipyRefreshLayout) view.findViewById(R.id.t_stock_detail_swipe);
+        mStockDetailTableSwipe = (SwipyRefreshLayout) mViewFragment.findViewById(R.id.t_stock_detail_swipe);
         // mStockDetailTableSwipe = (DiabloTableSwipeRefreshLayout) view.findViewById(R.id.t_sale_detail_swipe);
         mStockDetailTableSwipe.setDirection(SwipyRefreshLayoutDirection.BOTH);
 
@@ -155,6 +191,9 @@ public class FirmStockCheck extends Fragment {
 
         TableRow row = new TableRow(this.getContext());
         for (String title: mTableHeads){
+            if (getResources().getString(R.string.firm).equals(title)) {
+                continue;
+            }
             TableRow.LayoutParams lp = new TableRow.LayoutParams(
                 0,
                 TableRow.LayoutParams.WRAP_CONTENT,
@@ -184,16 +223,16 @@ public class FirmStockCheck extends Fragment {
 
         // TableLayout head = ((TableLayout)view.findViewById(R.id.t_sale_detail_head));
         // head.addView(row);
-        TableLayout head = (TableLayout) view.findViewById(R.id.t_stock_detail_head);
+        TableLayout head = (TableLayout) mViewFragment.findViewById(R.id.t_stock_detail_head);
         head.addView(row);
 
-        mStockDetailTable = (TableLayout) view.findViewById(R.id.t_stock_detail);
+        mStockDetailTable = (TableLayout) mViewFragment.findViewById(R.id.t_stock_detail);
         mStockDetailTable.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
 
         init();
         pageChanged();
 
-        return view;
+        return mViewFragment;
     }
 
     private void pageChanged(){
@@ -204,6 +243,10 @@ public class FirmStockCheck extends Fragment {
 
         if (0 == request.getShops().size()) {
             request.setShops(Profile.instance().getShopIds());
+        }
+
+        if (!DiabloEnum.INVALID_INDEX.equals(mStartFirm)) {
+            request.addFirm(mStartFirm);
         }
 
         request.trim();
@@ -240,6 +283,10 @@ public class FirmStockCheck extends Fragment {
                     StockDetailResponse.StockDetail detail = details.get(i);
                     TextView cell = null;
                     for (String title: mTableHeads){
+                        if (getResources().getString(R.string.firm).equals(title)) {
+                            continue;
+                        }
+
                         TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
                         if (i == details.size() - 1) {
                             lp.setMargins(0, 1, 0, 1);
@@ -275,15 +322,15 @@ public class FirmStockCheck extends Fragment {
                                     detail.getEmployee()).getName(),
                                 lp);
                         }
-                        else if (getContext().getString(R.string.firm).equals(title)){
-                            Firm f = Profile.instance().getFirm(detail.getFirm());
-                            if (null != f) {
-                                cell = addCell(row, f.getName(), lp);
-                            }
-                            else {
-                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
-                            }
-                        }
+//                        else if (getContext().getString(R.string.firm).equals(title)){
+//                            Firm f = Profile.instance().getFirm(detail.getFirm());
+//                            if (null != f) {
+//                                cell = addCell(row, f.getName(), lp);
+//                            }
+//                            else {
+//                                cell = addCell(row, DiabloEnum.EMPTY_STRING, lp);
+//                            }
+//                        }
                         else if (getResources().getString(R.string.amount).equals(title)){
                             cell = addCell(row, detail.getTotal(), lp);
                             // cell.setTextColor(Color.MAGENTA);
@@ -382,18 +429,19 @@ public class FirmStockCheck extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         // menu.clear();
-
-        inflater.inflate(R.menu.action_on_stock_detail, menu);
+        inflater.inflate(R.menu.action_on_check_firm_stock, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.stock_detail_refresh:
+            case R.id.check_trans_refresh:
                 init();
                 mRefreshDialog.show();
                 pageChanged();
                 break;
+            case R.id.check_trans_to_firm:
+                SaleUtils.switchToSlideMenu(this, DiabloEnum.TAG_FIRM_PAGER);
             default:
                 // return super.onOptionsItemSelected(item);
                 break;
@@ -414,30 +462,38 @@ public class FirmStockCheck extends Fragment {
     }
 
 
+//    @Override
+//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//        super.onCreateContextMenu(menu, v, menuInfo);
+//        mCurrentSelectedRow = (TableRow) v;
+//        MenuInflater inflater = getActivity().getMenuInflater();
+//        inflater.inflate(R.menu.context_on_stock_detail, menu);
+//    }
+//
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//        StockDetailResponse.StockDetail detail = ((StockDetailResponse.StockDetail) mCurrentSelectedRow.getTag());
+//        if (getResources().getString(R.string.modify) == item.getTitle()){
+//
+//        }
+//        return true;
+//    }
+
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        mCurrentSelectedRow = (TableRow) v;
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_on_stock_detail, menu);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UTILS.hiddenKeyboard(getContext(), getView());
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        StockDetailResponse.StockDetail detail = ((StockDetailResponse.StockDetail) mCurrentSelectedRow.getTag());
-        if (getResources().getString(R.string.modify) == item.getTitle()){
-//            if (detail.getType().equals(DiabloEnum.STOCK_IN)){
-//                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_IN_UPDATE);
-//            }
-//            else if (detail.getType().equals(DiabloEnum.STOCK_OUT)) {
-//                switchToStockUpdateFrame(detail.getRsn(), this, DiabloEnum.TAG_STOCK_OUT_UPDATE);
-//            }
-
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            UTILS.hiddenKeyboard(getContext(), getView());
+            init();
+            pageChanged();
         }
-        return true;
     }
-
-
 
     public TextView addCell(TableRow row, String value, TableRow.LayoutParams lp){
         return UTILS.addCell(getContext(), row, value, lp);

@@ -739,21 +739,27 @@
   <string name="report_sale_info">销售状况</string>
   <string name="report_good_sale_info">货品销售状况</string>
 
-  <string name="update_title">2017－06－05日更新</string>
+  <string name="update_title">2017－06－25日更新</string>
   <string-array name="version_update">
-    <item>增加与成本有关的报表统计项只允许主帐号在权限查看</item>
-    <item>增加日报表利润率统计</item>
-    <item>增加实时报表/日报表/月报表统计</item>
-    <item>增加每晚凌晨2点系统自动生成前一天日报表能力</item>
-    <item>修正用户可以在作何情况下注销，不再提示网络故障</item>
-    <item>零售商/厂商/类型/品牌增加拼音首字母联想</item>
-    <item>表格增加边框效果</item>
-    <item>销售增加四舍五入处理</item>
-    <item>没有入库的货品资料可删除</item>
-    <item>货品资料增加备注选项，开单入库可显示该货品备注</item>
-    <item>优化货品资料录入速度</item>
-    <item>销售记录增加可查看交易详情，不需要再从修改中看到</item>
-    <item>款号修为过滤条件时，修改为只显示该款号</item>
+    <item>增加零售商欠款统计</item>
+    <item>增加厂商欠款统计</item>
+    <item>修改入库无法入空单的问题</item>
+    <item>增加零售商对帐功能</item>
+    <item>增加厂商对帐功能</item>
+    <item>开单隐藏价类型选择改善体验效果</item>
+    <!--<item>增加与成本有关的报表统计项只允许主帐号在权限查看</item>-->
+    <!--<item>增加日报表利润率统计</item>-->
+    <!--<item>增加实时报表/日报表/月报表统计</item>-->
+    <!--<item>增加每晚凌晨2点系统自动生成前一天日报表能力</item>-->
+    <!--<item>修正用户可以在作何情况下注销，不再提示网络故障</item>-->
+    <!--<item>零售商/厂商/类型/品牌增加拼音首字母联想</item>-->
+    <!--<item>表格增加边框效果</item>-->
+    <!--<item>销售增加四舍五入处理</item>-->
+    <!--<item>没有入库的货品资料可删除</item>-->
+    <!--<item>货品资料增加备注选项，开单入库可显示该货品备注</item>-->
+    <!--<item>优化货品资料录入速度</item>-->
+    <!--<item>销售记录增加可查看交易详情，不需要再从修改中看到</item>-->
+    <!--<item>款号修为过滤条件时，修改为只显示该款号</item>-->
   </string-array>
 
 
