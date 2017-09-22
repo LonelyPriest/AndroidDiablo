@@ -289,7 +289,15 @@ public class DiabloSaleRowController {
         if (mSaleStock.getSecond().equals(DiabloEnum.DIABLO_TRUE)) {
             // mRowView.setCellText(R.string.fprice, mSaleStock.getFinalPrice());
             mRowView.setCellText(R.string.discount, mSaleStock.getDiscount());
-            ((Spinner) mRowView.getCell(R.string.price_type).getView()).setSelection(mSaleStock.getSelectedPrice() - 1);
+
+            DiabloCellView cellView = mRowView.getCell(R.string.price_type);
+            if (null != cellView) {
+                View v = mRowView.getCell(R.string.price_type).getView();
+                if (null != v) {
+                    ((Spinner)v).setSelection(mSaleStock.getSelectedPrice() - 1);
+                }
+            }
+            // ((Spinner) mRowView.getCell(R.string.price_type).getView()).setSelection(mSaleStock.getSelectedPrice() - 1);
 
             mRowView.getView().setBackgroundColor(ContextCompat.getColor(context, R.color.yellowLight));
         }

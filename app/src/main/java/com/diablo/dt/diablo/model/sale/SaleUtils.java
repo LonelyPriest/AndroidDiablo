@@ -203,7 +203,7 @@ public class SaleUtils {
             DiabloEnum.START_SHOW_DISCOUNT,
             DiabloEnum.DIABLO_CONFIG_YES);
 
-        String showPriceTYpe = Profile.instance().getConfig(
+        String showPriceType = Profile.instance().getConfig(
             shop,
             DiabloEnum.START_SHOW_PRICE_TYPE,
             DiabloEnum.DIABLO_CONFIG_NO);
@@ -227,7 +227,7 @@ public class SaleUtils {
                 continue;
             }
             else if (title.equals(context.getResources().getString(R.string.price_type))
-                && !showDiscount.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
+                && !showPriceType.equals(DiabloEnum.DIABLO_CONFIG_YES)) {
                 continue;
             }
 
