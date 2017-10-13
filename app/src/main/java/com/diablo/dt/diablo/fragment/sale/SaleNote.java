@@ -49,8 +49,9 @@ import com.diablo.dt.diablo.filter.ShopFilter;
 import com.diablo.dt.diablo.filter.StockStyleNumberFilter;
 import com.diablo.dt.diablo.filter.YearFilter;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
+import com.diablo.dt.diablo.request.sale.SaleNoteDetailRequest;
 import com.diablo.dt.diablo.request.sale.SaleNoteRequest;
-import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
+import com.diablo.dt.diablo.response.sale.SaleNoteDetailResponse;
 import com.diablo.dt.diablo.response.sale.SaleNoteResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloDatePicker;
@@ -550,13 +551,15 @@ public class SaleNote extends Fragment {
         final SaleNoteResponse.SaleNote detail = ((SaleNoteResponse.SaleNote) mCurrentSelectedRow.getTag());
 
         if (getResources().getString(R.string.note) == item.getTitle()) {
-            SaleUtils.getSaleNewInfoFormServer(getContext(), detail.getRsn(), new SaleUtils.OnGetSaleNewFormSeverListener() {
+            SaleUtils.getSaleNoteDetailFromServer(getContext(),
+                new SaleNoteDetailRequest(detail.getRsn(), detail.getStyleNumber(), detail.getBrandId()),
+                new SaleUtils.OnGetSaleNoteDetailFormSeverListener() {
                 @Override
-                public void afterGet(final GetSaleNewResponse response) {
+                public void afterGet(final SaleNoteDetailResponse response) {
                     List<DiabloColor> colors = new ArrayList<>();
 
-                    for(GetSaleNewResponse.SaleNote s: response.getSaleNotes()){
-                        DiabloColor color = Profile.instance().getColor(s.getColor());
+                    for(SaleNoteDetailResponse.SaleNoteDetail s: response.getSaleNoteDetails()){
+                        DiabloColor color = Profile.instance().getColor(s.getColorId());
                         if (!color.includeIn(colors)){
                             colors.add(color);
                         }
@@ -573,9 +576,9 @@ public class SaleNote extends Fragment {
                         new DiabloTableStockNote.OnStockNoteListener() {
                             @Override
                             public Integer getStockNote(Integer color, String size) {
-                                GetSaleNewResponse.SaleNote note = response.getSaleNote(color, size);
+                                SaleNoteDetailResponse.SaleNoteDetail note = response.getSaleNoteDetail(color, size);
                                 if (null != note) {
-                                    return note.getAmount();
+                                    return note.getTotal();
                                 }
                                 return null;
                             }

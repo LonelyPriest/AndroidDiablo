@@ -38,7 +38,9 @@ import com.diablo.dt.diablo.fragment.stock.StockIn;
 import com.diablo.dt.diablo.fragment.stock.StockNote;
 import com.diablo.dt.diablo.fragment.stock.StockOut;
 import com.diablo.dt.diablo.fragment.stock.StockStoreDetail;
+import com.diablo.dt.diablo.request.sale.SaleNoteDetailRequest;
 import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
+import com.diablo.dt.diablo.response.sale.SaleNoteDetailResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
@@ -368,6 +370,37 @@ public class SaleUtils {
 
             @Override
             public void onFailure(Call<GetSaleNewResponse> call, Throwable t) {
+                DiabloUtils.instance()
+                    .makeToast(context, DiabloError.getError(99), Toast.LENGTH_LONG);
+            }
+        });
+    }
+
+    public interface OnGetSaleNoteDetailFormSeverListener {
+        void afterGet(final SaleNoteDetailResponse response);
+    }
+
+    public static void getSaleNoteDetailFromServer(
+        final Context context,
+        SaleNoteDetailRequest request,
+        final OnGetSaleNoteDetailFormSeverListener listener) {
+
+        WSaleInterface face = WSaleClient.getClient().create(WSaleInterface.class);
+        Call<SaleNoteDetailResponse> call = face.getSaleNoteDetail(Profile.instance().getToken(), request);
+
+        call.enqueue(new Callback<SaleNoteDetailResponse>() {
+            @Override
+            public void onResponse(Call<SaleNoteDetailResponse> call, Response<SaleNoteDetailResponse> response) {
+                SaleNoteDetailResponse noteDetails = response.body();
+                if (DiabloEnum.SUCCESS.equals(noteDetails.getCode())) {
+                    listener.afterGet(noteDetails);
+                }
+//                mRSNId = news.getSaleCalc().getId();
+//                recoverFromResponse(news.getSaleCalc(), news.getSaleNotes());
+            }
+
+            @Override
+            public void onFailure(Call<SaleNoteDetailResponse> call, Throwable t) {
                 DiabloUtils.instance()
                     .makeToast(context, DiabloError.getError(99), Toast.LENGTH_LONG);
             }

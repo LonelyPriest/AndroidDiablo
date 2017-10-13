@@ -739,9 +739,11 @@
   <string name="report_sale_info">销售状况</string>
   <string name="report_good_sale_info">货品销售状况</string>
 
-  <string name="update_title">2017－09－22日更新</string>
+  <string name="update_title">2017－10－13日更新</string>
   <string-array name="version_update">
-    <item>修正修改销售单时，有时退出的问题</item>
+    <item>修正获取交易明细时，颜色尺码无法正确显示的问题</item>
+    <item>修正获取采购明细时，颜色尺码无法正确显示的问题</item>
+    <!--<item>修正修改销售单时，有时退出的问题</item>-->
     <!--<item>增加零售商欠款统计</item>-->
     <!--<item>增加厂商欠款统计</item>-->
     <!--<item>修改入库无法入空单的问题</item>-->

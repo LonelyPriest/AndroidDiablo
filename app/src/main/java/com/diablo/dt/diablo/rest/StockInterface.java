@@ -3,15 +3,19 @@ package com.diablo.dt.diablo.rest;
 import com.diablo.dt.diablo.entity.MatchStock;
 import com.diablo.dt.diablo.entity.Stock;
 import com.diablo.dt.diablo.request.MatchStockRequest;
-import com.diablo.dt.diablo.request.stock.StockStoreDetailRequest;
+import com.diablo.dt.diablo.request.sale.SaleNoteDetailRequest;
+import com.diablo.dt.diablo.request.sale.StockRequest;
 import com.diablo.dt.diablo.request.stock.NewStockRequest;
 import com.diablo.dt.diablo.request.stock.StockDetailRequest;
+import com.diablo.dt.diablo.request.stock.StockNoteDetailRequest;
 import com.diablo.dt.diablo.request.stock.StockNoteRequest;
-import com.diablo.dt.diablo.request.sale.StockRequest;
+import com.diablo.dt.diablo.request.stock.StockStoreDetailRequest;
 import com.diablo.dt.diablo.response.good.InventoryDetailResponse;
+import com.diablo.dt.diablo.response.sale.SaleNoteDetailResponse;
 import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
 import com.diablo.dt.diablo.response.stock.NewStockResponse;
 import com.diablo.dt.diablo.response.stock.StockDetailResponse;
+import com.diablo.dt.diablo.response.stock.StockNoteDetailResponse;
 import com.diablo.dt.diablo.response.stock.StockNoteResponse;
 
 import java.util.List;
@@ -57,4 +61,7 @@ public interface StockInterface {
 
     @GET("get_w_inventory_new_info/{id}")
     Call<GetStockNewResponse> getStockNewInfo(@Header("cookie") String token, @Path("id") String rsn);
+
+    @POST("w_inventory_new_rsn_detail")
+    Call<StockNoteDetailResponse> getStockNoteDetail(@Header("cookie") String token, @Body StockNoteDetailRequest request);
 }

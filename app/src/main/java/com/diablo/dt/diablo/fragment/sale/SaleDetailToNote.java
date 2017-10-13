@@ -35,8 +35,9 @@ import com.diablo.dt.diablo.entity.Firm;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.entity.Retailer;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
+import com.diablo.dt.diablo.request.sale.SaleNoteDetailRequest;
 import com.diablo.dt.diablo.request.sale.SaleNoteRequest;
-import com.diablo.dt.diablo.response.sale.GetSaleNewResponse;
+import com.diablo.dt.diablo.response.sale.SaleNoteDetailResponse;
 import com.diablo.dt.diablo.response.sale.SaleNoteResponse;
 import com.diablo.dt.diablo.rest.WSaleInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
@@ -393,39 +394,41 @@ public class SaleDetailToNote extends Fragment {
         final SaleNoteResponse.SaleNote detail = ((SaleNoteResponse.SaleNote) mCurrentSelectedRow.getTag());
 
         if (getResources().getString(R.string.note) == item.getTitle()) {
-            SaleUtils.getSaleNewInfoFormServer(getContext(), detail.getRsn(), new SaleUtils.OnGetSaleNewFormSeverListener() {
-                @Override
-                public void afterGet(final GetSaleNewResponse response) {
-                    List<DiabloColor> colors = new ArrayList<>();
+            SaleUtils.getSaleNoteDetailFromServer(getContext(),
+                new SaleNoteDetailRequest(detail.getRsn(), detail.getStyleNumber(), detail.getBrandId()),
+                new SaleUtils.OnGetSaleNoteDetailFormSeverListener() {
+                    @Override
+                    public void afterGet(final SaleNoteDetailResponse response) {
+                        List<DiabloColor> colors = new ArrayList<>();
 
-                    for(GetSaleNewResponse.SaleNote s: response.getSaleNotes()){
-                        DiabloColor color = Profile.instance().getColor(s.getColor());
-                        if (!color.includeIn(colors)){
-                            colors.add(color);
-                        }
-                    }
-
-                    ArrayList<String> sizes = Profile.instance().genSortedSizeNamesByGroups(detail.getsGroup());
-
-                    new DiabloTableStockNote(
-                        getContext(),
-                        detail.getStyleNumber(),
-                        detail.getBrandId(),
-                        colors,
-                        sizes,
-                        new DiabloTableStockNote.OnStockNoteListener() {
-                            @Override
-                            public Integer getStockNote(Integer color, String size) {
-                                GetSaleNewResponse.SaleNote note = response.getSaleNote(color, size);
-                                if (null != note) {
-                                    return note.getAmount();
-                                }
-                                return null;
+                        for(SaleNoteDetailResponse.SaleNoteDetail s: response.getSaleNoteDetails()){
+                            DiabloColor color = Profile.instance().getColor(s.getColorId());
+                            if (!color.includeIn(colors)){
+                                colors.add(color);
                             }
                         }
-                    ).show();
-                }
-            });
+
+                        ArrayList<String> sizes = Profile.instance().genSortedSizeNamesByGroups(detail.getsGroup());
+
+                        new DiabloTableStockNote(
+                            getContext(),
+                            detail.getStyleNumber(),
+                            detail.getBrandId(),
+                            colors,
+                            sizes,
+                            new DiabloTableStockNote.OnStockNoteListener() {
+                                @Override
+                                public Integer getStockNote(Integer color, String size) {
+                                    SaleNoteDetailResponse.SaleNoteDetail note = response.getSaleNoteDetail(color, size);
+                                    if (null != note) {
+                                        return note.getTotal();
+                                    }
+                                    return null;
+                                }
+                            }
+                        ).show();
+                    }
+                });
         }
 
         return true;

@@ -46,8 +46,9 @@ import com.diablo.dt.diablo.filter.StockStyleNumberFilter;
 import com.diablo.dt.diablo.filter.YearFilter;
 import com.diablo.dt.diablo.model.sale.SaleUtils;
 import com.diablo.dt.diablo.model.stock.StockUtils;
+import com.diablo.dt.diablo.request.stock.StockNoteDetailRequest;
 import com.diablo.dt.diablo.request.stock.StockNoteRequest;
-import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
+import com.diablo.dt.diablo.response.stock.StockNoteDetailResponse;
 import com.diablo.dt.diablo.response.stock.StockNoteResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloDatePicker;
@@ -462,12 +463,15 @@ public class StockNote extends Fragment {
         final StockNoteResponse.StockNote detail = ((StockNoteResponse.StockNote) mCurrentSelectedRow.getTag());
 
         if (getResources().getString(R.string.note) == item.getTitle()) {
-            StockUtils.getStockNewInfoFormServer(getContext(), detail.getRsn(), new StockUtils.OnGetStockNewFormSeverListener() {
+            StockUtils.getStockNoteDetailFromServer(
+                getContext(),
+                new StockNoteDetailRequest(detail.getRsn(), detail.getStyleNumber(), detail.getBrandId()),
+                new StockUtils.OnGetStockNoteDetailFormSeverListener() {
                 @Override
-                public void afterGet(final GetStockNewResponse response) {
+                public void afterGet(final StockNoteDetailResponse response) {
                     List<DiabloColor> colors = new ArrayList<>();
 
-                    for(GetStockNewResponse.StockNote s: response.getStockNotes()){
+                    for(StockNoteDetailResponse.StockNoteDetail s: response.getStockNoteDetails()){
                         DiabloColor color = Profile.instance().getColor(s.getColorId());
                         if (!color.includeIn(colors)){
                             colors.add(color);
@@ -485,9 +489,9 @@ public class StockNote extends Fragment {
                         new DiabloTableStockNote.OnStockNoteListener() {
                             @Override
                             public Integer getStockNote(Integer color, String size) {
-                                GetStockNewResponse.StockNote note = response.getStockNote(color, size);
+                                StockNoteDetailResponse.StockNoteDetail note = response.getStockNoteDetail(color, size);
                                 if (null != note) {
-                                    return note.getAmount();
+                                    return note.getTotal();
                                 }
                                 return null;
                             }

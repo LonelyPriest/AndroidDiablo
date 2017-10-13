@@ -14,7 +14,9 @@ import com.diablo.dt.diablo.R;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.entity.Profile;
 import com.diablo.dt.diablo.fragment.stock.GoodSelect;
+import com.diablo.dt.diablo.request.stock.StockNoteDetailRequest;
 import com.diablo.dt.diablo.response.stock.GetStockNewResponse;
+import com.diablo.dt.diablo.response.stock.StockNoteDetailResponse;
 import com.diablo.dt.diablo.rest.StockInterface;
 import com.diablo.dt.diablo.utils.DiabloEnum;
 import com.diablo.dt.diablo.utils.DiabloError;
@@ -198,6 +200,40 @@ public class StockUtils {
 
             @Override
             public void onFailure(Call<GetStockNewResponse> call, Throwable t) {
+                DiabloUtils.instance()
+                    .makeToast(context, DiabloError.getError(99), Toast.LENGTH_LONG);
+            }
+        });
+    }
+
+
+    public interface OnGetStockNoteDetailFormSeverListener {
+        void afterGet(final StockNoteDetailResponse response);
+    }
+
+    public static void getStockNoteDetailFromServer(
+        final Context context,
+        StockNoteDetailRequest request,
+        final OnGetStockNoteDetailFormSeverListener listener) {
+
+        StockInterface face = StockClient.getClient().create(StockInterface.class);
+        Call<StockNoteDetailResponse> call = face.getStockNoteDetail(Profile.instance().getToken(), request);
+
+        call.enqueue(new Callback<StockNoteDetailResponse>() {
+            @Override
+            public void onResponse(Call<StockNoteDetailResponse> call, Response<StockNoteDetailResponse> response) {
+                final StockNoteDetailResponse news = response.body();
+                if (DiabloEnum.SUCCESS.equals(news.getCode())) {
+                    listener.afterGet(news);
+
+//                    mRSNId = news.getStockCalc().getId();
+//                    recoverFromResponse(news.getStockCalc(), news.getStockNotes());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<StockNoteDetailResponse> call, Throwable t) {
                 DiabloUtils.instance()
                     .makeToast(context, DiabloError.getError(99), Toast.LENGTH_LONG);
             }
