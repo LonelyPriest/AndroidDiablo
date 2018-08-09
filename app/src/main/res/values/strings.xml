@@ -456,7 +456,7 @@
 
   <string name="sale_in_fragment">Sale In fragment</string>
 
-  <string name="diablo_test_server">http://192.168.0.109:63551/</string>
+  <string name="diablo_test_server">http://192.168.0.104:63551/</string>
   <string name="diablo_production_server">http://120.25.212.38/</string>
 
   <string name="activity_title_about_us">About Us</string>
@@ -513,6 +513,7 @@
   <string name="failed_to_get_firm">获取厂商信息失败</string>
   <string name="failed_to_get_good">获取货品信息失败</string>
   <string name="failed_to_get_color_kind">获取颜色类型信息失败</string>
+  <string name="failed_to_get_bankcard">获取银行卡信息失败</string>
   <string name="failed_to_get_main_dashboard">登录系统主界面失败</string>
 
   <string name="print_wrong_printer_sn">"打印机编号错误"</string>
@@ -702,6 +703,7 @@
   <string name="btn_stock_note">明细</string>
   <string name="btn_stock_store">库存</string>
   <string name="btn_good">货品</string>
+  <string name="btn_print">打印</string>
 
 
   <string name="select_stock">请选择库存</string>
@@ -712,6 +714,7 @@
   <string name="good_update">货品编辑</string>
   <string name="select_color">请选择颜色</string>
   <string name="select_size">请选择尺码</string>
+  <string name="start_sale_print">销售单打印</string>
 
   <string name="slide_sale_manager">销售管理</string>
   <string name="slide_stock_manager">采购管理</string>
@@ -739,10 +742,12 @@
   <string name="report_sale_info">销售状况</string>
   <string name="report_good_sale_info">货品销售状况</string>
 
-  <string name="update_title">2017－10－13日更新</string>
+  <string name="update_title">2018－08－10日更新</string>
   <string-array name="version_update">
-    <item>修正获取交易明细时，颜色尺码无法正确显示的问题</item>
-    <item>修正获取采购明细时，颜色尺码无法正确显示的问题</item>
+    <item>增加打印机直连电脑的云打印方式</item>
+    <!--<item>修正获取交易明细时，颜色尺码无法正确显示的问题</item>-->
+    <!--<item>修正获取采购明细时，颜色尺码无法正确显示的问题</item>-->
+
     <!--<item>修正修改销售单时，有时退出的问题</item>-->
     <!--<item>增加零售商欠款统计</item>-->
     <!--<item>增加厂商欠款统计</item>-->

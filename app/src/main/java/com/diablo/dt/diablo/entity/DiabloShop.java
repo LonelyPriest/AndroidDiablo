@@ -17,6 +17,8 @@ public class DiabloShop extends DiabloEntity{
     private Integer shop;
     @SerializedName("type")
     private Integer type;
+    @SerializedName("address")
+    private String address;
 
     public DiabloShop(){
 
@@ -46,5 +48,9 @@ public class DiabloShop extends DiabloEntity{
 
     public Integer getType() {
         return this.type;
+    }
+
+    public String getAddress() {
+        return this.address;
     }
 }

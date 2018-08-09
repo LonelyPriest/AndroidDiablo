@@ -1,5 +1,11 @@
 package com.diablo.dt.diablo.model.sale;
 
+import static android.R.attr.action;
+import static android.net.wifi.WifiConfiguration.Protocol.RSN;
+import static com.diablo.dt.diablo.R.string.retailer;
+import static com.diablo.dt.diablo.R.string.shop;
+import static com.diablo.dt.diablo.R.string.stock;
+
 import com.google.gson.Gson;
 
 import android.content.Context;
@@ -24,6 +30,7 @@ import com.diablo.dt.diablo.fragment.good.GoodColorDetail;
 import com.diablo.dt.diablo.fragment.good.GoodDetail;
 import com.diablo.dt.diablo.fragment.good.GoodNew;
 import com.diablo.dt.diablo.fragment.printer.BlueToothJolimarkFragment;
+import com.diablo.dt.diablo.fragment.printer.SalePrint;
 import com.diablo.dt.diablo.fragment.report.ReportDaily;
 import com.diablo.dt.diablo.fragment.report.ReportMonth;
 import com.diablo.dt.diablo.fragment.report.ReportReal;
@@ -162,6 +169,27 @@ public class SaleUtils {
         }
     }
 
+    public static void switchToSalePrintFrame(String rsn, Fragment from) {
+        FragmentTransaction transaction = from.getFragmentManager().beginTransaction();
+        // find
+        SalePrint to = (SalePrint) from.getFragmentManager().findFragmentByTag(DiabloEnum.TAG_PRINT_WITH_COMPUTER);
+
+        if (null == to){
+            Bundle args = new Bundle();
+            args.putString(DiabloEnum.BUNDLE_PARAM_RSN, rsn);
+            to = new SalePrint();
+            to.setArguments(args);
+        } else {
+            to.setPrintRSN(rsn);
+        }
+
+        if (!to.isAdded()){
+            transaction.hide(from).add(R.id.frame_container, to, DiabloEnum.TAG_PRINT_WITH_COMPUTER).commit();
+        } else {
+            transaction.hide(from).show(to).commit();
+        }
+    }
+
     public static void switchToStockSelectFrame(
         SaleStock stock,
         Integer action,
@@ -263,9 +291,9 @@ public class SaleUtils {
                     2f);
                 label.setLabelId(R.string.good);
             }
-            else if (context.getResources().getString(R.string.stock).equals(h)) {
+            else if (context.getResources().getString(stock).equals(h)) {
                 label = new DiabloCellLabel(h, R.color.red, 18);
-                label.setLabelId(R.string.stock);
+                label.setLabelId(stock);
             }
             else if (context.getResources().getString(R.string.price_type).equals(h)) {
                 label = new DiabloCellLabel(

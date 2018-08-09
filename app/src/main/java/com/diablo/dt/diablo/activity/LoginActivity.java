@@ -33,6 +33,7 @@ import com.diablo.dt.diablo.client.RightClient;
 import com.diablo.dt.diablo.client.StockClient;
 import com.diablo.dt.diablo.client.WGoodClient;
 import com.diablo.dt.diablo.client.WLoginClient;
+import com.diablo.dt.diablo.entity.BankCard;
 import com.diablo.dt.diablo.entity.BaseSetting;
 import com.diablo.dt.diablo.entity.DiabloBrand;
 import com.diablo.dt.diablo.entity.DiabloColor;
@@ -680,6 +681,29 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void getBankCard(){
+        // WGoodClient.resetClient();
+        BaseSettingInterface face = BaseSettingClient.getClient().create(BaseSettingInterface.class);
+        Call<List<BankCard>> call = face.listBankCard(Profile.instance().getToken());
+        call.enqueue(new Callback<List<BankCard>>() {
+            @Override
+            public void onResponse(Call<List<BankCard>> call, Response<List<BankCard>> response) {
+                Log.d(LOG_TAG, "success to get color kind");
+                Profile.instance().setBankCards(response.body());
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 130;
+                message.sendToTarget();
+            }
+
+            @Override
+            public void onFailure(Call<List<BankCard>> call, Throwable t) {
+                Message message = Message.obtain(mLoginHandler);
+                message.what = 131;
+                message.sendToTarget();
+            }
+        });
+    }
+
     private static class LoginHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
 
@@ -759,11 +783,16 @@ public class LoginActivity extends AppCompatActivity {
                         activity.loginError(209);
                         break;
                     case 120:
-                        activity.gotoMain();
+                        activity.getBankCard();
                         break;
                     case 121:
                         activity.loginError(210);
                         break;
+                    case 130:
+                        activity.gotoMain();
+                        break;
+                    case 131:
+                        activity.loginError(212);
                     default:
                         break;
                 }

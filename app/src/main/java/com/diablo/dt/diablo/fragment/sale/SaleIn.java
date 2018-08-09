@@ -1559,7 +1559,14 @@ public class SaleIn extends Fragment{
                                 if (mBlueToothPrint.equals(DiabloEnum.DIABLO_TRUE)) {
                                     BlueToothPrinter printer = dbInstance.getBlueToothPrinter();
                                     utils.startBlueToothPrint(getContext(), R.string.nav_sale_in, printer, res.getRsn());
-                                } else {
+                                }
+                                else if (mBlueToothPrint == 2) {
+                                    DiabloUtils.switchToFrame(
+                                        SaleIn.this,
+                                        "com.diablo.dt.diablo.fragment.printer.SalePrint",
+                                        DiabloEnum.TAG_PRINT_WITH_COMPUTER);
+                                }
+                                else {
                                     utils.startPrint(getContext(), R.string.nav_sale_in, res.getRsn());
                                 }
                             }

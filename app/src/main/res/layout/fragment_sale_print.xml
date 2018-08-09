@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/sale_print"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.diablo.dt.diablo.fragment.printer.SalePrint">
+  <WebView
+      android:id="@+id/salePrintWebView"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent" />
+<!--<android.support.v4.widget.SwipeRefreshLayout-->
+    <!--android:id="@+id/swipeSalePrint"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+  <!--<WebView-->
+      <!--android:id="@+id/salePrintWebView"-->
+      <!--android:layout_width="fill_parent"-->
+      <!--android:layout_height="fill_parent" />-->
+<!--</android.support.v4.widget.SwipeRefreshLayout>-->
+</RelativeLayout>
+

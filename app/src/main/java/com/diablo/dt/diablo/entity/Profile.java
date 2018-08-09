@@ -1,7 +1,5 @@
 package com.diablo.dt.diablo.entity;
 
-import static com.jolimark.printerlib.c.f;
-
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -109,6 +107,9 @@ public class Profile {
     // base settings
     private List<BaseSetting> mBaseSettings;
 
+    // bank card
+    private List<BankCard> mBankCards = new ArrayList<>();
+
     // color
     private List<DiabloColor> mColors = new ArrayList<>();
 
@@ -171,6 +172,9 @@ public class Profile {
 
         // base settings
         mBaseSettings.clear();
+
+        // bank card
+        mBankCards.clear();
 
         // color
         mColors.clear();
@@ -481,8 +485,40 @@ public class Profile {
 //        return this.mBaseSettings;
 //    }
 
+    public void setBankCards(List<BankCard> cards) {
+        for(BankCard card: cards)
+            this.mBankCards.add(card);
+    }
+
+    public List<BankCard> getBankCards() {
+        return this.mBankCards;
+    }
+
     public void setBaseSettings(List<BaseSetting> baseSettings) {
         this.mBaseSettings = baseSettings;
+    }
+
+    public List<String> getComments() {
+        List<String> comments = new ArrayList<>();
+        for (BaseSetting base: mBaseSettings){
+            if (base.getShop().equals(DiabloEnum.INVALID_INDEX) && base.getEName().startsWith("comment")){
+                if (!base.getValue().isEmpty())
+                    comments.add(base.getValue());
+            }
+        }
+        return comments;
+    }
+
+    public List<BaseSetting> getPhones() {
+        List<BaseSetting> phones = new ArrayList<>();
+        for (BaseSetting base: mBaseSettings){
+            if (base.getShop().equals(DiabloEnum.INVALID_INDEX) && base.getEName().startsWith("phone")){
+                if (!base.getValue().isEmpty())
+                    phones.add(base);
+            }
+        }
+
+        return phones;
     }
 
     public String getConfig(String name, String defaultValue){

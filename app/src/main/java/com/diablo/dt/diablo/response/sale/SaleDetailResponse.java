@@ -70,7 +70,7 @@ public class SaleDetailResponse extends Response {
 
         @SerializedName("shop_id")
         Integer shop;
-        @SerializedName("employee_id")
+        @SerializedName("employ_id")
         String employee;
         @SerializedName("retailer_id")
         Integer retailer;

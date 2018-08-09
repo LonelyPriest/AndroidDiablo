@@ -70,6 +70,7 @@ public class DiabloError {
             mErrors.put(209, r.getString(R.string.failed_to_get_good));
             mErrors.put(210, r.getString(R.string.failed_to_get_color_kind));
             mErrors.put(211, r.getString(R.string.failed_to_get_user_info));
+            mErrors.put(212, r.getString(R.string.failed_to_get_bankcard));
 
             mErrors.put(2699, r.getString(R.string.update_same));
             mErrors.put(2703, r.getString(R.string.error_style_number));

@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         DiabloEnum.TAG_RETAILER_CHECK_SALE_TRANS,
 
         DiabloEnum.TAG_FIRM_CHECK_STOCK_TRANS,
+
+        DiabloEnum.TAG_PRINT_WITH_COMPUTER
     };
 
     private NavigationTag mCurrentNavTag;

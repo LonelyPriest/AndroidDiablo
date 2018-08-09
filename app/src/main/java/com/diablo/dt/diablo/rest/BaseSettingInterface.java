@@ -1,5 +1,6 @@
 package com.diablo.dt.diablo.rest;
 
+import com.diablo.dt.diablo.entity.BankCard;
 import com.diablo.dt.diablo.entity.BaseSetting;
 import com.diablo.dt.diablo.request.LogoutRequest;
 import com.diablo.dt.diablo.response.Response;
@@ -22,4 +23,7 @@ public interface BaseSettingInterface {
 
     @POST("destroy_login_user")
     Call<Response> logout(@Header("cookie") String token, @Body LogoutRequest request);
+
+    @GET("list_w_bank_card")
+    Call<List<BankCard>> listBankCard(@Header("cookie") String token);
 }

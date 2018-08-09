@@ -680,7 +680,15 @@ public class SaleDetail extends Fragment {
             if (mBlueToothPrint.equals(DiabloEnum.DIABLO_TRUE)) {
                 BlueToothPrinter printer = DiabloDBManager.instance().getBlueToothPrinter();
                 UTILS.startBlueToothPrint(getContext(), R.string.nav_sale_detail, printer, detail.getRsn());
-            } else {
+            }
+            else if (mBlueToothPrint == 2) {
+                SaleUtils.switchToSalePrintFrame(detail.getRsn(), SaleDetail.this);
+//                DiabloUtils.switchToFrame(
+//                    SaleDetail.this,
+//                    "com.diablo.dt.diablo.fragment.printer.SalePrint",
+//                    DiabloEnum.TAG_PRINT_WITH_COMPUTER);
+            }
+            else {
                 UTILS.startPrint(getContext(), R.string.nav_sale_detail, detail.getRsn());
             }
         }
