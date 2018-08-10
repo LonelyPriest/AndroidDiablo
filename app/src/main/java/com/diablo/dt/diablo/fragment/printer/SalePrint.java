@@ -149,7 +149,7 @@ public class SalePrint extends Fragment {
             }
         }
 
-        mShop =  DiabloUtils.getInstance().getShop(Profile.instance().getSortShop(), detail.getShop());
+        mShop =  DiabloUtils.getInstance().getShop(Profile.instance().getLoginShops(), detail.getShop());
         mRetailer = DiabloUtils.getInstance().getRetailer(Profile.instance().getRetailers(), detail.getRetailer());
         mEmployee = DiabloUtils.getInstance().getEmployeeByNumber(Profile.instance().getEmployees(), detail.getEmployee());
 

@@ -275,6 +275,10 @@ public class Profile {
         }
     }
 
+    public List<DiabloShop> getLoginShops() {
+        return this.mLoginShops;
+    }
+
     public List<Integer> getAvailableShopIds() {
         return mAvailableShopIds;
     }

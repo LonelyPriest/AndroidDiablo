@@ -93,6 +93,8 @@ salePrintApp.controller('salePrintCtrl', function($scope) {
     // PrintJs.log(angular.toJson($scope.stocks));
     $scope.sale.calcBalance = Math.round($scope.sale.calcBalance);
     $scope.sale.curBalance = $scope.sale.calcBalance - $scope.sale.hasPay;
+    
+    PrintJs.log(angular.toJson($scope.sale));
 
     $scope.comments = [];
     var cc = angular.fromJson(PrintJs.getComments());
