@@ -85,7 +85,7 @@ public class Profile {
     private Integer mLoginRetailer = DiabloEnum.INVALID_INDEX;
     private Integer mLoginType = DiabloEnum.INVALID_INDEX;
     private List<DiabloRight> mLoginRights;
-    private List<DiabloShop> mLoginShops;
+    private List<DiabloShop> mLoginShops = new ArrayList<>();
 
 
     private List<Integer> mAvailableShopIds = new ArrayList<>();
@@ -151,7 +151,7 @@ public class Profile {
         mLoginRetailer = DiabloEnum.INVALID_INDEX;
         mLoginType = DiabloEnum.INVALID_INDEX;
         mLoginRights = null;
-        mLoginShops = null;
+        mLoginShops.clear();
 
         mAvailableShopIds.clear();
         mShopIds.clear();
@@ -269,7 +269,10 @@ public class Profile {
     }
 
     public void setLoginShops(List<DiabloShop> loginShops) {
-        this.mLoginShops = loginShops;
+        this.mLoginShops.clear();
+        for(DiabloShop shop: loginShops) {
+            this.mLoginShops.add(shop);
+        }
     }
 
     public List<Integer> getAvailableShopIds() {
@@ -486,6 +489,7 @@ public class Profile {
 //    }
 
     public void setBankCards(List<BankCard> cards) {
+        this.mBankCards.clear();
         for(BankCard card: cards)
             this.mBankCards.add(card);
     }
