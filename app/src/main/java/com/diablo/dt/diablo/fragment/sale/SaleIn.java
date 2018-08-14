@@ -1561,10 +1561,7 @@ public class SaleIn extends Fragment{
                                     utils.startBlueToothPrint(getContext(), R.string.nav_sale_in, printer, res.getRsn());
                                 }
                                 else if (mBlueToothPrint == 2) {
-                                    DiabloUtils.switchToFrame(
-                                        SaleIn.this,
-                                        "com.diablo.dt.diablo.fragment.printer.SalePrint",
-                                        DiabloEnum.TAG_PRINT_WITH_COMPUTER);
+                                    SaleUtils.switchToSalePrintFrame(res.getRsn(), SaleIn.this);
                                 }
                                 else {
                                     utils.startPrint(getContext(), R.string.nav_sale_in, res.getRsn());

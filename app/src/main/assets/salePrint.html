@@ -68,8 +68,8 @@
         <thead>
         <tr>
           <th class="text-center">序号</th>
-          <th class="text-center">货号</th>
           <th class="text-center">品牌</th>
+          <th class="text-center">货号</th>
           <th class="text-center">数量</th>
           <th class="text-center">单价</th>
           <th class="text-center">小计</th>
@@ -80,8 +80,8 @@
         <tbody>
         <tr x-ng-repeat="s in stocks">
           <td class="text-center" x-ng-bind="s.orderId"></td>
-          <td class="text-center" x-ng-bind="s.styleNumber"></td>
           <td class="text-center" x-ng-bind="s.brand"></td>
+          <td class="text-center" x-ng-bind="s.styleNumber"></td>
           <td class="text-center" x-ng-bind="s.total"></td>
           <td class="text-center" x-ng-bind="s.fprice"></td>
           <td class="text-center" x-ng-bind="s.calc"></td>
