@@ -281,7 +281,7 @@
                   android:textSize="@dimen/ampm_label_size"
                   android:textColor="@color/bpblack"
                   android:textStyle="bold"
-                  android:enabled="false"/>
+                  android:enabled="true" />
         <TextView android:layout_width="0dp"
                   android:layout_height="wrap_content"
                   android:layout_weight="0.1"/>
