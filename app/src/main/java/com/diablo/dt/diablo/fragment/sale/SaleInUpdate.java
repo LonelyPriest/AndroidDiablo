@@ -1,6 +1,7 @@
 package com.diablo.dt.diablo.fragment.sale;
 
 
+import static com.diablo.dt.diablo.R.string.shop;
 import static com.diablo.dt.diablo.model.sale.SaleUtils.getSaleStock;
 
 import android.os.Bundle;
@@ -80,6 +81,7 @@ public class SaleInUpdate extends Fragment {
     private Integer   mSelectPrice;
     private Integer   mSysRetailer;
     private Integer   mTracePrice;
+    private Integer   mShowPriceType;
     private String    mRSN;
     private String    mLastRSN;
     private Integer   mRSNId;
@@ -178,6 +180,11 @@ public class SaleInUpdate extends Fragment {
 
         mTracePrice = UTILS.toInteger(
             Profile.instance().getConfig(DiabloEnum.START_TRACE_PRICE, DiabloEnum.DIABLO_CONFIG_NO));
+
+        mShowPriceType = UTILS.toInteger(Profile.instance().getConfig(
+            shop,
+            DiabloEnum.START_SHOW_PRICE_TYPE,
+            DiabloEnum.DIABLO_CONFIG_NO));
 
         // create head
         mLabels = SaleUtils.createSaleLabelsFromTitle(getContext(), Profile.instance().getLoginShop());
@@ -462,7 +469,9 @@ public class SaleInUpdate extends Fragment {
 
                     row.setCellText(R.string.fprice, stock.getFinalPrice());
                     row.setCellText(R.string.discount, stock.getDiscount());
-                    ((Spinner)row.getCell(R.string.price_type).getView()).setSelection(stock.getSelectedPrice() - 1);
+                    if (mShowPriceType.equals(DiabloEnum.DIABLO_TRUE)) {
+                        ((Spinner)row.getCell(R.string.price_type).getView()).setSelection(stock.getSelectedPrice() - 1);
+                    }
                 }
 
                 cell.setCellFocusable(true);
