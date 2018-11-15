@@ -456,7 +456,7 @@
 
   <string name="sale_in_fragment">Sale In fragment</string>
 
-  <string name="diablo_test_server">http://192.168.0.100:63551/</string>
+  <string name="diablo_test_server">http://192.168.0.104:63551/</string>
   <string name="diablo_production_server">http://120.25.212.38/</string>
 
   <string name="activity_title_about_us">About Us</string>

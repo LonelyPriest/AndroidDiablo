@@ -1,5 +1,12 @@
-function print() {
+function loadPrintServer() {
+    if (needCLodop()) {
+           var server = PrintJs.getPrintHttpServer();
+           PrintJs.log("print server:" + server);
+           loadCLodop(server);
+       }
+}
 
+function print() {
    var pageWidth = parseFloat(PrintJs.getPaperWidth());
    PrintJs.log("pageWidth:" + pageWidth.toString());
 
@@ -12,6 +19,7 @@ function print() {
         + "</style>";
 
    PrintJs.log("start print");
+   
    var LODOP = getLodop();
    PrintJs.log(LODOP.CVERSION);
 
@@ -41,6 +49,7 @@ var salePrintApp = angular.module('salePrintApp', []);
 
 salePrintApp.controller('salePrintCtrl', function($scope) {
     // $scope.shop = "BuXianhui";
+    loadPrintServer();
 
     var to_decimal = function(dight){
        var d = Math.round(dight * Math.pow(10,2)) / Math.pow(10,2);
@@ -68,6 +77,9 @@ salePrintApp.controller('salePrintCtrl', function($scope) {
     // $scope.sale.total = d.total;
     // $scope.sale.calcBalance = d.shouldPay;
 
+    $scope.sale.sellTotal = PrintJs.getSellTotal();
+    $scope.sale.rejectTotal = PrintJs.getRejectTotal();
+
 
     $scope.sale.total = 0;
     $scope.sale.calcBalance = 0;
@@ -90,7 +102,7 @@ salePrintApp.controller('salePrintCtrl', function($scope) {
         });
     });
 
-    // PrintJs.log(angular.toJson($scope.stocks));
+    PrintJs.log(angular.toJson($scope.stocks));
     $scope.sale.calcBalance = Math.round($scope.sale.calcBalance);
     $scope.sale.curBalance = $scope.sale.calcBalance - $scope.sale.hasPay;
     

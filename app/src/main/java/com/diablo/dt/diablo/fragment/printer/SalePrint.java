@@ -50,10 +50,14 @@ public class SalePrint extends Fragment {
 
     private String mRSN;
     private String mPaperWidth;
+    private String mPrintHttpServer;
 
     private DiabloShop mShop;
     private Retailer mRetailer;
     private Employee mEmployee;
+
+    private Integer mSellTotal;
+    private Integer mRejectTotal;
 
     private List<String> mComments;
     private List<BaseSetting> mPhones;
@@ -115,10 +119,17 @@ public class SalePrint extends Fragment {
 
         mSaleStocks  = new ArrayList<>();
         Integer orderId = 0;
+        mSellTotal = 0;
+        mRejectTotal = 0;
         for (GetSaleNewResponse.SaleNote n: notes) {
+            if (n.getAmount() < 0) {
+                mRejectTotal += n.getSaleTotal();
+            } else {
+                mSellTotal += n.getSaleTotal();
+            }
+
             String styleNumber = n.getStyleNumber();
             Integer brandId = n.getBrandId();
-
             SaleStock stock = SaleUtils.getSaleStock(mSaleStocks, styleNumber, brandId);
             if (null == stock) {
                 MatchStock matchStock = Profile.instance().getMatchStock(styleNumber, brandId);
@@ -176,7 +187,8 @@ public class SalePrint extends Fragment {
         mPhones    = Profile.instance().getPhones();
         mBankCards = Profile.instance().getBankCards();
         mPaperWidth = Profile.instance().getConfig(DiabloEnum.START_PAPER_WIDTH, "11");
-
+        mPrintHttpServer = Profile.instance().getConfig(DiabloEnum.START_PRINT_HTTP_SERVER, "192.168.0.254");
+        Log.d(LOG_TAG, mPrintHttpServer);
         setHasOptionsMenu(true);
     }
 
@@ -317,6 +329,11 @@ public class SalePrint extends Fragment {
         }
 
         @JavascriptInterface
+        public String getPrintHttpServer() {
+            return  ((SalePrint)mFragment.get()).mPrintHttpServer;
+        }
+
+        @JavascriptInterface
         public String getComments() {
             String s = new Gson().toJson(((SalePrint)mFragment.get()).mComments);
             Log.d(LOG_TAG, s);
@@ -335,6 +352,16 @@ public class SalePrint extends Fragment {
             String s = new Gson().toJson(((SalePrint)mFragment.get()).mBankCards);
             Log.d(LOG_TAG, s);
             return s;
+        }
+
+        @JavascriptInterface
+        public int getSellTotal() {
+            return  ((SalePrint)mFragment.get()).mSellTotal.intValue();
+        }
+
+        @JavascriptInterface
+        public int getRejectTotal() {
+            return  ((SalePrint)mFragment.get()).mRejectTotal.intValue();
         }
 
         @JavascriptInterface

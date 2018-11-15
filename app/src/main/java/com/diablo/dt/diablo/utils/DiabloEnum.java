@@ -81,6 +81,7 @@ public class DiabloEnum {
     public static final String  START_BLUETOOTH = "bluetooth";
     public static final String  START_REVERSE_SALE_TITLE = "head_amount";
     public static final String  START_PAPER_WIDTH = "prn_width";
+    public static final String  START_PRINT_HTTP_SERVER = "prn_server";
     public static final Integer NON_REPO = 0;
     public static final Integer USE_REPO = 1;
 

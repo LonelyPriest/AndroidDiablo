@@ -104,6 +104,8 @@
 
     <div>
       <span>合计：</span><strong style="font-size:20px;">{{sale.total}}</strong>
+      &nbsp;&nbsp;<span>售：</span><span style="font-size:20px;">{{sale.sellTotal}}</span>
+      <span>退：</span><span style="font-size:20px;">{{sale.rejectTotal}}</span>
       &nbsp;&nbsp;<span>金额：</span><strong style="font-size:24px;">{{sale.calcBalance}}</strong>
       &nbsp;&nbsp;<span>备注：</span><span x-ng-bind="sale.comment"></span>
     </div>
