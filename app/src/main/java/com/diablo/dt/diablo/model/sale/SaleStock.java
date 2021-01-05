@@ -183,7 +183,7 @@ public class SaleStock {
         this.free = stock.getFree();
         this.sizeGroup = stock.getSizeGroup();
         this.path = stock.getPath();
-        this.comment = "";
+        this.comment = stock.getComment();
 
         this.second     = DiabloEnum.DIABLO_FALSE;
         this.stockExist = 0;

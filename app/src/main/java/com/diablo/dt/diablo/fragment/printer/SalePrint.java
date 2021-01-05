@@ -139,7 +139,9 @@ public class SalePrint extends Fragment {
                 s.setOrderId(orderId);
                 s.setState(DiabloEnum.FINISHED_SALE);
                 s.setSecond(n.getSecond());
-                s.setComment(n.getComment());
+                if (!n.getComment().isEmpty()) {
+                    s.setComment(n.getComment());
+                }
 
                 // s.setSelectedPrice(n.getSelectedPrice());
                 s.setDiscount(n.getDiscount());

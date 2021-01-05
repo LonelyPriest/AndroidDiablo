@@ -13,6 +13,12 @@ public class StockClient {
     private static Retrofit retrofit;
     private static final  String mUrl = "purchaser/";
 
+//    private static final OkHttpClient client = new OkHttpClient.Builder().
+//        connectTimeout(30, TimeUnit.SECONDS).
+//        readTimeout(30, TimeUnit.SECONDS).
+//        writeTimeout(30, TimeUnit.SECONDS).build();
+
+
     private StockClient(){
 
     }
@@ -21,9 +27,10 @@ public class StockClient {
         String baseUrl = Profile.instance().getServer() + mUrl;
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+                .baseUrl(baseUrl)
+//                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         }
         return retrofit;
     }
